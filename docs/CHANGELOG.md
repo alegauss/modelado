@@ -8,6 +8,8 @@
 
 ## Block D — Model downloads
 
+- ✅ **MOD47** **The download tests fail to construct when the loopback server's first random port is already taken** — The download test server opens a fresh listener on each port attempt, so a busy port means another try instead of a red suite.
+
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update

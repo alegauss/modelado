@@ -9,7 +9,7 @@ namespace Modelado.Inference.Tests;
 /// <summary>A loopback HTTP server holding files, honouring Range, that can fail on demand.</summary>
 internal sealed class FileServer : IDisposable
 {
-    private readonly HttpListener listener = new();
+    private readonly HttpListener listener;
     private readonly Dictionary<string, byte[]> files = new(StringComparer.Ordinal);
 
     public FileServer()
@@ -17,16 +17,19 @@ internal sealed class FileServer : IDisposable
         for (int attempt = 0; ; attempt++)
         {
             int port = Random.Shared.Next(20000, 60000);
+            // A failed Start disposes the listener, so each attempt needs a fresh one.
+            var candidate = new HttpListener();
             try
             {
-                listener.Prefixes.Add($"http://127.0.0.1:{port}/");
-                listener.Start();
+                candidate.Prefixes.Add($"http://127.0.0.1:{port}/");
+                candidate.Start();
+                listener = candidate;
                 Base = $"http://127.0.0.1:{port}";
                 break;
             }
             catch (HttpListenerException) when (attempt < 10)
             {
-                listener.Prefixes.Clear();
+                candidate.Close();
             }
         }
 
