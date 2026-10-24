@@ -24,18 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD12 History card
-
-Model: PhotoBoost's History card and MainWindow.History.cs (PB28): a ListBox of every
-version's label, the current one selected, not clickable, at MaxHeight 160. MeshHistory
-already keeps a label per version (Generate object, Simplify to 25%, Smooth...), so this
-only shows it. The labels must say the amount used where there is one ("Simplify to
-25%", "Rotate 90° on X").
-
-Done when generating, simplifying, smoothing and then undoing twice shows three entries
-with the first selected, and a new edit after that drops the two redone ones from the
-list.
-
 ### §MOD13 Export card
 
 Model: PhotoBoost's Export card and MainWindow.Export.cs (PB25). The format is a

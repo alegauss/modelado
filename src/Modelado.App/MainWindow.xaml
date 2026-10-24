@@ -249,6 +249,17 @@
           </StackPanel>
         </Border>
 
+        <!-- MOD12, after PhotoBoost's History card (PB28): every version the model went through, the
+             one shown selected, so how far Undo goes is seen before it is pressed. Read, not clicked. -->
+        <Border x:Name="HistoryCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
+          <StackPanel>
+            <TextBlock Text="History" Style="{StaticResource SectionHeader}" />
+            <ListBox x:Name="HistoryList" AutomationProperties.AutomationId="History" AutomationProperties.Name="History"
+                     MaxHeight="160" IsHitTestVisible="False" Focusable="False" BorderThickness="0" Background="Transparent"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+          </StackPanel>
+        </Border>
+
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
             <TextBlock Text="Quality" Style="{StaticResource SectionHeader}" />

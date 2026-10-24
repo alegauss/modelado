@@ -59,7 +59,7 @@ public partial class MainWindow
     private async void OnSimplify(object sender, RoutedEventArgs e)
     {
         double share = SimplifyAmount.Value;
-        await EditAsync("Simplify", (m, _, token) => MeshEdit.Simplify(m, Math.Max(4, (int)(m.TriangleCount * share)), token)).ConfigureAwait(true);
+        await EditAsync($"Simplify to {share:P0}", (m, _, token) => MeshEdit.Simplify(m, Math.Max(4, (int)(m.TriangleCount * share)), token)).ConfigureAwait(true);
     }
 
     private async void OnSubdivide(object sender, RoutedEventArgs e)
@@ -74,7 +74,7 @@ public partial class MainWindow
     }
 
     private async void OnSmooth(object sender, RoutedEventArgs e) =>
-        await EditAsync("Smooth", (m, _, _) => MeshCleanup.Smooth(m, 3)).ConfigureAwait(true);
+        await EditAsync("Smooth, 3 passes", (m, _, _) => MeshCleanup.Smooth(m, 3)).ConfigureAwait(true);
 
     private async void OnFillHoles(object sender, RoutedEventArgs e)
     {
@@ -88,10 +88,10 @@ public partial class MainWindow
     }
 
     private async void OnRemovePieces(object sender, RoutedEventArgs e) =>
-        await EditAsync("Remove loose pieces", (m, _, _) => MeshCleanup.RemoveSmallPieces(m, 0.05)).ConfigureAwait(true);
+        await EditAsync("Remove pieces under 5%", (m, _, _) => MeshCleanup.RemoveSmallPieces(m, 0.05)).ConfigureAwait(true);
 
     private async void OnFlatten(object sender, RoutedEventArgs e) =>
-        await EditAsync("Flat base", (m, _, _) => MeshEdit.FlattenBase(m, 0.03f)).ConfigureAwait(true);
+        await EditAsync("Flat base at 3%", (m, _, _) => MeshEdit.FlattenBase(m, 0.03f)).ConfigureAwait(true);
 
     private async void OnMirror(object sender, ExecutedRoutedEventArgs e) =>
         await EditAsync("Mirror", (m, _, _) => MeshEdit.Mirror(m)).ConfigureAwait(true);
@@ -99,7 +99,7 @@ public partial class MainWindow
     private async void OnRotate(object sender, ExecutedRoutedEventArgs e)
     {
         Axis axis = e.Command == RotateXCommand ? Axis.X : e.Command == RotateYCommand ? Axis.Y : Axis.Z;
-        await EditAsync($"Turn about {axis}", (m, _, _) => MeshEdit.Rotate(m, axis, 90)).ConfigureAwait(true);
+        await EditAsync($"Turn 90° about {axis}", (m, _, _) => MeshEdit.Rotate(m, axis, 90)).ConfigureAwait(true);
     }
 
     private async void OnUpscaleTexture(object sender, RoutedEventArgs e)

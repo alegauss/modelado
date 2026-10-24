@@ -186,13 +186,37 @@
           "locator": "Text#LastRun",
           "act": "read",
           "reads": "name",
-          "matches": "^Turn about X · 12 → 12 triangles · \\d+[.,]\\d s$",
+          "matches": "^Turn 90° about X · 12 → 12 triangles · \\d+[.,]\\d s$",
           "named": "the last-run chip reports the turn"
         },
         { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and Undo can now go back" },
         { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Undone: back to \"Opened\"", "named": "back to the opened model" },
         { "locator": "Button#RedoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the turn can be redone" }
+      ]
+    },
+
+    {
+      "name": "the History card lists every version, follows Undo, and drops the undone ones on a new edit",
+      "catches": "a history that hides how far Undo goes, keeps redone versions after a new edit, or loses the amount an edit used",
+      "filed": "MOD12",
+      "tags": ["history", "edit", "toolbar"],
+      "fixture": "a window on the cube fixture, to edit",
+      "steps": [
+        { "locator": "List#History > ListItem[order=top]", "act": "read", "reads": "name", "expect": "1. Opened", "named": "the history starts at the opened model" },
+        { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Turn 90° about X", "named": "the turn is the second version" },
+        { "locator": "Button#RotateYButton", "act": "invoke", "named": "Turn about Y is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "3. Turn 90° about Y", "named": "three versions, named with the amount" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "selected", "expect": "selected", "named": "the newest selected" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Undone: back to \"Turn 90° about X\"", "named": "back one" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "and again" },
+        { "locator": "List#History > ListItem[order=top]", "act": "read", "reads": "selected", "expect": "selected", "named": "the opened model is selected" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "3. Turn 90° about Y", "named": "and the undone versions are still listed" },
+        { "locator": "Button#MirrorButton", "act": "invoke", "named": "Mirror is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Mirror", "named": "the new edit replaces the two undone ones" },
+        { "locator": "Button#RedoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and there is nothing left to redo" }
       ]
     },
 

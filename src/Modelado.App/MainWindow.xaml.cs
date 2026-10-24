@@ -247,6 +247,7 @@ public partial class MainWindow : Window, IDisposable
         UpdateEditButtons();
         Title = $"{Path.GetFileName(path)} · Modelado";
         MeshChip.Visibility = Visibility.Collapsed;
+        HistoryCard.Visibility = Visibility.Collapsed;
         ViewChoice.IsEnabled = false;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
@@ -274,6 +275,10 @@ public partial class MainWindow : Window, IDisposable
         ViewChoice.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
+        HistoryList.ItemsSource = history.Labels.Select((label, i) => $"{i + 1}. {label}").ToList();
+        HistoryList.SelectedIndex = history.Position;
+        HistoryList.ScrollIntoView(HistoryList.SelectedItem);
+        HistoryCard.Visibility = Visibility.Visible;
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
             $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();

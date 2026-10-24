@@ -146,4 +146,23 @@ public sealed class MeshEditTests
         Assert.Same(c, history.Redo());
         Assert.Equal("Simplify", history.CurrentLabel);
     }
+
+    [Fact]
+    public void History_lists_every_version_and_where_undo_has_got_to()
+    {
+        // MOD12: what the History card shows.
+        MeshHistory history = new();
+        history.Reset(Sphere(8), "Opened");
+        history.Push(Sphere(9), "Simplify to 25%");
+        history.Push(Sphere(10), "Smooth");
+        history.Undo();
+        history.Undo();
+
+        Assert.Equal(["Opened", "Simplify to 25%", "Smooth"], history.Labels);
+        Assert.Equal(0, history.Position);
+
+        history.Push(Sphere(11), "Mirror");
+        Assert.Equal(["Opened", "Mirror"], history.Labels);
+        Assert.Equal(1, history.Position);
+    }
 }

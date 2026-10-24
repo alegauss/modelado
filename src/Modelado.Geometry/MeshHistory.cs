@@ -23,8 +23,14 @@ public sealed class MeshHistory
     /// <summary>The version shown, or null before the first.</summary>
     public Mesh? Current => current >= 0 ? versions[current].Mesh : null;
 
-    /// <summary>What made the version shown, e.g. "Simplificar".</summary>
+    /// <summary>What made the version shown, e.g. "Simplify to 25%".</summary>
     public string? CurrentLabel => current >= 0 ? versions[current].Label : null;
+
+    /// <summary>What made each version, oldest first: what the History card lists (MOD12).</summary>
+    public IReadOnlyList<string> Labels => [.. versions.Select(v => v.Label)];
+
+    /// <summary>Where the version shown is in <see cref="Labels"/>, or -1 before the first.</summary>
+    public int Position => current;
 
     /// <summary>Whether there is an older version.</summary>
     public bool CanUndo => current > 0;

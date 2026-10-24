@@ -13,7 +13,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD12** (deps: MOD6 ✅) **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — PhotoBoost's History card names every version, so a person can see how far Undo will go before pressing it. → §MOD12
 - 📋 **MOD13** (deps: MOD6 ✅) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
 - 📋 **MOD14** (deps: MOD8 ✅) **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — PhotoBoost runs every suite, the winwright cases included, in a VMware guest through winwright's run-tests-vm.cmd, and a UI task ships on that run. → §MOD14
 - 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
@@ -71,7 +70,7 @@
 - 📋 **MOD43** (deps: MOD2 ✅, MOD16) **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — Blender is where most existing models live, and Modelado's cleanup and AI tools are most useful applied to them in place. → §MOD43
 - 📋 **MOD44** (deps: MOD20, MOD43) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
 - 📋 **MOD45** (deps: MOD38, MOD40, MOD43) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
-- 📋 **MOD46** (deps: MOD12, MOD43) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — Some work needs the window (orbiting, comparing versions, several edits in a row), and the result must land back on the object it came from. → §MOD46
+- 📋 **MOD46** (deps: MOD12 ✅, MOD43) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — Some work needs the window (orbiting, comparing versions, several edits in a row), and the result must land back on the object it came from. → §MOD46
 
 ## Done when — Block H
 
