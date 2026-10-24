@@ -12,8 +12,8 @@ public sealed record AppOptions(string? Open, string? Models, ProviderChoice Pro
 
 /// <summary>
 /// Parses Modelado.exe's arguments:
-/// <c>[--open] foto.jpg  --models pasta  --provider auto|dml|cpu  --quality standard|high  --manifest url</c>.
-/// A bare path opens that photo, so "Abrir com" and drag-onto-the-exe work.
+/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url</c>.
+/// A bare path opens that photo, so "Open with" and drag-onto-the-exe work.
 /// </summary>
 public static class CommandLine
 {
@@ -37,7 +37,7 @@ public static class CommandLine
 
             if (i + 1 >= args.Count)
             {
-                return (null, $"{arg} precisa de um valor.");
+                return (null, $"{arg} needs a value.");
             }
 
             string value = args[++i];
@@ -65,20 +65,20 @@ public static class CommandLine
                             provider = ProviderChoice.Cpu;
                             break;
                         default:
-                            return (null, $"--provider {value}: use auto, dml ou cpu.");
+                            return (null, $"--provider {value}: use auto, dml or cpu.");
                     }
 
                     break;
                 case "--quality":
                     if (value is not ("standard" or "high"))
                     {
-                        return (null, $"--quality {value}: use standard ou high.");
+                        return (null, $"--quality {value}: use standard or high.");
                     }
 
                     high = value == "high";
                     break;
                 default:
-                    return (null, $"Opção desconhecida: {arg}.");
+                    return (null, $"Unknown option: {arg}.");
             }
         }
 

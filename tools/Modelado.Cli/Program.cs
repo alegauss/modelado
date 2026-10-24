@@ -9,35 +9,35 @@ using Modelado.Inference.Pipelines;
 // machines (and tests) that have no window. Runs on Windows with DirectML and anywhere on the CPU.
 
 const string Usage = """
-    modelado-cli object <foto> -o <saida.glb|obj|ply|stl> [opções]
-        --resolution N       pontos da grade por lado (128, 192, 256, 320, 384); padrão 256
-        --keep-background    não recorta o objeto (use com PNG já recortado)
-        --threshold D        densidade da superfície (padrão do modelo, 25)
-        --step N             passo da amostragem grossa, 1 = completa; padrão 2
-        --smooth N           passes de suavização; padrão 2
-        --enhance            melhora uma foto pequena com Real-ESRGAN antes
-        --no-project         não reprojeta as cores da foto na frente do objeto
-    modelado-cli relief <foto> -o <saida> [opções]
-        --grid N             vértices no lado maior; padrão 256
-        --depth F            altura do relevo, fração da largura; padrão 0.25
-        --base F             espessura da base sólida, fração da largura; 0 = superfície aberta
-        --remove-background  só o objeto, sem o fundo
-    modelado-cli edit <modelo.glb|obj|ply|stl> -o <saida> [edições, aplicadas nesta ordem]
-        --rotate x:90        gira em torno de x, y ou z (graus)
-        --mirror             espelha da esquerda para a direita
-        --remove-pieces F    remove pedaços menores que F do maior (ex.: 0.05)
-        --fill-holes         fecha os buracos
-        --simplify N|F       N triângulos, ou a fração F (ex.: 0.25)
-        --subdivide          4× os triângulos, arredondando
-        --smooth N           passes de suavização (Taubin)
-        --flatten F          base plana a F da altura (ex.: 0.03)
-        --upscale-texture    aumenta a textura 4× com Real-ESRGAN
-    modelado-cli download [object|relief|all]   baixa os modelos que faltam
-    modelado-cli models                         lista os modelos instalados
+    modelado-cli object <photo> -o <output.glb|obj|ply|stl> [options]
+        --resolution N       grid points per side (128, 192, 256, 320, 384); default 256
+        --keep-background    does not cut the object out (for a PNG already cut out)
+        --threshold D        surface density (the model's default, 25)
+        --step N             coarse sampling step, 1 = full; default 2
+        --smooth N           smoothing passes; default 2
+        --enhance            enhances a small photo with Real-ESRGAN first
+        --no-project         does not lay the photo's colours back on the object's front
+    modelado-cli relief <photo> -o <output> [options]
+        --grid N             vertices on the longest side; default 256
+        --depth F            relief height, as a share of the width; default 0.25
+        --base F             solid base thickness, as a share of the width; 0 = open surface
+        --remove-background  the object only, without the background
+    modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
+        --rotate x:90        turns about x, y or z (degrees)
+        --mirror             mirrors left to right
+        --remove-pieces F    removes pieces smaller than F of the largest (e.g. 0.05)
+        --fill-holes         fills the holes
+        --simplify N|F       N triangles, or the share F (e.g. 0.25)
+        --subdivide          4× the triangles, rounded off
+        --smooth N           smoothing passes (Taubin)
+        --flatten F          flat base at F of the height (e.g. 0.03)
+        --upscale-texture    upscales the texture 4× with Real-ESRGAN
+    modelado-cli download [object|relief|all]   downloads the missing models
+    modelado-cli models                         lists the installed models
 
-    Comuns: --provider auto|dml|cpu   --high (FP32 também na GPU)   --models <pasta>
-            --manifest <url>          --size <unidades> (maior lado ao salvar)
-            --preview <imagem.png>    salva uma vista renderizada
+    Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
+            --manifest <url>          --size <units> (longest side when saving)
+            --preview <image.png>     saves a rendered view
     """;
 
 if (args.Length == 0 || args[0] is "-h" or "--help")
@@ -77,7 +77,7 @@ try
     };
     (ExecutionProvider provider, string? reason) = ExecutionProviders.Resolve(choice);
     using ModelRunner runner = new(library, provider, options.ContainsKey("--high"));
-    Console.WriteLine($"Executando em {(provider == ExecutionProvider.DirectML ? "GPU (DirectML)" : "CPU")}{(reason is null ? "" : $": {reason}")}");
+    Console.WriteLine($"Running on {(provider == ExecutionProvider.DirectML ? "GPU (DirectML)" : "CPU")}{(reason is null ? "" : $": {reason}")}");
 
     switch (args[0])
     {
@@ -102,7 +102,7 @@ try
 
         case "object" or "relief":
             string photoPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which photo? " + Usage);
-            string output = Get("--out", null) ?? throw new ArgumentException("-o <saida.glb> is required.");
+            string output = Get("--out", null) ?? throw new ArgumentException("-o <output.glb> is required.");
             MeshExport.FormatOf(output);
             IReadOnlyList<string> needed = args[0] == "object"
                 ? [.. ObjectReconstruction.Models, .. options.ContainsKey("--enhance") ? [Upscaling.Model] : Array.Empty<string>()]
@@ -143,7 +143,7 @@ try
 
         case "edit":
             string modelPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which model? " + Usage);
-            string edited = Get("--out", null) ?? throw new ArgumentException("-o <saida.glb> is required.");
+            string edited = Get("--out", null) ?? throw new ArgumentException("-o <output.glb> is required.");
             MeshExport.FormatOf(edited);
             if (options.ContainsKey("--upscale-texture") && runner.Missing([Upscaling.Model]).Count > 0 && await Download(runner, [Upscaling.Model]).ConfigureAwait(false) != 0)
             {
@@ -152,7 +152,7 @@ try
 
             Stopwatch clock = Stopwatch.StartNew();
             Mesh model = MeshImport.Load(modelPath);
-            Console.WriteLine($"{Path.GetFileName(modelPath)}: {model.VertexCount:N0} vértices, {model.TriangleCount:N0} triângulos{(model.Texture is null ? "" : $", textura {model.Texture.Width} × {model.Texture.Height}")}");
+            Console.WriteLine($"{Path.GetFileName(modelPath)}: {model.VertexCount:N0} vertices, {model.TriangleCount:N0} triangles{(model.Texture is null ? "" : $", texture {model.Texture.Width} × {model.Texture.Height}")}");
             model = Edit(model, "--rotate", value =>
             {
                 string[] parts = value.Split(':');
@@ -175,13 +175,13 @@ try
             return 0;
 
         default:
-            await Console.Error.WriteLineAsync($"Comando desconhecido: {args[0]}\n{Usage}").ConfigureAwait(false);
+            await Console.Error.WriteLineAsync($"Unknown command: {args[0]}\n{Usage}").ConfigureAwait(false);
             return 2;
     }
 }
 catch (Exception error) when (error is ArgumentException or InvalidDataException or InvalidOperationException or FileNotFoundException or HttpRequestException)
 {
-    await Console.Error.WriteLineAsync($"ERRO {error.Message}").ConfigureAwait(false);
+    await Console.Error.WriteLineAsync($"ERROR {error.Message}").ConfigureAwait(false);
     return 1;
 }
 
@@ -189,12 +189,12 @@ void Save(Mesh mesh, string output, Stopwatch total)
 {
     mesh = options.ContainsKey("--size") ? mesh.Placed((float)Number("--size", 1)) : mesh;
     IReadOnlyList<string> written = MeshExport.Save(mesh, output);
-    Console.WriteLine($"{mesh.VertexCount:N0} vértices, {mesh.TriangleCount:N0} triângulos em {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
+    Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
     if (Get("--preview", null) is { } preview)
     {
         MeshRenderer renderer = new(mesh);
         ImageCodec.SavePng(renderer.RenderImage(800, 800, new OrbitCamera(Yaw: 25, Pitch: 15)), preview);
-        Console.WriteLine($"vista -> {preview}");
+        Console.WriteLine($"view -> {preview}");
     }
 }
 
@@ -207,7 +207,7 @@ Mesh Edit(Mesh mesh, string key, Func<string, Mesh> edit)
 
     Stopwatch clock = Stopwatch.StartNew();
     Mesh result = edit(value ?? "");
-    Console.WriteLine($"  {key,-18} {result.TriangleCount,10:N0} triângulos  {clock.Elapsed.TotalSeconds,6:0.00} s");
+    Console.WriteLine($"  {key,-18} {result.TriangleCount,10:N0} triangles  {clock.Elapsed.TotalSeconds,6:0.00} s");
     return result;
 }
 
@@ -225,7 +225,7 @@ async Task<int> Download(ModelRunner runner, IReadOnlyCollection<string> models)
     string variant = ExecutionProviders.VariantFor(runner.Provider, runner.HighQuality);
     ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
     long pending = ModelDownloads.PendingBytes(manifest, runner.Library.DownloadRoot, requests, runner.Library.Roots);
-    Console.WriteLine($"Baixando {pending / 1e6:0} MB para {runner.Library.DownloadRoot}");
+    Console.WriteLine($"Downloading {pending / 1e6:0} MB to {runner.Library.DownloadRoot}");
     int lastPercent = -1;
     DownloadResult result = await ModelDownloads.DownloadAsync(http, manifest, runner.Library.DownloadRoot, requests, new Progress<DownloadProgress>(p =>
     {
@@ -236,7 +236,7 @@ async Task<int> Download(ModelRunner runner, IReadOnlyCollection<string> models)
             Console.Write($"\r  {percent,3}%  {p.File,-36} {p.BytesPerSecond / 1e6,6:0.0} MB/s");
         }
     }), CancellationToken.None, runner.Library.Roots).ConfigureAwait(false);
-    Console.WriteLine($"\n{result.Fetched} baixado(s), {result.Present} já presente(s), todos verificados por SHA-256.");
+    Console.WriteLine($"\n{result.Fetched} downloaded, {result.Present} already present, all verified by SHA-256.");
     runner.Library.Refresh();
     return 0;
 }

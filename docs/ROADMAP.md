@@ -10,7 +10,6 @@
 
 ## Block A — English everywhere
 
-- 📋 **MOD2** (deps: —) **modelado-cli usage, progress and errors, and the app's command-line errors, are printed in Portuguese** — The CLI is how scripts and tests drive the pipelines, and its usage text is the only reference most callers read. → §MOD2
 - 📋 **MOD3** (deps: —) **README.md is written in Portuguese** — The README is the project's front page on GitHub and the model card's link target, and PhotoBoost's is English. → §MOD3
 
 ## Block B — Windows interface built like PhotoBoost
@@ -34,6 +33,7 @@
 - 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
 - 📋 **MOD18** (deps: MOD11) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
 - 📋 **MOD19** (deps: MOD5) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
+- 📋 **MOD48** (deps: —) **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — Scripts and the Blender add-on drive the CLI and need a readable error and a non-zero exit, not a crash or a misspelt edit reported as success. → §MOD48
 
 ## Block D — Model downloads
 
@@ -75,7 +75,7 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD43** (deps: MOD2, MOD16) **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — Blender is where most existing models live, and Modelado's cleanup and AI tools are most useful applied to them in place. → §MOD43
+- 📋 **MOD43** (deps: MOD2 ✅, MOD16) **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — Blender is where most existing models live, and Modelado's cleanup and AI tools are most useful applied to them in place. → §MOD43
 - 📋 **MOD44** (deps: MOD43, MOD20) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
 - 📋 **MOD45** (deps: MOD43, MOD38, MOD40) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
 - 📋 **MOD46** (deps: MOD43, MOD12) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — Some work needs the window (orbiting, comparing versions, several edits in a row), and the result must land back on the object it came from. → §MOD46

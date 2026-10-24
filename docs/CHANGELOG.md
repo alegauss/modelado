@@ -3,6 +3,7 @@
 ## Block A — English everywhere
 
 - ✅ **MOD1** **Every button, tooltip, caption, status line and dialog in the app window and About window is in Portuguese** — Every caption, tooltip, status line, dialog and the About window read in English, worded after PhotoBoost where the concept is the same.
+- ✅ **MOD2** **modelado-cli usage, progress and errors, and the app's command-line errors, are printed in Portuguese** — modelado-cli's usage, progress, counts and errors, and the app's command-line refusals, print in English with English placeholders.
 
 ## Block B — Windows interface built like PhotoBoost
 

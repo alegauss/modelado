@@ -2,7 +2,7 @@
 setlocal
 
 rem Builds Modelado (Debug) and starts it. Arguments go to the app, for example
-rem   .\run.cmd --open foto.jpg --provider cpu
+rem   .\run.cmd --open photo.jpg --provider cpu
 rem The models prepare-models.cmd left in .cache\models are used unless --models is given;
 rem without that folder the app downloads them from Hugging Face on first use.
 

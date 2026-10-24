@@ -2,20 +2,6 @@
 
 ## Block A — English everywhere
 
-### §MOD2 CLI and command line in English
-
-Scope: tools\Modelado.Cli\Program.cs (the Usage block, every Console.WriteLine and every
-error) and src\Modelado.App\CommandLine.cs (for example "precisa de um valor", "Opção
-desconhecida"). The usage placeholders change too: <foto> becomes <photo>, <saida>
-becomes <output>, <modelo> becomes <model>, <pasta> becomes <folder>.
-
-Counts print as "vertices" and "triangles", and the download summary as "N downloaded, M
-already present, all verified by SHA-256".
-
-Tests that assert on these strings (tests\*.Tests, scripts\tests) change in the same
-commit. Done when modelado-cli --help and a bad argument both print English, and
-run-tests.cmd is green.
-
 ### §MOD3 README in English
 
 Translate README.md whole: the operations table, Edit and refine, the export formats,
@@ -270,6 +256,23 @@ camera matches byte for byte.
 
 Done when a saved 2048 px PNG matches the view on screen, and a case in MOD8's suite
 saves one.
+
+### §MOD48 CLI refuses bad arguments cleanly
+
+`tools\Modelado.Cli\Program.cs` parses its options before the `try` that turns an
+`ArgumentException` into `ERROR <message>` and exit 1. So `modelado-cli edit x.glb
+--smooth` (a value-taking option last) throws `--smooth needs a value.` as an unhandled
+exception: a stack trace and exit -1 (0xE0434352), which a script or the Blender add-on
+(MOD43) cannot read as a usage error. Any unknown `--option` is also taken silently,
+eating the next argument as its value, so a misspelt `--simplfy 0.25` leaves the model
+untouched and reports success.
+
+Move the parse inside the `try` (or catch around it) so a missing value prints `ERROR
+--x needs a value.` and exits 1. Keep a set of the options each command accepts and
+refuse any other with `ERROR Unknown option: --x.` and exit 2, the code the
+unknown-command branch already uses. Cover both with a test that runs the CLI's parse,
+which may mean lifting it into a small class the tests can call, as
+`src\Modelado.App\CommandLine.cs` already is for the app.
 
 ## Block D — Model downloads
 
