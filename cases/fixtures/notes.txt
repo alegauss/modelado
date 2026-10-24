@@ -1,0 +1,1 @@
+Not a photo and not a 3D model: the UI cases drop this file to see Modelado refuse it in place.

@@ -24,22 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD10 Drop zone and open errors
-
-Model: PhotoBoost's DropZone, OpenError and ViewerOpenError (PB23, PB64). The card reads
-"Drop a photo or a 3D model here", lists the formats (PNG, JPEG, WebP photos; GLB, OBJ,
-PLY, STL models) and has an "Open…" button. Below that, the advice the hint carries
-today: a single whole object, centred, on a plain background, and nothing leaves this
-computer.
-
-A file that cannot be opened is said in OpenError on the drop zone, or in
-ViewerOpenError above the viewport once a model is shown, which stays. No MessageBox.
-The operations panel and the toolbar's model commands appear with the first file, as
-PhotoBoost's Operations is Collapsed until then.
-
-Done when dropping a .txt file on each screen says why in place, and dropping a photo
-then a model switches cleanly.
-
 ### §MOD11 About as an in-window panel
 
 Model: PhotoBoost's AboutPanel in MainWindow.xaml and MainWindow.About.cs (PB46).

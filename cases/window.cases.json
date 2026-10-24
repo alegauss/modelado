@@ -29,6 +29,12 @@
     {
       "name": "a window asked to open a model that is not there",
       "arguments": ["--open", "cases/fixtures/missing.obj", "--provider", "cpu"],
+      "shareable": true
+    },
+    {
+      // MOD10: not lent, since files are dropped on it.
+      "name": "an empty window to drop files on",
+      "arguments": ["--provider", "cpu"],
       "shareable": false
     }
   ],
@@ -79,6 +85,43 @@
         { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "no download in progress" },
         { "locator": "Text#LastRun", "act": "read", "absent": true, "named": "and nothing run yet" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "About and models", "named": "About sits in the status bar" }
+      ]
+    },
+
+    {
+      "name": "a default installation opens on the drop zone, with the formats and a way to pick a file",
+      "catches": "a first screen with nothing on it to open a file with, or an operations panel offering runs with nothing open",
+      "filed": "MOD10",
+      "tags": ["smoke", "open"],
+      "fixture": "the window a default installation opens",
+      "steps": [
+        { "locator": "Text#DropTitle", "act": "read", "reads": "name", "expect": "Drop a photo or a 3D model here", "named": "the drop zone says what it takes" },
+        { "locator": "Text#DropFormats", "act": "read", "reads": "name", "matches": "^Photos: PNG, .*WEBP.*\\n3D models: GLB, OBJ, PLY, STL$", "named": "and lists the formats" },
+        { "locator": "Button#OpenButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Open can be pressed" },
+        { "locator": "Button#ObjectButton", "act": "read", "absent": true, "named": "and the operations panel waits for a file" }
+      ]
+    },
+
+    {
+      "name": "a file that is neither a photo nor a model is refused on the drop zone, then a photo and a model switch cleanly",
+      "catches": "a drop zone that accepts a drop and opens nothing, a refusal raised as a dialog, or a model that leaves the photo's operations on",
+      "filed": "MOD10",
+      "tags": ["open", "drop"],
+      "fixture": "an empty window to drop files on",
+      "steps": [
+        { "locator": "Button#OpenButton", "act": "drop file", "with": "cases/fixtures/notes.txt", "named": "a text file is dropped on the drop zone" },
+        { "locator": "Text#OpenError", "act": "read", "reads": "name", "expect": "notes.txt is not a photo or a 3D model Modelado can open.", "named": "the drop zone says why" },
+        { "locator": "Button#OpenButton", "act": "drop file", "with": "cases/fixtures/photo.png", "named": "a photo is dropped" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "it opens" },
+        { "locator": "Text#OpenError", "act": "read", "absent": true, "named": "and the refusal is gone with the drop zone" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "the operations panel has appeared" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "cases/fixtures/cube.obj", "named": "a model is dropped on the photo" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "it replaces the photo" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with its counts" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and the photo's operations are off" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "cases/fixtures/notes.txt", "named": "the text file is dropped on the model" },
+        { "locator": "Text#ViewerOpenError", "act": "read", "reads": "name", "expect": "notes.txt is not a photo or a 3D model Modelado can open.", "named": "it says why over the model" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "and the model stays" }
       ]
     },
 
@@ -139,18 +182,13 @@
 
     {
       "name": "--open on a model that is not there says which file could not be opened",
-      "catches": "an open that fails silently or crashes the app on a bad path",
-      "filed": "MOD8",
+      "catches": "an open that fails silently, crashes the app on a bad path, or stops the window behind a dialog",
+      "filed": "MOD10",
       "tags": ["open"],
       "fixture": "a window asked to open a model that is not there",
       "steps": [
-        {
-          "locator": "Window[class=\"#32770\"] > Text[nameStarts=\"missing.obj could not be opened.\"]",
-          "act": "read",
-          "reads": "name",
-          "matches": "^missing\\.obj could not be opened\\.",
-          "named": "a message names the missing file"
-        }
+        { "locator": "Text#OpenError", "act": "read", "reads": "name", "expect": "missing.obj was not found.", "named": "the drop zone names the missing file" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "and no dialog was raised" }
       ]
     }
   ]

@@ -68,6 +68,9 @@ public partial class MainWindow : Window, IDisposable
             (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
         }
 
+        // MOD10: the formats the drop zone lists are the ones the codecs read, not a copy of them.
+        DropFormats.Text = $"Photos: {Formats(ImageCodec.Extensions)}\n3D models: {Formats(MeshImport.Extensions)}";
+
         QualityHigh.IsChecked = options.HighQuality;
         runner = new ModelRunner(library, provider, options.HighQuality);
         ProviderStatus.Text = ProviderLabel;
@@ -141,14 +144,44 @@ public partial class MainWindow : Window, IDisposable
 
     private async Task OpenAsync(string path)
     {
-        if (MeshImport.Extensions.Contains(Path.GetExtension(path).ToLowerInvariant()))
+        string extension = Path.GetExtension(path).ToLowerInvariant();
+        if (MeshImport.Extensions.Contains(extension))
         {
             await OpenModelAsync(path).ConfigureAwait(true);
         }
-        else
+        else if (ImageCodec.Extensions.Contains(extension))
         {
             OpenPhoto(path);
         }
+        else
+        {
+            ShowOpenError($"{Path.GetFileName(path)} is not a photo or a 3D model Modelado can open.");
+        }
+    }
+
+    // MOD10: why a file could not be opened, said in place and never in a dialog: on the drop zone
+    // while nothing is open, over the viewer otherwise, where what is shown stays.
+    private void ShowOpenError(string text)
+    {
+        bool empty = photo is null && mesh is null;
+        OpenError.Text = empty ? text : "";
+        OpenError.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
+        ViewerOpenError.Text = empty ? "" : text;
+        ViewerOpenErrorBar.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private static string WhyNotOpened(string path, Exception error) => error is FileNotFoundException or DirectoryNotFoundException
+        ? $"{Path.GetFileName(path)} was not found."
+        : $"{Path.GetFileName(path)} could not be opened: {error.Message}";
+
+    // A file is open: the errors about earlier ones go, and the operations panel appears.
+    private void Opened()
+    {
+        OpenError.Visibility = Visibility.Collapsed;
+        ViewerOpenErrorBar.Visibility = Visibility.Collapsed;
+        EmptyHint.Visibility = Visibility.Collapsed;
+        Operations.Visibility = Visibility.Visible;
+        LastRunSaid(null);
     }
 
     // A model to edit and improve: no photo, so the two reconstructions wait for one.
@@ -160,6 +193,7 @@ public partial class MainWindow : Window, IDisposable
         }
 
         Mesh loaded;
+        string? shown = SourceChip.Visibility == Visibility.Visible ? SourceText.Text : null;
         try
         {
             ShowSource($"Opening {Path.GetFileName(path)}…");
@@ -167,19 +201,18 @@ public partial class MainWindow : Window, IDisposable
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            ShowSource(photoPath is null ? null : Path.GetFileName(photoPath));
-            MessageBox.Show(this, $"{Path.GetFileName(path)} could not be opened.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowSource(shown);
+            ShowOpenError(WhyNotOpened(path, error));
             return;
         }
 
         photo = null;
         photoPath = path;
         Title = $"{Path.GetFileName(path)} · Modelado";
-        EmptyHint.Visibility = Visibility.Collapsed;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
         ShowMesh(loaded, null, null, "Opened");
         ShowSource(Path.GetFileName(path));
-        LastRunSaid(null);
+        Opened();
     }
 
     private void OpenPhoto(string path)
@@ -189,16 +222,18 @@ public partial class MainWindow : Window, IDisposable
             return;
         }
 
+        RgbaImage loaded;
         try
         {
-            photo = ImageCodec.Load(path);
+            loaded = ImageCodec.Load(path);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, $"{Path.GetFileName(path)} could not be opened.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            ShowOpenError(WhyNotOpened(path, error));
             return;
         }
 
+        photo = loaded;
         photoPath = path;
         mesh = null;
         renderer = null;
@@ -206,14 +241,13 @@ public partial class MainWindow : Window, IDisposable
         reference = null;
         UpdateEditButtons();
         Title = $"{Path.GetFileName(path)} · Modelado";
-        EmptyHint.Visibility = Visibility.Collapsed;
         MeshChip.Visibility = Visibility.Collapsed;
         ViewChoice.IsEnabled = false;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
         ShowImage(photo);
         ShowSource($"{Path.GetFileName(path)} · {photo.Width} × {photo.Height}{(photo.HasTransparency ? " · cut out" : "")}");
-        LastRunSaid(null);
+        Opened();
     }
 
     // A new model, from a reconstruction or a file: the history starts over and the view resets.
@@ -424,6 +458,10 @@ public partial class MainWindow : Window, IDisposable
         library.Refresh();
         _ = RefreshModelStatusAsync();
     }
+
+    // ".png", ".jpg", ".jpeg" -> "PNG, JPG, JPEG".
+    private static string Formats(IEnumerable<string> extensions) =>
+        string.Join(", ", extensions.Select(x => x.TrimStart('.').ToUpperInvariant()));
 
     /// <summary>Where inference runs, as the provider chip names it.</summary>
     private string ProviderLabel => provider == ExecutionProvider.DirectML ? "DirectML" : "CPU";

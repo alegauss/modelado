@@ -17,7 +17,8 @@
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="340" />
+      <!-- Auto, so the viewer takes the whole width until the operations panel appears (MOD10). -->
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
 
     <!-- MOD5: the toolbar, after PhotoBoost's (PB63, PB65, PB66). Its groups, in order: Open and
@@ -102,11 +103,33 @@
             MouseLeftButtonDown="OnViewportMouseDown" MouseMove="OnViewportMouseMove" MouseLeftButtonUp="OnViewportMouseUp"
             MouseWheel="OnViewportMouseWheel">
         <Image x:Name="ViewImage" AutomationProperties.AutomationId="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
-        <StackPanel x:Name="EmptyHint" AutomationProperties.AutomationId="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
-          <TextBlock Text="Open or drop a photo of an object, or a 3D model" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource HintTitleBrush}" HorizontalAlignment="Center" />
-          <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource HintTextBrush}"
-                     Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
-        </StackPanel>
+        <!-- MOD10, after PhotoBoost's DropZone (PB23): what can be opened, a way to pick it, the
+             advice, and where a file that could not be opened is said. The window takes a drop
+             anywhere on it. -->
+        <Border x:Name="EmptyHint" AutomationProperties.AutomationId="DropZone" Style="{StaticResource GroupCard}"
+                VerticalAlignment="Center" HorizontalAlignment="Center" Width="460" Padding="28,24" Margin="0">
+          <StackPanel>
+            <TextBlock x:Name="DropTitle" AutomationProperties.AutomationId="DropTitle" Text="Drop a photo or a 3D model here"
+                       FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+            <TextBlock x:Name="DropFormats" AutomationProperties.AutomationId="DropFormats" Style="{StaticResource StatCaption}"
+                       HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0" />
+            <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="Open…" Command="Open"
+                    Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Center" Padding="24,8" Margin="0,14,0,0" />
+            <TextBlock Style="{StaticResource StatCaption}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,16,0,0"
+                       Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
+            <TextBlock x:Name="OpenError" AutomationProperties.AutomationId="OpenError" TextWrapping="Wrap" TextAlignment="Center"
+                       HorizontalAlignment="Center" Margin="0,12,0,0" Visibility="Collapsed"
+                       Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+          </StackPanel>
+        </Border>
+        <!-- MOD10, after PhotoBoost's ViewerOpenError (PB64): a file that could not be opened while
+             something is shown is said over it, and what is shown stays. -->
+        <Border x:Name="ViewerOpenErrorBar" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,12,0,0"
+                Padding="12,6" CornerRadius="6" Visibility="Collapsed"
+                Background="{DynamicResource SystemFillColorCriticalBackgroundBrush}">
+          <TextBlock x:Name="ViewerOpenError" AutomationProperties.AutomationId="ViewerOpenError" TextWrapping="Wrap" MaxWidth="560"
+                     Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+        </Border>
         <TextBlock x:Name="ViewerHint" AutomationProperties.AutomationId="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
                    Foreground="{DynamicResource HintTextBrush}" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
       </Grid>
@@ -115,7 +138,7 @@
     <!-- Operations. MOD6, after PhotoBoost's PB60: the run in progress is pinned above the cards,
          outside their scrolling, so its progress, its Cancel and its end are seen however far the
          cards have scrolled. Pause shows for a download only, which is what it is for. -->
-    <DockPanel Grid.Row="1" Grid.Column="1" Margin="6,0,12,0">
+    <DockPanel x:Name="Operations" Grid.Row="1" Grid.Column="1" Width="340" Margin="6,0,12,0" Visibility="Collapsed">
       <TextBlock DockPanel.Dock="Top" Text="Operations" Style="{StaticResource SectionHeader}" Margin="2,0,0,8" />
       <Border x:Name="ProgressCard" AutomationProperties.AutomationId="JobPanel" DockPanel.Dock="Top"
               Style="{StaticResource GroupCard}" Visibility="Collapsed">
