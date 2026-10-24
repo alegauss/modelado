@@ -13,6 +13,7 @@
 - ✅ **MOD6** **The progress card sits mid-panel between the Edit and Quality cards, so a running job can scroll out of sight** — A running job is pinned above the scrolling cards with Cancel, seen and stoppable however far the cards scroll (design superseded: PhotoBoost's 300 px clips these cards; 340 px stays).
 - ✅ **MOD50** **run-tests.cmd fails the Python suite where python on PATH is the Microsoft Store stub, though Python is installed** — run-tests.cmd uses .venv, a python that runs, or the one Python registered, and the guest gate runs scripts\tests green.
 - ✅ **MOD7** **The window and the taskbar show WPF's default icon** — Modelado wears its own icon, a cube on a blue tile drawn per size by tools/Modelado.Icon, in the exe, the window and the taskbar.
+- ✅ **MOD51** **Every edit's status line shows a garbled arrow between the triangle counts since the toolbar change** — The edit status line shows its arrow again, and MOD8's toolbar case on the guest reads it.
 
 ## Block C — Existing code wired into the window
 

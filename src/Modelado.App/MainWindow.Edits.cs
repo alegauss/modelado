@@ -165,7 +165,7 @@ public partial class MainWindow
                 Display(after);
             }
 
-            Status($"{label}: {before.TriangleCount:N0} â†’ {after.TriangleCount:N0} triangles in {clock.Elapsed.TotalSeconds:0.0} s. Ctrl+Z undoes it.");
+            Status($"{label}: {before.TriangleCount:N0} → {after.TriangleCount:N0} triangles in {clock.Elapsed.TotalSeconds:0.0} s. Ctrl+Z undoes it.");
         }
         catch (OperationCanceledException)
         {

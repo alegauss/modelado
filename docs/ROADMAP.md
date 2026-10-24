@@ -13,7 +13,7 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD8** (deps: MOD5 ✅) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
+- 🛠 **MOD8** (deps: MOD5 ✅) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
 - 📋 **MOD9** (deps: MOD4 ✅) **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — PhotoBoost's status bar says where inference runs, how long the last run took and what is in progress, wherever the panel has scrolled to. → §MOD9
 - 📋 **MOD10** (deps: MOD4 ✅) **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — PhotoBoost's open screen is a card with the formats, an Open button and an error line, and the operations panel only appears once something is open. → §MOD10
 - 📋 **MOD11** (deps: MOD9) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
