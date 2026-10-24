@@ -5,11 +5,22 @@ rem Builds Modelado.slnx with warnings as errors, then runs every test applicati
 rem and the Python tests in scripts\tests. Green only if everything ran. The tests that use the
 rem real models run when .cache\models exists (prepare-models.cmd) and say they skipped otherwise.
 rem
+rem It is run on the VMware guest, not on the desk you work at: run-tests-vm.cmd carries this tree
+rem there (MOD14), since the UI cases take real windows and the foreground.
+rem
 rem Usage:  run-tests.cmd [Configuration]        default Debug
 
 set "CONFIG=%~1"
 if "%CONFIG%"=="" set "CONFIG=Debug"
+
+rem How long one test may run before it is taken as hung, ended and named.
+if "%MODELADO_HANG%"=="" set "MODELADO_HANG=10m"
+
 pushd "%~dp0"
+
+set "REPORTS=%CD%\TestResults\reports"
+if exist "%REPORTS%" rd /s /q "%REPORTS%"
+mkdir "%REPORTS%" 2>nul
 
 dotnet build Modelado.slnx --configuration %CONFIG% --nologo -v quiet
 if errorlevel 1 (echo BUILD FAILED - no tests were run. & popd & exit /b 1)
@@ -24,7 +35,7 @@ for /d %%P in (tests\*.Tests tests\*.Cases) do (
     echo.
     echo === %%~nxP ===
     if exist "!APP!" (
-        "!APP!"
+        "!APP!" --results-directory "%REPORTS%" --hangdump --hangdump-timeout %MODELADO_HANG% --hangdump-type Mini
         if errorlevel 1 set /a FAILED+=1
         set /a RAN+=1
     ) else (

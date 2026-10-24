@@ -182,14 +182,24 @@ What it does, step by step (each step can be run on its own):
 ## Tests
 
 ```
-run-tests.cmd
+run-tests-vm.cmd
 ```
 
-Builds the solution with warnings as errors and the performance analysers on, runs the tests of
-each project in `tests\` and the Python tests in `scripts\tests`. The tests with the real models
-(the chair becomes a closed mesh facing forward; a photo becomes a solid relief) run when
-`.cache\models` exists and say they skipped when it does not. On Linux or macOS,
-`./run-tests.sh` does the same, except running the WPF app, which is only built there.
+The tests run on a VMware Workstation guest, not on the desk you work at: the UI cases open real
+windows and take the foreground. `run-tests-vm.cmd` carries the working tree, uncommitted files
+included, to the guest through winwright's runner (`D:\Git\alegauss\winwright`, or `WINWRIGHT_HOME`), runs
+`run-tests.cmd` there and brings the verdict back; `-Screenshot` also brings a picture of the
+guest's desk. The guest's credentials are winwright's, in `d:\tmp\winwright-vm.env`.
+
+`run-tests.cmd` is what runs on the guest. It builds the solution with warnings as errors and the
+performance analysers on, then runs the tests of each project in `tests\`: the libraries' tests,
+an architecture test that keeps every colour in `Brand.cs`, and the winwright UI cases in
+`cases\*.cases.json`, which drive the window through its accessibility tree and skip, saying why,
+on a desk that cannot be observed. A test that hangs is ended after ten minutes and named, with a
+dump in `TestResults\reports`. Then it runs the Python tests in `scripts\tests`. The tests with the
+real models (the chair becomes a closed mesh facing forward; a photo becomes a solid relief) run
+when `.cache\models` exists and say they skipped when it does not. On Linux or macOS,
+`./run-tests.sh` runs everything but the WPF app and its cases, which are only built there.
 
 ## How it works
 

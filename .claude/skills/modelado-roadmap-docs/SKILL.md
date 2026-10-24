@@ -57,13 +57,14 @@ Validated means the project's own build and test were run, not that the edit loo
 
 | Command                 | What it holds                                                                                                                                                                  | When                                                                        |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `run-tests.cmd`         | `dotnet build Modelado.slnx` with warnings as errors, then every `tests\*.Tests` app and the Python suite in `scripts\tests`. Green only if every suite ran and passed.          | Every task that touches code under `src\`, `tests\`, `scripts\` or `tools\`. |
+| `run-tests-vm.cmd`      | Carries the working tree to the VMware guest and runs `run-tests.cmd` there: `dotnet build Modelado.slnx` with warnings as errors, every `tests\*.Tests` app, the winwright UI cases in `tests\Modelado.Cases`, and the Python suite in `scripts\tests`. Green only if every suite ran and passed **on the guest**. Never run the suite, the cases or the app for checking on the host desk. | Every task that touches code under `src\`, `tests\`, `cases\`, `scripts\` or `tools\`. |
 | `roadkeep lint`         | The governed files. Non-zero exit is the whole point of it.                                                                                                                    | Every task, without exception — it is the only gate a docs-only change has. |
 
 The tests that use the real models run only when `.cache\models` exists
 (`prepare-models.cmd`) and say they skipped otherwise — a skip is not a pass for a task
-that changed model code. `run.cmd` launches the app; it is not a gate, but a screenshot
-beats a claim that a screen renders.
+that changed model code. A UI task ships with a winwright case in `cases\*.cases.json` that
+passed on the guest; `run-tests-vm.cmd -Screenshot` brings back a picture of the guest's desk
+where one helps. `run.cmd` launches the app for a person to use; it is not a gate.
 
 **Name EVERY task id an assertion holds, not just the one you are working.** A test
 written under one id often ends up holding the task that finished the work, and a test

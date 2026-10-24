@@ -1,0 +1,25 @@
+@echo off
+rem MOD14: the gate. Carries this working tree (uncommitted files included) to the VMware
+rem Workstation guest through winwright's runner, runs run-tests.cmd there on a desk of its own,
+rem and brings the verdict back, so the UI cases never take over the desk you are working at.
+rem
+rem The guest's credentials are winwright's: d:\tmp\winwright-vm.env (winwright's
+rem tools\run-tests-vm.ps1 says what goes in it). Every argument goes to that runner whole, for
+rem example -Screenshot to bring back a picture of the guest's desk. MODELADO_CONFIG=Release
+rem tests the Release build.
+rem
+rem Usage:  run-tests-vm.cmd [runner options]
+setlocal
+
+set "WINWRIGHT=%WINWRIGHT_HOME%"
+if "%WINWRIGHT%"=="" set "WINWRIGHT=D:\Git\alegauss\winwright"
+if not exist "%WINWRIGHT%\run-tests-vm.cmd" (
+    echo winwright's run-tests-vm.cmd was not found in %WINWRIGHT%; set WINWRIGHT_HOME to its checkout.
+    exit /b 3
+)
+
+set "CONFIG=%MODELADO_CONFIG%"
+if "%CONFIG%"=="" set "CONFIG=Debug"
+
+call "%WINWRIGHT%\run-tests-vm.cmd" -Tree "%~dp0." -Run "run-tests.cmd %CONFIG%" -ResultsIn "TestResults\reports" %*
+exit /b %ERRORLEVEL%

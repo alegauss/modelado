@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <PackageReference Include="xunit.v3" Version="4.0.2" />
+    <!-- MOD14: a test that never returns is ended by run-tests.cmd's timeout and named, rather
+         than holding the guest run with nothing said. The platform version xunit.v3 brings. -->
+    <PackageReference Include="Microsoft.Testing.Extensions.HangDump" Version="2.5.1" />
   </ItemGroup>
 
   <ItemGroup>

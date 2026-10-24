@@ -24,26 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD14 Every test runs on the VMware guest through winwright
-
-Model: PhotoBoost's README "Tests" section and its run-tests.cmd, which loops over
-tests\*.Tests and tests\*.Cases (the winwright cases as a test application, which skip
-with the reason on a desk that cannot be observed), then runs scripts\tests. Modelado
-gets the same shape: a tests\Modelado.Cases project driven by winwright.json at the
-repository root (the executable under bin\{configuration}, timeouts), and run-tests.cmd
-running it with --results-directory and --hangdump like PhotoBoost's.
-
-Every test run, by hand or by a task's gate, goes through
-D:\Git\alegauss\winwright\run-tests-vm.cmd -Tree D:\Git\alegauss\modelado, which carries
-the working tree to the VMware Workstation guest, runs run-tests.cmd there with a desk,
-and copies the verdict and an optional screenshot back. The guest has no DXGI video
-memory budget (PhotoBoost's PB56), so DirectML may be refused and inference falls back
-to the CPU. The tests must still pass there, and slow model tests get a bound, not a
-skip.
-
-The README and this project's roadmap skill both say that the VM run is the gate. Done
-when the whole suite is green on the guest.
-
 ### §MOD53 Status bar chips for a reconstruction and a download
 
 MOD9 put the job and download chips in the status bar and saw an edit there live on the
