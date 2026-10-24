@@ -113,8 +113,27 @@
       </Grid>
     </Border>
 
-    <!-- Operations -->
-    <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="6,0,12,0" VerticalScrollBarVisibility="Auto">
+    <!-- Operations. MOD6, after PhotoBoost's PB60: the run in progress is pinned above the cards,
+         outside their scrolling, so its progress, its Cancel and its end are seen however far the
+         cards have scrolled. Pause shows for a download only, which is what it is for. -->
+    <DockPanel Grid.Row="1" Grid.Column="1" Margin="6,0,12,0">
+      <TextBlock DockPanel.Dock="Top" Text="Operations" Style="{StaticResource SectionHeader}" Margin="2,0,0,8" />
+      <Border x:Name="ProgressCard" AutomationProperties.AutomationId="JobPanel" DockPanel.Dock="Top"
+              Style="{StaticResource GroupCard}" Visibility="Collapsed">
+        <StackPanel>
+          <DockPanel>
+            <Button x:Name="CancelButton" AutomationProperties.AutomationId="CancelButton" DockPanel.Dock="Right"
+                    Content="Cancel" Padding="12,2" Click="OnCancel" />
+            <Button x:Name="PauseButton" AutomationProperties.AutomationId="PauseButton" DockPanel.Dock="Right"
+                    Content="Pause" Padding="12,2" Margin="0,0,8,0" Click="OnPauseDownload" Visibility="Collapsed" />
+            <TextBlock x:Name="ProgressTitle" AutomationProperties.AutomationId="JobTitle" FontSize="15" FontWeight="SemiBold"
+                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+          </DockPanel>
+          <ProgressBar x:Name="ProgressBar" AutomationProperties.AutomationId="JobProgress" Height="6" Minimum="0" Maximum="1" Margin="0,10,0,0" />
+          <TextBlock x:Name="ProgressText" AutomationProperties.AutomationId="JobStatus" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
+        </StackPanel>
+      </Border>
+    <ScrollViewer x:Name="OperationsScroll" AutomationProperties.AutomationId="OperationsScroll" VerticalScrollBarVisibility="Auto">
       <StackPanel>
 
         <Border Style="{StaticResource GroupCard}">
@@ -208,19 +227,6 @@
           </StackPanel>
         </Border>
 
-        <!-- Progress of a reconstruction or a download -->
-        <Border x:Name="ProgressCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
-          <StackPanel>
-            <TextBlock x:Name="ProgressTitle" Style="{StaticResource SectionHeader}" />
-            <TextBlock x:Name="ProgressText" Style="{StaticResource StatCaption}" />
-            <ProgressBar x:Name="ProgressBar" Height="6" Minimum="0" Maximum="1" />
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-              <Button x:Name="PauseButton" Content="Pause" Padding="12,4" Click="OnPauseDownload" Visibility="Collapsed" />
-              <Button x:Name="CancelButton" Content="Cancel" Padding="12,4" Margin="8,0,0,0" Click="OnCancel" />
-            </StackPanel>
-          </StackPanel>
-        </Border>
-
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
             <TextBlock Text="Quality" Style="{StaticResource SectionHeader}" />
@@ -233,6 +239,7 @@
 
       </StackPanel>
     </ScrollViewer>
+    </DockPanel>
 
     <!-- Status bar -->
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">

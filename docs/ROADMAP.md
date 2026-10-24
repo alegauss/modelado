@@ -9,16 +9,17 @@
 
 ## Block A — English everywhere
 
+- 📋 **MOD49** (deps: —) **Counts, sizes and timings in the window and the CLI use the system culture, so 980.000 triangles reads as 980** — An English interface with pt-BR separators misstates every number by a factor of a thousand or swaps decimal marks. → §MOD49
+
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD6** (deps: MOD4 ✅) **The progress card sits mid-panel between the Edit and Quality cards, so a running job can scroll out of sight** — PhotoBoost pins the run in progress above the cards, so its progress, its cancel and its end are seen without scrolling. → §MOD6
 - 📋 **MOD7** (deps: MOD4 ✅) **The window and the taskbar show WPF's default icon** — PhotoBoost ships its own .ico as a resource, and Modelado is otherwise indistinguishable from any other WPF app on the taskbar. → §MOD7
 - 📋 **MOD8** (deps: MOD5 ✅) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
 - 📋 **MOD9** (deps: MOD4 ✅) **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — PhotoBoost's status bar says where inference runs, how long the last run took and what is in progress, wherever the panel has scrolled to. → §MOD9
 - 📋 **MOD10** (deps: MOD4 ✅) **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — PhotoBoost's open screen is a card with the formats, an Open button and an error line, and the operations panel only appears once something is open. → §MOD10
 - 📋 **MOD11** (deps: MOD9) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
-- 📋 **MOD12** (deps: MOD6) **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — PhotoBoost's History card names every version, so a person can see how far Undo will go before pressing it. → §MOD12
-- 📋 **MOD13** (deps: MOD6) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
+- 📋 **MOD12** (deps: MOD6 ✅) **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — PhotoBoost's History card names every version, so a person can see how far Undo will go before pressing it. → §MOD12
+- 📋 **MOD13** (deps: MOD6 ✅) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
 - 📋 **MOD14** (deps: MOD8) **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — PhotoBoost runs every suite, the winwright cases included, in a VMware guest through winwright's run-tests-vm.cmd, and a UI task ships on that run. → §MOD14
 
 ## Block C — Existing code wired into the window
@@ -34,7 +35,7 @@
 
 - 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
 - 📋 **MOD21** (deps: MOD11) **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — PhotoBoost's consent panel gives everything a person needs to say yes to a download, inside the window, before a byte is fetched. → §MOD21
-- 📋 **MOD22** (deps: MOD6, MOD21) **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — TripoSR's upstream checkpoint alone is 1.7 GB, and PhotoBoost's cards badge the download and its progress so pressing Generate is never a surprise. → §MOD22
+- 📋 **MOD22** (deps: MOD6 ✅, MOD21) **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — TripoSR's upstream checkpoint alone is 1.7 GB, and PhotoBoost's cards badge the download and its progress so pressing Generate is never a surprise. → §MOD22
 - 📋 **MOD23** (deps: MOD11) **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — Someone who only makes reliefs wants TripoSR's disk back without losing Depth Anything, and PhotoBoost lists each download with its own Remove. → §MOD23
 
 ## Block E — Publishing custom models to Hugging Face

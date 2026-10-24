@@ -32,11 +32,26 @@ for /d %%P in (tests\*.Tests) do (
 
 echo.
 echo === scripts\tests (Python) ===
-set "PY=python"
+rem The interpreter: .venv's when prepare-models.cmd made one, else a python on PATH that runs, else
+rem one Python's installer registered (the last reg lists, the newest). The last is for a per-user install never added to
+rem PATH, where `python` is only the Microsoft Store stub and fails with 9009 (the VMware guest's case).
+set "PY="
 if exist ".venv\Scripts\python.exe" set "PY=.venv\Scripts\python.exe"
-"%PY%" -W ignore::DeprecationWarning -m unittest discover -s scripts\tests
+if not defined PY python -c "import sys" >nul 2>&1 && set "PY=python"
+if not defined PY for %%K in (HKLM HKCU) do (
+    for /f "tokens=2,*" %%A in ('reg query "%%K\SOFTWARE\Python\PythonCore" /s /v ExecutablePath 2^>nul ^| findstr /i "ExecutablePath"') do set "PY=%%B"
+)
+if not defined PY (
+    echo   no Python found: neither .venv, a python on PATH, nor one in the registry
+    set /a FAILED+=1
+    set /a RAN+=1
+    goto :python_done
+)
+echo   using !PY!
+"!PY!" -W ignore::DeprecationWarning -m unittest discover -s scripts\tests
 if errorlevel 1 set /a FAILED+=1
 set /a RAN+=1
+:python_done
 
 echo.
 if %FAILED%==0 (echo All %RAN% suites passed. & popd & exit /b 0)

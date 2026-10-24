@@ -2,20 +2,27 @@
 
 ## Block A — English everywhere
 
+### §MOD49 Numbers formatted in one culture
+
+The window's text is English (MOD1), but its numbers are formatted in the system
+culture: `{n:N0}`, `{x:P0}`, `{s:0.0}` and `CultureInfo.CurrentCulture` in
+MainWindow.xaml.cs, MainWindow.Operations.cs, MainWindow.Edits.cs and
+MainWindow.Downloads.cs (16 sites). On a pt-BR machine a 980 000 triangle mesh shows as
+"980.000 triangles", which an English reader takes for 980, and "0,8 s" and "1,1 GB" mix
+decimal commas into English sentences. The CLI already formats its own parsing with
+InvariantCulture but prints counts with the current culture too.
+
+The non-goal "A Portuguese or multilingual interface" settles the choice: the app speaks
+one language, so it should format in one culture. Set
+`CultureInfo.DefaultThreadCurrentCulture` and `DefaultThreadCurrentUICulture` to en-US
+at startup in App.OnStartup (and at the top of the CLI's Program.cs), before any window
+or thread exists, rather than threading a culture through every format call. Keep file
+parsing on InvariantCulture as it is.
+
+Done when, on a machine set to pt-BR, the mesh chip reads "980,000 triangles", timings
+read "0.8 s", and a test pins the startup culture.
+
 ## Block B — Windows interface built like PhotoBoost
-
-### §MOD6 Pinned job panel
-
-Model: PhotoBoost's JobPanel (PB60), docked at the top of the Operations DockPanel,
-outside its ScrollViewer: a title with Cancel on its right, a 6 px progress bar and a
-status caption. Modelado's ProgressCard and its Pause and Cancel buttons move there.
-Pause stays for a download, which is what it is for.
-
-The operations panel becomes a DockPanel with an "Operations" SectionHeader, the job
-panel, and then the scrolling cards, at PhotoBoost's widths and margins (300 px, 24 px).
-
-Done when a reconstruction started from the Relief card, with the panel scrolled to the
-bottom, shows its progress at the top, and Cancel stops it.
 
 ### §MOD7 App icon
 
