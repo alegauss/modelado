@@ -34,7 +34,7 @@
 
 ## Block D — Model downloads
 
-- 📋 **MOD20** (deps: —) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
+- 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
 - 📋 **MOD21** (deps: MOD11) **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — PhotoBoost's consent panel gives everything a person needs to say yes to a download, inside the window, before a byte is fetched. → §MOD21
 - 📋 **MOD22** (deps: MOD6, MOD21) **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — TripoSR's upstream checkpoint alone is 1.7 GB, and PhotoBoost's cards badge the download and its progress so pressing Generate is never a surprise. → §MOD22
 - 📋 **MOD23** (deps: MOD11) **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — Someone who only makes reliefs wants TripoSR's disk back without losing Depth Anything, and PhotoBoost lists each download with its own Remove. → §MOD23
