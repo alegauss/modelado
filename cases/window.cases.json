@@ -49,6 +49,14 @@
       "shareable": false
     },
     {
+      // MOD21: a photo open, its models folder staged empty, the fixture server's manifest.
+      "name": "a window with a photo open, downloading from the fixture server",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/relief-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -143,6 +151,34 @@
     },
 
     {
+      "name": "a first-use download says what, how large, from where and under which license, and Not now changes nothing else",
+      "catches": "a download offered in a dialog, one that hides its size, source or license, or a decline that leaves the window stuck",
+      "filed": "MOD21",
+      "tags": ["download", "operations"],
+      "fixture": "a window with a photo open, downloading from the fixture server",
+      "steps": [
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed with no models" },
+        { "locator": "Text#ConsentTitle", "act": "read", "reads": "name", "expect": "Relief needs a one-time download", "named": "the offer opens in place of the stage" },
+        { "locator": "List#ConsentFiles > ListItem[order=top]", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · FP32 · 1 MB · from 127.0.0.1:47631/files", "named": "the model, its variant, its size and its source" },
+        { "locator": "Text#ConsentTotal", "act": "read", "reads": "name", "expect": "Total: 1 MB.", "named": "the total" },
+        { "locator": "Text#ConsentFacts", "act": "read", "reads": "name", "matches": "Your photo stays on this computer and is never uploaded\\.", "named": "that only the models are downloaded" },
+        { "locator": "Text#ConsentLicense", "act": "read", "reads": "name", "matches": "^depth-anything-v2-small: MIT ", "named": "the license" },
+        { "locator": "Button#ConsentAccept", "act": "read", "reads": "name", "expect": "Download and generate the relief", "named": "agreeing names what happens next" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "all of it in the window, not a dialog" },
+        { "locator": "Button#ConsentDecline", "act": "invoke", "named": "Not now is pressed" },
+        { "locator": "Text#ConsentTitle", "act": "read", "absent": true, "named": "the offer closes" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "the photo is still open" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "the other operation is usable" },
+        { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "and nothing was downloaded" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed again" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "and this time the download is accepted" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of 1 MB", "named": "the download starts, with its chip in the status bar" },
+        { "locator": "Button#CancelButton", "act": "invoke", "named": "it is cancelled" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Download cancelled", "named": "and the last-run chip says so" }
+      ]
+    },
+
+    {
       "name": "About opens and closes during a download whose chip keeps going",
       "catches": "an About that hides a running download, stops it, or takes the status bar with it",
       "filed": "MOD11",
@@ -151,12 +187,12 @@
       "steps": [
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About and models is pressed" },
         { "locator": "Button#AboutDownloadAll", "act": "invoke", "named": "Download everything is pressed" },
-        { "locator": "Window[class=\"#32770\"] > Button#1", "act": "invoke", "named": "the download is agreed to" },
-        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\S+: \\d+ MB of \\d+ MB", "named": "the status bar shows the download" },
-        { "locator": "Text#AboutDownloadStatus", "act": "read", "reads": "name", "matches": "^\\S+: \\d+ MB of \\d+ MB", "named": "and so does About" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to in the consent panel" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of \\d+ MB", "named": "the status bar shows the download" },
+        { "locator": "Text#AboutDownloadStatus", "act": "read", "reads": "name", "matches": "^\\d+ of \\d+ MB", "named": "and About, back in place, does too" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "Text#AboutVersion", "act": "read", "absent": true, "named": "About has closed" },
-        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\S+: \\d+ MB of \\d+ MB", "named": "the download is still going" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of \\d+ MB", "named": "the download is still going" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened again" },
         { "locator": "Button#AboutCancelDownload", "act": "invoke", "named": "Cancel is pressed in About" },
         { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "the download has stopped" },

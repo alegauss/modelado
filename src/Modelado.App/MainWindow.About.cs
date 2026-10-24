@@ -70,7 +70,7 @@ public partial class MainWindow
 
     private async void OnAboutDownloadAll(object sender, RoutedEventArgs e)
     {
-        await DownloadAsync([.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
+        await DownloadAsync("Working offline", "Download everything", [.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
         if (AboutOpen)
         {
             FillAbout();

@@ -13,13 +13,13 @@
       "variants": {
         "fp32": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         },
         "fp16": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         }
       },
       "license": "MIT",
@@ -36,13 +36,13 @@
       "variants": {
         "fp32": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         },
         "fp16": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         }
       },
       "license": "MIT",
@@ -59,13 +59,13 @@
       "variants": {
         "fp32": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         },
         "fp16": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         }
       },
       "license": "MIT",
@@ -82,13 +82,13 @@
       "variants": {
         "fp32": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         },
         "fp16": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         }
       },
       "license": "MIT",
@@ -105,13 +105,13 @@
       "variants": {
         "fp32": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         },
         "fp16": {
           "url": "http://127.0.0.1:47631/files/standin.onnx",
-          "bytes": 327680,
-          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
         }
       },
       "license": "MIT",

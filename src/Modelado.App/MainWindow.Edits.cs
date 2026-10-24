@@ -104,7 +104,7 @@ public partial class MainWindow
 
     private async void OnUpscaleTexture(object sender, RoutedEventArgs e)
     {
-        if (runner.Missing([Upscaling.Model]).Count > 0 && !await DownloadAsync([Upscaling.Model]).ConfigureAwait(true))
+        if (runner.Missing([Upscaling.Model]).Count > 0 && !await DownloadAsync("A sharper texture", "Download and sharpen the texture", [Upscaling.Model]).ConfigureAwait(true))
         {
             return;
         }

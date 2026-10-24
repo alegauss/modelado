@@ -37,7 +37,7 @@ public partial class MainWindow
             DensityThreshold: (float)ObjectThreshold.Value,
             EnhancePhoto: enhance,
             ProjectPhoto: ObjectProjectPhoto.IsChecked == true);
-        await RunAsync("3D Object", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync("3D Object", "Download and generate the 3D object", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
@@ -46,18 +46,18 @@ public partial class MainWindow
         ReliefRunOptions settings = new(
             new ReliefOptions(GridLongSide: TagOf(ReliefResolution), Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value),
             RemoveBackground: cutOut);
-        await RunAsync("Relief", ReliefReconstruction.Models(cutOut), (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync("Relief", "Download and generate the relief", ReliefReconstruction.Models(cutOut), (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
-    private async Task RunAsync(string title, IReadOnlyList<string> models, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
+    private async Task RunAsync(string title, string acceptDownload, IReadOnlyList<string> models, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
     {
         if (busy || photo is null)
         {
             return;
         }
 
-        // First use: the models are fetched, after the user agrees to the size.
-        if (runner.Missing(models).Count > 0 && !await DownloadAsync(models).ConfigureAwait(true))
+        // First use: the models are fetched, after the user agrees in the consent panel (MOD21).
+        if (runner.Missing(models).Count > 0 && !await DownloadAsync(title, acceptDownload, models).ConfigureAwait(true))
         {
             return;
         }

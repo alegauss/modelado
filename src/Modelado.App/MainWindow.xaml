@@ -362,6 +362,43 @@
       </Border>
     </ScrollViewer>
 
+    <!-- MOD21, after PhotoBoost's ConsentPanel (PB58): before a first-use download, everything a
+         person needs to say yes: what is downloaded and how large, from where, where it goes, that
+         the photo stays here, and the license. It takes the stage's place, as About does. -->
+    <ScrollViewer x:Name="ConsentPanel" AutomationProperties.AutomationId="ConsentPanel" Grid.Row="1" Grid.ColumnSpan="2"
+                  Margin="12,0,12,0" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+      <Border Style="{StaticResource GroupCard}" Padding="24" MaxWidth="620" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <StackPanel>
+          <TextBlock x:Name="ConsentTitle" AutomationProperties.AutomationId="ConsentTitle" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" />
+          <TextBlock x:Name="ConsentLead" AutomationProperties.AutomationId="ConsentLead" TextWrapping="Wrap" Margin="0,8,0,16" />
+
+          <TextBlock Text="What is downloaded" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <ListBox x:Name="ConsentFiles" AutomationProperties.AutomationId="ConsentFiles" AutomationProperties.Name="What is downloaded"
+                   IsHitTestVisible="False" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,2" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <TextBlock x:Name="ConsentTotal" AutomationProperties.AutomationId="ConsentTotal" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,6,0,16" />
+
+          <TextBlock Text="Good to know" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="ConsentFacts" AutomationProperties.AutomationId="ConsentFacts" Style="{StaticResource StatCaption}" Margin="0,0,0,16" />
+
+          <TextBlock Text="License" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="ConsentLicense" AutomationProperties.AutomationId="ConsentLicense" Style="{StaticResource StatCaption}" />
+
+          <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+            <Button x:Name="ConsentAccept" AutomationProperties.AutomationId="ConsentAccept" Padding="16,6" IsDefault="True"
+                    Style="{DynamicResource AccentButtonStyle}" Click="OnConsentAccept" />
+            <Button x:Name="ConsentDecline" AutomationProperties.AutomationId="ConsentDecline" Content="Not now" Padding="16,6" Margin="8,0,0,0"
+                    IsCancel="True" Click="OnConsentDecline" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </ScrollViewer>
+
     <!-- MOD9: the status bar, after PhotoBoost's (PB14, PB24, PB58, PB60): chips that carry a
          word each, seen wherever the cards have scrolled to. Left to right: where inference runs;
          what is open; the mesh; the run in progress, bound to the job panel; a model download in

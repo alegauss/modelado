@@ -175,24 +175,6 @@ Done when a clean build with no .cache downloads every model from the window on 
 use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
 each run on the robot photo.
 
-### §MOD21 Download consent panel
-
-Model: PhotoBoost's ConsentPanel (PB58) and MainWindow.FirstUse.cs.
-MainWindow.Downloads.cs builds a text and asks through MessageBox ("Só os modelos são
-baixados... Continuar?"). That becomes a panel that takes the stage's place as About
-does. It has a title naming the operation, "What is downloaded" (each file with its size
-and variant, FP16 or FP32), the total, "Good to know" (from Hugging Face's
-alegauss/modelado-models, into the models folder, verified by SHA-256, resumable, and
-the photo stays on this computer), "License" (each model's, from the manifest), then
-Download and Not now.
-
-Not now leaves the operation's card saying what it needs, and nothing else is blocked.
-DownloadText, PhotoBoost's one formatter for sizes, speed and time left, is ported so
-the panel, the cards and the status-bar chip say the same thing.
-
-Done when declining leaves every other operation usable, and accepting starts the
-download with its chip in the status bar.
-
 ### §MOD22 First-use cards
 
 Model: PhotoBoost's FaceFirstUse and BackgroundFirstUse blocks (PB58) and their

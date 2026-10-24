@@ -1,7 +1,5 @@
-using System.Globalization;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Windows;
 using Modelado.Inference;
 using Modelado.Inference.Pipelines;
@@ -27,9 +25,7 @@ public partial class MainWindow
         return client;
     }
 
-    private static string Size(long bytes) => bytes >= 1e9
-        ? string.Format(CultureInfo.CurrentCulture, "{0:0.0} GB", bytes / 1e9)
-        : string.Format(CultureInfo.CurrentCulture, "{0:0} MB", Math.Max(1, bytes / 1e6));
+    private static string Size(long bytes) => DownloadText.Size(bytes);
 
     private async Task<ModelManifest?> ManifestAsync()
     {
@@ -82,7 +78,10 @@ public partial class MainWindow
     }
 
     /// <summary>Downloads what the models need after asking; true when they are all on disk.</summary>
-    private async Task<bool> DownloadAsync(IReadOnlyList<string> models)
+    /// <param name="purpose">What needs them, as the consent panel's title says it: "Relief".</param>
+    /// <param name="accept">What agreeing does, as its button says it.</param>
+    /// <param name="models">The models.</param>
+    private async Task<bool> DownloadAsync(string purpose, string accept, IReadOnlyList<string> models)
     {
         if (busy)
         {
@@ -105,21 +104,9 @@ public partial class MainWindow
         }
 
         long bytes = ModelDownloads.PendingBytes(listed, library.DownloadRoot, requests, library.Roots);
-        if (bytes > 0)
+        if (bytes > 0 && !await AskConsentAsync(purpose, accept, listed, requests, bytes).ConfigureAwait(true))
         {
-            StringBuilder text = new($"This downloads {Size(bytes)} from Hugging Face to\n{library.DownloadRoot}\n\n");
-            foreach (ModelRequest request in requests)
-            {
-                ManifestModel model = listed.Model(request.Model)!;
-                string v = ModelDownloads.VariantOf(listed, request)!;
-                text.AppendLine(CultureInfo.CurrentCulture, $"• {model.Name} ({v}, {Size(model.Variants[v].Bytes)}): {model.License}");
-            }
-
-            text.Append("\nOnly the models are downloaded; photos never leave this computer. Continue?");
-            if (MessageBox.Show(this, text.ToString(), "Download models", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK)
-            {
-                return false;
-            }
+            return false;
         }
 
         while (true)
@@ -131,14 +118,7 @@ public partial class MainWindow
             Progress<DownloadProgress> progress = new(p =>
             {
                 ProgressBar.Value = (double)p.Done / Math.Max(1, p.Total);
-                string speed = p.BytesPerSecond > 0 ? $" · {p.BytesPerSecond / 1e6:0.0} MB/s" : "";
-                string left = p.Remaining is { } r ? $" · {(r.TotalMinutes >= 1 ? $"{r.TotalMinutes:0} min" : $"{r.TotalSeconds:0} s")} left" : "";
-                ProgressText.Text = p.Stage switch
-                {
-                    DownloadStage.Verifying => $"Checking {p.File}",
-                    DownloadStage.Retrying => $"Connection dropped; retrying {p.File}",
-                    _ => $"{p.File}: {Size(p.Done)} of {Size(p.Total)}{speed}{left}",
-                };
+                ProgressText.Text = DownloadText.Line(p);
             });
 
             try
