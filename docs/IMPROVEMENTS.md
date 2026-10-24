@@ -175,23 +175,6 @@ Done when a clean build with no .cache downloads every model from the window on 
 use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
 each run on the robot photo.
 
-### §MOD22 First-use cards
-
-Model: PhotoBoost's FaceFirstUse and BackgroundFirstUse blocks (PB58) and their
-FirstUseCard state (Offered, Waiting, Downloading, Paused, Failed, Ready). The 3D
-Object, Relief and AI texture cards each get one, fed from the manifest and the
-ModelLibrary. The badge reads "One-time download · 1.4 GB", a detail line names the
-models, and while downloading it shows a progress bar and "120 of 1400 MB · 8 MB/s ·
-about 3 min left". Its action button reads Download, Pause, Resume or Retry.
-
-ObjectModelsText and ReliefModelsText, the captions doing a little of this today, go.
-Once the models are verified, the operation the person pressed starts by itself, as
-PhotoBoost's pendingRun does. One download runs at a time, through one gate shared with
-About's Download everything.
-
-Done when a fresh models folder shows each card's badge with its real size, and a
-download paused, resumed and finished starts its operation.
-
 ### §MOD23 Per-model removal in About
 
 Model: PhotoBoost's DownloadedModels ItemsControl (PB13, PB58): one row per downloaded

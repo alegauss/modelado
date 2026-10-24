@@ -68,6 +68,8 @@ public partial class MainWindow : Window, IDisposable
             (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
         }
 
+        StartFirstUse();
+
         // MOD10: the formats the drop zone lists are the ones the codecs read, not a copy of them.
         DropFormats.Text = $"Photos: {Formats(ImageCodec.Extensions)}\n3D models: {Formats(MeshImport.Extensions)}";
 
@@ -283,6 +285,7 @@ public partial class MainWindow : Window, IDisposable
         HistoryCard.Visibility = Visibility.Visible;
         ExportCard.Visibility = Visibility.Visible;
         UpdateExportCard();
+        _ = RefreshFirstUseAsync();
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
             $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();

@@ -57,6 +57,14 @@
       "shareable": false
     },
     {
+      // MOD22: the same, with a models folder of its own, so its badges count from nothing.
+      "name": "a window with a photo open and a fresh models folder",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/first-use-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -172,9 +180,35 @@
         { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "and nothing was downloaded" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed again" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "and this time the download is accepted" },
-        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of 1 MB", "named": "the download starts, with its chip in the status bar" },
-        { "locator": "Button#CancelButton", "act": "invoke", "named": "it is cancelled" },
-        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Download cancelled", "named": "and the last-run chip says so" }
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Relief: \\d+ of 1 MB", "named": "the download starts, with its chip in the status bar" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "it is paused from the card" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Paused · \\d+%$", "named": "and the card says how far it got" },
+        { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "the status bar no longer shows a download" }
+      ]
+    },
+
+    {
+      "name": "each card says what its first use downloads, and a download paused, resumed and finished runs the operation by itself",
+      "catches": "a Generate button whose download is a surprise, a pause that loses the download, or an operation that has to be pressed again once its models are in",
+      "filed": "MOD22",
+      "tags": ["download", "operations"],
+      "fixture": "a window with a photo open and a fresh models folder",
+      "steps": [
+        { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "the 3D Object card names its download and its size" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "and so does the Relief card" },
+        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "depth-anything-v2-small, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "which model, and from where" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Downloading · \\d+%$", "named": "the card says it is downloading, and how far" },
+        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "matches": "^\\d+ of 1 MB · ", "named": "with the megabytes done of the total" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the other operation stays usable meanwhile" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "read", "reads": "name", "expect": "Pause", "named": "it offers a pause" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "Pause is pressed" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Paused · \\d+%$", "named": "the card says it is paused" },
+        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "Resume picks up where it stopped; nothing already downloaded is fetched again.", "named": "and that resuming keeps what was downloaded" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "read", "reads": "name", "expect": "Resume download", "named": "it offers to resume" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "Resume download is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief( ·|: )", "named": "the rest arrives and Relief runs by itself (on the stand-in model it ends at once)" }
       ]
     },
 
@@ -189,7 +223,7 @@
         { "locator": "Button#AboutDownloadAll", "act": "invoke", "named": "Download everything is pressed" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to in the consent panel" },
         { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of \\d+ MB", "named": "the status bar shows the download" },
-        { "locator": "Text#AboutDownloadStatus", "act": "read", "reads": "name", "matches": "^\\d+ of \\d+ MB", "named": "and About, back in place, does too" },
+        { "locator": "Text#AboutDownloadStatus", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of \\d+ MB", "named": "and About, back in place, does too" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "Text#AboutVersion", "act": "read", "absent": true, "named": "About has closed" },
         { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\d+ of \\d+ MB", "named": "the download is still going" },

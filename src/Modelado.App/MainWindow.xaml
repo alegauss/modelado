@@ -185,7 +185,18 @@
                       ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
             <Button x:Name="ObjectButton" AutomationProperties.AutomationId="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
-            <TextBlock x:Name="ObjectModelsText" AutomationProperties.AutomationId="ObjectModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
+            <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
+                 large, its progress, and Pause, Resume or Try again. -->
+            <Border x:Name="ObjectFirstUse" AutomationProperties.AutomationId="ObjectFirstUse" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                    Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock x:Name="ObjectFirstUseBadge" AutomationProperties.AutomationId="ObjectFirstUseBadge" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock x:Name="ObjectFirstUseDetail" AutomationProperties.AutomationId="ObjectFirstUseDetail" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
+                <ProgressBar x:Name="ObjectFirstUseProgress" AutomationProperties.AutomationId="ObjectFirstUseProgress" Height="4" Maximum="100" Margin="0,2,0,6" Visibility="Collapsed" />
+                <Button x:Name="ObjectFirstUseAction" AutomationProperties.AutomationId="ObjectFirstUseAction" HorizontalAlignment="Left" Padding="12,2"
+                        Visibility="Collapsed" Click="OnFirstUseAction" />
+              </StackPanel>
+            </Border>
           </StackPanel>
         </Border>
 
@@ -214,7 +225,18 @@
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
             <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
-            <TextBlock x:Name="ReliefModelsText" AutomationProperties.AutomationId="ReliefModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
+            <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
+                 large, its progress, and Pause, Resume or Try again. -->
+            <Border x:Name="ReliefFirstUse" AutomationProperties.AutomationId="ReliefFirstUse" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                    Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock x:Name="ReliefFirstUseBadge" AutomationProperties.AutomationId="ReliefFirstUseBadge" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock x:Name="ReliefFirstUseDetail" AutomationProperties.AutomationId="ReliefFirstUseDetail" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
+                <ProgressBar x:Name="ReliefFirstUseProgress" AutomationProperties.AutomationId="ReliefFirstUseProgress" Height="4" Maximum="100" Margin="0,2,0,6" Visibility="Collapsed" />
+                <Button x:Name="ReliefFirstUseAction" AutomationProperties.AutomationId="ReliefFirstUseAction" HorizontalAlignment="Left" Padding="12,2"
+                        Visibility="Collapsed" Click="OnFirstUseAction" />
+              </StackPanel>
+            </Border>
           </StackPanel>
         </Border>
 
@@ -244,6 +266,18 @@
             <TextBlock Text="With AI" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
             <Button x:Name="UpscaleTextureButton" AutomationProperties.AutomationId="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
                     ToolTip="For textured models (reliefs, opened OBJ and GLB): upscales and cleans the texture image, up to 4096 px." />
+            <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
+                 large, its progress, and Pause, Resume or Try again. -->
+            <Border x:Name="TextureFirstUse" AutomationProperties.AutomationId="TextureFirstUse" Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
+                    Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock x:Name="TextureFirstUseBadge" AutomationProperties.AutomationId="TextureFirstUseBadge" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock x:Name="TextureFirstUseDetail" AutomationProperties.AutomationId="TextureFirstUseDetail" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
+                <ProgressBar x:Name="TextureFirstUseProgress" AutomationProperties.AutomationId="TextureFirstUseProgress" Height="4" Maximum="100" Margin="0,2,0,6" Visibility="Collapsed" />
+                <Button x:Name="TextureFirstUseAction" AutomationProperties.AutomationId="TextureFirstUseAction" HorizontalAlignment="Left" Padding="12,2"
+                        Visibility="Collapsed" Click="OnFirstUseAction" />
+              </StackPanel>
+            </Border>
             <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
                     ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
           </StackPanel>
@@ -349,9 +383,9 @@
             <ProgressBar Height="6" Minimum="0" Maximum="1" Value="{Binding Value, ElementName=ProgressBar}" Margin="0,0,0,6" />
             <DockPanel>
               <Button x:Name="AboutCancelDownload" AutomationProperties.AutomationId="AboutCancelDownload" DockPanel.Dock="Right"
-                      Content="Cancel" Padding="12,2" Click="OnCancel" />
+                      Content="Cancel" Padding="12,2" Click="OnAboutCancelDownload" />
               <TextBlock x:Name="AboutDownloadStatus" AutomationProperties.AutomationId="AboutDownloadStatus" Style="{StaticResource StatCaption}"
-                         VerticalAlignment="Center" Margin="0" Text="{Binding Text, ElementName=ProgressText}" />
+                         VerticalAlignment="Center" Margin="0" Text="{Binding Text, ElementName=DownloadChipText}" />
             </DockPanel>
           </StackPanel>
 
@@ -426,8 +460,8 @@
         </TextBlock>
       </Border>
       <Border x:Name="DownloadChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
-        <TextBlock x:Name="DownloadChipText" AutomationProperties.AutomationId="DownloadChip" FontSize="12"
-                   Text="{Binding Text, ElementName=ProgressText, StringFormat='Downloading models: {0}'}" />
+        <!-- Set in code, by whichever download is running: a card's first use or About's (MOD22). -->
+        <TextBlock x:Name="DownloadChipText" AutomationProperties.AutomationId="DownloadChip" FontSize="12" />
       </Border>
       <Border x:Name="LastRunChip" Style="{StaticResource StatusChip}" HorizontalAlignment="Left" Visibility="Collapsed">
         <TextBlock x:Name="LastRun" AutomationProperties.AutomationId="LastRun" FontSize="12" TextTrimming="CharacterEllipsis" />

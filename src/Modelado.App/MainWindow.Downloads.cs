@@ -47,35 +47,8 @@ public partial class MainWindow
         return manifest;
     }
 
-    // Each card says whether its models are here, or how much the first use downloads.
-    private async Task RefreshModelStatusAsync()
-    {
-        ObjectModelsText.Text = await DescribeAsync(ObjectModels(ObjectEnhancePhoto.IsChecked == true)).ConfigureAwait(true);
-        ReliefModelsText.Text = await DescribeAsync(ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true)).ConfigureAwait(true);
-    }
-
-    private async Task<string> DescribeAsync(IReadOnlyList<string> models)
-    {
-        IReadOnlyList<ModelRequest> missing = runner.Missing(models);
-        if (missing.Count == 0)
-        {
-            return "Models installed: works offline.";
-        }
-
-        ModelManifest? listed = await ManifestAsync().ConfigureAwait(true);
-        if (listed is null && manifestError is not null)
-        {
-            return $"The models are not installed, and the model list could not be read ({manifestError}). Without internet, only models already downloaded work.";
-        }
-
-        if (listed is null || missing.Any(m => listed.Model(m.Model) is null))
-        {
-            return "The models are not installed yet.";
-        }
-
-        long bytes = ModelDownloads.PendingBytes(listed, library.DownloadRoot, missing, library.Roots);
-        return $"First use downloads {Size(bytes)} of models ({string.Join(", ", missing.Select(m => m.Model))}).";
-    }
+    // Each card says whether its models are here, or what its first use downloads (MOD22).
+    private Task RefreshModelStatusAsync() => RefreshFirstUseAsync();
 
     /// <summary>Downloads what the models need after asking; true when they are all on disk.</summary>
     /// <param name="purpose">What needs them, as the consent panel's title says it: "Relief".</param>
@@ -109,6 +82,20 @@ public partial class MainWindow
             return false;
         }
 
+        // MOD22: through the gate a card's first-use download takes too, so two never write one file.
+        await DownloadGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            return await DownloadHeldAsync(listed, requests).ConfigureAwait(true);
+        }
+        finally
+        {
+            DownloadGate.Release();
+        }
+    }
+
+    private async Task<bool> DownloadHeldAsync(ModelManifest listed, ModelRequest[] requests)
+    {
         while (true)
         {
             using CancellationTokenSource cancel = new();
@@ -119,6 +106,7 @@ public partial class MainWindow
             {
                 ProgressBar.Value = (double)p.Done / Math.Max(1, p.Total);
                 ProgressText.Text = DownloadText.Line(p);
+                DownloadChipText.Text = $"Downloading models: {ProgressText.Text}";
             });
 
             try

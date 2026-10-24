@@ -77,6 +77,17 @@ public partial class MainWindow
         }
     }
 
+    // About's Cancel stops whichever download is running: its own, or a card's first use (MOD22).
+    private void OnAboutCancelDownload(object sender, RoutedEventArgs e)
+    {
+        pausing = false;
+        work?.Cancel();
+        foreach (FirstUseCard card in FirstUseCards)
+        {
+            card.Downloading?.Cancel();
+        }
+    }
+
     private void OnAboutOpenFolder(object sender, RoutedEventArgs e)
     {
         Directory.CreateDirectory(library.DownloadRoot);

@@ -28,6 +28,7 @@
 
 - ✅ **MOD47** **The download tests fail to construct when the loopback server's first random port is already taken** — The download test server opens a fresh listener on each port attempt, so a busy port means another try instead of a red suite.
 - ✅ **MOD21** **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — A first-use download is offered in an in-window panel listing each model's size, source and license; Not now changes nothing else.
+- ✅ **MOD22** **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — Each operation card badges its one-time download and size; the download runs beside the app, pauses, resumes, and starts its operation.
 
 ## Block E — Publishing custom models to Hugging Face
 

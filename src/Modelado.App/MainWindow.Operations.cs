@@ -37,7 +37,7 @@ public partial class MainWindow
             DensityThreshold: (float)ObjectThreshold.Value,
             EnhancePhoto: enhance,
             ProjectPhoto: ObjectProjectPhoto.IsChecked == true);
-        await RunAsync("3D Object", "Download and generate the 3D object", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync(objectFirstUse!, (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
@@ -46,22 +46,23 @@ public partial class MainWindow
         ReliefRunOptions settings = new(
             new ReliefOptions(GridLongSide: TagOf(ReliefResolution), Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value),
             RemoveBackground: cutOut);
-        await RunAsync("Relief", "Download and generate the relief", ReliefReconstruction.Models(cutOut), (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync(reliefFirstUse!, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
-    private async Task RunAsync(string title, string acceptDownload, IReadOnlyList<string> models, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
+    private async Task RunAsync(FirstUseCard card, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
     {
         if (busy || photo is null)
         {
             return;
         }
 
-        // First use: the models are fetched, after the user agrees in the consent panel (MOD21).
-        if (runner.Missing(models).Count > 0 && !await DownloadAsync(title, acceptDownload, models).ConfigureAwait(true))
+        // First use (MOD22): the card offers its download, and this runs by itself once it is in.
+        if (await OfferFirstUseAsync(card).ConfigureAwait(true))
         {
             return;
         }
 
+        string title = card.Title;
         Imaging.RgbaImage input = photo;
         using CancellationTokenSource cancel = new();
         work = cancel;
@@ -106,7 +107,7 @@ public partial class MainWindow
 
         // MOD9: the same run in the status bar, seen however far the cards have scrolled.
         JobChip.Visibility = on && !download ? Visibility.Visible : Visibility.Collapsed;
-        DownloadChip.Visibility = on && download ? Visibility.Visible : Visibility.Collapsed;
+        DownloadChip.Visibility = (on && download) || FirstUseCards.Any(card => card.Downloading is not null) ? Visibility.Visible : Visibility.Collapsed;
         ProgressTitle.Text = title;
         ProgressText.Text = "";
         ProgressBar.Value = 0;
@@ -117,6 +118,10 @@ public partial class MainWindow
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
         UpdateEditButtons();
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
+        if (!on)
+        {
+            RunPending(); // An operation whose download finished while this ran (MOD22).
+        }
     }
 
     private void OnCancel(object sender, RoutedEventArgs e)
