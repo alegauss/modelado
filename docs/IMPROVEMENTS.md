@@ -175,21 +175,6 @@ Done when a clean build with no .cache downloads every model from the window on 
 use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
 each run on the robot photo.
 
-### §MOD23 Per-model removal in About
-
-Model: PhotoBoost's DownloadedModels ItemsControl (PB13, PB58): one row per downloaded
-model, "<name> · <variant> · <size>" with a Remove button whose AutomationId names the
-model. AboutWindow.cs today has "Remover modelos baixados", which deletes the whole
-DownloadRoot after a MessageBox. The rows replace it, and a Remove all with an in-panel
-confirmation (no MessageBox) stays for the whole folder. The total disk used heads the
-list.
-
-Removing a model a running operation is using is refused with the reason, and the
-operation's first-use card offers the download again afterwards.
-
-Done when removing Depth Anything leaves TripoSR working and the Relief card offering
-its download, and the folder size matches what the list said.
-
 ## Block E — Publishing custom models to Hugging Face
 
 ### §MOD24 Add a custom model to the publish stage

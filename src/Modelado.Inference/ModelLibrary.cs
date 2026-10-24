@@ -132,6 +132,29 @@ public sealed class ModelLibrary
         return removed;
     }
 
+    /// <summary>Deletes one downloaded model (MOD23); the files beside the app are never touched.</summary>
+    /// <param name="model">The model's folder name.</param>
+    /// <returns>Whether the download folder held it.</returns>
+    /// <exception cref="ArgumentException">The name is not a bare folder name.</exception>
+    public bool RemoveDownload(string model)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(model);
+        if (Path.GetFileName(model) != model || model is "." or "..")
+        {
+            throw new ArgumentException($"{model} is not a model's folder name.", nameof(model));
+        }
+
+        string folder = Path.Combine(DownloadRoot, model);
+        bool found = Directory.Exists(folder);
+        if (found)
+        {
+            Directory.Delete(folder, recursive: true);
+        }
+
+        Refresh();
+        return found;
+    }
+
     private string? RootOf(string model, string variant) => Roots.FirstOrDefault(root =>
         File.Exists(Path.Combine(root, model, "meta.json")) && File.Exists(Path.Combine(root, model, variant + ".onnx")));
 }

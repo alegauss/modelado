@@ -13,6 +13,9 @@ public partial class MainWindow
     private CancellationTokenSource? work;
     private bool busy;
 
+    // The models the running operation reads, which About will not remove under it (MOD23).
+    private IReadOnlyList<string> runningModels = [];
+
     private static string Describe(ReconstructionStage stage) => stage switch
     {
         ReconstructionStage.RemovingBackground => "Removing the background",
@@ -63,6 +66,7 @@ public partial class MainWindow
         }
 
         string title = card.Title;
+        runningModels = card.Models();
         Imaging.RgbaImage input = photo;
         using CancellationTokenSource cancel = new();
         work = cancel;

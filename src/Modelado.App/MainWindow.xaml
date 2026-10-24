@@ -370,14 +370,43 @@
 
           <TextBlock Text="Downloads" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutDownloadNote" AutomationProperties.AutomationId="AboutDownloadNote" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
+          <!-- MOD23, after PhotoBoost's DownloadedModels (PB13, PB58): each download, its size, and a
+               Remove of its own whose AutomationId names the model. -->
+          <ItemsControl x:Name="AboutDownloadedModels" AutomationProperties.AutomationId="AboutDownloadedModels" Margin="0,0,0,6">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="0,2">
+                  <Button DockPanel.Dock="Right" Content="Remove" Padding="10,2" Tag="{Binding Name}"
+                          AutomationProperties.AutomationId="{Binding RemoveId}" AutomationProperties.Name="{Binding RemoveName}"
+                          Click="OnAboutRemoveModel" />
+                  <TextBlock Text="{Binding Label}" AutomationProperties.AutomationId="{Binding LabelId}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock x:Name="AboutRemoveNote" AutomationProperties.AutomationId="AboutRemoveNote" Style="{StaticResource StatCaption}"
+                     Margin="0,0,0,6" Visibility="Collapsed" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
           <WrapPanel Margin="0,0,0,6">
             <Button x:Name="AboutDownloadAll" AutomationProperties.AutomationId="AboutDownloadAll" Content="Download everything (offline use)"
                     Padding="12,4" Margin="0,0,8,6" Click="OnAboutDownloadAll" />
             <Button x:Name="AboutOpenFolder" AutomationProperties.AutomationId="AboutOpenFolder" Content="Open the models folder"
                     Padding="12,4" Margin="0,0,8,6" Click="OnAboutOpenFolder" />
-            <Button x:Name="AboutRemoveModels" AutomationProperties.AutomationId="AboutRemoveModels" Content="Remove downloaded models"
-                    Padding="12,4" Margin="0,0,8,6" Click="OnAboutRemoveModels" />
+            <Button x:Name="AboutRemoveAll" AutomationProperties.AutomationId="AboutRemoveAll" Content="Remove all downloads…"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnAboutRemoveAll" />
           </WrapPanel>
+          <!-- Remove all asks here, in the panel, not in a dialog. -->
+          <Border x:Name="AboutRemoveAllConfirm" AutomationProperties.AutomationId="AboutRemoveAllConfirm" Padding="12,10" Margin="0,0,0,10" CornerRadius="6"
+                  Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+            <StackPanel>
+              <TextBlock x:Name="AboutRemoveAllQuestion" AutomationProperties.AutomationId="AboutRemoveAllQuestion" TextWrapping="Wrap" />
+              <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Button x:Name="AboutRemoveAllDelete" AutomationProperties.AutomationId="AboutRemoveAllDelete" Content="Delete them" Padding="12,2"
+                        Click="OnAboutRemoveAllDelete" />
+                <Button x:Name="AboutRemoveAllKeep" AutomationProperties.AutomationId="AboutRemoveAllKeep" Content="Keep them" Padding="12,2" Margin="8,0,0,0"
+                        Click="OnAboutRemoveAllKeep" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
           <!-- A download in progress, the same one the job panel and the status bar show. -->
           <StackPanel Visibility="{Binding Visibility, ElementName=DownloadChip}" Margin="0,0,0,16">
             <ProgressBar Height="6" Minimum="0" Maximum="1" Value="{Binding Value, ElementName=ProgressBar}" Margin="0,0,0,6" />

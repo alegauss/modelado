@@ -7,8 +7,8 @@
       "task": "stand-in",
       "meta": {
         "url": "http://127.0.0.1:47631/files/standin-meta.json",
-        "bytes": 77,
-        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
       },
       "variants": {
         "fp32": {
@@ -30,8 +30,8 @@
       "task": "stand-in",
       "meta": {
         "url": "http://127.0.0.1:47631/files/standin-meta.json",
-        "bytes": 77,
-        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
       },
       "variants": {
         "fp32": {
@@ -53,8 +53,8 @@
       "task": "stand-in",
       "meta": {
         "url": "http://127.0.0.1:47631/files/standin-meta.json",
-        "bytes": 77,
-        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
       },
       "variants": {
         "fp32": {
@@ -76,8 +76,8 @@
       "task": "stand-in",
       "meta": {
         "url": "http://127.0.0.1:47631/files/standin-meta.json",
-        "bytes": 77,
-        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
       },
       "variants": {
         "fp32": {
@@ -99,8 +99,8 @@
       "task": "stand-in",
       "meta": {
         "url": "http://127.0.0.1:47631/files/standin-meta.json",
-        "bytes": 77,
-        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
       },
       "variants": {
         "fp32": {

@@ -54,11 +54,24 @@ public partial class MainWindow
         string source = ModelDownloads.Embedded is null ? options.Manifest ?? ModelDownloads.LatestManifestUrl : "built into this version";
         AboutManifest.Text = $"Models are downloaded from huggingface.co/alegauss/modelado-models; model list: {source}.";
 
-        long downloaded = installed.Where(m => IsUnder(m.Root, library.DownloadRoot)).Sum(Bytes);
+        List<InstalledModel> downloads = [.. installed.Where(m => IsUnder(m.Root, library.DownloadRoot))];
+        long downloaded = downloads.Sum(Bytes);
         AboutDownloadNote.Text = downloaded > 0
             ? $"Downloads go to {library.DownloadRoot}, where they take {Size(downloaded)}."
             : $"Downloads go to {library.DownloadRoot}. Nothing is downloaded yet.";
+        AboutDownloadedModels.ItemsSource = downloads
+            .Select(m => new DownloadedRow(m.Name, $"{m.Name} · {string.Join(", ", m.Variants)} · {Size(Bytes(m))}", $"Download-{m.Name}", $"Remove-{m.Name}", $"Remove {m.Name}"))
+            .ToList();
+        AboutRemoveAll.IsEnabled = downloads.Count > 0;
     }
+
+    /// <summary>One downloaded model, as About's list shows it (MOD23).</summary>
+    /// <param name="Name">The model's folder name.</param>
+    /// <param name="Label">Its name, variants and size.</param>
+    /// <param name="LabelId">The label's AutomationId.</param>
+    /// <param name="RemoveId">Its Remove button's AutomationId.</param>
+    /// <param name="RemoveName">Its Remove button's accessible name.</param>
+    private sealed record DownloadedRow(string Name, string Label, string LabelId, string RemoveId, string RemoveName);
 
     private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].Bytes);
 
@@ -94,12 +107,94 @@ public partial class MainWindow
         Process.Start(new ProcessStartInfo("explorer.exe", $"\"{library.DownloadRoot}\"") { UseShellExecute = true });
     }
 
-    private void OnAboutRemoveModels(object sender, RoutedEventArgs e)
+    // MOD23: a model a running operation or a download is using cannot be removed under it.
+    private string? InUse(string model)
     {
-        if (MessageBox.Show(this, $"Delete everything downloaded to\n{library.DownloadRoot}?\n\nEach operation downloads again next time.", "Remove models", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+        if (busy && runningModels.Contains(model, StringComparer.Ordinal))
         {
-            library.RemoveDownloads();
-            FillAbout();
+            return $"{model} is in use by {ProgressTitle.Text}; remove it once that has finished.";
         }
+
+        if (busy && work is not null && ProgressTitle.Text == "Downloading models")
+        {
+            return "A download is running; remove models once it has finished or been cancelled.";
+        }
+
+        return FirstUseCards.FirstOrDefault(card => card.Downloading is not null && card.Models().Contains(model, StringComparer.Ordinal)) is { } downloading
+            ? $"{model} is being downloaded for {downloading.Title}; cancel or finish that first."
+            : null;
+    }
+
+    // The sessions keep the ONNX files open, so they are let go before a file is deleted.
+    private void ReleaseSessions()
+    {
+        runner.Dispose();
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true);
+    }
+
+    private async void OnAboutRemoveModel(object sender, RoutedEventArgs e)
+    {
+        if (((FrameworkElement)sender).Tag is not string model)
+        {
+            return;
+        }
+
+        if (InUse(model) is { } reason)
+        {
+            SayRemoval(reason);
+            return;
+        }
+
+        try
+        {
+            ReleaseSessions();
+            library.RemoveDownload(model);
+            SayRemoval(null);
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            SayRemoval($"{model} could not be removed: {error.Message}");
+        }
+
+        FillAbout();
+        await RefreshModelStatusAsync().ConfigureAwait(true);
+    }
+
+    private void OnAboutRemoveAll(object sender, RoutedEventArgs e)
+    {
+        AboutRemoveAllQuestion.Text = $"Delete everything downloaded to {library.DownloadRoot}? Each operation offers its download again when next used.";
+        AboutRemoveAllConfirm.Visibility = Visibility.Visible;
+    }
+
+    private void OnAboutRemoveAllKeep(object sender, RoutedEventArgs e) => AboutRemoveAllConfirm.Visibility = Visibility.Collapsed;
+
+    private async void OnAboutRemoveAllDelete(object sender, RoutedEventArgs e)
+    {
+        AboutRemoveAllConfirm.Visibility = Visibility.Collapsed;
+        if (library.Installed().Select(m => InUse(m.Name)).FirstOrDefault(reason => reason is not null) is { } reason)
+        {
+            SayRemoval(reason);
+            return;
+        }
+
+        try
+        {
+            ReleaseSessions();
+            library.RemoveDownloads();
+            SayRemoval(null);
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            SayRemoval($"The downloads could not all be removed: {error.Message}");
+        }
+
+        FillAbout();
+        await RefreshModelStatusAsync().ConfigureAwait(true);
+    }
+
+    private void SayRemoval(string? text)
+    {
+        AboutRemoveNote.Text = text ?? "";
+        AboutRemoveNote.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 }

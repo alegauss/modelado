@@ -109,6 +109,8 @@ public partial class MainWindow
             return;
         }
 
+        runningModels = [Upscaling.Model];
+
         await EditAsync("Sharper texture", (m, progress, token) => Upscaling.UpscaleTexture(runner, m, progress, token)).ConfigureAwait(true);
     }
 

@@ -65,6 +65,14 @@
       "shareable": false
     },
     {
+      // MOD23: a models folder of its own, which the case fills by downloading and then empties.
+      "name": "a window with a photo open, to download and remove a model",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/removal-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -209,6 +217,38 @@
         { "locator": "Button#ReliefFirstUseAction", "act": "read", "reads": "name", "expect": "Resume download", "named": "it offers to resume" },
         { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "Resume download is pressed" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief( ·|: )", "named": "the rest arrives and Relief runs by itself (on the stand-in model it ends at once)" }
+      ]
+    },
+
+    {
+      "name": "About lists each download with its size and removes one, and only that card offers its download again",
+      "catches": "downloads that can only be removed all at once, a Remove that deletes another model too, or a card that still claims a removed model",
+      "filed": "MOD23",
+      "tags": ["about", "download"],
+      "fixture": "a window with a photo open, to download and remove a model",
+      "steps": [
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "it is paused at once" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "read", "reads": "name", "expect": "Resume download", "named": "and offers to resume" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "resumed, the rest arrives at once" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Relief: failed", "named": "Relief runs by itself and fails on the stand-in model" },
+        { "locator": "Window[class=\"#32770\"] > Button[name=\"OK\"]", "act": "invoke", "named": "its error is dismissed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "Remove depth-anything-v2-small", "named": "the download is listed with a Remove of its own" },
+        { "locator": "Text#Download-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · fp32 · 1 MB", "named": "with its variant and size" },
+        { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": ", where they take 1 MB\\.$", "named": "and the total heads the list" },
+        { "locator": "Button#AboutRemoveAll", "act": "invoke", "named": "Remove all downloads is pressed" },
+        { "locator": "Text#AboutRemoveAllQuestion", "act": "read", "reads": "name", "matches": "^Delete everything downloaded to ", "named": "it asks in the panel" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "not in a dialog" },
+        { "locator": "Button#AboutRemoveAllKeep", "act": "invoke", "named": "Keep them is pressed" },
+        { "locator": "Text#AboutRemoveAllQuestion", "act": "read", "absent": true, "named": "the question goes and nothing is deleted" },
+        { "locator": "Button#Remove-depth-anything-v2-small", "act": "invoke", "named": "depth-anything-v2-small alone is removed" },
+        { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "absent": true, "named": "it leaves the list" },
+        { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": "Nothing is downloaded yet\\.$", "named": "and the total says so" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "the Relief card offers its download again" },
+        { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "and the 3D Object card is as it was" }
       ]
     },
 

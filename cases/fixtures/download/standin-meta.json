@@ -1,1 +1,46 @@
-{"note": "a stand-in for the UI cases; it never finishes downloading there"}
+{
+  "schema": 1,
+  "name": "standin",
+  "task": "stand-in",
+  "inputs": [
+    {
+      "name": "input",
+      "shape": [
+        1,
+        3,
+        64,
+        64
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "output",
+      "shape": [
+        1,
+        1,
+        64,
+        64
+      ]
+    }
+  ],
+  "preprocess": {
+    "value_range": [
+      0,
+      1
+    ]
+  },
+  "params": {},
+  "variants": {
+    "fp32": {
+      "file": "fp32.onnx",
+      "bytes": 1228800,
+      "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+    }
+  },
+  "upstream": {
+    "url": "https://example.org/standin",
+    "license": "MIT",
+    "license_url": "https://opensource.org/license/mit"
+  }
+}
