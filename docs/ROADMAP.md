@@ -10,13 +10,12 @@
 
 ## Block A — English everywhere
 
-- 📋 **MOD1** (deps: —) **Every button, tooltip, caption, status line and dialog in the app window and About window is in Portuguese** — The app is meant to read like PhotoBoost, whose interface is English, and every later UI case asserts on these strings. → §MOD1
 - 📋 **MOD2** (deps: —) **modelado-cli usage, progress and errors, and the app's command-line errors, are printed in Portuguese** — The CLI is how scripts and tests drive the pipelines, and its usage text is the only reference most callers read. → §MOD2
 - 📋 **MOD3** (deps: —) **README.md is written in Portuguese** — The README is the project's front page on GitHub and the model card's link target, and PhotoBoost's is English. → §MOD3
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD4** (deps: MOD1) **Colours are hard-coded hex in MainWindow.xaml, with no Brand class, no theme setting and no shared control templates** — PhotoBoost declares each of its own colours once and paints everything else with Fluent's brushes, and the other screens build on that. → §MOD4
+- 📋 **MOD4** (deps: MOD1 ✅) **Colours are hard-coded hex in MainWindow.xaml, with no Brand class, no theme setting and no shared control templates** — PhotoBoost declares each of its own colours once and paints everything else with Fluent's brushes, and the other screens build on that. → §MOD4
 - 📋 **MOD5** (deps: MOD4) **The toolbar is a row of text buttons wired to Click handlers, with no glyphs and no commands that enable themselves** — PhotoBoost's ToolBar shares one CanExecute between each button and its shortcut, so nothing can run while it should not. → §MOD5
 - 📋 **MOD6** (deps: MOD4) **The progress card sits mid-panel between the Edit and Quality cards, so a running job can scroll out of sight** — PhotoBoost pins the run in progress above the cards, so its progress, its cancel and its end are seen without scrolling. → §MOD6
 - 📋 **MOD7** (deps: MOD4) **The window and the taskbar show WPF's default icon** — PhotoBoost ships its own .ico as a resource, and Modelado is otherwise indistinguishable from any other WPF app on the taskbar. → §MOD7
@@ -31,8 +30,8 @@
 ## Block C — Existing code wired into the window
 
 - 📋 **MOD15** (deps: MOD13) **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — A print has a real size, and a figurine meant to be 40 mm or 200 mm tall needs rescaling in the slicer today. → §MOD15
-- 📋 **MOD16** (deps: MOD1) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
-- 📋 **MOD17** (deps: MOD1) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
+- 📋 **MOD16** (deps: MOD1 ✅) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
+- 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
 - 📋 **MOD18** (deps: MOD11) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
 - 📋 **MOD19** (deps: MOD5) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
 

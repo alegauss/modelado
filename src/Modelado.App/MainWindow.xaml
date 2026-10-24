@@ -21,24 +21,24 @@
 
     <!-- Toolbar -->
     <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="12,10,12,6">
-      <Button x:Name="OpenButton" Content="Abrir…" Padding="14,6" Click="OnOpen"
-              ToolTip="A foto de um objeto (PNG, JPEG, WebP) para gerar um modelo, ou um modelo 3D (GLB, OBJ, PLY, STL) para editar e aperfeiçoar. Também dá para arrastar o arquivo para a janela. Ctrl+O" />
-      <Button x:Name="ExportButton" Content="Exportar…" Padding="14,6" Margin="8,0,0,0" Click="OnExport" IsEnabled="False"
-              ToolTip="Salva o modelo como GLB, OBJ, PLY ou STL. Ctrl+S" />
-      <Button x:Name="UndoButton" Content="Desfazer" Padding="12,6" Margin="8,0,0,0" Click="OnUndo" IsEnabled="False" ToolTip="Volta à versão anterior do modelo. Ctrl+Z" />
-      <Button x:Name="RedoButton" Content="Refazer" Padding="12,6" Margin="4,0,0,0" Click="OnRedo" IsEnabled="False" ToolTip="Ctrl+Y" />
+      <Button x:Name="OpenButton" Content="Open…" Padding="14,6" Click="OnOpen"
+              ToolTip="A photo of an object (PNG, JPEG, WebP) to make a model from, or a 3D model (GLB, OBJ, PLY, STL) to edit and improve. You can also drag the file onto the window. Ctrl+O" />
+      <Button x:Name="ExportButton" Content="Save as…" Padding="14,6" Margin="8,0,0,0" Click="OnExport" IsEnabled="False"
+              ToolTip="Saves the model as GLB, OBJ, PLY or STL. Ctrl+S" />
+      <Button x:Name="UndoButton" Content="Undo" Padding="12,6" Margin="8,0,0,0" Click="OnUndo" IsEnabled="False" ToolTip="Goes back to the previous version of the model. Ctrl+Z" />
+      <Button x:Name="RedoButton" Content="Redo" Padding="12,6" Margin="4,0,0,0" Click="OnRedo" IsEnabled="False" ToolTip="Ctrl+Y" />
       <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
-      <TextBlock Text="Ver:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+      <TextBlock Text="View:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
       <ComboBox x:Name="ViewChoice" Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
-        <ComboBoxItem Content="Modelo com cores" />
-        <ComboBoxItem Content="Modelo em argila" />
-        <ComboBoxItem Content="Malha (arestas)" />
-        <ComboBoxItem Content="Foto de entrada" />
+        <ComboBoxItem Content="Model in colour" />
+        <ComboBoxItem Content="Model in clay" />
+        <ComboBoxItem Content="Mesh (edges)" />
+        <ComboBoxItem Content="Input photo" />
       </ComboBox>
-      <Button x:Name="ResetViewButton" Content="Centralizar" Padding="12,6" Margin="8,0,0,0" Click="OnResetView" IsEnabled="False"
-              ToolTip="Volta à vista de frente. Duplo clique no modelo faz o mesmo." />
+      <Button x:Name="ResetViewButton" Content="Recentre" Padding="12,6" Margin="8,0,0,0" Click="OnResetView" IsEnabled="False"
+              ToolTip="Goes back to the front view. Double-clicking the model does the same." />
       <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
-      <Button Content="Sobre e modelos" Padding="12,6" Click="OnAbout" />
+      <Button Content="About and models" Padding="12,6" Click="OnAbout" />
     </StackPanel>
 
     <!-- Viewer -->
@@ -49,12 +49,12 @@
             MouseWheel="OnViewportMouseWheel">
         <Image x:Name="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
         <StackPanel x:Name="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
-          <TextBlock Text="Abra ou arraste a foto de um objeto, ou um modelo 3D" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
+          <TextBlock Text="Open or drop a photo of an object, or a 3D model" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
           <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="#FFA8ADB5"
-                     Text="Melhor com um único objeto inteiro, centralizado, sobre um fundo simples. Tudo roda neste computador: nenhuma foto sai dele." />
+                     Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
         </StackPanel>
         <TextBlock x:Name="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
-                   Foreground="#FFA8ADB5" FontSize="12" Text="Arraste para girar · roda do mouse para aproximar · duplo clique para centralizar" />
+                   Foreground="#FFA8ADB5" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
       </Grid>
     </Border>
 
@@ -64,30 +64,30 @@
 
         <Border Style="{StaticResource Card}">
           <StackPanel>
-            <TextBlock Text="Objeto 3D" Style="{StaticResource CardTitle}" />
+            <TextBlock Text="3D Object" Style="{StaticResource CardTitle}" />
             <TextBlock Style="{StaticResource Caption}"
-                       Text="Um modelo completo, com frente, lados e costas inventados pelo TripoSR a partir de uma única foto. Cores por vértice." />
-            <TextBlock Text="Resolução da malha" Style="{StaticResource FieldLabel}" />
+                       Text="A whole model, with the front, sides and back TripoSR infers from a single photo. Coloured per vertex." />
+            <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ObjectResolution" SelectedIndex="2">
-              <ComboBoxItem Content="128 · rascunho rápido" Tag="128" />
+              <ComboBoxItem Content="128 · quick draft" Tag="128" />
               <ComboBoxItem Content="192" Tag="192" />
-              <ComboBoxItem Content="256 · padrão do TripoSR" Tag="256" />
+              <ComboBoxItem Content="256 · TripoSR default" Tag="256" />
               <ComboBoxItem Content="320" Tag="320" />
-              <ComboBoxItem Content="384 · fina" Tag="384" />
+              <ComboBoxItem Content="384 · fine" Tag="384" />
             </ComboBox>
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Espessura (limiar de densidade): " /><Run x:Name="ThresholdText" Text="25" />
+              <Run Text="Thickness (density threshold): " /><Run x:Name="ThresholdText" Text="25" />
             </TextBlock>
             <Slider x:Name="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
                     ValueChanged="OnThresholdChanged"
-                    ToolTip="Mais baixo engorda o objeto e fecha buracos; mais alto afina e separa partes. 25 é o do TripoSR." />
-            <CheckBox x:Name="ObjectRemoveBackground" Content="Remover o fundo da foto (U²-Net)" IsChecked="True" Margin="0,8,0,0"
-                      ToolTip="Desligue só para um PNG já recortado, com transparência: esse é usado como está." />
-            <CheckBox x:Name="ObjectProjectPhoto" Content="Cores nítidas da foto na frente" IsChecked="True" Margin="0,4,0,0"
-                      ToolTip="O TripoSR colore a partir de uma grade de 64 × 64; isto repõe as cores da própria foto no lado que ela mostra." />
-            <CheckBox x:Name="ObjectEnhancePhoto" Content="Melhorar foto pequena antes (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
-                      ToolTip="Para fotos com menos de 1024 px ou com ruído: aumenta 4× com IA antes de recortar e reconstruir." />
-            <Button x:Name="ObjectButton" Content="Gerar objeto 3D" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    ToolTip="Lower fattens the object and closes holes; higher thins it and separates parts. 25 is TripoSR's own." />
+            <CheckBox x:Name="ObjectRemoveBackground" Content="Remove the photo's background (U²-Net)" IsChecked="True" Margin="0,8,0,0"
+                      ToolTip="Turn off only for a PNG already cut out, with transparency: that one is used as it is." />
+            <CheckBox x:Name="ObjectProjectPhoto" Content="Sharp photo colours on the front" IsChecked="True" Margin="0,4,0,0"
+                      ToolTip="TripoSR colours from a 64 × 64 grid; this lays the photo's own colours back on the side it shows." />
+            <CheckBox x:Name="ObjectEnhancePhoto" Content="Enhance a small photo first (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
+                      ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
+            <Button x:Name="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
             <TextBlock x:Name="ObjectModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
           </StackPanel>
@@ -95,28 +95,28 @@
 
         <Border Style="{StaticResource Card}">
           <StackPanel>
-            <TextBlock Text="Relevo" Style="{StaticResource CardTitle}" />
+            <TextBlock Text="Relief" Style="{StaticResource CardTitle}" />
             <TextBlock Style="{StaticResource Caption}"
-                       Text="A profundidade de cada pixel (Depth Anything V2) vira altura: um baixo-relevo texturizado com a foto. Funciona com qualquer imagem: rostos, paisagens, prédios." />
-            <TextBlock Text="Resolução da malha" Style="{StaticResource FieldLabel}" />
+                       Text="Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings." />
+            <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ReliefResolution" SelectedIndex="1">
               <ComboBoxItem Content="128" Tag="128" />
-              <ComboBoxItem Content="256 · padrão" Tag="256" />
+              <ComboBoxItem Content="256 · default" Tag="256" />
               <ComboBoxItem Content="384" Tag="384" />
-              <ComboBoxItem Content="512 · fina" Tag="512" />
+              <ComboBoxItem Content="512 · fine" Tag="512" />
             </ComboBox>
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Altura do relevo: " /><Run x:Name="DepthText" Text="25%" />
+              <Run Text="Relief height: " /><Run x:Name="DepthText" Text="25%" />
             </TextBlock>
             <Slider x:Name="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="Quanto o ponto mais próximo sobressai, em fração da largura." />
+                    ToolTip="How far the nearest point stands out, as a share of the width." />
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Base sólida: " /><Run x:Name="BaseText" Text="sem base" />
+              <Run Text="Solid base: " /><Run x:Name="BaseText" Text="no base" />
             </TextBlock>
             <Slider x:Name="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="Com base, a malha é fechada (sólida) e pode ir para a impressora 3D. Sem base, é só a superfície." />
-            <CheckBox x:Name="ReliefRemoveBackground" Content="Só o objeto (remover o fundo)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
-            <Button x:Name="ReliefButton" Content="Gerar relevo" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    ToolTip="With a base the mesh is closed (solid) and can go to a 3D printer. Without one it is only the surface." />
+            <CheckBox x:Name="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+            <Button x:Name="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
             <TextBlock x:Name="ReliefModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
           </StackPanel>
@@ -124,38 +124,38 @@
 
         <Border Style="{StaticResource Card}">
           <StackPanel>
-            <TextBlock Text="Editar e aperfeiçoar" Style="{StaticResource CardTitle}" />
+            <TextBlock Text="Edit and improve" Style="{StaticResource CardTitle}" />
             <TextBlock Style="{StaticResource Caption}"
-                       Text="Para o modelo gerado ou um modelo 3D aberto. Cada passo pode ser desfeito." />
+                       Text="For the generated model or an opened 3D model. Every step can be undone." />
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Simplificar para " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" dos triângulos" />
+              <Run Text="Simplify to " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" of the triangles" />
             </TextBlock>
             <Slider x:Name="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
-                    ToolTip="Menos triângulos: arquivo menor e mais leve para jogos, web e fatiadores, com a forma preservada." />
+                    ToolTip="Fewer triangles: a smaller, lighter file for games, the web and slicers, with the shape kept." />
             <UniformGrid Columns="2" Margin="0,6,0,0">
-              <Button x:Name="SimplifyButton" Content="Simplificar" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
-              <Button x:Name="SubdivideButton" Content="Subdividir" Margin="4,0,0,4" Click="OnSubdivide" IsEnabled="False"
-                      ToolTip="4× os triângulos, arredondando: superfície mais lisa para imprimir grande." />
-              <Button x:Name="SmoothButton" Content="Suavizar" Margin="0,0,4,4" Click="OnSmooth" IsEnabled="False"
-                      ToolTip="Tira o serrilhado e o ruído sem encolher o modelo (Taubin)." />
-              <Button x:Name="FillHolesButton" Content="Fechar buracos" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
-                      ToolTip="Fecha os furos da malha, para ela ficar sólida (estanque) para impressão." />
-              <Button x:Name="PiecesButton" Content="Remover pedaços soltos" Margin="0,0,4,4" Click="OnRemovePieces" IsEnabled="False"
-                      ToolTip="Apaga fragmentos pequenos soltos no ar, menores que 5% da maior parte." />
-              <Button x:Name="FlattenButton" Content="Base plana" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
-                      ToolTip="Achata os 3% de baixo, para o modelo ficar em pé na mesa da impressora." />
-              <Button x:Name="MirrorButton" Content="Espelhar" Margin="0,0,4,4" Click="OnMirror" IsEnabled="False" />
+              <Button x:Name="SimplifyButton" Content="Simplify" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
+              <Button x:Name="SubdivideButton" Content="Subdivide" Margin="4,0,0,4" Click="OnSubdivide" IsEnabled="False"
+                      ToolTip="4× the triangles, rounded off: a smoother surface for printing large." />
+              <Button x:Name="SmoothButton" Content="Smooth" Margin="0,0,4,4" Click="OnSmooth" IsEnabled="False"
+                      ToolTip="Removes jagged edges and noise without shrinking the model (Taubin)." />
+              <Button x:Name="FillHolesButton" Content="Fill holes" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
+                      ToolTip="Closes the holes in the mesh, so it is solid (watertight) for printing." />
+              <Button x:Name="PiecesButton" Content="Remove loose pieces" Margin="0,0,4,4" Click="OnRemovePieces" IsEnabled="False"
+                      ToolTip="Deletes small loose fragments, under 5% of the largest part." />
+              <Button x:Name="FlattenButton" Content="Flat base" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
+                      ToolTip="Flattens the bottom 3%, so the model stands on the printer bed." />
+              <Button x:Name="MirrorButton" Content="Mirror" Margin="0,0,4,4" Click="OnMirror" IsEnabled="False" />
               <StackPanel Orientation="Horizontal" Margin="4,0,0,4">
-                <Button x:Name="RotateXButton" Content="↻X" Width="44" Click="OnRotate" Tag="X" IsEnabled="False" ToolTip="Gira 90° em torno do eixo X (para modelos deitados)." />
-                <Button x:Name="RotateYButton" Content="↻Y" Width="44" Margin="4,0" Click="OnRotate" Tag="Y" IsEnabled="False" ToolTip="Gira 90° em torno do eixo vertical." />
-                <Button x:Name="RotateZButton" Content="↻Z" Width="44" Click="OnRotate" Tag="Z" IsEnabled="False" ToolTip="Gira 90° em torno do eixo Z." />
+                <Button x:Name="RotateXButton" Content="↻X" Width="44" Click="OnRotate" Tag="X" IsEnabled="False" ToolTip="Turns 90° about the X axis (for models lying down)." />
+                <Button x:Name="RotateYButton" Content="↻Y" Width="44" Margin="4,0" Click="OnRotate" Tag="Y" IsEnabled="False" ToolTip="Turns 90° about the vertical axis." />
+                <Button x:Name="RotateZButton" Content="↻Z" Width="44" Click="OnRotate" Tag="Z" IsEnabled="False" ToolTip="Turns 90° about the Z axis." />
               </StackPanel>
             </UniformGrid>
-            <TextBlock Text="Com IA" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
-            <Button x:Name="UpscaleTextureButton" Content="Textura 4× mais nítida (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
-                    ToolTip="Para modelos com textura (relevos, OBJ e GLB abertos): aumenta e limpa a imagem da textura, até 4096 px." />
-            <Button x:Name="ReprojectButton" Content="Reaplicar as cores da foto" Click="OnReproject" IsEnabled="False"
-                    ToolTip="Repõe as cores nítidas da foto na frente do objeto, por exemplo depois de subdividir." />
+            <TextBlock Text="With AI" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
+            <Button x:Name="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
+                    ToolTip="For textured models (reliefs, opened OBJ and GLB): upscales and cleans the texture image, up to 4096 px." />
+            <Button x:Name="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
+                    ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
           </StackPanel>
         </Border>
 
@@ -166,19 +166,19 @@
             <TextBlock x:Name="ProgressText" Style="{StaticResource Caption}" />
             <ProgressBar x:Name="ProgressBar" Height="6" Minimum="0" Maximum="1" />
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-              <Button x:Name="PauseButton" Content="Pausar" Padding="12,4" Click="OnPauseDownload" Visibility="Collapsed" />
-              <Button x:Name="CancelButton" Content="Cancelar" Padding="12,4" Margin="8,0,0,0" Click="OnCancel" />
+              <Button x:Name="PauseButton" Content="Pause" Padding="12,4" Click="OnPauseDownload" Visibility="Collapsed" />
+              <Button x:Name="CancelButton" Content="Cancel" Padding="12,4" Margin="8,0,0,0" Click="OnCancel" />
             </StackPanel>
           </StackPanel>
         </Border>
 
         <Border Style="{StaticResource Card}">
           <StackPanel>
-            <TextBlock Text="Qualidade" Style="{StaticResource CardTitle}" />
-            <RadioButton x:Name="QualityStandard" Content="Padrão (FP16 na GPU, metade do download)" IsChecked="True" Checked="OnQualityChanged" />
-            <RadioButton x:Name="QualityHigh" Content="Alta (FP32 em tudo)" Margin="0,4,0,0" Checked="OnQualityChanged" />
+            <TextBlock Text="Quality" Style="{StaticResource CardTitle}" />
+            <RadioButton x:Name="QualityStandard" Content="Standard (FP16 on the GPU, half the download)" IsChecked="True" Checked="OnQualityChanged" />
+            <RadioButton x:Name="QualityHigh" Content="High quality (FP32 throughout)" Margin="0,4,0,0" Checked="OnQualityChanged" />
             <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
-                       Text="Na CPU o FP32 é usado sempre: é mais rápido lá. Os modelos são baixados do Hugging Face na primeira vez e conferidos por SHA-256." />
+                       Text="On the CPU, FP32 is always used because it is faster there. Models are downloaded from Hugging Face on first use and checked by SHA-256." />
           </StackPanel>
         </Border>
 

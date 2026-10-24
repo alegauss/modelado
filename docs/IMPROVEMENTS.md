@@ -2,24 +2,6 @@
 
 ## Block A — English everywhere
 
-### §MOD1 App interface in English
-
-Scope: MainWindow.xaml, MainWindow.xaml.cs, MainWindow.Downloads.cs,
-MainWindow.Edits.cs, MainWindow.Operations.cs and AboutWindow.cs. Grep for accented
-characters and for common Portuguese words, because many strings carry no accents (for
-example "Gerar relevo", "Base plana"). Version labels pushed into MeshHistory
-("Suavizar", "Base plana") are user-visible too, and so are the status-bar and progress
-texts built in code.
-
-Use PhotoBoost's wording where the concept is the same: Open, Save as, Undo, Redo,
-About, Cancel, Not now, Quality: Standard and High quality. Keep the sentence style:
-short, concrete, saying what happens and where (for example "Photos are processed on
-this computer; nothing is uploaded.").
-
-Done when a search over src\Modelado.App finds no Portuguese, the app is launched with
-run.cmd and each card, the About window and a download prompt are seen in English, and
-run-tests.cmd is green.
-
 ### §MOD2 CLI and command line in English
 
 Scope: tools\Modelado.Cli\Program.cs (the Usage block, every Console.WriteLine and every

@@ -2,6 +2,8 @@
 
 ## Block A — English everywhere
 
+- ✅ **MOD1** **Every button, tooltip, caption, status line and dialog in the app window and About window is in Portuguese** — Every caption, tooltip, status line, dialog and the About window read in English, worded after PhotoBoost where the concept is the same.
+
 ## Block B — Windows interface built like PhotoBoost
 
 ## Block C — Existing code wired into the window

@@ -27,7 +27,7 @@ public sealed class AboutWindow : Window
     {
         ArgumentNullException.ThrowIfNull(library);
         this.library = library;
-        Title = "Sobre o Modelado";
+        Title = "About Modelado";
         Width = 640;
         SizeToContent = SizeToContent.Height;
         MaxHeight = 760;
@@ -40,18 +40,18 @@ public sealed class AboutWindow : Window
         StackPanel root = new() { Margin = new Thickness(20) };
         root.Children.Add(new TextBlock { Text = $"Modelado {version}", FontSize = 20, FontWeight = FontWeights.SemiBold });
         root.Children.Add(Paragraph(
-            "Transforma uma foto em um modelo 3D neste computador: um objeto completo com o TripoSR, ou um relevo com o Depth Anything V2. " +
-            $"Inferência no ONNX Runtime, {(provider == ExecutionProvider.DirectML ? "na GPU com DirectML" : "na CPU")}. Nenhuma foto é enviada a lugar nenhum."));
-        root.Children.Add(Paragraph($"Modelos baixados de huggingface.co/alegauss/modelado-models; lista de modelos: {manifest}."));
+            "Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. " +
+            $"Inference runs in ONNX Runtime, {(provider == ExecutionProvider.DirectML ? "on the GPU with DirectML" : "on the CPU")}. No photo is uploaded anywhere."));
+        root.Children.Add(Paragraph($"Models are downloaded from huggingface.co/alegauss/modelado-models; model list: {manifest}."));
 
-        root.Children.Add(new TextBlock { Text = "Modelos instalados", FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 14, 0, 6) });
+        root.Children.Add(new TextBlock { Text = "Installed models", FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 14, 0, 6) });
         root.Children.Add(new ScrollViewer { Content = list, MaxHeight = 320, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
 
         WrapPanel buttons = new() { Margin = new Thickness(0, 16, 0, 0) };
-        buttons.Children.Add(Button("Baixar todos (uso offline)", (_, _) => DownloadAllRequested?.Invoke(this, EventArgs.Empty)));
-        buttons.Children.Add(Button("Abrir a pasta dos modelos", (_, _) => OpenFolder(library.DownloadRoot)));
-        buttons.Children.Add(Button("Remover modelos baixados", (_, _) => Remove()));
-        buttons.Children.Add(Button("Fechar", (_, _) => Close()));
+        buttons.Children.Add(Button("Download all (offline use)", (_, _) => DownloadAllRequested?.Invoke(this, EventArgs.Empty)));
+        buttons.Children.Add(Button("Open the models folder", (_, _) => OpenFolder(library.DownloadRoot)));
+        buttons.Children.Add(Button("Remove downloaded models", (_, _) => Remove()));
+        buttons.Children.Add(Button("Close", (_, _) => Close()));
         root.Children.Add(buttons);
         Content = root;
         Fill();
@@ -81,7 +81,7 @@ public sealed class AboutWindow : Window
         IReadOnlyList<InstalledModel> installed = library.Installed();
         if (installed.Count == 0)
         {
-            list.Children.Add(Paragraph("Nenhum ainda: cada operação baixa os seus na primeira vez."));
+            list.Children.Add(Paragraph("None yet: each operation downloads its own on first use."));
         }
 
         foreach (InstalledModel model in installed)
@@ -100,7 +100,7 @@ public sealed class AboutWindow : Window
 
     private void Remove()
     {
-        if (MessageBox.Show(this, $"Apagar tudo o que foi baixado em\n{library.DownloadRoot}?\n\nCada operação baixa de novo na próxima vez.", "Remover modelos", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+        if (MessageBox.Show(this, $"Delete everything downloaded to\n{library.DownloadRoot}?\n\nEach operation downloads again next time.", "Remove models", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
         {
             library.RemoveDownloads();
             Fill();

@@ -15,15 +15,15 @@ public partial class MainWindow
 
     private static string Describe(ReconstructionStage stage) => stage switch
     {
-        ReconstructionStage.RemovingBackground => "Removendo o fundo",
-        ReconstructionStage.Encoding => "Lendo a foto (TripoSR)",
-        ReconstructionStage.SamplingDensity => "Calculando a forma",
-        ReconstructionStage.ExtractingSurface => "Extraindo a superfície",
-        ReconstructionStage.Colouring => "Colorindo",
-        ReconstructionStage.EnhancingPhoto => "Melhorando a foto (Real-ESRGAN)",
-        ReconstructionStage.ProjectingPhoto => "Aplicando as cores da foto",
-        ReconstructionStage.EstimatingDepth => "Estimando a profundidade",
-        _ => "Montando o relevo",
+        ReconstructionStage.RemovingBackground => "Removing the background",
+        ReconstructionStage.Encoding => "Reading the photo (TripoSR)",
+        ReconstructionStage.SamplingDensity => "Working out the shape",
+        ReconstructionStage.ExtractingSurface => "Extracting the surface",
+        ReconstructionStage.Colouring => "Colouring",
+        ReconstructionStage.EnhancingPhoto => "Enhancing the photo (Real-ESRGAN)",
+        ReconstructionStage.ProjectingPhoto => "Laying on the photo's colours",
+        ReconstructionStage.EstimatingDepth => "Estimating the depth",
+        _ => "Building the relief",
     };
 
     private static int TagOf(ComboBox box) => int.Parse((string)((ComboBoxItem)box.SelectedItem).Tag, System.Globalization.CultureInfo.InvariantCulture);
@@ -37,7 +37,7 @@ public partial class MainWindow
             DensityThreshold: (float)ObjectThreshold.Value,
             EnhancePhoto: enhance,
             ProjectPhoto: ObjectProjectPhoto.IsChecked == true);
-        await RunAsync("Objeto 3D", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync("3D Object", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
@@ -46,7 +46,7 @@ public partial class MainWindow
         ReliefRunOptions settings = new(
             new ReliefOptions(GridLongSide: TagOf(ReliefResolution), Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value),
             RemoveBackground: cutOut);
-        await RunAsync("Relevo", ReliefReconstruction.Models(cutOut), (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync("Relief", ReliefReconstruction.Models(cutOut), (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private async Task RunAsync(string title, IReadOnlyList<string> models, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
@@ -78,15 +78,15 @@ public partial class MainWindow
             ShowMesh(result.Mesh, result.Input, result.Reference, title);
             TimeSpan total = TimeSpan.FromTicks(result.Timings.Sum(t => t.Took.Ticks));
             string steps = string.Join(" · ", result.Timings.Select(t => $"{Describe(t.Stage).ToLowerInvariant()} {t.Took.TotalSeconds:0.0} s"));
-            Status($"{title} pronto em {total.TotalSeconds:0.0} s: {steps}.{(runner.Notice is { } notice ? " " + notice : "")}");
+            Status($"{title} ready in {total.TotalSeconds:0.0} s: {steps}.{(runner.Notice is { } notice ? " " + notice : "")}");
         }
         catch (OperationCanceledException)
         {
-            Status($"{title}: cancelado.");
+            Status($"{title}: cancelled.");
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
-            Status($"{title}: falhou.");
+            Status($"{title}: failed.");
             MessageBox.Show(this, error.Message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally
@@ -104,7 +104,7 @@ public partial class MainWindow
         ProgressText.Text = "";
         ProgressBar.Value = 0;
         PauseButton.Visibility = download ? Visibility.Visible : Visibility.Collapsed;
-        PauseButton.Content = "Pausar";
+        PauseButton.Content = "Pause";
         CancelButton.IsEnabled = true;
         bool idle = !on && photo is not null;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
@@ -117,7 +117,7 @@ public partial class MainWindow
     private void OnCancel(object sender, RoutedEventArgs e)
     {
         CancelButton.IsEnabled = false;
-        ProgressText.Text = "Cancelando…";
+        ProgressText.Text = "Cancelling…";
         pausing = false;
         work?.Cancel();
     }
@@ -138,7 +138,7 @@ public partial class MainWindow
         }
 
         DepthText.Text = $"{ReliefDepth.Value:P0}";
-        BaseText.Text = ReliefBase.Value < 0.005 ? "sem base" : $"{ReliefBase.Value:P0} da largura";
+        BaseText.Text = ReliefBase.Value < 0.005 ? "no base" : $"{ReliefBase.Value:P0} of the width";
     }
 
     private static IReadOnlyList<string> ObjectModels(bool enhance) =>

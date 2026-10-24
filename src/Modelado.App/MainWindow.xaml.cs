@@ -101,8 +101,8 @@ public partial class MainWindow : Window, IDisposable
         string models = string.Join(';', MeshImport.Extensions.Select(x => "*" + x));
         OpenFileDialog dialog = new()
         {
-            Title = "Abrir uma foto ou um modelo 3D",
-            Filter = $"Fotos e modelos 3D|{photos};{models}|Fotos|{photos}|Modelos 3D (GLB, OBJ, PLY, STL)|{models}|Todos os arquivos|*.*",
+            Title = "Open a photo or a 3D model",
+            Filter = $"Photos and 3D models|{photos};{models}|Photos|{photos}|3D models (GLB, OBJ, PLY, STL)|{models}|All files|*.*",
         };
         if (dialog.ShowDialog(this) == true)
         {
@@ -141,12 +141,12 @@ public partial class MainWindow : Window, IDisposable
         Mesh loaded;
         try
         {
-            Status($"Abrindo {Path.GetFileName(path)}…");
+            Status($"Opening {Path.GetFileName(path)}…");
             loaded = await Task.Run(() => MeshImport.Load(path)).ConfigureAwait(true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, $"Não foi possível abrir {Path.GetFileName(path)}.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, $"{Path.GetFileName(path)} could not be opened.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -155,8 +155,8 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{Path.GetFileName(path)} · Modelado";
         EmptyHint.Visibility = Visibility.Collapsed;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
-        ShowMesh(loaded, null, null, "Aberto");
-        Status($"{Path.GetFileName(path)}: {loaded.VertexCount:N0} vértices, {loaded.TriangleCount:N0} triângulos{(loaded.Texture is null ? "" : $", textura {loaded.Texture.Width} × {loaded.Texture.Height}")}{(loaded.DoubleSided ? ", superfície aberta" : ", fechado")}.");
+        ShowMesh(loaded, null, null, "Opened");
+        Status($"{Path.GetFileName(path)}: {loaded.VertexCount:N0} vertices, {loaded.TriangleCount:N0} triangles{(loaded.Texture is null ? "" : $", texture {loaded.Texture.Width} × {loaded.Texture.Height}")}{(loaded.DoubleSided ? ", open surface" : ", closed")}.");
     }
 
     private void OpenPhoto(string path)
@@ -172,7 +172,7 @@ public partial class MainWindow : Window, IDisposable
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            MessageBox.Show(this, $"Não foi possível abrir {Path.GetFileName(path)}.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, $"{Path.GetFileName(path)} could not be opened.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -191,7 +191,7 @@ public partial class MainWindow : Window, IDisposable
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
         ShowImage(photo);
-        Status($"{Path.GetFileName(path)}: {photo.Width} × {photo.Height}{(photo.HasTransparency ? ", com transparência (o recorte dela é usado)" : "")}.");
+        Status($"{Path.GetFileName(path)}: {photo.Width} × {photo.Height}{(photo.HasTransparency ? ", with transparency (its cut-out is used)" : "")}.");
     }
 
     // A new model, from a reconstruction or a file: the history starts over and the view resets.
@@ -213,7 +213,7 @@ public partial class MainWindow : Window, IDisposable
         ViewChoice.IsEnabled = ExportButton.IsEnabled = ResetViewButton.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
-        MeshText.Text = $"{result.VertexCount:N0} vértices · {result.TriangleCount:N0} triângulos{(result.DoubleSided ? " · aberto" : "")}";
+        MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();
         RequestRender();
     }
@@ -366,9 +366,9 @@ public partial class MainWindow : Window, IDisposable
 
         SaveFileDialog dialog = new()
         {
-            Title = "Exportar o modelo 3D",
-            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "modelo"),
-            Filter = "GLB, glTF binário (Windows, Blender, web)|*.glb|OBJ com textura ou cores|*.obj|STL para impressão 3D (em mm)|*.stl|PLY com cores (MeshLab)|*.ply",
+            Title = "Save the 3D model",
+            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "model"),
+            Filter = "GLB, binary glTF (Windows, Blender, web)|*.glb|OBJ with texture or colours|*.obj|STL for 3D printing (in mm)|*.stl|PLY with colours (MeshLab)|*.ply",
             AddExtension = true,
         };
         if (dialog.ShowDialog(this) != true)
@@ -381,17 +381,17 @@ public partial class MainWindow : Window, IDisposable
             // Slicers read STL as millimetres: 100 mm on the largest side. Elsewhere 1 unit (a metre in glTF).
             bool stl = MeshExport.FormatOf(dialog.FileName) == MeshFormat.Stl;
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(stl ? 100 : 1), dialog.FileName);
-            Status($"Salvo: {string.Join(", ", written.Select(Path.GetFileName))}{(stl ? " (100 mm no lado maior; o fatiador pode escalar)" : "")}.");
+            Status($"Saved: {string.Join(", ", written.Select(Path.GetFileName))}{(stl ? " (100 mm on the longest side; the slicer can rescale it)" : "")}.");
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
         {
-            MessageBox.Show(this, $"Não foi possível salvar.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, $"The model could not be saved.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
     private void OnAbout(object sender, RoutedEventArgs e)
     {
-        AboutWindow about = new(library, provider, ModelDownloads.Embedded is null ? ModelDownloads.LatestManifestUrl : "embutido nesta versão") { Owner = this };
+        AboutWindow about = new(library, provider, ModelDownloads.Embedded is null ? ModelDownloads.LatestManifestUrl : "built into this version") { Owner = this };
         about.DownloadAllRequested += async (_, _) =>
         {
             about.Close();
