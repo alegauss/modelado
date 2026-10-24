@@ -10,6 +10,7 @@ CPU), mas em vez de melhorar a imagem, ele gera geometria. Nenhuma foto sai do P
 | --- | --- | --- |
 | **Objeto 3D** | U²-Net (recorte) → TripoSR (encoder + decoder) → marching cubes | Malha fechada, com frente, lados e costas, cores por vértice |
 | **Relevo** | Depth Anything V2 Small (+ U²-Net opcional) | Baixo-relevo texturizado com a foto; com base sólida, pronto para imprimir |
+| **Editar e aperfeiçoar** | Real-ESRGAN x4plus + ferramentas de geometria | Qualquer modelo gerado ou aberto (GLB, OBJ, PLY, STL): simplificar, subdividir, suavizar, fechar buracos, base plana, girar, espelhar, textura 4× mais nítida, cores da foto |
 
 O resultado aparece num visualizador 3D (arrastar gira, roda do mouse aproxima, duplo clique
 centraliza; cores, argila ou arestas) e é exportado como **GLB** (glTF binário: Visualizador 3D
@@ -17,6 +18,39 @@ do Windows, Blender, web), **OBJ** (com .mtl e textura, ou cores por vértice), 
 3D, em milímetros) ou **PLY** (com cores: MeshLab, CloudCompare).
 
 ![Robô do exemplo do TripoSR reconstruído pelo Modelado](docs/robot.png)
+
+## Editar e aperfeiçoar
+
+O painel **Editar e aperfeiçoar** trabalha sobre o modelo mostrado: o que acabou de ser gerado
+ou um modelo 3D aberto com **Abrir…** (GLB com texturas, cores e hierarquia de nós; OBJ com
+.mtl e textura ou cores por vértice; PLY ASCII ou binário com cores; STL ASCII ou binário).
+Cada passo vira uma versão nova: **Desfazer** (Ctrl+Z) e **Refazer** (Ctrl+Y) andam entre elas.
+
+| Ferramenta | O que faz |
+| --- | --- |
+| Simplificar | Reduz os triângulos à fração escolhida por colapso de arestas com quádricas de erro (Garland-Heckbert), mantendo bordas, sem dobrar triângulos e mantendo uma malha fechada fechada. O robô do TripoSR de 151 mil para 22 mil triângulos em 0,8 s, ainda fechado |
+| Subdividir | 4× os triângulos, arredondando: superfície mais lisa para imprimir grande |
+| Suavizar | Taubin λ\|μ: tira serrilhado e ruído sem encolher o modelo |
+| Fechar buracos | Tampa cada furo, deixando a malha estanque; num relevo sem base a borda externa fica aberta |
+| Remover pedaços soltos | Apaga fragmentos menores que 5 % da maior parte |
+| Base plana | Achata os 3 % de baixo, para o modelo ficar em pé na impressora |
+| Girar e espelhar | 90° em X, Y ou Z (modelos importados deitados) e espelho esquerda-direita |
+| **Textura 4× mais nítida (IA)** | Real-ESRGAN x4plus (BSD-3-Clause) aumenta e limpa a textura de relevos e de modelos abertos, em blocos sobrepostos (sem emendas), até 4096 px |
+| **Melhorar foto pequena (IA)** | No Objeto 3D: a foto com menos de 1024 px passa pelo Real-ESRGAN antes do recorte e da reconstrução |
+| **Cores nítidas da foto** | O TripoSR colore a partir de um triplano de 64 × 64, o que borra olhos, letras e bordas. O Modelado projeta a própria foto de volta na frente do objeto (ajustando o contorno da malha ao do objeto na foto, só onde a superfície está visível e voltada para a câmera, com transição suave para as cores do modelo nos lados). Ligado por padrão; **Reaplicar as cores da foto** refaz depois de editar |
+
+Sobre IA que edite malhas por instrução ("deixe mais alto", "troque o material"): os modelos
+que fazem isso hoje são grandes modelos de difusão que não rodam localmente em ONNX e, em geral,
+não têm licença aberta para uso comercial; por isso a edição aqui é geométrica, e a IA entra
+onde ela melhora de verdade o resultado: a textura, a foto de entrada e as cores.
+
+Na linha de comando:
+
+```
+modelado-cli edit robo.glb -o robo.stl --simplify 0.15 --fill-holes --flatten 0.03 --size 100
+modelado-cli edit relevo.glb -o relevo-nitido.glb --upscale-texture
+modelado-cli object foto.jpg -o objeto.glb --enhance
+```
 
 ## Requisitos
 
@@ -27,7 +61,7 @@ do Windows, Blender, web), **OBJ** (com .mtl e textura, ou cores por vértice), 
 - **Memória:** o encoder do TripoSR é o modelo pesado: 0,8 GB em FP16 (padrão na GPU) ou 1,7 GB
   em FP32. Conte com uns 4 GB livres de RAM ou de memória de vídeo para o Objeto 3D.
 - **Disco:** 1,1 GB de modelos para o Objeto 3D em qualidade padrão (2 GB em alta), 50 a 100 MB
-  para o Relevo.
+  para o Relevo e 34 a 67 MB para o Real-ESRGAN, baixado só quando uma melhoria por IA é usada.
 
 ## Usar
 
@@ -96,7 +130,7 @@ O que ele faz, passo a passo (cada um pode ser rodado sozinho):
    .venv\Scripts\python -m pip install -r scripts\requirements.txt
    ```
 
-2. **Baixar os pesos** (cerca de 1,9 GB, em `.cache\weights`): só biblioteca padrão. Cada
+2. **Baixar os pesos** (cerca de 2 GB, em `.cache\weights`): só biblioteca padrão. Cada
    arquivo está fixado num commit em `scripts\model-sources.json`, com tamanho e SHA-256; um
    download interrompido continua de onde parou e um arquivo já correto não é baixado de novo.
 
@@ -125,6 +159,7 @@ O que ele faz, passo a passo (cada um pode ser rodado sozinho):
    | triposr-decoder | FP32 | densidade 9·10⁻⁵ (relativo), cor 3·10⁻⁵ |
    | depth-anything-v2-small | FP32 / FP16 | 120 dB / 71,6 dB de PSNR na profundidade normalizada |
    | u2net | FP32 (export do rembg) | IoU 0,979 com o recorte original da cadeira |
+   | realesrgan-x4plus | FP32 / FP16 | 120 dB / 75,9 dB de PSNR, numa entrada retangular (altura e largura dinâmicas) |
 
 4. **Publicar** em [alegauss/modelado-models](https://huggingface.co/alegauss/modelado-models)
    com um token de escrita do Hugging Face (huggingface.co/settings/tokens), lido de um arquivo
@@ -197,6 +232,7 @@ Tempos medidos na CPU (4 núcleos, sem GPU), com os modelos FP32:
 | DINO ViT-B/16 (configuração do encoder do TripoSR) | Apache-2.0 |
 | Depth Anything V2 **Small** | Apache-2.0 (Base e Large são CC BY-NC 4.0 e por isso não são usados) |
 | U²-Net | Apache-2.0 (pesos), MIT (export ONNX do rembg) |
+| Real-ESRGAN x4plus | BSD-3-Clause |
 
 Todos permitem redistribuição e uso comercial, por isso todos são hospedados no repositório
 de modelos do Hugging Face. O código do TripoSR usado na exportação está em

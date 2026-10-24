@@ -114,7 +114,7 @@ class SelectionTests(unittest.TestCase):
 
     def test_test_images_go_into_their_folder(self):
         images = [s for s in dm.select(self.sources, [], []) if s.name.startswith("image-")]
-        self.assertEqual(3, len(images))
+        self.assertEqual(4, len(images))
         self.assertTrue(all(s.file.startswith("test-images/") for s in images))
 
     def test_unknown_name_is_refused(self):
@@ -138,7 +138,7 @@ class SelectionTests(unittest.TestCase):
         data = json.loads(dm.SOURCES.read_text(encoding="utf-8"))
         for model in data["models"]:
             with self.subTest(model["name"]):
-                self.assertRegex(model["license"], r"^(MIT|Apache-2\.0)")
+                self.assertRegex(model["license"], r"^(MIT|Apache-2\.0|BSD-3-Clause)")
                 self.assertNotIn("non-commercial", model["license"].lower())
 
 

@@ -30,6 +30,8 @@ public partial class MainWindow : Window, IDisposable
     private Mesh? mesh;
     private MeshRenderer? renderer;
     private RgbaImage? modelInput;
+    private RgbaImage? reference;
+    private readonly MeshHistory history = new();
     private OrbitCamera camera = new();
 
     private WriteableBitmap? bitmap;
@@ -72,7 +74,7 @@ public partial class MainWindow : Window, IDisposable
             await RefreshModelStatusAsync().ConfigureAwait(true);
             if (options.Open is { } open)
             {
-                OpenPhoto(open);
+                await OpenAsync(open).ConfigureAwait(true);
             }
         };
     }
@@ -93,25 +95,68 @@ public partial class MainWindow : Window, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void OnOpen(object sender, RoutedEventArgs e)
+    private async void OnOpen(object sender, RoutedEventArgs e)
     {
+        string photos = string.Join(';', ImageCodec.Extensions.Select(x => "*" + x));
+        string models = string.Join(';', MeshImport.Extensions.Select(x => "*" + x));
         OpenFileDialog dialog = new()
         {
-            Title = "Abrir a foto de um objeto",
-            Filter = "Imagens|" + string.Join(';', ImageCodec.Extensions.Select(x => "*" + x)) + "|Todos os arquivos|*.*",
+            Title = "Abrir uma foto ou um modelo 3D",
+            Filter = $"Fotos e modelos 3D|{photos};{models}|Fotos|{photos}|Modelos 3D (GLB, OBJ, PLY, STL)|{models}|Todos os arquivos|*.*",
         };
         if (dialog.ShowDialog(this) == true)
         {
-            OpenPhoto(dialog.FileName);
+            await OpenAsync(dialog.FileName).ConfigureAwait(true);
         }
     }
 
-    private void OnDrop(object sender, DragEventArgs e)
+    private async void OnDrop(object sender, DragEventArgs e)
     {
         if (e.Data.GetData(DataFormats.FileDrop) is string[] { Length: > 0 } files)
         {
-            OpenPhoto(files[0]);
+            await OpenAsync(files[0]).ConfigureAwait(true);
         }
+    }
+
+    private async Task OpenAsync(string path)
+    {
+        if (MeshImport.Extensions.Contains(Path.GetExtension(path).ToLowerInvariant()))
+        {
+            await OpenModelAsync(path).ConfigureAwait(true);
+        }
+        else
+        {
+            OpenPhoto(path);
+        }
+    }
+
+    // A model to edit and improve: no photo, so the two reconstructions wait for one.
+    private async Task OpenModelAsync(string path)
+    {
+        if (busy)
+        {
+            return;
+        }
+
+        Mesh loaded;
+        try
+        {
+            Status($"Abrindo {Path.GetFileName(path)}…");
+            loaded = await Task.Run(() => MeshImport.Load(path)).ConfigureAwait(true);
+        }
+        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            MessageBox.Show(this, $"Não foi possível abrir {Path.GetFileName(path)}.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        photo = null;
+        photoPath = path;
+        Title = $"{Path.GetFileName(path)} · Modelado";
+        EmptyHint.Visibility = Visibility.Collapsed;
+        ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
+        ShowMesh(loaded, null, null, "Aberto");
+        Status($"{Path.GetFileName(path)}: {loaded.VertexCount:N0} vértices, {loaded.TriangleCount:N0} triângulos{(loaded.Texture is null ? "" : $", textura {loaded.Texture.Width} × {loaded.Texture.Height}")}{(loaded.DoubleSided ? ", superfície aberta" : ", fechado")}.");
     }
 
     private void OpenPhoto(string path)
@@ -135,6 +180,8 @@ public partial class MainWindow : Window, IDisposable
         mesh = null;
         renderer = null;
         modelInput = null;
+        reference = null;
+        UpdateEditButtons();
         Title = $"{Path.GetFileName(path)} · Modelado";
         EmptyHint.Visibility = Visibility.Collapsed;
         MeshChip.Visibility = Visibility.Collapsed;
@@ -147,17 +194,27 @@ public partial class MainWindow : Window, IDisposable
         Status($"{Path.GetFileName(path)}: {photo.Width} × {photo.Height}{(photo.HasTransparency ? ", com transparência (o recorte dela é usado)" : "")}.");
     }
 
-    private void ShowMesh(Mesh result, RgbaImage input)
+    // A new model, from a reconstruction or a file: the history starts over and the view resets.
+    private void ShowMesh(Mesh result, RgbaImage? input, RgbaImage? projectFrom, string label)
+    {
+        modelInput = input;
+        reference = projectFrom;
+        history.Reset(result, label);
+        camera = new OrbitCamera();
+        ViewChoice.SelectedIndex = ViewChoice.SelectedIndex == 3 ? 0 : ViewChoice.SelectedIndex;
+        Display(result);
+    }
+
+    // The model now shown: after a new one, an edit, an undo or a redo; the camera stays.
+    private void Display(Mesh result)
     {
         mesh = result;
-        modelInput = input;
         renderer = new MeshRenderer(result);
-        camera = new OrbitCamera();
         ViewChoice.IsEnabled = ExportButton.IsEnabled = ResetViewButton.IsEnabled = true;
-        ViewChoice.SelectedIndex = ViewChoice.SelectedIndex == 3 ? 0 : ViewChoice.SelectedIndex;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
-        MeshText.Text = $"{result.VertexCount:N0} vértices · {result.TriangleCount:N0} triângulos";
+        MeshText.Text = $"{result.VertexCount:N0} vértices · {result.TriangleCount:N0} triângulos{(result.DoubleSided ? " · aberto" : "")}";
+        UpdateEditButtons();
         RequestRender();
     }
 
@@ -338,7 +395,7 @@ public partial class MainWindow : Window, IDisposable
         about.DownloadAllRequested += async (_, _) =>
         {
             about.Close();
-            await DownloadAsync([.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Distinct()]).ConfigureAwait(true);
+            await DownloadAsync([.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
         };
         about.ShowDialog();
         library.Refresh();

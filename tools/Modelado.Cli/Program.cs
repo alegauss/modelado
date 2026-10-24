@@ -15,11 +15,23 @@ const string Usage = """
         --threshold D        densidade da superfície (padrão do modelo, 25)
         --step N             passo da amostragem grossa, 1 = completa; padrão 2
         --smooth N           passes de suavização; padrão 2
+        --enhance            melhora uma foto pequena com Real-ESRGAN antes
+        --no-project         não reprojeta as cores da foto na frente do objeto
     modelado-cli relief <foto> -o <saida> [opções]
         --grid N             vértices no lado maior; padrão 256
         --depth F            altura do relevo, fração da largura; padrão 0.25
         --base F             espessura da base sólida, fração da largura; 0 = superfície aberta
         --remove-background  só o objeto, sem o fundo
+    modelado-cli edit <modelo.glb|obj|ply|stl> -o <saida> [edições, aplicadas nesta ordem]
+        --rotate x:90        gira em torno de x, y ou z (graus)
+        --mirror             espelha da esquerda para a direita
+        --remove-pieces F    remove pedaços menores que F do maior (ex.: 0.05)
+        --fill-holes         fecha os buracos
+        --simplify N|F       N triângulos, ou a fração F (ex.: 0.25)
+        --subdivide          4× os triângulos, arredondando
+        --smooth N           passes de suavização (Taubin)
+        --flatten F          base plana a F da altura (ex.: 0.03)
+        --upscale-texture    aumenta a textura 4× com Real-ESRGAN
     modelado-cli download [object|relief|all]   baixa os modelos que faltam
     modelado-cli models                         lista os modelos instalados
 
@@ -41,7 +53,8 @@ for (int i = 1; i < args.Length; i++)
     if (args[i].StartsWith("--", StringComparison.Ordinal) || args[i] == "-o")
     {
         string key = args[i] == "-o" ? "--out" : args[i];
-        bool flag = key is "--keep-background" or "--remove-background" or "--high";
+        bool flag = key is "--keep-background" or "--remove-background" or "--high" or "--enhance" or "--no-project"
+            or "--mirror" or "--fill-holes" or "--subdivide" or "--upscale-texture";
         options[key] = flag ? "true" : i + 1 < args.Length ? args[++i] : throw new ArgumentException($"{key} needs a value.");
     }
     else
@@ -69,9 +82,9 @@ try
     switch (args[0])
     {
         case "models":
-            foreach (InstalledModel model in library.Installed())
+            foreach (InstalledModel installed in library.Installed())
             {
-                Console.WriteLine($"{model.Name,-26} {string.Join(", ", model.Variants),-11} {model.Meta.Upstream.License}  ({model.Root})");
+                Console.WriteLine($"{installed.Name,-26} {string.Join(", ", installed.Variants),-11} {installed.Meta.Upstream.License}  ({installed.Root})");
             }
 
             return 0;
@@ -82,7 +95,7 @@ try
             {
                 "object" => ObjectReconstruction.Models,
                 "relief" => ReliefReconstruction.Models(true),
-                "all" => ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Distinct(),
+                "all" => ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct(),
                 _ => throw new ArgumentException($"download {which}: use object, relief or all."),
             };
             return await Download(runner, names.ToList()).ConfigureAwait(false);
@@ -91,7 +104,9 @@ try
             string photoPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which photo? " + Usage);
             string output = Get("--out", null) ?? throw new ArgumentException("-o <saida.glb> is required.");
             MeshExport.FormatOf(output);
-            IReadOnlyList<string> needed = args[0] == "object" ? ObjectReconstruction.Models : ReliefReconstruction.Models(options.ContainsKey("--remove-background"));
+            IReadOnlyList<string> needed = args[0] == "object"
+                ? [.. ObjectReconstruction.Models, .. options.ContainsKey("--enhance") ? [Upscaling.Model] : Array.Empty<string>()]
+                : ReliefReconstruction.Models(options.ContainsKey("--remove-background"));
             if (runner.Missing(needed).Count > 0 && await Download(runner, needed).ConfigureAwait(false) != 0)
             {
                 return 1;
@@ -106,7 +121,9 @@ try
                     RemoveBackground: !options.ContainsKey("--keep-background"),
                     DensityThreshold: options.ContainsKey("--threshold") ? (float)Number("--threshold", 25) : null,
                     CoarseStep: Int("--step", 2),
-                    SmoothingIterations: Int("--smooth", 2)), progress)
+                    SmoothingIterations: Int("--smooth", 2),
+                    EnhancePhoto: options.ContainsKey("--enhance"),
+                    ProjectPhoto: !options.ContainsKey("--no-project")), progress)
                 : ReliefReconstruction.Run(runner, photo, new ReliefRunOptions(
                     new ReliefOptions(GridLongSide: Int("--grid", 256), Depth: (float)Number("--depth", 0.25), BaseThickness: (float)Number("--base", 0)),
                     RemoveBackground: options.ContainsKey("--remove-background")), progress);
@@ -116,21 +133,45 @@ try
                 Console.WriteLine($"  {stage,-20} {took.TotalSeconds,6:0.00} s");
             }
 
-            Mesh mesh = options.ContainsKey("--size") ? result.Mesh.Placed((float)Number("--size", 1)) : result.Mesh;
-            IReadOnlyList<string> written = MeshExport.Save(mesh, output);
-            Console.WriteLine($"{mesh.VertexCount:N0} vértices, {mesh.TriangleCount:N0} triângulos em {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
+            Save(result.Mesh, output, total);
             if (runner.Notice is { } notice)
             {
                 Console.WriteLine(notice);
             }
 
-            if (Get("--preview", null) is { } preview)
+            return 0;
+
+        case "edit":
+            string modelPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which model? " + Usage);
+            string edited = Get("--out", null) ?? throw new ArgumentException("-o <saida.glb> is required.");
+            MeshExport.FormatOf(edited);
+            if (options.ContainsKey("--upscale-texture") && runner.Missing([Upscaling.Model]).Count > 0 && await Download(runner, [Upscaling.Model]).ConfigureAwait(false) != 0)
             {
-                MeshRenderer renderer = new(mesh);
-                ImageCodec.SavePng(renderer.RenderImage(800, 800, new OrbitCamera(Yaw: 25, Pitch: 15)), preview);
-                Console.WriteLine($"vista -> {preview}");
+                return 1;
             }
 
+            Stopwatch clock = Stopwatch.StartNew();
+            Mesh model = MeshImport.Load(modelPath);
+            Console.WriteLine($"{Path.GetFileName(modelPath)}: {model.VertexCount:N0} vértices, {model.TriangleCount:N0} triângulos{(model.Texture is null ? "" : $", textura {model.Texture.Width} × {model.Texture.Height}")}");
+            model = Edit(model, "--rotate", value =>
+            {
+                string[] parts = value.Split(':');
+                Axis axis = parts[0].ToUpperInvariant() switch { "X" => Axis.X, "Y" => Axis.Y, "Z" => Axis.Z, _ => throw new ArgumentException($"--rotate {value}: use x:90, y:180, z:-90.") };
+                return MeshEdit.Rotate(model, axis, float.Parse(parts[1], CultureInfo.InvariantCulture));
+            });
+            model = Edit(model, "--mirror", _ => MeshEdit.Mirror(model));
+            model = Edit(model, "--remove-pieces", value => MeshCleanup.RemoveSmallPieces(model, double.Parse(value, CultureInfo.InvariantCulture)));
+            model = Edit(model, "--fill-holes", _ => MeshEdit.FillHoles(model).Mesh);
+            model = Edit(model, "--simplify", value =>
+            {
+                double amount = double.Parse(value, CultureInfo.InvariantCulture);
+                return MeshEdit.Simplify(model, amount < 1 ? (int)(model.TriangleCount * amount) : (int)amount);
+            });
+            model = Edit(model, "--subdivide", _ => MeshEdit.Subdivide(model));
+            model = Edit(model, "--smooth", value => MeshCleanup.Smooth(model, int.Parse(value, CultureInfo.InvariantCulture)));
+            model = Edit(model, "--flatten", value => MeshEdit.FlattenBase(model, float.Parse(value, CultureInfo.InvariantCulture)));
+            model = Edit(model, "--upscale-texture", _ => Upscaling.UpscaleTexture(runner, model));
+            Save(model, edited, clock);
             return 0;
 
         default:
@@ -142,6 +183,32 @@ catch (Exception error) when (error is ArgumentException or InvalidDataException
 {
     await Console.Error.WriteLineAsync($"ERRO {error.Message}").ConfigureAwait(false);
     return 1;
+}
+
+void Save(Mesh mesh, string output, Stopwatch total)
+{
+    mesh = options.ContainsKey("--size") ? mesh.Placed((float)Number("--size", 1)) : mesh;
+    IReadOnlyList<string> written = MeshExport.Save(mesh, output);
+    Console.WriteLine($"{mesh.VertexCount:N0} vértices, {mesh.TriangleCount:N0} triângulos em {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
+    if (Get("--preview", null) is { } preview)
+    {
+        MeshRenderer renderer = new(mesh);
+        ImageCodec.SavePng(renderer.RenderImage(800, 800, new OrbitCamera(Yaw: 25, Pitch: 15)), preview);
+        Console.WriteLine($"vista -> {preview}");
+    }
+}
+
+Mesh Edit(Mesh mesh, string key, Func<string, Mesh> edit)
+{
+    if (!options.TryGetValue(key, out string? value))
+    {
+        return mesh;
+    }
+
+    Stopwatch clock = Stopwatch.StartNew();
+    Mesh result = edit(value ?? "");
+    Console.WriteLine($"  {key,-18} {result.TriangleCount,10:N0} triângulos  {clock.Elapsed.TotalSeconds,6:0.00} s");
+    return result;
 }
 
 string? Get(string key, string? fallback) => options.TryGetValue(key, out string? value) ? value : fallback;

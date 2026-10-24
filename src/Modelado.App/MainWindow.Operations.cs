@@ -20,6 +20,8 @@ public partial class MainWindow
         ReconstructionStage.SamplingDensity => "Calculando a forma",
         ReconstructionStage.ExtractingSurface => "Extraindo a superfície",
         ReconstructionStage.Colouring => "Colorindo",
+        ReconstructionStage.EnhancingPhoto => "Melhorando a foto (Real-ESRGAN)",
+        ReconstructionStage.ProjectingPhoto => "Aplicando as cores da foto",
         ReconstructionStage.EstimatingDepth => "Estimando a profundidade",
         _ => "Montando o relevo",
     };
@@ -28,11 +30,14 @@ public partial class MainWindow
 
     private async void OnGenerateObject(object sender, RoutedEventArgs e)
     {
+        bool enhance = ObjectEnhancePhoto.IsChecked == true;
         ObjectOptions settings = new(
             Resolution: TagOf(ObjectResolution),
             RemoveBackground: ObjectRemoveBackground.IsChecked == true,
-            DensityThreshold: (float)ObjectThreshold.Value);
-        await RunAsync("Objeto 3D", ObjectReconstruction.Models, (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+            DensityThreshold: (float)ObjectThreshold.Value,
+            EnhancePhoto: enhance,
+            ProjectPhoto: ObjectProjectPhoto.IsChecked == true);
+        await RunAsync("Objeto 3D", ObjectModels(enhance), (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
@@ -70,7 +75,7 @@ public partial class MainWindow
         try
         {
             ReconstructionResult result = await Task.Run(() => operation(input, progress, cancel.Token), cancel.Token).ConfigureAwait(true);
-            ShowMesh(result.Mesh, result.Input);
+            ShowMesh(result.Mesh, result.Input, result.Reference, title);
             TimeSpan total = TimeSpan.FromTicks(result.Timings.Sum(t => t.Took.Ticks));
             string steps = string.Join(" · ", result.Timings.Select(t => $"{Describe(t.Stage).ToLowerInvariant()} {t.Took.TotalSeconds:0.0} s"));
             Status($"{title} pronto em {total.TotalSeconds:0.0} s: {steps}.{(runner.Notice is { } notice ? " " + notice : "")}");
@@ -103,6 +108,7 @@ public partial class MainWindow
         CancelButton.IsEnabled = true;
         bool idle = !on && photo is not null;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
+        UpdateEditButtons();
         OpenButton.IsEnabled = !on;
         ExportButton.IsEnabled = !on && mesh is not null;
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
@@ -134,6 +140,11 @@ public partial class MainWindow
         DepthText.Text = $"{ReliefDepth.Value:P0}";
         BaseText.Text = ReliefBase.Value < 0.005 ? "sem base" : $"{ReliefBase.Value:P0} da largura";
     }
+
+    private static IReadOnlyList<string> ObjectModels(bool enhance) =>
+        enhance ? [.. ObjectReconstruction.Models, Upscaling.Model] : ObjectReconstruction.Models;
+
+    private async void OnEnhanceChanged(object sender, RoutedEventArgs e) => await RefreshModelStatusAsync().ConfigureAwait(true);
 
     private async void OnReliefCutOutChanged(object sender, RoutedEventArgs e) => await RefreshModelStatusAsync().ConfigureAwait(true);
 

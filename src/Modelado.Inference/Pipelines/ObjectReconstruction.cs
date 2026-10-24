@@ -9,6 +9,9 @@ namespace Modelado.Inference.Pipelines;
 /// <summary>The steps a reconstruction reports, which the app names.</summary>
 public enum ReconstructionStage
 {
+    /// <summary>Real-ESRGAN is sharpening a small photo before anything reads it.</summary>
+    EnhancingPhoto,
+
     /// <summary>U-2-Net is cutting the object out.</summary>
     RemovingBackground,
 
@@ -23,6 +26,9 @@ public enum ReconstructionStage
 
     /// <summary>The decoder is colouring the vertices.</summary>
     Colouring,
+
+    /// <summary>The photo's colours are laid on the side it shows.</summary>
+    ProjectingPhoto,
 
     /// <summary>Depth Anything is estimating depth.</summary>
     EstimatingDepth,
@@ -44,6 +50,8 @@ public readonly record struct ReconstructionProgress(ReconstructionStage Stage, 
 /// <param name="CoarseStep">See <see cref="FieldSampler"/>: 1 evaluates every grid point, 2 about a quarter of them.</param>
 /// <param name="SmoothingIterations">Taubin smoothing passes after marching cubes.</param>
 /// <param name="KeepPieces">Pieces smaller than this share of the largest are dropped.</param>
+/// <param name="EnhancePhoto">Upscale a photo smaller than 1024 px with Real-ESRGAN first (needs <see cref="Upscaling.Model"/>).</param>
+/// <param name="ProjectPhoto">Lay the photo's colours on the side it shows (<see cref="ColorProjection"/>).</param>
 public sealed record ObjectOptions(
     int Resolution = 256,
     bool RemoveBackground = true,
@@ -51,13 +59,16 @@ public sealed record ObjectOptions(
     float? DensityThreshold = null,
     int CoarseStep = 2,
     int SmoothingIterations = 2,
-    double KeepPieces = 0.05);
+    double KeepPieces = 0.05,
+    bool EnhancePhoto = false,
+    bool ProjectPhoto = true);
 
 /// <summary>What a reconstruction produced.</summary>
 /// <param name="Mesh">The model.</param>
 /// <param name="Input">What the model was shown: the object framed on grey, or the photo the relief was built from.</param>
 /// <param name="Timings">Each step's duration, for the log.</param>
-public sealed record ReconstructionResult(Mesh Mesh, RgbaImage Input, IReadOnlyList<(ReconstructionStage Stage, TimeSpan Took)> Timings);
+/// <param name="Reference">The object cut out and framed as the model saw it, with its transparency, for projecting its colours again later; null for a relief.</param>
+public sealed record ReconstructionResult(Mesh Mesh, RgbaImage Input, IReadOnlyList<(ReconstructionStage Stage, TimeSpan Took)> Timings, RgbaImage? Reference = null);
 
 /// <summary>
 /// A full 3D object from one photo with TripoSR (Stability AI and Tripo AI, MIT): the object is
@@ -109,6 +120,14 @@ public static class ObjectReconstruction
         int chunk = decoderMeta.Params.TryGetValue("chunk", out double c) ? (int)c : 262144;
 
         // 1. The object, cut out and framed as TripoSR saw its training renders.
+        if (options.EnhancePhoto && Math.Max(photo.Width, photo.Height) < 1024)
+        {
+            progress?.Report(new(ReconstructionStage.EnhancingPhoto, 0));
+            IProgress<double>? enhancing = progress is null ? null : new Relay(f => progress.Report(new(ReconstructionStage.EnhancingPhoto, f)));
+            photo = Upscaling.Upscale(runner, photo, 2048, enhancing, cancellation);
+            Mark(ReconstructionStage.EnhancingPhoto);
+        }
+
         // A photo that already has transparency (a PNG cut out elsewhere) is trusted as it is.
         RgbaImage cutout = photo;
         if (options.RemoveBackground && !photo.HasTransparency)
@@ -185,7 +204,17 @@ public static class ObjectReconstruction
 
         mesh = new Mesh(mesh.Positions, mesh.Triangles, colours).Transformed(ToYUp);
         Mark(ReconstructionStage.Colouring);
-        return new ReconstructionResult(mesh, input, timings);
+
+        // 6. The photo's own colours on the side it shows, sharper than the triplane's.
+        RgbaImage? reference = framed.HasTransparency ? ImageOps.Resize(framed, side, side) : null;
+        if (options.ProjectPhoto && reference is not null)
+        {
+            progress?.Report(new(ReconstructionStage.ProjectingPhoto, 0));
+            mesh = ColorProjection.Project(mesh, reference).Mesh;
+            Mark(ReconstructionStage.ProjectingPhoto);
+        }
+
+        return new ReconstructionResult(mesh, input, timings, reference);
 
         void Density(ReadOnlySpan<float> batchPoints, Span<float> values)
         {

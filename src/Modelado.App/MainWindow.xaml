@@ -21,10 +21,12 @@
 
     <!-- Toolbar -->
     <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="12,10,12,6">
-      <Button x:Name="OpenButton" Content="Abrir foto…" Padding="14,6" Click="OnOpen"
-              ToolTip="Uma foto de um objeto (PNG, JPEG, WebP). Também dá para arrastar a foto para a janela. Ctrl+O" />
+      <Button x:Name="OpenButton" Content="Abrir…" Padding="14,6" Click="OnOpen"
+              ToolTip="A foto de um objeto (PNG, JPEG, WebP) para gerar um modelo, ou um modelo 3D (GLB, OBJ, PLY, STL) para editar e aperfeiçoar. Também dá para arrastar o arquivo para a janela. Ctrl+O" />
       <Button x:Name="ExportButton" Content="Exportar…" Padding="14,6" Margin="8,0,0,0" Click="OnExport" IsEnabled="False"
               ToolTip="Salva o modelo como GLB, OBJ, PLY ou STL. Ctrl+S" />
+      <Button x:Name="UndoButton" Content="Desfazer" Padding="12,6" Margin="8,0,0,0" Click="OnUndo" IsEnabled="False" ToolTip="Volta à versão anterior do modelo. Ctrl+Z" />
+      <Button x:Name="RedoButton" Content="Refazer" Padding="12,6" Margin="4,0,0,0" Click="OnRedo" IsEnabled="False" ToolTip="Ctrl+Y" />
       <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
       <TextBlock Text="Ver:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
       <ComboBox x:Name="ViewChoice" Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
@@ -47,7 +49,7 @@
             MouseWheel="OnViewportMouseWheel">
         <Image x:Name="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
         <StackPanel x:Name="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
-          <TextBlock Text="Abra ou arraste a foto de um objeto" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
+          <TextBlock Text="Abra ou arraste a foto de um objeto, ou um modelo 3D" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
           <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="#FFA8ADB5"
                      Text="Melhor com um único objeto inteiro, centralizado, sobre um fundo simples. Tudo roda neste computador: nenhuma foto sai dele." />
         </StackPanel>
@@ -81,6 +83,10 @@
                     ToolTip="Mais baixo engorda o objeto e fecha buracos; mais alto afina e separa partes. 25 é o do TripoSR." />
             <CheckBox x:Name="ObjectRemoveBackground" Content="Remover o fundo da foto (U²-Net)" IsChecked="True" Margin="0,8,0,0"
                       ToolTip="Desligue só para um PNG já recortado, com transparência: esse é usado como está." />
+            <CheckBox x:Name="ObjectProjectPhoto" Content="Cores nítidas da foto na frente" IsChecked="True" Margin="0,4,0,0"
+                      ToolTip="O TripoSR colore a partir de uma grade de 64 × 64; isto repõe as cores da própria foto no lado que ela mostra." />
+            <CheckBox x:Name="ObjectEnhancePhoto" Content="Melhorar foto pequena antes (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
+                      ToolTip="Para fotos com menos de 1024 px ou com ruído: aumenta 4× com IA antes de recortar e reconstruir." />
             <Button x:Name="ObjectButton" Content="Gerar objeto 3D" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
             <TextBlock x:Name="ObjectModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
@@ -113,6 +119,43 @@
             <Button x:Name="ReliefButton" Content="Gerar relevo" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
             <TextBlock x:Name="ReliefModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+          </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="Editar e aperfeiçoar" Style="{StaticResource CardTitle}" />
+            <TextBlock Style="{StaticResource Caption}"
+                       Text="Para o modelo gerado ou um modelo 3D aberto. Cada passo pode ser desfeito." />
+            <TextBlock Style="{StaticResource FieldLabel}">
+              <Run Text="Simplificar para " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" dos triângulos" />
+            </TextBlock>
+            <Slider x:Name="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
+                    ToolTip="Menos triângulos: arquivo menor e mais leve para jogos, web e fatiadores, com a forma preservada." />
+            <UniformGrid Columns="2" Margin="0,6,0,0">
+              <Button x:Name="SimplifyButton" Content="Simplificar" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
+              <Button x:Name="SubdivideButton" Content="Subdividir" Margin="4,0,0,4" Click="OnSubdivide" IsEnabled="False"
+                      ToolTip="4× os triângulos, arredondando: superfície mais lisa para imprimir grande." />
+              <Button x:Name="SmoothButton" Content="Suavizar" Margin="0,0,4,4" Click="OnSmooth" IsEnabled="False"
+                      ToolTip="Tira o serrilhado e o ruído sem encolher o modelo (Taubin)." />
+              <Button x:Name="FillHolesButton" Content="Fechar buracos" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
+                      ToolTip="Fecha os furos da malha, para ela ficar sólida (estanque) para impressão." />
+              <Button x:Name="PiecesButton" Content="Remover pedaços soltos" Margin="0,0,4,4" Click="OnRemovePieces" IsEnabled="False"
+                      ToolTip="Apaga fragmentos pequenos soltos no ar, menores que 5% da maior parte." />
+              <Button x:Name="FlattenButton" Content="Base plana" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
+                      ToolTip="Achata os 3% de baixo, para o modelo ficar em pé na mesa da impressora." />
+              <Button x:Name="MirrorButton" Content="Espelhar" Margin="0,0,4,4" Click="OnMirror" IsEnabled="False" />
+              <StackPanel Orientation="Horizontal" Margin="4,0,0,4">
+                <Button x:Name="RotateXButton" Content="↻X" Width="44" Click="OnRotate" Tag="X" IsEnabled="False" ToolTip="Gira 90° em torno do eixo X (para modelos deitados)." />
+                <Button x:Name="RotateYButton" Content="↻Y" Width="44" Margin="4,0" Click="OnRotate" Tag="Y" IsEnabled="False" ToolTip="Gira 90° em torno do eixo vertical." />
+                <Button x:Name="RotateZButton" Content="↻Z" Width="44" Click="OnRotate" Tag="Z" IsEnabled="False" ToolTip="Gira 90° em torno do eixo Z." />
+              </StackPanel>
+            </UniformGrid>
+            <TextBlock Text="Com IA" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
+            <Button x:Name="UpscaleTextureButton" Content="Textura 4× mais nítida (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
+                    ToolTip="Para modelos com textura (relevos, OBJ e GLB abertos): aumenta e limpa a imagem da textura, até 4096 px." />
+            <Button x:Name="ReprojectButton" Content="Reaplicar as cores da foto" Click="OnReproject" IsEnabled="False"
+                    ToolTip="Repõe as cores nítidas da foto na frente do objeto, por exemplo depois de subdividir." />
           </StackPanel>
         </Border>
 
@@ -158,9 +201,13 @@
   <Window.InputBindings>
     <KeyBinding Key="O" Modifiers="Control" Command="{x:Static ApplicationCommands.Open}" />
     <KeyBinding Key="S" Modifiers="Control" Command="{x:Static ApplicationCommands.Save}" />
+    <KeyBinding Key="Z" Modifiers="Control" Command="{x:Static ApplicationCommands.Undo}" />
+    <KeyBinding Key="Y" Modifiers="Control" Command="{x:Static ApplicationCommands.Redo}" />
   </Window.InputBindings>
   <Window.CommandBindings>
     <CommandBinding Command="{x:Static ApplicationCommands.Open}" Executed="OnOpen" />
     <CommandBinding Command="{x:Static ApplicationCommands.Save}" Executed="OnExport" />
+    <CommandBinding Command="{x:Static ApplicationCommands.Undo}" Executed="OnUndo" />
+    <CommandBinding Command="{x:Static ApplicationCommands.Redo}" Executed="OnRedo" />
   </Window.CommandBindings>
 </Window>

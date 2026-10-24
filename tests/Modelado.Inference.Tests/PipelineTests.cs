@@ -38,7 +38,7 @@ public sealed class PipelineTests : IDisposable
         }
 
         IReadOnlyList<InstalledModel> installed = runner!.Library.Installed();
-        Assert.Equal(["depth-anything-v2-small", "triposr-decoder", "triposr-encoder", "u2net"], installed.Select(m => m.Name));
+        Assert.Equal(["depth-anything-v2-small", "realesrgan-x4plus", "triposr-decoder", "triposr-encoder", "u2net"], installed.Select(m => m.Name));
         Assert.All(installed, m => Assert.Contains("fp32", m.Variants));
         Assert.All(installed, m => Assert.False(string.IsNullOrEmpty(m.Meta.Upstream.License)));
         Assert.Equal(0.87, runner.Library.Meta(ObjectReconstruction.Decoder).Param("radius"), 6);
@@ -99,6 +99,54 @@ public sealed class PipelineTests : IDisposable
         Assert.NotNull(mesh.Colors);
         Assert.All(mesh.Colors!, c => Assert.InRange(c.X, 0f, 1f));
         Assert.Equal(512, result.Input.Width);
+        Assert.NotNull(result.Reference);
+        Assert.True(result.Reference!.HasTransparency);
+        Assert.Contains(result.Timings, t => t.Stage == ReconstructionStage.ProjectingPhoto);
+    }
+
+    [Fact]
+    public void Tiled_upscaling_matches_one_run_over_the_whole_image()
+    {
+        if (Skip())
+        {
+            return;
+        }
+
+        RgbaImage photo = ImageCodec.Load(Path.Combine(Repository.TestImages, "0014.jpg"));
+        RgbaImage tiled = Upscaling.Upscale(runner!, photo, cancellation: TestContext.Current.CancellationToken);
+
+        Assert.Equal((photo.Width * 4, photo.Height * 4), (tiled.Width, tiled.Height));
+
+        // The same pixels from the model run on the whole 179 x 179 photo at once.
+        using Microsoft.ML.OnnxRuntime.OrtValue input = Microsoft.ML.OnnxRuntime.OrtValue.CreateTensorValueFromMemory(ImageOps.ToPlanarRgb(photo), [1, 3, photo.Height, photo.Width]);
+        using var outputs = runner!.Run(Upscaling.Model, new Dictionary<string, Microsoft.ML.OnnxRuntime.OrtValue> { ["image"] = input }, ["upscaled"]);
+        ReadOnlySpan<float> whole = outputs[0].GetTensorDataAsSpan<float>();
+        int plane = tiled.Width * tiled.Height, worst = 0;
+        for (int i = 0; i < plane; i++)
+        {
+            int expected = (int)Math.Clamp(MathF.Round(whole[i] * 255f), 0, 255);
+            worst = Math.Max(worst, Math.Abs(expected - tiled.Pixels[i * 4]));
+        }
+
+        Assert.True(worst <= 3, $"a tile seam differs by {worst} levels");
+    }
+
+    [Fact]
+    public void A_relief_texture_is_upscaled_and_large_textures_are_capped()
+    {
+        if (Skip())
+        {
+            return;
+        }
+
+        RgbaImage small = ImageCodec.Load(Path.Combine(Repository.TestImages, "0014.jpg"));
+        Mesh relief = Relief.Build(new float[16 * 16], 16, 16, small, default, new ReliefOptions(GridLongSide: 16));
+        Mesh sharper = Upscaling.UpscaleTexture(runner!, relief, cancellation: TestContext.Current.CancellationToken);
+
+        Assert.Equal(small.Width * 4, sharper.Texture!.Width);
+        Assert.Same(relief.TexCoords, sharper.TexCoords);
+        RgbaImage huge = new(Upscaling.MaxSide, 64);
+        Assert.Same(huge, Upscaling.Upscale(runner!, huge, cancellation: TestContext.Current.CancellationToken));
     }
 
     [Fact]

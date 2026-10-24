@@ -42,7 +42,7 @@ import build_manifest as bm  # noqa: E402
 
 REPO_ID = "alegauss/modelado-models"
 VERSION = "1"
-HOSTED = ["triposr-encoder", "triposr-decoder", "depth-anything-v2-small", "u2net"]
+HOSTED = ["triposr-encoder", "triposr-decoder", "depth-anything-v2-small", "u2net", "realesrgan-x4plus"]
 
 
 def _size(size: int) -> str:

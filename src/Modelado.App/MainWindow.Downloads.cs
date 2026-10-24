@@ -52,7 +52,7 @@ public partial class MainWindow
     // Each card says whether its models are here, or how much the first use downloads.
     private async Task RefreshModelStatusAsync()
     {
-        ObjectModelsText.Text = await DescribeAsync(ObjectReconstruction.Models).ConfigureAwait(true);
+        ObjectModelsText.Text = await DescribeAsync(ObjectModels(ObjectEnhancePhoto.IsChecked == true)).ConfigureAwait(true);
         ReliefModelsText.Text = await DescribeAsync(ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true)).ConfigureAwait(true);
     }
 

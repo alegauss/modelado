@@ -66,6 +66,17 @@
       "license": "Apache-2.0 (U-2-Net weights), MIT (rembg export)",
       "license_url": "https://github.com/xuebinqin/U-2-Net/blob/master/LICENSE",
       "note": "U-2-Net, the background remover TripoSR's own run.py uses through rembg, so the object is cut out the way the model was shown it. Already ONNX: 1 x 3 x 320 x 320, out the saliency map."
+    },
+    {
+      "name": "realesrgan-x4plus",
+      "file": "RealESRGAN_x4plus.pth",
+      "url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth",
+      "size": 67040989,
+      "sha256": "4fa0d38905f75ac06eb49a7951b426670021be3018265fd191d2125df9d682f1",
+      "sha256_source": "computed",
+      "license": "BSD-3-Clause",
+      "license_url": "https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE",
+      "note": "Real-ESRGAN x4plus, the upscaler PhotoBoost also uses: 'Aperfeiçoar' sharpens a relief's or an imported model's texture with it, and a small photo before reconstruction. The RRDBNet architecture is vendored from BasicSR into scripts/archs/rrdbnet.py."
     }
   ],
   "$comment_test_images": "The fixed images export_models.py checks each ONNX export against PyTorch on. Downloaded into test-images/ beside the weights; never committed.",
@@ -101,6 +112,17 @@
       "license": "MIT (repository)",
       "license_url": "https://github.com/VAST-AI-Research/TripoSR/blob/107cefdc244c39106fa830359024f6a2f1c78871/LICENSE",
       "note": "A real phone photo (3024 x 4032) with its background: what background removal and the relief are checked on."
+    },
+    {
+      "name": "image-realesrgan",
+      "file": "0014.jpg",
+      "url": "https://raw.githubusercontent.com/xinntao/Real-ESRGAN/a4abfb2979a7bbff3f69f58f58ae324608821e27/inputs/0014.jpg",
+      "size": 9605,
+      "sha256": "444d2cc3bd9304b9a54e676e10081c8cdd2f3f2665e8c742760c97da481523a2",
+      "sha256_source": "computed",
+      "license": "BSD-3-Clause (repository)",
+      "license_url": "https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE",
+      "note": "Real-ESRGAN's own small noisy sample (179 x 179): the upscaler's validation input."
     }
   ]
 }

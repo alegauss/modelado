@@ -14,6 +14,8 @@ writing a model that is quietly wrong.
                              the relative inverse depth 1 x 518 x 518 (larger is nearer)
     u2net                    rembg's own ONNX export, adopted once it finds the chair; 1 x 3 x
                              320 x 320, ImageNet-normalised; out the saliency map
+    realesrgan-x4plus        the texture and photo upscaler: 1 x 3 x H x W RGB in [0, 1], any
+                             size (the app tiles); out 1 x 3 x 4H x 4W in [0, 1]
 
     .venv\\Scripts\\python scripts\\export_models.py
     .venv\\Scripts\\python scripts\\export_models.py --only triposr-decoder --no-fp16
@@ -483,6 +485,70 @@ def export_u2net(spec: Spec, weights: Path, folder: Path, fp16: bool) -> dict:
     }
 
 
+# --- Real-ESRGAN ------------------------------------------------------------------------------
+
+UPSCALE_TILE = 256
+UPSCALE_FP32_MAX = 1e-3
+UPSCALE_FP16_MIN_PSNR = 40.0
+
+
+def _rrdbnet(weights: Path) -> nn.Module:
+    sys.path.insert(0, str(SCRIPTS / "archs"))
+    from rrdbnet import RRDBNet
+
+    path = weights / "RealESRGAN_x4plus.pth"
+    if not path.is_file():
+        raise ExportError(f"{path} is missing; run scripts/download_models.py first")
+    state = torch.load(path, map_location="cpu", weights_only=True)
+    model = RRDBNet(scale=4)
+    model.load_state_dict(state.get("params_ema", state), strict=True)
+    return model.eval()
+
+
+def export_upscaler(spec: Spec, weights: Path, folder: Path, fp16: bool) -> dict:
+    model = _rrdbnet(weights)
+    target = folder / "fp32.onnx"
+    torch.onnx.export(
+        model,
+        (torch.rand(1, 3, 64, 64),),
+        str(target),
+        input_names=["image"],
+        output_names=["upscaled"],
+        opset_version=OPSET,
+        dynamo=False,
+        dynamic_axes={"image": {2: "height", 3: "width"}, "upscaled": {2: "out_height", 3: "out_width"}},
+    )
+    onnx.checker.check_model(str(target), full_check=True)
+    photo = np.asarray(Image.open(weights / "test-images" / "0014.jpg").convert("RGB"), dtype=np.float32) / 255.0
+    # A non-square crop, so the dynamic height and width are both exercised.
+    x = photo[:96, :128].transpose(2, 0, 1)[None].copy()
+    with torch.no_grad():
+        expected = model(torch.from_numpy(x)).clamp(0, 1).numpy()
+    validation: dict = {"image": "0014.jpg"}
+    for variant in ("fp32", "fp16") if fp16 else ("fp32",):
+        path = folder / f"{variant}.onnx"
+        if variant == "fp16":
+            _to_fp16(target, path)
+        got = np.clip(_session(path).run(None, {"image": x})[0], 0, 1)
+        error = float(np.max(np.abs(got - expected)))
+        psnr = float(10 * np.log10(1.0 / max(1e-12, float(np.mean((got - expected) ** 2)))))
+        print(f"{spec.name} {variant}: {got.shape[2]}x{got.shape[3]}, max error {error:.2e}, PSNR {psnr:.1f} dB")
+        if variant == "fp32" and error > UPSCALE_FP32_MAX:
+            raise ExportError(f"{spec.name}: fp32 differs from PyTorch by {error:.2e}")
+        if variant == "fp16" and psnr < UPSCALE_FP16_MIN_PSNR:
+            path.unlink()
+            print(f"{spec.name}: fp16 dropped, {psnr:.1f} dB")
+            continue
+        validation[variant] = {"max_error": round(error, 6), "psnr": round(psnr, 2)}
+    return {
+        "inputs": [{"name": "image", "shape": [1, 3, "height", "width"]}],
+        "outputs": [{"name": "upscaled", "shape": [1, 3, "out_height", "out_width"]}],
+        "preprocess": {"value_range": [0.0, 1.0]},
+        "params": {"scale": 4, "tile": UPSCALE_TILE},
+        "validation": validation,
+    }
+
+
 # --- Common ------------------------------------------------------------------------------------
 
 
@@ -526,6 +592,7 @@ SPECS = [
     Spec("triposr-encoder", "image-to-triplane", "triposr", True, export_encoder),
     Spec("depth-anything-v2-small", "depth", "depth-anything-v2-small", True, export_depth),
     Spec("u2net", "background-removal", "u2net", False, export_u2net),
+    Spec("realesrgan-x4plus", "upscale", "realesrgan-x4plus", True, export_upscaler),
 ]
 
 

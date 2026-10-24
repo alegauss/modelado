@@ -27,14 +27,14 @@ class PublishModelsTests(unittest.TestCase):
         self.models, self.stage = root / "models", root / "stage"
         for name in pm.HOSTED:
             variants = {"fp32": f"{name} fp32".encode()}
-            if name in ("triposr-encoder", "depth-anything-v2-small"):
+            if name in ("triposr-encoder", "depth-anything-v2-small", "realesrgan-x4plus"):
                 variants["fp16"] = f"{name} fp16".encode()
             write_model(self.models, name, variants)
 
     def test_every_hosted_model_is_staged_with_its_variants(self):
         manifest = pm.stage(self.models, self.stage, pm.resolve_base(pm.REPO_ID, "c0ffee"))
         staged = sorted(p.name for p in self.stage.glob("*.onnx"))
-        self.assertEqual(6, len(staged))
+        self.assertEqual(8, len(staged))
         self.assertIn("triposr-encoder-fp16.onnx", staged)
         urls = {m["name"]: m["variants"]["fp32"]["url"] for m in manifest["models"]}
         self.assertEqual(f"https://huggingface.co/{pm.REPO_ID}/resolve/c0ffee/u2net-fp32.onnx", urls["u2net"])
