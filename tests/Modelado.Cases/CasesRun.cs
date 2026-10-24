@@ -32,6 +32,9 @@ public sealed class CasesRun
         }
 
         ProjectDeclaration project = ForThisBuild(Repository.Root);
+
+        // MOD11: what the download cases fetch, through --manifest, from this machine.
+        using FixtureServer downloads = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));
         using ProcessRegister register = ProcessRegister.For(project);
         SuiteVerdict verdict = Suite.Launch(declared, Selection.All, register, project);
 

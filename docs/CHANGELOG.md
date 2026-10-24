@@ -17,6 +17,7 @@
 - ✅ **MOD8** **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — Every named control has an AutomationId, and six winwright cases drive the window on the VMware guest from run-tests.cmd.
 - ✅ **MOD9** **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — The status bar holds the chips and About and shows an edit live; the reconstruction and download checks move to MOD53.
 - ✅ **MOD10** **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — The empty window is a drop zone with the formats and Open; a file that cannot open is said in place, never in a dialog (design superseded: toolbar model commands stay shown but off).
+- ✅ **MOD11** **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — About is an in-window panel toggled from the status bar; a case watches a download keep going while it opens and closes.
 
 ## Block C — Existing code wired into the window
 

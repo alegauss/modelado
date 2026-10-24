@@ -97,7 +97,7 @@
     </DockPanel>
 
     <!-- Viewer -->
-    <Border Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
+    <Border x:Name="ViewerFrame" Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
             BorderThickness="1" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
       <Grid x:Name="Viewport" AutomationProperties.AutomationId="Viewport" Background="{DynamicResource ViewportGroundBrush}" SizeChanged="OnViewportSizeChanged"
             MouseLeftButtonDown="OnViewportMouseDown" MouseMove="OnViewportMouseMove" MouseLeftButtonUp="OnViewportMouseUp"
@@ -262,6 +262,60 @@
       </StackPanel>
     </ScrollViewer>
     </DockPanel>
+
+    <!-- MOD11: About, after PhotoBoost's AboutPanel (PB46). It takes the stage's place while open,
+         so the toolbar and the status bar, a running download's chip included, stay in view. -->
+    <ScrollViewer x:Name="AboutPanel" AutomationProperties.AutomationId="AboutPanel" Grid.Row="1" Grid.ColumnSpan="2"
+                  Margin="12,0,12,0" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+      <Border Style="{StaticResource GroupCard}" Padding="24" MaxWidth="760" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <StackPanel>
+          <DockPanel Margin="0,0,0,4">
+            <Button x:Name="AboutClose" AutomationProperties.AutomationId="AboutClose" DockPanel.Dock="Right"
+                    Content="Close" Padding="12,4" Click="OnAbout" />
+            <TextBlock Text="Modelado" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center" />
+          </DockPanel>
+          <TextBlock x:Name="AboutVersion" AutomationProperties.AutomationId="AboutVersion" Style="{StaticResource StatCaption}" />
+          <TextBlock x:Name="AboutInference" AutomationProperties.AutomationId="AboutInference" Style="{StaticResource StatCaption}" Margin="0,2,0,16" />
+
+          <TextBlock Text="Models" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="AboutModelsFolder" AutomationProperties.AutomationId="AboutModelsFolder" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
+          <ListBox x:Name="AboutModels" AutomationProperties.AutomationId="AboutModels" AutomationProperties.Name="Models"
+                   IsHitTestVisible="False" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,2" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <TextBlock x:Name="AboutManifest" AutomationProperties.AutomationId="AboutManifest" Style="{StaticResource StatCaption}" Margin="0,6,0,16" />
+
+          <TextBlock Text="Downloads" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="AboutDownloadNote" AutomationProperties.AutomationId="AboutDownloadNote" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
+          <WrapPanel Margin="0,0,0,6">
+            <Button x:Name="AboutDownloadAll" AutomationProperties.AutomationId="AboutDownloadAll" Content="Download everything (offline use)"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnAboutDownloadAll" />
+            <Button x:Name="AboutOpenFolder" AutomationProperties.AutomationId="AboutOpenFolder" Content="Open the models folder"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnAboutOpenFolder" />
+            <Button x:Name="AboutRemoveModels" AutomationProperties.AutomationId="AboutRemoveModels" Content="Remove downloaded models"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnAboutRemoveModels" />
+          </WrapPanel>
+          <!-- A download in progress, the same one the job panel and the status bar show. -->
+          <StackPanel Visibility="{Binding Visibility, ElementName=DownloadChip}" Margin="0,0,0,16">
+            <ProgressBar Height="6" Minimum="0" Maximum="1" Value="{Binding Value, ElementName=ProgressBar}" Margin="0,0,0,6" />
+            <DockPanel>
+              <Button x:Name="AboutCancelDownload" AutomationProperties.AutomationId="AboutCancelDownload" DockPanel.Dock="Right"
+                      Content="Cancel" Padding="12,2" Click="OnCancel" />
+              <TextBlock x:Name="AboutDownloadStatus" AutomationProperties.AutomationId="AboutDownloadStatus" Style="{StaticResource StatCaption}"
+                         VerticalAlignment="Center" Margin="0" Text="{Binding Text, ElementName=ProgressText}" />
+            </DockPanel>
+          </StackPanel>
+
+          <TextBlock Text="Third-party software" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="AboutNotices" AutomationProperties.AutomationId="AboutNotices" Style="{StaticResource StatCaption}"
+                     Text="ONNX Runtime (MIT) with DirectML (Microsoft software license terms), and SkiaSharp (MIT)." />
+        </StackPanel>
+      </Border>
+    </ScrollViewer>
 
     <!-- MOD9: the status bar, after PhotoBoost's (PB14, PB24, PB58, PB60): chips that carry a
          word each, seen wherever the cards have scrolled to. Left to right: where inference runs;

@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "version": "cases",
+  "models": [
+    {
+      "name": "triposr-encoder",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 77,
+        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "triposr-decoder",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 77,
+        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "u2net",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 77,
+        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "depth-anything-v2-small",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 77,
+        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "realesrgan-x4plus",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 77,
+        "sha256": "cc74634efb1c3ea44c3beafe98c4e38af1a776f3d7e7f4c10561532a29da47e0"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 327680,
+          "sha256": "308988e945f6930aa74c05dae9305d7b99fa4dedeeb3b887b581254d4d34e866"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    }
+  ]
+}

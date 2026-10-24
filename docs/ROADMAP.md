@@ -13,7 +13,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD11** (deps: MOD9 ✅) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
 - 📋 **MOD12** (deps: MOD6 ✅) **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — PhotoBoost's History card names every version, so a person can see how far Undo will go before pressing it. → §MOD12
 - 📋 **MOD13** (deps: MOD6 ✅) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
 - 📋 **MOD14** (deps: MOD8 ✅) **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — PhotoBoost runs every suite, the winwright cases included, in a VMware guest through winwright's run-tests-vm.cmd, and a UI task ships on that run. → §MOD14
@@ -24,7 +23,7 @@
 - 📋 **MOD15** (deps: MOD13) **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — A print has a real size, and a figurine meant to be 40 mm or 200 mm tall needs rescaling in the slicer today. → §MOD15
 - 📋 **MOD16** (deps: MOD1 ✅) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
 - 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
-- 📋 **MOD18** (deps: MOD11) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
+- 📋 **MOD18** (deps: MOD11 ✅) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
 - 📋 **MOD19** (deps: MOD5 ✅) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
 - 📋 **MOD48** (deps: —) **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — Scripts and the Blender add-on drive the CLI and need a readable error and a non-zero exit, not a crash or a misspelt edit reported as success. → §MOD48
 - 📋 **MOD52** (deps: —) **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — On a machine with two GPUs, or one too small for TripoSR's encoder, the chip is the first place a person looks and it names neither. → §MOD52
@@ -32,9 +31,9 @@
 ## Block D — Model downloads
 
 - 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
-- 📋 **MOD21** (deps: MOD11) **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — PhotoBoost's consent panel gives everything a person needs to say yes to a download, inside the window, before a byte is fetched. → §MOD21
+- 📋 **MOD21** (deps: MOD11 ✅) **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — PhotoBoost's consent panel gives everything a person needs to say yes to a download, inside the window, before a byte is fetched. → §MOD21
 - 📋 **MOD22** (deps: MOD6 ✅, MOD21) **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — TripoSR's upstream checkpoint alone is 1.7 GB, and PhotoBoost's cards badge the download and its progress so pressing Generate is never a surprise. → §MOD22
-- 📋 **MOD23** (deps: MOD11) **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — Someone who only makes reliefs wants TripoSR's disk back without losing Depth Anything, and PhotoBoost lists each download with its own Remove. → §MOD23
+- 📋 **MOD23** (deps: MOD11 ✅) **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — Someone who only makes reliefs wants TripoSR's disk back without losing Depth Anything, and PhotoBoost lists each download with its own Remove. → §MOD23
 
 ## Block E — Publishing custom models to Hugging Face
 
@@ -59,7 +58,7 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- 📋 **MOD36** (deps: MOD11) **The app has no way to use a cloud 3D or image service: no place for an API key, no provider abstraction** — Meshy AI and Ideogram give results the local models cannot, and more services like them will follow, so the seam comes before the first one. → §MOD36
+- 📋 **MOD36** (deps: MOD11 ✅) **The app has no way to use a cloud 3D or image service: no place for an API key, no provider abstraction** — Meshy AI and Ideogram give results the local models cannot, and more services like them will follow, so the seam comes before the first one. → §MOD36
 - 📋 **MOD37** (deps: MOD36, MOD42) **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — Meshy returns textured, quad-friendly models with PBR maps that TripoSR cannot, and a person with a Meshy key should get them in the same window. → §MOD37
 - 📋 **MOD38** (deps: MOD37) **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — A rough TripoSR mesh or an imported model often needs clean topology or a new texture from a prompt, which Meshy offers and the local tools do not. → §MOD38
 - 📋 **MOD39** (deps: MOD10 ✅, MOD36, MOD42) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — Ideogram can draw the single, centred object on a plain background that TripoSR works best from, turning a text idea into a 3D model in two steps. → §MOD39

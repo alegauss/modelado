@@ -32,6 +32,15 @@
       "shareable": true
     },
     {
+      // MOD11: downloads from the fixture server CasesRun starts (tests/Modelado.Cases/FixtureServer.cs),
+      // into a models folder staged empty. The stand-in is sent at 40 KB/s, so it never finishes here.
+      "name": "a window downloading from the fixture server",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--models", "{files}/models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -126,6 +135,28 @@
     },
 
     {
+      "name": "About opens and closes during a download whose chip keeps going",
+      "catches": "an About that hides a running download, stops it, or takes the status bar with it",
+      "filed": "MOD11",
+      "tags": ["about", "download", "status-bar"],
+      "fixture": "a window downloading from the fixture server",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About and models is pressed" },
+        { "locator": "Button#AboutDownloadAll", "act": "invoke", "named": "Download everything is pressed" },
+        { "locator": "Window[class=\"#32770\"] > Button#1", "act": "invoke", "named": "the download is agreed to" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\S+: \\d+ MB of \\d+ MB", "named": "the status bar shows the download" },
+        { "locator": "Text#AboutDownloadStatus", "act": "read", "reads": "name", "matches": "^\\S+: \\d+ MB of \\d+ MB", "named": "and so does About" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "Text#AboutVersion", "act": "read", "absent": true, "named": "About has closed" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Downloading models: \\S+: \\d+ MB of \\d+ MB", "named": "the download is still going" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened again" },
+        { "locator": "Button#AboutCancelDownload", "act": "invoke", "named": "Cancel is pressed in About" },
+        { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "the download has stopped" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Download cancelled", "named": "and the last-run chip says so" }
+      ]
+    },
+
+    {
       "name": "--open on a photo shows its name and size and lets the operations start",
       "catches": "an open that shows nothing, reports the wrong size, or leaves Generate off with a photo in the window",
       "filed": "MOD8",
@@ -166,17 +197,22 @@
     },
 
     {
-      "name": "About opens with the version and closes again",
-      "catches": "an About button that opens nothing, or an About that cannot be closed",
-      "filed": "MOD8",
+      "name": "About opens in the window with the version and closes again",
+      "catches": "an About button that opens nothing, opens a separate window, or cannot be closed",
+      "filed": "MOD11",
       "tags": ["about"],
       "fixture": "a window to open About in",
       "steps": [
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About and models is pressed" },
-        { "locator": "Text#AboutTitle", "act": "read", "reads": "name", "matches": "^Modelado \\d+\\.\\d+\\.\\d+$", "named": "About names the app and its version" },
+        { "locator": "Text#AboutVersion", "act": "read", "reads": "name", "matches": "^Version \\d+\\.\\d+\\.\\d+$", "named": "About gives the version" },
+        { "locator": "Text#AboutInference", "act": "read", "reads": "name", "matches": "on the CPU\\. No photo is uploaded anywhere\\.$", "named": "where inference runs, and that nothing is uploaded" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Back", "named": "the status bar's button now reads Back" },
+        { "locator": "Text#DropTitle", "act": "read", "absent": true, "named": "About has taken the stage's place" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "in the window, not in a dialog" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "Close is pressed" },
-        { "locator": "Text#AboutTitle", "act": "read", "absent": true, "named": "About has closed" },
-        { "locator": "Button#ToolbarOpen", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the window is usable again" }
+        { "locator": "Text#AboutVersion", "act": "read", "absent": true, "named": "About has closed" },
+        { "locator": "Text#DropTitle", "act": "read", "reads": "name", "expect": "Drop a photo or a 3D model here", "named": "and the stage is back" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "About and models", "named": "with the button named for About again" }
       ]
     },
 

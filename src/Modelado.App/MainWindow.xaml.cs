@@ -177,6 +177,11 @@ public partial class MainWindow : Window, IDisposable
     // A file is open: the errors about earlier ones go, and the operations panel appears.
     private void Opened()
     {
+        if (AboutOpen)
+        {
+            ShowAbout(false);
+        }
+
         OpenError.Visibility = Visibility.Collapsed;
         ViewerOpenErrorBar.Visibility = Visibility.Collapsed;
         EmptyHint.Visibility = Visibility.Collapsed;
@@ -444,19 +449,6 @@ public partial class MainWindow : Window, IDisposable
         {
             MessageBox.Show(this, $"The model could not be saved.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-    }
-
-    private void OnAbout(object sender, RoutedEventArgs e)
-    {
-        AboutWindow about = new(library, provider, ModelDownloads.Embedded is null ? ModelDownloads.LatestManifestUrl : "built into this version") { Owner = this };
-        about.DownloadAllRequested += async (_, _) =>
-        {
-            about.Close();
-            await DownloadAsync([.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
-        };
-        about.ShowDialog();
-        library.Refresh();
-        _ = RefreshModelStatusAsync();
     }
 
     // ".png", ".jpg", ".jpeg" -> "PNG, JPG, JPEG".

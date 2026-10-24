@@ -24,21 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD11 About as an in-window panel
-
-Model: PhotoBoost's AboutPanel in MainWindow.xaml and MainWindow.About.cs (PB46).
-AboutWindow.cs goes. Its content moves into XAML as a GroupCard at MaxWidth 760 with:
-the name and version; where inference runs and that no photo is uploaded; Models, each
-installed one with the license its meta.json carries; Downloads (folder, disk used,
-Download everything, Cancel, progress); and Third-party software.
-
-The status bar's About button toggles it and reads "Back" while it is open, and the
-stage collapses meanwhile. Per-model removal is a block D task, not this one: this one
-moves what exists today.
-
-Done when About opens and closes from the status bar during a running download whose
-chip keeps updating, and AboutWindow.cs is deleted.
-
 ### §MOD12 History card
 
 Model: PhotoBoost's History card and MainWindow.History.cs (PB28): a ListBox of every
@@ -94,11 +79,11 @@ then the last-run chip. A reconstruction and a model download use the same SetBu
 title and text) but neither could run: the embedded manifest lists no models and the
 repository is not published yet (MOD20), so the guest has nothing to download or run.
 
-Once MOD20 has published the models: on the guest, start a Relief with the cards
-scrolled down and read JobChip and then LastRun ("Relief · <s> s · CPU"); start a
-download from About and read DownloadChip ("Downloading models: <file>: <n> MB of <m> MB
-…"). Add both as winwright cases if a fixture manifest can stand in for the network, as
-PhotoBoost's FixtureServer does.
+The download half is now held by a case: MOD11 added a fixture server to
+tests\Modelado.Cases and "About opens and closes during a download whose chip keeps
+going" reads DownloadChip against it on the guest. What is left is the reconstruction:
+once MOD20 has published the models, start a Relief on the guest with the cards scrolled
+down and read JobChip, then LastRun ("Relief · <s> s · CPU").
 
 ## Block C — Existing code wired into the window
 
