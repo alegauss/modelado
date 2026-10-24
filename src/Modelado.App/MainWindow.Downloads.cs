@@ -17,6 +17,7 @@ public partial class MainWindow
 {
     private readonly HttpClient http = CreateClient();
     private ModelManifest? manifest;
+    private string? manifestError;
     private bool pausing;
 
     private static HttpClient CreateClient()
@@ -43,7 +44,8 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is HttpRequestException or InvalidDataException or TaskCanceledException)
         {
-            Status($"The model list could not be read ({error.Message}). Without internet, only models already downloaded work.");
+            // Said on the cards whose models it would have listed (MOD9), not in a status line.
+            manifestError = error.Message;
         }
 
         return manifest;
@@ -65,6 +67,11 @@ public partial class MainWindow
         }
 
         ModelManifest? listed = await ManifestAsync().ConfigureAwait(true);
+        if (listed is null && manifestError is not null)
+        {
+            return $"The models are not installed, and the model list could not be read ({manifestError}). Without internet, only models already downloaded work.";
+        }
+
         if (listed is null || missing.Any(m => listed.Model(m.Model) is null))
         {
             return "The models are not installed yet.";
@@ -138,7 +145,7 @@ public partial class MainWindow
             {
                 DownloadResult result = await ModelDownloads.DownloadAsync(http, listed, library.DownloadRoot, requests, progress, cancel.Token, library.Roots).ConfigureAwait(true);
                 library.Refresh();
-                Status($"Models ready: {result.Fetched} file(s) downloaded and checked by SHA-256.");
+                LastRunSaid($"Models ready · {result.Fetched} file(s) downloaded", "Each file was checked by SHA-256.");
                 return true;
             }
             catch (OperationCanceledException) when (pausing)
@@ -147,13 +154,13 @@ public partial class MainWindow
                 SetBusy(false, "", download: false);
                 if (MessageBox.Show(this, "Download paused. Continue now?", "Download models", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 {
-                    Status("Download paused: it resumes where it stopped next time.");
+                    LastRunSaid("Download paused", "It resumes where it stopped next time.");
                     return false;
                 }
             }
             catch (OperationCanceledException)
             {
-                Status("Download cancelled: it resumes where it stopped next time.");
+                LastRunSaid("Download cancelled", "It resumes where it stopped next time.");
                 return false;
             }
             catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException)

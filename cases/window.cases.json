@@ -68,13 +68,28 @@
     },
 
     {
+      "name": "the status bar names the provider and holds no run on an empty window",
+      "catches": "a provider chip stuck on its placeholder, or a job or last-run chip left showing with nothing run",
+      "filed": "MOD9",
+      "tags": ["smoke", "status-bar", "provider"],
+      "fixture": "the window a default installation opens",
+      "steps": [
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "expect": "CPU", "named": "--provider cpu shows as CPU" },
+        { "locator": "Text#JobChip", "act": "read", "absent": true, "named": "no run in progress" },
+        { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "no download in progress" },
+        { "locator": "Text#LastRun", "act": "read", "absent": true, "named": "and nothing run yet" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "About and models", "named": "About sits in the status bar" }
+      ]
+    },
+
+    {
       "name": "--open on a photo shows its name and size and lets the operations start",
       "catches": "an open that shows nothing, reports the wrong size, or leaves Generate off with a photo in the window",
       "filed": "MOD8",
       "tags": ["open", "operations"],
       "fixture": "a window opened on the photo fixture",
       "steps": [
-        { "locator": "Text#StatusText", "act": "read", "reads": "name", "expect": "photo.png: 64 × 48.", "named": "the status line names the photo and its size" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "the source chip names the photo and its size" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Generate 3D object can be pressed" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and so can Generate relief" },
         { "locator": "Button#ToolbarSaveAs", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and there is no model to save yet" }
@@ -88,19 +103,21 @@
       "tags": ["open", "toolbar", "edit", "history"],
       "fixture": "a window on the cube fixture, to edit",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the source chip names the model" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "the mesh chip counts the cube" },
+        { "locator": "Text#LastRun", "act": "read", "absent": true, "named": "nothing has run on it yet" },
         { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "nothing to undo yet" },
         { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
         {
-          "locator": "Text#StatusText",
+          "locator": "Text#LastRun",
           "act": "read",
           "reads": "name",
-          "matches": "^Turn about X: 12 → 12 triangles in \\d+[.,]\\d s\\. Ctrl\\+Z undoes it\\.$",
-          "named": "the status line reports the turn"
+          "matches": "^Turn about X · 12 → 12 triangles · \\d+[.,]\\d s$",
+          "named": "the last-run chip reports the turn"
         },
         { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and Undo can now go back" },
         { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
-        { "locator": "Text#StatusText", "act": "read", "reads": "name", "expect": "Undone: back to \"Opened\".", "named": "back to the opened model" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Undone: back to \"Opened\"", "named": "back to the opened model" },
         { "locator": "Button#RedoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the turn can be redone" }
       ]
     },

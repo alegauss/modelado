@@ -15,6 +15,7 @@
 - ✅ **MOD7** **The window and the taskbar show WPF's default icon** — Modelado wears its own icon, a cube on a blue tile drawn per size by tools/Modelado.Icon, in the exe, the window and the taskbar.
 - ✅ **MOD51** **Every edit's status line shows a garbled arrow between the triangle counts since the toolbar change** — The edit status line shows its arrow again, and MOD8's toolbar case on the guest reads it.
 - ✅ **MOD8** **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — Every named control has an AutomationId, and six winwright cases drive the window on the VMware guest from run-tests.cmd.
+- ✅ **MOD9** **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — The status bar holds the chips and About and shows an edit live; the reconstruction and download checks move to MOD53.
 
 ## Block C — Existing code wired into the window
 

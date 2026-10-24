@@ -84,7 +84,7 @@ public partial class MainWindow
             (Mesh closed, filled) = MeshEdit.FillHoles(m);
             return closed;
         }).ConfigureAwait(true);
-        Status(filled == 0 ? "No holes to fill." : $"{filled} hole(s) filled{(mesh!.DoubleSided ? "; some open edges remain" : "; the mesh is closed")}.");
+        LastRunSaid(filled == 0 ? "Fill holes · no holes to fill" : $"Fill holes · {filled} hole(s) filled{(mesh!.DoubleSided ? " · some open edges remain" : " · the mesh is closed")}");
     }
 
     private async void OnRemovePieces(object sender, RoutedEventArgs e) =>
@@ -128,7 +128,7 @@ public partial class MainWindow
         if (!busy && history.Undo() is { } previous)
         {
             Display(previous);
-            Status($"Undone: back to \"{history.CurrentLabel}\".");
+            LastRunSaid($"Undone: back to \"{history.CurrentLabel}\"");
         }
     }
 
@@ -137,7 +137,7 @@ public partial class MainWindow
         if (!busy && history.Redo() is { } next)
         {
             Display(next);
-            Status($"Redone: {history.CurrentLabel}.");
+            LastRunSaid($"Redone: {history.CurrentLabel}");
         }
     }
 
@@ -165,15 +165,15 @@ public partial class MainWindow
                 Display(after);
             }
 
-            Status($"{label}: {before.TriangleCount:N0} → {after.TriangleCount:N0} triangles in {clock.Elapsed.TotalSeconds:0.0} s. Ctrl+Z undoes it.");
+            LastRunSaid($"{label} · {before.TriangleCount:N0} → {after.TriangleCount:N0} triangles · {clock.Elapsed.TotalSeconds:0.0} s", "Ctrl+Z undoes it.");
         }
         catch (OperationCanceledException)
         {
-            Status($"{label}: cancelled.");
+            LastRunSaid($"{label}: cancelled");
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
-            Status($"{label}: failed.");
+            LastRunSaid($"{label}: failed", error.Message);
             MessageBox.Show(this, error.Message, label, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally

@@ -24,20 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD9 Status bar with chips
-
-Model: the StatusBar in PhotoBoost's MainWindow.xaml (PB14, PB24, PB58, PB60). Chips,
-left to right: the provider ("DirectML · <GPU name>" or "CPU"); the last run's wall time
-and provider; the run in progress as "<title>: <status>", bound to the job panel; a
-model download in progress (megabytes, speed, time left); and the mesh chip Modelado
-already has (vertices, triangles, texture). About sits on the right as a button.
-
-The free-text StatusText line goes. What it says today becomes either a chip or a note
-on the card that caused it, as PhotoBoost does with OperationNote.
-
-Done when a reconstruction, a download and an edit each show in the status bar while the
-operations panel is scrolled away from them.
-
 ### §MOD10 Drop zone and open errors
 
 Model: PhotoBoost's DropZone, OpenError and ViewerOpenError (PB23, PB64). The card reads
@@ -114,6 +100,21 @@ skip.
 
 The README and this project's roadmap skill both say that the VM run is the gate. Done
 when the whole suite is green on the guest.
+
+### §MOD53 Status bar chips for a reconstruction and a download
+
+MOD9 put the job and download chips in the status bar and saw an edit there live on the
+VMware guest: "Simplify: 980.000 triangles" while the cards were scrolled to the bottom,
+then the last-run chip. A reconstruction and a model download use the same SetBusy path
+(JobChip for a reconstruction, DownloadChip for a download, bound to the job panel's
+title and text) but neither could run: the embedded manifest lists no models and the
+repository is not published yet (MOD20), so the guest has nothing to download or run.
+
+Once MOD20 has published the models: on the guest, start a Relief with the cards
+scrolled down and read JobChip and then LastRun ("Relief · <s> s · CPU"); start a
+download from About and read DownloadChip ("Downloading models: <file>: <n> MB of <m> MB
+…"). Add both as winwright cases if a fixture manifest can stand in for the network, as
+PhotoBoost's FixtureServer does.
 
 ## Block C — Existing code wired into the window
 
@@ -209,6 +210,26 @@ refuse any other with `ERROR Unknown option: --x.` and exit 2, the code the
 unknown-command branch already uses. Cover both with a test that runs the CLI's parse,
 which may mean lifting it into a small class the tests can call, as
 `src\Modelado.App\CommandLine.cs` already is for the app.
+
+### §MOD52 Name the GPU on the provider chip
+
+MOD9's provider chip reads "DirectML" or "CPU". PhotoBoost's reads "DirectML · NVIDIA
+GeForce RTX 4060, 8 GB": its ProviderDetector (PhotoBoost.Inference) probes a session
+and reads the adapter's description and dedicated video memory, and
+ProviderSelection.Label composes the chip. Modelado's ExecutionProviders.Resolve only
+checks that the ONNX Runtime build carries DirectML, and always asks for device 0, so
+nothing in it knows which GPU that is.
+
+Read the adapter DirectML will use: device 0 is DXGI's first adapter, so enumerate it
+through IDXGIFactory1::EnumAdapters1 and take DXGI_ADAPTER_DESC1's Description and
+DedicatedVideoMemory, skipping the Microsoft Basic Render Driver
+(DXGI_ADAPTER_FLAG_SOFTWARE), which is what the VMware guest has. Return it from Resolve
+beside the provider, as an `Adapter(string Name, long VideoMemory)` or null, and label
+the chip "DirectML · <name>, <n> GB". Keep it in Modelado.Inference, where the CLI can
+print it too.
+
+Done when the chip names the GPU on a desk with one, still reads "CPU" on the guest, and
+a test covers the label for both.
 
 ## Block D — Model downloads
 

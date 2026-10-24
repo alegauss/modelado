@@ -77,16 +77,19 @@ public partial class MainWindow
             ReconstructionResult result = await Task.Run(() => operation(input, progress, cancel.Token), cancel.Token).ConfigureAwait(true);
             ShowMesh(result.Mesh, result.Input, result.Reference, title);
             TimeSpan total = TimeSpan.FromTicks(result.Timings.Sum(t => t.Took.Ticks));
-            string steps = string.Join(" · ", result.Timings.Select(t => $"{Describe(t.Stage).ToLowerInvariant()} {t.Took.TotalSeconds:0.0} s"));
-            Status($"{title} ready in {total.TotalSeconds:0.0} s: {steps}.{(runner.Notice is { } notice ? " " + notice : "")}");
+            string steps = string.Join(" · ", result.Timings.Select(t => $"{Describe(t.Stage)} {t.Took.TotalSeconds:0.0} s"));
+
+            // The provider it ran on: a model the GPU refused was run again on the CPU (Notice).
+            string where = runner.Notice is null ? ProviderLabel : "CPU";
+            LastRunSaid($"{title} · {total.TotalSeconds:0.0} s · {where}", runner.Notice is { } notice ? $"{steps}{Environment.NewLine}{notice}" : steps);
         }
         catch (OperationCanceledException)
         {
-            Status($"{title}: cancelled.");
+            LastRunSaid($"{title}: cancelled");
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
-            Status($"{title}: failed.");
+            LastRunSaid($"{title}: failed", error.Message);
             MessageBox.Show(this, error.Message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally
@@ -100,6 +103,10 @@ public partial class MainWindow
     {
         busy = on;
         ProgressCard.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+
+        // MOD9: the same run in the status bar, seen however far the cards have scrolled.
+        JobChip.Visibility = on && !download ? Visibility.Visible : Visibility.Collapsed;
+        DownloadChip.Visibility = on && download ? Visibility.Visible : Visibility.Collapsed;
         ProgressTitle.Text = title;
         ProgressText.Text = "";
         ProgressBar.Value = 0;

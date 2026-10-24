@@ -42,8 +42,6 @@
                 ToolTip="Front view (Home). Double-clicking the model does the same.">
           <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE80F;" />
         </Button>
-        <Border Width="1" Margin="12,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
-        <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" Content="About and models" Padding="12,6" Click="OnAbout" />
       </StackPanel>
       <ToolBarTray Background="Transparent" IsLocked="True" Margin="0,0,12,0">
         <ToolBar x:Name="EditorToolbar" AutomationProperties.AutomationId="EditorToolbar" AutomationProperties.Name="Editor"
@@ -242,16 +240,39 @@
     </ScrollViewer>
     </DockPanel>
 
-    <!-- Status bar -->
+    <!-- MOD9: the status bar, after PhotoBoost's (PB14, PB24, PB58, PB60): chips that carry a
+         word each, seen wherever the cards have scrolled to. Left to right: where inference runs;
+         what is open; the mesh; the run in progress, bound to the job panel; a model download in
+         progress; and what the last run, edit, save or download came to. About sits on the right. -->
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
-      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
-        <TextBlock x:Name="ProviderText" AutomationProperties.AutomationId="ProviderText" FontSize="12" Text="…" />
+      <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" DockPanel.Dock="Right"
+              Content="About and models" Padding="10,2" Margin="6,0,0,0" Click="OnAbout" />
+      <Border x:Name="ProviderChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
+        <TextBlock x:Name="ProviderStatus" AutomationProperties.AutomationId="ProviderStatus" FontSize="12" Text="…" />
       </Border>
-      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left" x:Name="MeshChip" AutomationProperties.AutomationId="MeshChip" Visibility="Collapsed">
+      <Border x:Name="SourceChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
+        <TextBlock x:Name="SourceText" AutomationProperties.AutomationId="SourceText" FontSize="12" />
+      </Border>
+      <Border x:Name="MeshChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
         <TextBlock x:Name="MeshText" AutomationProperties.AutomationId="MeshText" FontSize="12" />
       </Border>
-      <TextBlock x:Name="StatusText" AutomationProperties.AutomationId="StatusText" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                 Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+      <Border x:Name="JobChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
+        <TextBlock x:Name="JobChipText" AutomationProperties.AutomationId="JobChip" FontSize="12">
+          <TextBlock.Text>
+            <MultiBinding StringFormat="{}{0}: {1}">
+              <Binding ElementName="ProgressTitle" Path="Text" />
+              <Binding ElementName="ProgressText" Path="Text" />
+            </MultiBinding>
+          </TextBlock.Text>
+        </TextBlock>
+      </Border>
+      <Border x:Name="DownloadChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
+        <TextBlock x:Name="DownloadChipText" AutomationProperties.AutomationId="DownloadChip" FontSize="12"
+                   Text="{Binding Text, ElementName=ProgressText, StringFormat='Downloading models: {0}'}" />
+      </Border>
+      <Border x:Name="LastRunChip" Style="{StaticResource StatusChip}" HorizontalAlignment="Left" Visibility="Collapsed">
+        <TextBlock x:Name="LastRun" AutomationProperties.AutomationId="LastRun" FontSize="12" TextTrimming="CharacterEllipsis" />
+      </Border>
     </DockPanel>
   </Grid>
 

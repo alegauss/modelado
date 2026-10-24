@@ -13,12 +13,12 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD9** (deps: MOD4 ✅) **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — PhotoBoost's status bar says where inference runs, how long the last run took and what is in progress, wherever the panel has scrolled to. → §MOD9
 - 📋 **MOD10** (deps: MOD4 ✅) **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — PhotoBoost's open screen is a card with the formats, an Open button and an error line, and the operations panel only appears once something is open. → §MOD10
-- 📋 **MOD11** (deps: MOD9) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
+- 📋 **MOD11** (deps: MOD9 ✅) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
 - 📋 **MOD12** (deps: MOD6 ✅) **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — PhotoBoost's History card names every version, so a person can see how far Undo will go before pressing it. → §MOD12
 - 📋 **MOD13** (deps: MOD6 ✅) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
 - 📋 **MOD14** (deps: MOD8 ✅) **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — PhotoBoost runs every suite, the winwright cases included, in a VMware guest through winwright's run-tests-vm.cmd, and a UI task ships on that run. → §MOD14
+- 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
 
 ## Block C — Existing code wired into the window
 
@@ -28,6 +28,7 @@
 - 📋 **MOD18** (deps: MOD11) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
 - 📋 **MOD19** (deps: MOD5 ✅) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
 - 📋 **MOD48** (deps: —) **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — Scripts and the Blender add-on drive the CLI and need a readable error and a non-zero exit, not a crash or a misspelt edit reported as success. → §MOD48
+- 📋 **MOD52** (deps: —) **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — On a machine with two GPUs, or one too small for TripoSR's encoder, the chip is the first place a person looks and it names neither. → §MOD52
 
 ## Block D — Model downloads
 
@@ -47,7 +48,7 @@
 
 - 📋 **MOD28** (deps: MOD3 ✅, MOD7 ✅) **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — PhotoBoost, claude-tray and freewilly each ship an Inno Setup installer, and auto update is a new installer upgrading in place. → §MOD28
 - 📋 **MOD29** (deps: MOD14, MOD28) **Nothing publishes a release: no tag-driven build, no GitHub release with the installer and a SHA256SUMS file** — The updater can only trust what a release states, and freewilly's release.yml is what makes the tag, the file name and the digest agree. → §MOD29
-- 📋 **MOD30** (deps: MOD9, MOD29) **An installed copy has no way to learn that a newer release exists** — A fix reaches only whoever goes looking for it, which is the gap claude-tray's Updater and freewilly's ReleaseCheck were each written to close. → §MOD30
+- 📋 **MOD30** (deps: MOD9 ✅, MOD29) **An installed copy has no way to learn that a newer release exists** — A fix reaches only whoever goes looking for it, which is the gap claude-tray's Updater and freewilly's ReleaseCheck were each written to close. → §MOD30
 - 📋 **MOD31** (deps: MOD30) **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — claude-tray downloads its installer, runs it silently and relaunches, and freewilly verifies the digest first; Modelado should do both. → §MOD31
 
 ## Block G — Public site for 3D modelling
@@ -64,7 +65,7 @@
 - 📋 **MOD38** (deps: MOD37) **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — A rough TripoSR mesh or an imported model often needs clean topology or a new texture from a prompt, which Meshy offers and the local tools do not. → §MOD38
 - 📋 **MOD39** (deps: MOD10, MOD36, MOD42) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — Ideogram can draw the single, centred object on a plain background that TripoSR works best from, turning a text idea into a 3D model in two steps. → §MOD39
 - 📋 **MOD40** (deps: MOD39) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
-- 📋 **MOD41** (deps: MOD9, MOD36) **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — Cloud jobs spend money or credits, and a person needs to see how close each service is to its limit before starting one, not after. → §MOD41
+- 📋 **MOD41** (deps: MOD9 ✅, MOD36) **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — Cloud jobs spend money or credits, and a person needs to see how close each service is to its limit before starting one, not after. → §MOD41
 - 📋 **MOD42** (deps: MOD41) **A cloud action gives no estimate of what it will cost before it runs** — Credits differ by action and options (texture on or off, polycount, four candidates or one), and a person should see the price before pressing, not on the bill. → §MOD42
 
 ## Block I — Blender integration: AI tools for existing Blender models

@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -69,10 +70,12 @@ public partial class MainWindow : Window, IDisposable
 
         QualityHigh.IsChecked = options.HighQuality;
         runner = new ModelRunner(library, provider, options.HighQuality);
-        ProviderText.Text = provider == ExecutionProvider.DirectML ? "GPU · DirectML" : "CPU";
+        ProviderStatus.Text = ProviderLabel;
         if (providerReason is not null)
         {
-            Status(providerReason);
+            // Why it is not the GPU, where a person looking at "CPU" will look.
+            ProviderChip.ToolTip = providerReason;
+            AutomationProperties.SetHelpText(ProviderStatus, providerReason);
         }
 
         Drop += OnDrop;
@@ -159,11 +162,12 @@ public partial class MainWindow : Window, IDisposable
         Mesh loaded;
         try
         {
-            Status($"Opening {Path.GetFileName(path)}…");
+            ShowSource($"Opening {Path.GetFileName(path)}…");
             loaded = await Task.Run(() => MeshImport.Load(path)).ConfigureAwait(true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
+            ShowSource(photoPath is null ? null : Path.GetFileName(photoPath));
             MessageBox.Show(this, $"{Path.GetFileName(path)} could not be opened.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -174,7 +178,8 @@ public partial class MainWindow : Window, IDisposable
         EmptyHint.Visibility = Visibility.Collapsed;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
         ShowMesh(loaded, null, null, "Opened");
-        Status($"{Path.GetFileName(path)}: {loaded.VertexCount:N0} vertices, {loaded.TriangleCount:N0} triangles{(loaded.Texture is null ? "" : $", texture {loaded.Texture.Width} × {loaded.Texture.Height}")}{(loaded.DoubleSided ? ", open surface" : ", closed")}.");
+        ShowSource(Path.GetFileName(path));
+        LastRunSaid(null);
     }
 
     private void OpenPhoto(string path)
@@ -207,7 +212,8 @@ public partial class MainWindow : Window, IDisposable
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
         ShowImage(photo);
-        Status($"{Path.GetFileName(path)}: {photo.Width} × {photo.Height}{(photo.HasTransparency ? ", with transparency (its cut-out is used)" : "")}.");
+        ShowSource($"{Path.GetFileName(path)} · {photo.Width} × {photo.Height}{(photo.HasTransparency ? " · cut out" : "")}");
+        LastRunSaid(null);
     }
 
     // A new model, from a reconstruction or a file: the history starts over and the view resets.
@@ -229,7 +235,8 @@ public partial class MainWindow : Window, IDisposable
         ViewChoice.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
-        MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles{(result.DoubleSided ? " · open" : "")}";
+        MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
+            $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();
         RequestRender();
     }
@@ -397,7 +404,7 @@ public partial class MainWindow : Window, IDisposable
             // Slicers read STL as millimetres: 100 mm on the largest side. Elsewhere 1 unit (a metre in glTF).
             bool stl = MeshExport.FormatOf(dialog.FileName) == MeshFormat.Stl;
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(stl ? 100 : 1), dialog.FileName);
-            Status($"Saved: {string.Join(", ", written.Select(Path.GetFileName))}{(stl ? " (100 mm on the longest side; the slicer can rescale it)" : "")}.");
+            LastRunSaid($"Saved {string.Join(", ", written.Select(Path.GetFileName))}{(stl ? " · 100 mm on the longest side" : "")}");
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
         {
@@ -418,5 +425,22 @@ public partial class MainWindow : Window, IDisposable
         _ = RefreshModelStatusAsync();
     }
 
-    private void Status(string text) => StatusText.Text = text;
+    /// <summary>Where inference runs, as the provider chip names it.</summary>
+    private string ProviderLabel => provider == ExecutionProvider.DirectML ? "DirectML" : "CPU";
+
+    // The source chip: what is open, or being opened. Null hides it.
+    private void ShowSource(string? text)
+    {
+        SourceText.Text = text ?? "";
+        SourceChip.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    // The last-run chip: what the last run, edit, save, undo or download came to, with the detail
+    // behind it as the tooltip. Null hides it, as opening a new file does: it described another.
+    private void LastRunSaid(string? text, string? detail = null)
+    {
+        LastRun.Text = text ?? "";
+        LastRunChip.ToolTip = detail;
+        LastRunChip.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
 }
