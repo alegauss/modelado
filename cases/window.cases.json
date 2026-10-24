@@ -1,0 +1,140 @@
+{
+  // MOD8: the first cases, read through the accessibility tree. Every later UI task adds its own.
+  // Paths are relative to winwright.json's folder, where the app is started. --provider cpu keeps
+  // every desk the same; none of these needs a model, so none needs .cache\models.
+
+  "fixtures": [
+    {
+      "name": "the window a default installation opens",
+      "arguments": ["--provider", "cpu"],
+      "shareable": true
+    },
+    {
+      "name": "a window opened on the photo fixture",
+      "arguments": ["--open", "cases/fixtures/photo.png", "--provider", "cpu"],
+      "shareable": true
+    },
+    {
+      // Not lent: its case edits the model.
+      "name": "a window on the cube fixture, to edit",
+      "arguments": ["--open", "cases/fixtures/cube.obj", "--provider", "cpu"],
+      "shareable": false
+    },
+    {
+      // Not lent: its case opens About and closes it.
+      "name": "a window to open About in",
+      "arguments": ["--provider", "cpu"],
+      "shareable": false
+    },
+    {
+      "name": "a window asked to open a model that is not there",
+      "arguments": ["--open", "cases/fixtures/missing.obj", "--provider", "cpu"],
+      "shareable": false
+    }
+  ],
+
+  "cases": [
+    {
+      "name": "a default installation puts a window named Modelado on the desk",
+      "catches": "an app that builds its window and then shows something else, or nothing at all, which every in-process test would pass",
+      "filed": "MOD8",
+      "tags": ["smoke", "window"],
+      "fixture": "the window a default installation opens",
+      "steps": [
+        {
+          "locator": "TitleBar",
+          "act": "read",
+          "reads": "name",
+          "matches": "Modelado$",
+          "named": "the title bar ends in the app's name"
+        }
+      ]
+    },
+
+    {
+      "name": "the toolbar offers Open on the empty window and keeps what needs a model off",
+      "catches": "a toolbar whose Save as, Undo or turns can be pressed with nothing open, or whose Open cannot",
+      "filed": "MOD5",
+      "tags": ["smoke", "toolbar"],
+      "fixture": "the window a default installation opens",
+      "steps": [
+        { "locator": "Button#ToolbarOpen", "act": "read", "reads": "name", "expect": "Open", "named": "the toolbar names its Open button" },
+        { "locator": "Button#ToolbarOpen", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and it can be pressed" },
+        { "locator": "Button#ToolbarSaveAs", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "Save as waits for a model" },
+        { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and so does Undo" },
+        { "locator": "Button#RotateXButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and so do the turns" },
+        { "locator": "Button#ResetViewButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and the front view" }
+      ]
+    },
+
+    {
+      "name": "--open on a photo shows its name and size and lets the operations start",
+      "catches": "an open that shows nothing, reports the wrong size, or leaves Generate off with a photo in the window",
+      "filed": "MOD8",
+      "tags": ["open", "operations"],
+      "fixture": "a window opened on the photo fixture",
+      "steps": [
+        { "locator": "Text#StatusText", "act": "read", "reads": "name", "expect": "photo.png: 64 × 48.", "named": "the status line names the photo and its size" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Generate 3D object can be pressed" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and so can Generate relief" },
+        { "locator": "Button#ToolbarSaveAs", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and there is no model to save yet" }
+      ]
+    },
+
+    {
+      "name": "a model is turned from the toolbar and the turn undone, each a version",
+      "catches": "a turn that does nothing or leaves no version to undo, or an Undo that does not go back to the opened model",
+      "filed": "MOD8",
+      "tags": ["open", "toolbar", "edit", "history"],
+      "fixture": "a window on the cube fixture, to edit",
+      "steps": [
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "the mesh chip counts the cube" },
+        { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "nothing to undo yet" },
+        { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
+        {
+          "locator": "Text#StatusText",
+          "act": "read",
+          "reads": "name",
+          "matches": "^Turn about X: 12 → 12 triangles in \\d+[.,]\\d s\\. Ctrl\\+Z undoes it\\.$",
+          "named": "the status line reports the turn"
+        },
+        { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and Undo can now go back" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
+        { "locator": "Text#StatusText", "act": "read", "reads": "name", "expect": "Undone: back to \"Opened\".", "named": "back to the opened model" },
+        { "locator": "Button#RedoButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the turn can be redone" }
+      ]
+    },
+
+    {
+      "name": "About opens with the version and closes again",
+      "catches": "an About button that opens nothing, or an About that cannot be closed",
+      "filed": "MOD8",
+      "tags": ["about"],
+      "fixture": "a window to open About in",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About and models is pressed" },
+        { "locator": "Text#AboutTitle", "act": "read", "reads": "name", "matches": "^Modelado \\d+\\.\\d+\\.\\d+$", "named": "About names the app and its version" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "Close is pressed" },
+        { "locator": "Text#AboutTitle", "act": "read", "absent": true, "named": "About has closed" },
+        { "locator": "Button#ToolbarOpen", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the window is usable again" }
+      ]
+    },
+
+    {
+      "name": "--open on a model that is not there says which file could not be opened",
+      "catches": "an open that fails silently or crashes the app on a bad path",
+      "filed": "MOD8",
+      "tags": ["open"],
+      "fixture": "a window asked to open a model that is not there",
+      "steps": [
+        {
+          "locator": "Window[class=\"#32770\"] > Text[nameStarts=\"missing.obj could not be opened.\"]",
+          "act": "read",
+          "reads": "name",
+          "matches": "^missing\\.obj could not be opened\\.",
+          "named": "a message names the missing file"
+        }
+      ]
+    }
+  ]
+}

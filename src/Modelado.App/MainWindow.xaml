@@ -100,16 +100,16 @@
     <!-- Viewer -->
     <Border Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
             BorderThickness="1" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
-      <Grid x:Name="Viewport" Background="{DynamicResource ViewportGroundBrush}" SizeChanged="OnViewportSizeChanged"
+      <Grid x:Name="Viewport" AutomationProperties.AutomationId="Viewport" Background="{DynamicResource ViewportGroundBrush}" SizeChanged="OnViewportSizeChanged"
             MouseLeftButtonDown="OnViewportMouseDown" MouseMove="OnViewportMouseMove" MouseLeftButtonUp="OnViewportMouseUp"
             MouseWheel="OnViewportMouseWheel">
-        <Image x:Name="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
-        <StackPanel x:Name="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
+        <Image x:Name="ViewImage" AutomationProperties.AutomationId="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+        <StackPanel x:Name="EmptyHint" AutomationProperties.AutomationId="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
           <TextBlock Text="Open or drop a photo of an object, or a 3D model" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource HintTitleBrush}" HorizontalAlignment="Center" />
           <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource HintTextBrush}"
                      Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
         </StackPanel>
-        <TextBlock x:Name="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
+        <TextBlock x:Name="ViewerHint" AutomationProperties.AutomationId="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
                    Foreground="{DynamicResource HintTextBrush}" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
       </Grid>
     </Border>
@@ -143,7 +143,7 @@
             <TextBlock Style="{StaticResource StatCaption}"
                        Text="A whole model, with the front, sides and back TripoSR infers from a single photo. Coloured per vertex." />
             <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
-            <ComboBox x:Name="ObjectResolution" SelectedIndex="2">
+            <ComboBox x:Name="ObjectResolution" AutomationProperties.AutomationId="ObjectResolution" SelectedIndex="2">
               <ComboBoxItem Content="128 · quick draft" Tag="128" />
               <ComboBoxItem Content="192" Tag="192" />
               <ComboBoxItem Content="256 · TripoSR default" Tag="256" />
@@ -153,18 +153,18 @@
             <TextBlock Style="{StaticResource FieldLabel}">
               <Run Text="Thickness (density threshold): " /><Run x:Name="ThresholdText" Text="25" />
             </TextBlock>
-            <Slider x:Name="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
+            <Slider x:Name="ObjectThreshold" AutomationProperties.AutomationId="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
                     ValueChanged="OnThresholdChanged"
                     ToolTip="Lower fattens the object and closes holes; higher thins it and separates parts. 25 is TripoSR's own." />
-            <CheckBox x:Name="ObjectRemoveBackground" Content="Remove the photo's background (U²-Net)" IsChecked="True" Margin="0,8,0,0"
+            <CheckBox x:Name="ObjectRemoveBackground" AutomationProperties.AutomationId="ObjectRemoveBackground" Content="Remove the photo's background (U²-Net)" IsChecked="True" Margin="0,8,0,0"
                       ToolTip="Turn off only for a PNG already cut out, with transparency: that one is used as it is." />
-            <CheckBox x:Name="ObjectProjectPhoto" Content="Sharp photo colours on the front" IsChecked="True" Margin="0,4,0,0"
+            <CheckBox x:Name="ObjectProjectPhoto" AutomationProperties.AutomationId="ObjectProjectPhoto" Content="Sharp photo colours on the front" IsChecked="True" Margin="0,4,0,0"
                       ToolTip="TripoSR colours from a 64 × 64 grid; this lays the photo's own colours back on the side it shows." />
-            <CheckBox x:Name="ObjectEnhancePhoto" Content="Enhance a small photo first (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
+            <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="Enhance a small photo first (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
                       ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
-            <Button x:Name="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+            <Button x:Name="ObjectButton" AutomationProperties.AutomationId="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
-            <TextBlock x:Name="ObjectModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
+            <TextBlock x:Name="ObjectModelsText" AutomationProperties.AutomationId="ObjectModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
           </StackPanel>
         </Border>
 
@@ -174,7 +174,7 @@
             <TextBlock Style="{StaticResource StatCaption}"
                        Text="Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings." />
             <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
-            <ComboBox x:Name="ReliefResolution" SelectedIndex="1">
+            <ComboBox x:Name="ReliefResolution" AutomationProperties.AutomationId="ReliefResolution" SelectedIndex="1">
               <ComboBoxItem Content="128" Tag="128" />
               <ComboBoxItem Content="256 · default" Tag="256" />
               <ComboBoxItem Content="384" Tag="384" />
@@ -183,17 +183,17 @@
             <TextBlock Style="{StaticResource FieldLabel}">
               <Run Text="Relief height: " /><Run x:Name="DepthText" Text="25%" />
             </TextBlock>
-            <Slider x:Name="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
+            <Slider x:Name="ReliefDepth" AutomationProperties.AutomationId="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
                     ToolTip="How far the nearest point stands out, as a share of the width." />
             <TextBlock Style="{StaticResource FieldLabel}">
               <Run Text="Solid base: " /><Run x:Name="BaseText" Text="no base" />
             </TextBlock>
-            <Slider x:Name="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
+            <Slider x:Name="ReliefBase" AutomationProperties.AutomationId="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
                     ToolTip="With a base the mesh is closed (solid) and can go to a 3D printer. Without one it is only the surface." />
-            <CheckBox x:Name="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
-            <Button x:Name="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+            <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+            <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
-            <TextBlock x:Name="ReliefModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
+            <TextBlock x:Name="ReliefModelsText" AutomationProperties.AutomationId="ReliefModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
           </StackPanel>
         </Border>
 
@@ -205,25 +205,25 @@
             <TextBlock Style="{StaticResource FieldLabel}">
               <Run Text="Simplify to " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" of the triangles" />
             </TextBlock>
-            <Slider x:Name="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
+            <Slider x:Name="SimplifyAmount" AutomationProperties.AutomationId="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
                     ToolTip="Fewer triangles: a smaller, lighter file for games, the web and slicers, with the shape kept." />
             <UniformGrid Columns="2" Margin="0,6,0,0">
-              <Button x:Name="SimplifyButton" Content="Simplify" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
-              <Button x:Name="SubdivideButton" Content="Subdivide" Margin="4,0,0,4" Click="OnSubdivide" IsEnabled="False"
+              <Button x:Name="SimplifyButton" AutomationProperties.AutomationId="SimplifyButton" Content="Simplify" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
+              <Button x:Name="SubdivideButton" AutomationProperties.AutomationId="SubdivideButton" Content="Subdivide" Margin="4,0,0,4" Click="OnSubdivide" IsEnabled="False"
                       ToolTip="4× the triangles, rounded off: a smoother surface for printing large." />
-              <Button x:Name="SmoothButton" Content="Smooth" Margin="0,0,4,4" Click="OnSmooth" IsEnabled="False"
+              <Button x:Name="SmoothButton" AutomationProperties.AutomationId="SmoothButton" Content="Smooth" Margin="0,0,4,4" Click="OnSmooth" IsEnabled="False"
                       ToolTip="Removes jagged edges and noise without shrinking the model (Taubin)." />
-              <Button x:Name="FillHolesButton" Content="Fill holes" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
+              <Button x:Name="FillHolesButton" AutomationProperties.AutomationId="FillHolesButton" Content="Fill holes" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
                       ToolTip="Closes the holes in the mesh, so it is solid (watertight) for printing." />
-              <Button x:Name="PiecesButton" Content="Remove loose pieces" Margin="0,0,4,4" Click="OnRemovePieces" IsEnabled="False"
+              <Button x:Name="PiecesButton" AutomationProperties.AutomationId="PiecesButton" Content="Remove loose pieces" Margin="0,0,4,4" Click="OnRemovePieces" IsEnabled="False"
                       ToolTip="Deletes small loose fragments, under 5% of the largest part." />
-              <Button x:Name="FlattenButton" Content="Flat base" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
+              <Button x:Name="FlattenButton" AutomationProperties.AutomationId="FlattenButton" Content="Flat base" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
                       ToolTip="Flattens the bottom 3%, so the model stands on the printer bed." />
             </UniformGrid>
             <TextBlock Text="With AI" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
-            <Button x:Name="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
+            <Button x:Name="UpscaleTextureButton" AutomationProperties.AutomationId="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
                     ToolTip="For textured models (reliefs, opened OBJ and GLB): upscales and cleans the texture image, up to 4096 px." />
-            <Button x:Name="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
+            <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
                     ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
           </StackPanel>
         </Border>
@@ -231,8 +231,8 @@
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
             <TextBlock Text="Quality" Style="{StaticResource SectionHeader}" />
-            <RadioButton x:Name="QualityStandard" Content="Standard (FP16 on the GPU, half the download)" IsChecked="True" Checked="OnQualityChanged" />
-            <RadioButton x:Name="QualityHigh" Content="High quality (FP32 throughout)" Margin="0,4,0,0" Checked="OnQualityChanged" />
+            <RadioButton x:Name="QualityStandard" AutomationProperties.AutomationId="QualityStandard" Content="Standard (FP16 on the GPU, half the download)" IsChecked="True" Checked="OnQualityChanged" />
+            <RadioButton x:Name="QualityHigh" AutomationProperties.AutomationId="QualityHigh" Content="High quality (FP32 throughout)" Margin="0,4,0,0" Checked="OnQualityChanged" />
             <TextBlock Style="{StaticResource StatCaption}" Margin="0,8,0,0"
                        Text="On the CPU, FP32 is always used because it is faster there. Models are downloaded from Hugging Face on first use and checked by SHA-256." />
           </StackPanel>
@@ -245,12 +245,12 @@
     <!-- Status bar -->
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
       <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
-        <TextBlock x:Name="ProviderText" FontSize="12" Text="…" />
+        <TextBlock x:Name="ProviderText" AutomationProperties.AutomationId="ProviderText" FontSize="12" Text="…" />
       </Border>
-      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left" x:Name="MeshChip" Visibility="Collapsed">
-        <TextBlock x:Name="MeshText" FontSize="12" />
+      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left" x:Name="MeshChip" AutomationProperties.AutomationId="MeshChip" Visibility="Collapsed">
+        <TextBlock x:Name="MeshText" AutomationProperties.AutomationId="MeshText" FontSize="12" />
       </Border>
-      <TextBlock x:Name="StatusText" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+      <TextBlock x:Name="StatusText" AutomationProperties.AutomationId="StatusText" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                  Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
     </DockPanel>
   </Grid>

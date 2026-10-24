@@ -16,8 +16,11 @@ if errorlevel 1 (echo BUILD FAILED - no tests were run. & popd & exit /b 1)
 
 set /a RAN=0
 set /a FAILED=0
-for /d %%P in (tests\*.Tests) do (
+rem The *.Tests folders and the winwright UI cases (MOD8), which skip on a desk that cannot be
+rem observed. The cases are net10.0-windows, the rest net10.0.
+for /d %%P in (tests\*.Tests tests\*.Cases) do (
     set "APP=%%P\bin\%CONFIG%\net10.0\%%~nxP.exe"
+    if not exist "!APP!" set "APP=%%P\bin\%CONFIG%\net10.0-windows\%%~nxP.exe"
     echo.
     echo === %%~nxP ===
     if exist "!APP!" (

@@ -1,0 +1,22 @@
+{
+  // MOD8: what is true of this project rather than of any one case, for winwright. Every relative
+  // path resolves against this file's directory, so a case carries no path and runs on any checkout.
+
+  // The app's output under its RID: Modelado.App sets win-x64 unconditionally. {configuration} is
+  // the build under test: CasesRun passes its own, and Debug is what run-tests.cmd builds.
+  "executable": "src/Modelado.App/bin/{configuration}/net10.0-windows/win-x64/Modelado.exe",
+  "configuration": "Debug",
+
+  "sourceRoot": "src",
+
+  "timeouts": {
+    // The window shows before the models list is fetched, so a launch past a few seconds is itself
+    // a finding; ten still fails a hang rather than waiting on it.
+    "launch": 10000,
+    // Long enough for the models list to fail or answer and an opened model to load.
+    "resolve": 10000,
+    "act": 5000,
+    "poll": 25,
+    "stop": 5000
+  }
+}

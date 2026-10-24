@@ -24,20 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD8 AutomationIds and winwright cases
-
-Model: D:\git\japode\photo-boost\winwright.json, cases\window.cases.json,
-download.cases.json and upscale.cases.json, with fixtures in cases\fixtures. Every
-interactive control and every text a case reads gets an AutomationId (PascalCase, the
-same as x:Name), and icon-only buttons get AutomationProperties.Name too.
-
-The first cases: open a photo and see the operations panel; open a model and see its
-counts; run an edit and Undo it; open About and go Back; a file that fails to open. The
-fixtures are a small photo and a small OBJ, committed. Cases that need the real models
-skip when .cache\models is absent, as the tests do, and run-tests.cmd runs the cases.
-
-Done when the cases pass in run-tests.cmd. Every later UI task adds its own case.
-
 ### §MOD9 Status bar with chips
 
 Model: the StatusBar in PhotoBoost's MainWindow.xaml (PB14, PB24, PB58, PB60). Chips,

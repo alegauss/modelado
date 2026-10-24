@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -38,7 +39,9 @@ public sealed class AboutWindow : Window
 
         string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?";
         StackPanel root = new() { Margin = new Thickness(20) };
-        root.Children.Add(new TextBlock { Text = $"Modelado {version}", FontSize = 20, FontWeight = FontWeights.SemiBold });
+        TextBlock title = new() { Text = $"Modelado {version}", FontSize = 20, FontWeight = FontWeights.SemiBold };
+        AutomationProperties.SetAutomationId(title, "AboutTitle");
+        root.Children.Add(title);
         root.Children.Add(Paragraph(
             "Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. " +
             $"Inference runs in ONNX Runtime, {(provider == ExecutionProvider.DirectML ? "on the GPU with DirectML" : "on the CPU")}. No photo is uploaded anywhere."));
@@ -48,10 +51,10 @@ public sealed class AboutWindow : Window
         root.Children.Add(new ScrollViewer { Content = list, MaxHeight = 320, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
 
         WrapPanel buttons = new() { Margin = new Thickness(0, 16, 0, 0) };
-        buttons.Children.Add(Button("Download all (offline use)", (_, _) => DownloadAllRequested?.Invoke(this, EventArgs.Empty)));
-        buttons.Children.Add(Button("Open the models folder", (_, _) => OpenFolder(library.DownloadRoot)));
-        buttons.Children.Add(Button("Remove downloaded models", (_, _) => Remove()));
-        buttons.Children.Add(Button("Close", (_, _) => Close()));
+        buttons.Children.Add(Button("Download all (offline use)", "AboutDownloadAll", (_, _) => DownloadAllRequested?.Invoke(this, EventArgs.Empty)));
+        buttons.Children.Add(Button("Open the models folder", "AboutOpenFolder", (_, _) => OpenFolder(library.DownloadRoot)));
+        buttons.Children.Add(Button("Remove downloaded models", "AboutRemoveModels", (_, _) => Remove()));
+        buttons.Children.Add(Button("Close", "AboutClose", (_, _) => Close()));
         root.Children.Add(buttons);
         Content = root;
         Fill();
@@ -62,9 +65,10 @@ public sealed class AboutWindow : Window
 
     private static TextBlock Paragraph(string text) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 8, 0, 0) };
 
-    private static Button Button(string text, RoutedEventHandler click)
+    private static Button Button(string text, string automationId, RoutedEventHandler click)
     {
         Button button = new() { Content = text, Padding = new Thickness(12, 6, 12, 6), Margin = new Thickness(0, 0, 8, 8) };
+        AutomationProperties.SetAutomationId(button, automationId);
         button.Click += click;
         return button;
     }

@@ -14,6 +14,7 @@
 - ✅ **MOD50** **run-tests.cmd fails the Python suite where python on PATH is the Microsoft Store stub, though Python is installed** — run-tests.cmd uses .venv, a python that runs, or the one Python registered, and the guest gate runs scripts\tests green.
 - ✅ **MOD7** **The window and the taskbar show WPF's default icon** — Modelado wears its own icon, a cube on a blue tile drawn per size by tools/Modelado.Icon, in the exe, the window and the taskbar.
 - ✅ **MOD51** **Every edit's status line shows a garbled arrow between the triangle counts since the toolbar change** — The edit status line shows its arrow again, and MOD8's toolbar case on the guest reads it.
+- ✅ **MOD8** **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — Every named control has an AutomationId, and six winwright cases drive the window on the VMware guest from run-tests.cmd.
 
 ## Block C — Existing code wired into the window
 
