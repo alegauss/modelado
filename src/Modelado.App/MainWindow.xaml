@@ -249,6 +249,40 @@
           </StackPanel>
         </Border>
 
+        <!-- MOD13, after PhotoBoost's Export card (PB25): the format and only the options it has,
+             what the model will lose in it, then Save as, which the toolbar's button shares. -->
+        <Border x:Name="ExportCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
+          <StackPanel>
+            <TextBlock Text="Export" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="Format" Style="{StaticResource FieldLabel}" />
+            <ComboBox x:Name="ExportFormat" AutomationProperties.AutomationId="ExportFormat" AutomationProperties.Name="Format"
+                      SelectedIndex="0" SelectionChanged="OnExportFormatChanged">
+              <ComboBoxItem Content="GLB · Windows, Blender, the web" Tag="glb" />
+              <ComboBoxItem Content="OBJ · with its texture or colours" Tag="obj" />
+              <ComboBoxItem Content="PLY · with colours, MeshLab" Tag="ply" />
+              <ComboBoxItem Content="STL · 3D printing" Tag="stl" />
+            </ComboBox>
+            <StackPanel x:Name="ExportObjOptions" Visibility="Collapsed" Margin="0,8,0,0">
+              <RadioButton x:Name="ExportObjTexture" AutomationProperties.AutomationId="ExportObjTexture" GroupName="ObjColours"
+                           Content="Texture, as an .mtl and a .png beside it" IsChecked="True" Checked="OnExportOptionChanged" />
+              <RadioButton x:Name="ExportObjVertexColours" AutomationProperties.AutomationId="ExportObjVertexColours" GroupName="ObjColours"
+                           Content="Colours per vertex, in the .obj alone" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
+            </StackPanel>
+            <StackPanel x:Name="ExportPlyOptions" Visibility="Collapsed" Margin="0,8,0,0">
+              <RadioButton x:Name="ExportPlyBinary" AutomationProperties.AutomationId="ExportPlyBinary" GroupName="PlyEncoding"
+                           Content="Binary, smaller and faster" IsChecked="True" />
+              <RadioButton x:Name="ExportPlyAscii" AutomationProperties.AutomationId="ExportPlyAscii" GroupName="PlyEncoding"
+                           Content="ASCII, readable as text" Margin="0,4,0,0" />
+            </StackPanel>
+            <TextBlock x:Name="ExportNote" AutomationProperties.AutomationId="ExportNote" Style="{StaticResource StatCaption}"
+                       Margin="0,8,0,0" Visibility="Collapsed" />
+            <Button x:Name="ExportSaveAs" AutomationProperties.AutomationId="ExportSaveAs" Content="Save as…" Command="SaveAs"
+                    Margin="0,10,0,0" Padding="0,6" HorizontalAlignment="Stretch" />
+            <TextBlock x:Name="ExportStatus" AutomationProperties.AutomationId="ExportStatus" Style="{StaticResource StatCaption}"
+                       Margin="0,8,0,0" Visibility="Collapsed" />
+          </StackPanel>
+        </Border>
+
         <!-- MOD12, after PhotoBoost's History card (PB28): every version the model went through, the
              one shown selected, so how far Undo goes is seen before it is pressed. Read, not clicked. -->
         <Border x:Name="HistoryCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">

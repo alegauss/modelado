@@ -13,13 +13,12 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD13** (deps: MOD6 ✅) **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — PhotoBoost's Export card shows the format and the options that apply to it before the dialog, so what will be written is visible up front. → §MOD13
 - 📋 **MOD14** (deps: MOD8 ✅) **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — PhotoBoost runs every suite, the winwright cases included, in a VMware guest through winwright's run-tests-vm.cmd, and a UI task ships on that run. → §MOD14
 - 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD15** (deps: MOD13) **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — A print has a real size, and a figurine meant to be 40 mm or 200 mm tall needs rescaling in the slicer today. → §MOD15
+- 📋 **MOD15** (deps: MOD13 ✅) **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — A print has a real size, and a figurine meant to be 40 mm or 200 mm tall needs rescaling in the slicer today. → §MOD15
 - 📋 **MOD16** (deps: MOD1 ✅) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
 - 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
 - 📋 **MOD18** (deps: MOD11 ✅) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18

@@ -24,20 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD13 Export card
-
-Model: PhotoBoost's Export card and MainWindow.Export.cs (PB25). The format is a
-ComboBox: GLB, OBJ, PLY, STL. Only the options that format has are shown: OBJ with
-texture or vertex colours; PLY binary or ASCII; STL with its size in millimetres, which
-is the block C task for the CLI's --size. Then "Save as…" bound to the SaveAs command,
-and an ExportStatus caption that names the file written.
-
-What the mesh lacks is said on the card. For example, STL drops colour, and a model with
-holes is not watertight for printing.
-
-Done when each format is written from the card and opened again by MeshImport with the
-same vertex and triangle counts.
-
 ### §MOD14 Every test runs on the VMware guest through winwright
 
 Model: PhotoBoost's README "Tests" section and its run-tests.cmd, which loops over

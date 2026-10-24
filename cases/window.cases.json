@@ -41,6 +41,14 @@
       "shareable": false
     },
     {
+      // MOD13: the cube staged in a folder of its own, so the Save dialog writes there and the
+      // written files can be dropped back in.
+      "name": "a window on a staged cube, to save through the Export card",
+      "files": ["cases/fixtures/cube.obj"],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -217,6 +225,52 @@
         { "locator": "Button#MirrorButton", "act": "invoke", "named": "Mirror is pressed" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Mirror", "named": "the new edit replaces the two undone ones" },
         { "locator": "Button#RedoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and there is nothing left to redo" }
+      ]
+    },
+
+    {
+      "name": "the Export card shows only the options the chosen format has, and what the model loses in it",
+      "catches": "options offered for a format that ignores them, or a format that silently drops something the model has",
+      "filed": "MOD13",
+      "tags": ["export"],
+      "fixture": "a window on the cube fixture, to edit",
+      "steps": [
+        { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "The model has no colours, so it is saved grey.", "named": "GLB is first, and the grey cube is said to stay grey" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
+        { "locator": "RadioButton#ExportPlyAscii", "act": "read", "reads": "name", "expect": "ASCII, readable as text", "named": "PLY offers text or binary" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "RadioButton#ExportPlyAscii", "act": "read", "absent": true, "named": "PLY's options are gone" },
+        { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "Saved at 100 mm on its longest side; the slicer can scale it.", "named": "and STL says the size it writes" }
+      ]
+    },
+
+    {
+      "name": "the Export card writes STL and ASCII PLY, and each opens again with the same counts",
+      "catches": "a Save as that writes nothing, writes another format than the card shows, or writes a file that does not read back",
+      "filed": "MOD13",
+      "tags": ["export", "dialog", "drop"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/printed", "named": "the dialog is told to save printed in the staged folder" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "the dialog closed" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved printed.stl", "named": "the card says it wrote printed.stl" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/printed.stl", "named": "printed.stl is dropped back in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "printed.stl", "named": "it opens" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with the cube's counts" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
+        { "locator": "RadioButton#ExportPlyAscii", "act": "select", "reads": "selected", "expect": "selected", "named": "as ASCII" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed again" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/text", "named": "the dialog is told to save text" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved text.ply", "named": "the card says it wrote text.ply" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/text.ply", "named": "text.ply is dropped back in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "text.ply", "named": "it opens" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with the same counts" }
       ]
     },
 

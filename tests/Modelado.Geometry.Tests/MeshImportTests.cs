@@ -90,6 +90,37 @@ public sealed class MeshImportTests : IDisposable
     }
 
     [Fact]
+    public void Ascii_ply_reads_back_what_was_written()
+    {
+        // MOD13: the Export card's PLY option.
+        Mesh mesh = Coloured();
+        string path = Path.Combine(folder, "a.ply");
+        MeshExport.Save(mesh, path, new ExportOptions(PlyAscii: true));
+        Mesh back = MeshImport.Load(path);
+
+        Assert.StartsWith("ply\nformat ascii 1.0\n", File.ReadAllText(path), StringComparison.Ordinal);
+        Assert.Equal(mesh.VertexCount, back.VertexCount);
+        Assert.Equal(mesh.TriangleCount, back.TriangleCount);
+        Assert.Equal(mesh.Colors![7].X, back.Colors![Nearest(back, mesh.Positions[7])].X, 0.01f);
+    }
+
+    [Fact]
+    public void A_textured_obj_can_carry_its_colours_per_vertex_instead()
+    {
+        // MOD13: the Export card's OBJ option: no .mtl or .png, the texture sampled at each vertex.
+        Mesh mesh = Textured();
+        string path = Path.Combine(folder, "v.obj");
+        IReadOnlyList<string> written = MeshExport.Save(mesh, path, new ExportOptions(ObjVertexColours: true));
+        Mesh back = MeshImport.Load(path);
+
+        Assert.Equal([path], written);
+        Assert.Null(back.Texture);
+        Assert.NotNull(back.Colors);
+        Assert.Equal(200 / 255f, back.Colors![0].X, 0.01f);
+        Assert.Equal(mesh.TriangleCount, back.TriangleCount);
+    }
+
+    [Fact]
     public void Ascii_stl_and_quads_in_obj_and_ply_are_read()
     {
         string stl = Path.Combine(folder, "a.stl");

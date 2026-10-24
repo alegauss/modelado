@@ -24,6 +24,15 @@ public enum MeshFormat
     Stl,
 }
 
+/// <summary>The choices a format has beyond the format itself (MOD13, the Export card's options).</summary>
+/// <param name="ObjVertexColours">OBJ: the colours per vertex (sampled from the texture) rather than an .mtl and a .png.</param>
+/// <param name="PlyAscii">PLY: text rather than binary, for tools and eyes that read it.</param>
+public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii = false)
+{
+    /// <summary>What a format is written as when nothing is chosen.</summary>
+    public static ExportOptions Default { get; } = new();
+}
+
 /// <summary>Writes meshes to GLB, OBJ, PLY and STL.</summary>
 public static class MeshExport
 {
@@ -45,14 +54,16 @@ public static class MeshExport
     /// <summary>Saves a mesh in the format its extension names.</summary>
     /// <param name="mesh">The mesh.</param>
     /// <param name="path">The file; an OBJ's .mtl and .png go beside it.</param>
+    /// <param name="options">The format's choices; null for <see cref="ExportOptions.Default"/>.</param>
     /// <returns>Every file written.</returns>
-    public static IReadOnlyList<string> Save(Mesh mesh, string path)
+    public static IReadOnlyList<string> Save(Mesh mesh, string path, ExportOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(mesh);
+        options ??= ExportOptions.Default;
         MeshFormat format = FormatOf(path);
         if (format == MeshFormat.Obj)
         {
-            return WriteObj(mesh, path);
+            return WriteObj(mesh, path, options.ObjVertexColours);
         }
 
         using (FileStream stream = File.Create(path))
@@ -63,7 +74,7 @@ public static class MeshExport
                     WriteGlb(mesh, stream);
                     break;
                 case MeshFormat.Ply:
-                    WritePly(mesh, stream);
+                    WritePly(mesh, stream, options.PlyAscii);
                     break;
                 default:
                     WriteStl(mesh, stream);
@@ -177,16 +188,17 @@ public static class MeshExport
         }
     }
 
-    /// <summary>Writes binary PLY with per-vertex colour (sampled from the texture when there are none).</summary>
+    /// <summary>Writes PLY with per-vertex colour (sampled from the texture when there are none).</summary>
     /// <param name="mesh">The mesh.</param>
     /// <param name="stream">Where.</param>
-    public static void WritePly(Mesh mesh, Stream stream)
+    /// <param name="ascii">Text rather than binary little-endian.</param>
+    public static void WritePly(Mesh mesh, Stream stream, bool ascii = false)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         ArgumentNullException.ThrowIfNull(stream);
         Vector3[]? colors = VertexColors(mesh);
         StringBuilder header = new();
-        header.Append("ply\nformat binary_little_endian 1.0\ncomment Modelado\n");
+        header.Append(ascii ? "ply\nformat ascii 1.0\ncomment Modelado\n" : "ply\nformat binary_little_endian 1.0\ncomment Modelado\n");
         header.Append(CultureInfo.InvariantCulture, $"element vertex {mesh.VertexCount}\n");
         header.Append("property float x\nproperty float y\nproperty float z\n");
         if (colors is not null)
@@ -197,6 +209,11 @@ public static class MeshExport
         header.Append(CultureInfo.InvariantCulture, $"element face {mesh.TriangleCount}\n");
         header.Append("property list uchar int vertex_indices\nend_header\n");
         stream.Write(Encoding.ASCII.GetBytes(header.ToString()));
+        if (ascii)
+        {
+            WritePlyText(mesh, colors, stream);
+            return;
+        }
 
         using BinaryWriter writer = new(stream, Encoding.ASCII, leaveOpen: true);
         for (int i = 0; i < mesh.VertexCount; i++)
@@ -219,6 +236,25 @@ public static class MeshExport
             writer.Write(mesh.Triangles[t]);
             writer.Write(mesh.Triangles[t + 1]);
             writer.Write(mesh.Triangles[t + 2]);
+        }
+    }
+
+    // ASCII PLY's body: one vertex per line, then one face per line, as the header declared them.
+    private static void WritePlyText(Mesh mesh, Vector3[]? colors, Stream stream)
+    {
+        using StreamWriter text = new(stream, Encoding.ASCII, leaveOpen: true) { NewLine = "\n" };
+        CultureInfo c = CultureInfo.InvariantCulture;
+        for (int i = 0; i < mesh.VertexCount; i++)
+        {
+            Vector3 p = mesh.Positions[i];
+            text.WriteLine(colors is null
+                ? string.Format(c, "{0:R} {1:R} {2:R}", p.X, p.Y, p.Z)
+                : string.Format(c, "{0:R} {1:R} {2:R} {3} {4} {5}", p.X, p.Y, p.Z, ToByte(colors[i].X), ToByte(colors[i].Y), ToByte(colors[i].Z)));
+        }
+
+        for (int t = 0; t < mesh.Triangles.Length; t += 3)
+        {
+            text.WriteLine(string.Format(c, "3 {0} {1} {2}", mesh.Triangles[t], mesh.Triangles[t + 1], mesh.Triangles[t + 2]));
         }
     }
 
@@ -256,14 +292,16 @@ public static class MeshExport
     /// </summary>
     /// <param name="mesh">The mesh.</param>
     /// <param name="path">The .obj file.</param>
+    /// <param name="vertexColours">A textured mesh's texture sampled at each vertex, instead of the .mtl and .png.</param>
     /// <returns>Every file written.</returns>
-    public static IReadOnlyList<string> WriteObj(Mesh mesh, string path)
+    public static IReadOnlyList<string> WriteObj(Mesh mesh, string path, bool vertexColours = false)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         List<string> written = [path];
         string folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
         string stem = Path.GetFileNameWithoutExtension(path);
-        bool textured = mesh.Texture is not null;
+        bool textured = mesh.Texture is not null && !vertexColours;
+        Vector3[]? colours = textured ? null : VertexColors(mesh);
         Vector3[] normals = mesh.ComputeNormals();
         CultureInfo c = CultureInfo.InvariantCulture;
 
@@ -279,9 +317,9 @@ public static class MeshExport
             for (int i = 0; i < mesh.VertexCount; i++)
             {
                 Vector3 p = mesh.Positions[i];
-                if (!textured && mesh.Colors is not null)
+                if (colours is not null)
                 {
-                    Vector3 col = mesh.Colors[i];
+                    Vector3 col = colours[i];
                     obj.WriteLine(string.Format(c, "v {0:0.######} {1:0.######} {2:0.######} {3:0.####} {4:0.####} {5:0.####}", p.X, p.Y, p.Z, col.X, col.Y, col.Z));
                 }
                 else

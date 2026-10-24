@@ -248,6 +248,8 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{Path.GetFileName(path)} · Modelado";
         MeshChip.Visibility = Visibility.Collapsed;
         HistoryCard.Visibility = Visibility.Collapsed;
+        ExportCard.Visibility = Visibility.Collapsed;
+        ExportStatus.Visibility = Visibility.Collapsed;
         ViewChoice.IsEnabled = false;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
@@ -279,6 +281,8 @@ public partial class MainWindow : Window, IDisposable
         HistoryList.SelectedIndex = history.Position;
         HistoryList.ScrollIntoView(HistoryList.SelectedItem);
         HistoryCard.Visibility = Visibility.Visible;
+        ExportCard.Visibility = Visibility.Visible;
+        UpdateExportCard();
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
             $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();
@@ -422,38 +426,6 @@ public partial class MainWindow : Window, IDisposable
         source.Freeze();
         ViewImage.Stretch = Stretch.Uniform;
         ViewImage.Source = source;
-    }
-
-    private void OnExport(object sender, ExecutedRoutedEventArgs e)
-    {
-        if (mesh is null || busy)
-        {
-            return;
-        }
-
-        SaveFileDialog dialog = new()
-        {
-            Title = "Save the 3D model",
-            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "model"),
-            Filter = "GLB, binary glTF (Windows, Blender, web)|*.glb|OBJ with texture or colours|*.obj|STL for 3D printing (in mm)|*.stl|PLY with colours (MeshLab)|*.ply",
-            AddExtension = true,
-        };
-        if (dialog.ShowDialog(this) != true)
-        {
-            return;
-        }
-
-        try
-        {
-            // Slicers read STL as millimetres: 100 mm on the largest side. Elsewhere 1 unit (a metre in glTF).
-            bool stl = MeshExport.FormatOf(dialog.FileName) == MeshFormat.Stl;
-            IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(stl ? 100 : 1), dialog.FileName);
-            LastRunSaid($"Saved {string.Join(", ", written.Select(Path.GetFileName))}{(stl ? " · 100 mm on the longest side" : "")}");
-        }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
-        {
-            MessageBox.Show(this, $"The model could not be saved.\n\n{error.Message}", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
     }
 
     // ".png", ".jpg", ".jpeg" -> "PNG, JPG, JPEG".

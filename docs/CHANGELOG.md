@@ -19,6 +19,7 @@
 - ✅ **MOD10** **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — The empty window is a drop zone with the formats and Open; a file that cannot open is said in place, never in a dialog (design superseded: toolbar model commands stay shown but off).
 - ✅ **MOD11** **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — About is an in-window panel toggled from the status bar; a case watches a download keep going while it opens and closes.
 - ✅ **MOD12** **Undo and Redo move between versions, but nothing shows the list of versions the model went through** — A History card lists every version with the amount it used, the one shown selected, and drops undone versions on a new edit.
+- ✅ **MOD13** **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — An Export card picks the format first, shows only its options and what the model loses in it, and writes files that read back.
 
 ## Block C — Existing code wired into the window
 
