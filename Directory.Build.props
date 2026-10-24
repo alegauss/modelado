@@ -1,0 +1,32 @@
+<Project>
+
+  <!-- Every setting here applies to every project, so none of them can be turned off in one
+       .csproj without the diff showing it. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- x64 only: the DirectML build of ONNX Runtime ships no ARM or x86 binaries this app targets. -->
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AppendPlatformToOutputPath>false</AppendPlatformToOutputPath>
+
+    <!-- Marching cubes, the rasterizer and the tensor conversions run per voxel or per pixel. -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisModePerformance>All</AnalysisModePerformance>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Deterministic>true</Deterministic>
+
+    <!-- The WPF app builds on Linux too (compile check only; it runs on Windows). -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+    <Version>0.1.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <NeutralLanguage>pt-BR</NeutralLanguage>
+  </PropertyGroup>
+
+</Project>

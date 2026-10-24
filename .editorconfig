@@ -1,0 +1,19 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,props,csproj,slnx,xaml}]
+indent_size = 2
+
+[*.cs]
+# Meshes, images and tensors are handed between stages as the arrays they are built in, on
+# purpose: copying 300 000 vertices to satisfy an accessor rule is the cost this would add.
+dotnet_diagnostic.CA1819.severity = none
+
+[*.cmd]
+end_of_line = crlf

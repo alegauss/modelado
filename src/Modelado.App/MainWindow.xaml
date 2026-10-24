@@ -1,0 +1,166 @@
+<Window x:Class="Modelado.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Modelado"
+        Width="1280" Height="820" MinWidth="900" MinHeight="600"
+        ThemeMode="System"
+        FontFamily="{StaticResource AppFont}"
+        AllowDrop="True"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="340" />
+    </Grid.ColumnDefinitions>
+
+    <!-- Toolbar -->
+    <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="12,10,12,6">
+      <Button x:Name="OpenButton" Content="Abrir foto…" Padding="14,6" Click="OnOpen"
+              ToolTip="Uma foto de um objeto (PNG, JPEG, WebP). Também dá para arrastar a foto para a janela. Ctrl+O" />
+      <Button x:Name="ExportButton" Content="Exportar…" Padding="14,6" Margin="8,0,0,0" Click="OnExport" IsEnabled="False"
+              ToolTip="Salva o modelo como GLB, OBJ, PLY ou STL. Ctrl+S" />
+      <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+      <TextBlock Text="Ver:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+      <ComboBox x:Name="ViewChoice" Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
+        <ComboBoxItem Content="Modelo com cores" />
+        <ComboBoxItem Content="Modelo em argila" />
+        <ComboBoxItem Content="Malha (arestas)" />
+        <ComboBoxItem Content="Foto de entrada" />
+      </ComboBox>
+      <Button x:Name="ResetViewButton" Content="Centralizar" Padding="12,6" Margin="8,0,0,0" Click="OnResetView" IsEnabled="False"
+              ToolTip="Volta à vista de frente. Duplo clique no modelo faz o mesmo." />
+      <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+      <Button Content="Sobre e modelos" Padding="12,6" Click="OnAbout" />
+    </StackPanel>
+
+    <!-- Viewer -->
+    <Border Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
+            BorderThickness="1" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+      <Grid x:Name="Viewport" Background="#FF1C1F24" SizeChanged="OnViewportSizeChanged"
+            MouseLeftButtonDown="OnViewportMouseDown" MouseMove="OnViewportMouseMove" MouseLeftButtonUp="OnViewportMouseUp"
+            MouseWheel="OnViewportMouseWheel">
+        <Image x:Name="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+        <StackPanel x:Name="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
+          <TextBlock Text="Abra ou arraste a foto de um objeto" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
+          <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="#FFA8ADB5"
+                     Text="Melhor com um único objeto inteiro, centralizado, sobre um fundo simples. Tudo roda neste computador: nenhuma foto sai dele." />
+        </StackPanel>
+        <TextBlock x:Name="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
+                   Foreground="#FFA8ADB5" FontSize="12" Text="Arraste para girar · roda do mouse para aproximar · duplo clique para centralizar" />
+      </Grid>
+    </Border>
+
+    <!-- Operations -->
+    <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="6,0,12,0" VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="Objeto 3D" Style="{StaticResource CardTitle}" />
+            <TextBlock Style="{StaticResource Caption}"
+                       Text="Um modelo completo, com frente, lados e costas inventados pelo TripoSR a partir de uma única foto. Cores por vértice." />
+            <TextBlock Text="Resolução da malha" Style="{StaticResource FieldLabel}" />
+            <ComboBox x:Name="ObjectResolution" SelectedIndex="2">
+              <ComboBoxItem Content="128 · rascunho rápido" Tag="128" />
+              <ComboBoxItem Content="192" Tag="192" />
+              <ComboBoxItem Content="256 · padrão do TripoSR" Tag="256" />
+              <ComboBoxItem Content="320" Tag="320" />
+              <ComboBoxItem Content="384 · fina" Tag="384" />
+            </ComboBox>
+            <TextBlock Style="{StaticResource FieldLabel}">
+              <Run Text="Espessura (limiar de densidade): " /><Run x:Name="ThresholdText" Text="25" />
+            </TextBlock>
+            <Slider x:Name="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
+                    ValueChanged="OnThresholdChanged"
+                    ToolTip="Mais baixo engorda o objeto e fecha buracos; mais alto afina e separa partes. 25 é o do TripoSR." />
+            <CheckBox x:Name="ObjectRemoveBackground" Content="Remover o fundo da foto (U²-Net)" IsChecked="True" Margin="0,8,0,0"
+                      ToolTip="Desligue só para um PNG já recortado, com transparência: esse é usado como está." />
+            <Button x:Name="ObjectButton" Content="Gerar objeto 3D" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
+            <TextBlock x:Name="ObjectModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+          </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="Relevo" Style="{StaticResource CardTitle}" />
+            <TextBlock Style="{StaticResource Caption}"
+                       Text="A profundidade de cada pixel (Depth Anything V2) vira altura: um baixo-relevo texturizado com a foto. Funciona com qualquer imagem: rostos, paisagens, prédios." />
+            <TextBlock Text="Resolução da malha" Style="{StaticResource FieldLabel}" />
+            <ComboBox x:Name="ReliefResolution" SelectedIndex="1">
+              <ComboBoxItem Content="128" Tag="128" />
+              <ComboBoxItem Content="256 · padrão" Tag="256" />
+              <ComboBoxItem Content="384" Tag="384" />
+              <ComboBoxItem Content="512 · fina" Tag="512" />
+            </ComboBox>
+            <TextBlock Style="{StaticResource FieldLabel}">
+              <Run Text="Altura do relevo: " /><Run x:Name="DepthText" Text="25%" />
+            </TextBlock>
+            <Slider x:Name="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
+                    ToolTip="Quanto o ponto mais próximo sobressai, em fração da largura." />
+            <TextBlock Style="{StaticResource FieldLabel}">
+              <Run Text="Base sólida: " /><Run x:Name="BaseText" Text="sem base" />
+            </TextBlock>
+            <Slider x:Name="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
+                    ToolTip="Com base, a malha é fechada (sólida) e pode ir para a impressora 3D. Sem base, é só a superfície." />
+            <CheckBox x:Name="ReliefRemoveBackground" Content="Só o objeto (remover o fundo)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+            <Button x:Name="ReliefButton" Content="Gerar relevo" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    Click="OnGenerateRelief" IsEnabled="False" />
+            <TextBlock x:Name="ReliefModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+          </StackPanel>
+        </Border>
+
+        <!-- Progress of a reconstruction or a download -->
+        <Border x:Name="ProgressCard" Style="{StaticResource Card}" Visibility="Collapsed">
+          <StackPanel>
+            <TextBlock x:Name="ProgressTitle" Style="{StaticResource CardTitle}" />
+            <TextBlock x:Name="ProgressText" Style="{StaticResource Caption}" />
+            <ProgressBar x:Name="ProgressBar" Height="6" Minimum="0" Maximum="1" />
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+              <Button x:Name="PauseButton" Content="Pausar" Padding="12,4" Click="OnPauseDownload" Visibility="Collapsed" />
+              <Button x:Name="CancelButton" Content="Cancelar" Padding="12,4" Margin="8,0,0,0" Click="OnCancel" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="Qualidade" Style="{StaticResource CardTitle}" />
+            <RadioButton x:Name="QualityStandard" Content="Padrão (FP16 na GPU, metade do download)" IsChecked="True" Checked="OnQualityChanged" />
+            <RadioButton x:Name="QualityHigh" Content="Alta (FP32 em tudo)" Margin="0,4,0,0" Checked="OnQualityChanged" />
+            <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                       Text="Na CPU o FP32 é usado sempre: é mais rápido lá. Os modelos são baixados do Hugging Face na primeira vez e conferidos por SHA-256." />
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Status bar -->
+    <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
+      <Border Style="{StaticResource Chip}" DockPanel.Dock="Left">
+        <TextBlock x:Name="ProviderText" FontSize="12" Text="…" />
+      </Border>
+      <Border Style="{StaticResource Chip}" DockPanel.Dock="Left" x:Name="MeshChip" Visibility="Collapsed">
+        <TextBlock x:Name="MeshText" FontSize="12" />
+      </Border>
+      <TextBlock x:Name="StatusText" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                 Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+    </DockPanel>
+  </Grid>
+
+  <Window.InputBindings>
+    <KeyBinding Key="O" Modifiers="Control" Command="{x:Static ApplicationCommands.Open}" />
+    <KeyBinding Key="S" Modifiers="Control" Command="{x:Static ApplicationCommands.Save}" />
+  </Window.InputBindings>
+  <Window.CommandBindings>
+    <CommandBinding Command="{x:Static ApplicationCommands.Open}" Executed="OnOpen" />
+    <CommandBinding Command="{x:Static ApplicationCommands.Save}" Executed="OnExport" />
+  </Window.CommandBindings>
+</Window>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- ONNX Runtime: the models on disk, their downloads, the sessions and the pipelines that turn
+       a photo into a mesh. It reads Imaging and Geometry and never sees a UI type. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Modelado.Inference</RootNamespace>
+  </PropertyGroup>
+
+  <!-- The same managed API either way: the DirectML build on Windows (GPU, any vendor, plus the
+       CPU), the CPU build elsewhere, where the tests and the command line also run. -->
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.24.4" />
+  </ItemGroup>
+  <ItemGroup Condition="!$([MSBuild]::IsOSPlatform('Windows'))">
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.24.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
+    <ProjectReference Include="..\Modelado.Geometry\Modelado.Geometry.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The pinned manifest publish_models.py writes, so sizes and hashes are known offline;
+         empty until the models are first published, and the latest is fetched instead. -->
+    <EmbeddedResource Include="models-manifest.json" LogicalName="Modelado.Inference.models-manifest.json" />
+  </ItemGroup>
+
+</Project>

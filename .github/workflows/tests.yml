@@ -1,0 +1,22 @@
+# Everything that runs without Windows and without the 2.7 GB of models: the libraries, the
+# command line and the scripts. The WPF app is compiled (EnableWindowsTargeting), not run; the
+# tests on the real models say they skipped. run-tests.cmd on a Windows PC with
+# prepare-models.cmd done runs all of it.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: ./run-tests.sh

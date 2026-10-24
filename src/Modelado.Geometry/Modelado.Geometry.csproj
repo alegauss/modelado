@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Meshes: marching cubes, the relief surface, clean-up, the GLB, OBJ, PLY and STL writers and
+       the software renderer the viewer shows. It reads images from Imaging and never sees
+       inference or UI types. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Modelado.Geometry</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
+  </ItemGroup>
+
+</Project>

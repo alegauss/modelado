@@ -1,0 +1,106 @@
+{
+  "$comment": "Upstream weights Modelado converts to ONNX, each URL pinned to a commit and its license read on 2026-10-24. sha256 is the upstream's own where it publishes one (Hugging Face LFS) and computed from the downloaded file otherwise; size is bytes. scripts/download_models.py reads this file. No weights live in the repository.",
+  "models": [
+    {
+      "name": "triposr",
+      "file": "triposr/model.ckpt",
+      "url": "https://huggingface.co/stabilityai/TripoSR/resolve/5b521936b01fbe1890f6f9baed0254ab6351c04a/model.ckpt",
+      "size": 1677246742,
+      "sha256": "429e2c6b22a0923967459de24d67f05962b235f79cde6b032aa7ed2ffcd970ee",
+      "sha256_source": "upstream",
+      "license": "MIT",
+      "license_url": "https://huggingface.co/stabilityai/TripoSR/blob/5b521936b01fbe1890f6f9baed0254ab6351c04a/README.md",
+      "note": "TripoSR (Stability AI and Tripo AI): one photo of an object in, a triplane NeRF out, from which a mesh is extracted. The checkpoint holds every weight, the DINO image encoder's included. export_models.py splits it into the encoder (image to triplane) and the decoder (triplane and points to density and colour)."
+    },
+    {
+      "name": "triposr-config",
+      "file": "triposr/config.yaml",
+      "url": "https://huggingface.co/stabilityai/TripoSR/resolve/5b521936b01fbe1890f6f9baed0254ab6351c04a/config.yaml",
+      "size": 987,
+      "sha256": "74ca708ce086bf68e97709ea6b3d91f14717921c04691e84043f0eb8fcc68e62",
+      "sha256_source": "computed",
+      "license": "MIT",
+      "license_url": "https://huggingface.co/stabilityai/TripoSR/blob/5b521936b01fbe1890f6f9baed0254ab6351c04a/README.md",
+      "note": "The configuration the checkpoint was trained with: cond image 512, triplane 3 x 40 x 64 x 64, radius 0.87."
+    },
+    {
+      "name": "dino-vitb16-config",
+      "file": "triposr/dino-vitb16-config.json",
+      "url": "https://huggingface.co/facebook/dino-vitb16/resolve/f205d5d8e640a89a2b8ef0369670dfc37cc07fc2/config.json",
+      "size": 454,
+      "sha256": "b87c0270b97db085fd82cf114a761fd0f62ae7914fbd407c752a2260646b689c",
+      "sha256_source": "computed",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/facebook/dino-vitb16/blob/f205d5d8e640a89a2b8ef0369670dfc37cc07fc2/README.md",
+      "note": "Only the ViT-B/16 configuration TripoSR's image tokenizer is built from; its weights are in TripoSR's checkpoint."
+    },
+    {
+      "name": "depth-anything-v2-small",
+      "file": "depth-anything-v2-small/model.safetensors",
+      "url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/resolve/5426e4f0f36572d16453bbda7a8389317b1bef99/model.safetensors",
+      "size": 99173660,
+      "sha256": "3152477ce0d8d6978d76b995120de97cb5b928701fd0f817769f59e249a16b70",
+      "sha256_source": "upstream",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/blob/5426e4f0f36572d16453bbda7a8389317b1bef99/README.md",
+      "note": "Depth Anything V2 Small, relative depth from one photo: the relief operation. Only the Small model is Apache-2.0; Base and Large are CC BY-NC 4.0, so they are not used."
+    },
+    {
+      "name": "depth-anything-v2-small-config",
+      "file": "depth-anything-v2-small/config.json",
+      "url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/resolve/5426e4f0f36572d16453bbda7a8389317b1bef99/config.json",
+      "size": 950,
+      "sha256": "c56698d3643dde1f83ea2212759e6b31a22b8f827246a36dd007ee8a22b3ff75",
+      "sha256_source": "computed",
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/blob/5426e4f0f36572d16453bbda7a8389317b1bef99/README.md",
+      "note": "The configuration transformers builds the model from, beside its weights."
+    },
+    {
+      "name": "u2net",
+      "file": "u2net.onnx",
+      "url": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx",
+      "size": 175997641,
+      "sha256": "8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491",
+      "sha256_source": "computed",
+      "license": "Apache-2.0 (U-2-Net weights), MIT (rembg export)",
+      "license_url": "https://github.com/xuebinqin/U-2-Net/blob/master/LICENSE",
+      "note": "U-2-Net, the background remover TripoSR's own run.py uses through rembg, so the object is cut out the way the model was shown it. Already ONNX: 1 x 3 x 320 x 320, out the saliency map."
+    }
+  ],
+  "$comment_test_images": "The fixed images export_models.py checks each ONNX export against PyTorch on. Downloaded into test-images/ beside the weights; never committed.",
+  "test_images": [
+    {
+      "name": "image-chair",
+      "file": "chair.png",
+      "url": "https://raw.githubusercontent.com/VAST-AI-Research/TripoSR/107cefdc244c39106fa830359024f6a2f1c78871/examples/chair.png",
+      "size": 114705,
+      "sha256": "2503c12a74419d91a4c6c9f1affc48fee6e2b8b9091956ca6211e91ada57b5bf",
+      "sha256_source": "computed",
+      "license": "MIT (repository)",
+      "license_url": "https://github.com/VAST-AI-Research/TripoSR/blob/107cefdc244c39106fa830359024f6a2f1c78871/LICENSE",
+      "note": "512 x 512 RGBA, already cut out: the object path without background removal."
+    },
+    {
+      "name": "image-robot",
+      "file": "robot.png",
+      "url": "https://raw.githubusercontent.com/VAST-AI-Research/TripoSR/107cefdc244c39106fa830359024f6a2f1c78871/examples/robot.png",
+      "size": 151541,
+      "sha256": "092ee61f1729ac9ed516c8d031d071f44dfa6e79f6ece04f32c988721b2b657a",
+      "sha256_source": "computed",
+      "license": "MIT (repository)",
+      "license_url": "https://github.com/VAST-AI-Research/TripoSR/blob/107cefdc244c39106fa830359024f6a2f1c78871/LICENSE"
+    },
+    {
+      "name": "image-captured",
+      "file": "captured.jpeg",
+      "url": "https://raw.githubusercontent.com/VAST-AI-Research/TripoSR/107cefdc244c39106fa830359024f6a2f1c78871/examples/captured.jpeg",
+      "size": 5944816,
+      "sha256": "c6eb2768703a0e3d6034daa7fd5e0b286450b1077a90f36da8110749bb1cb8a8",
+      "sha256_source": "computed",
+      "license": "MIT (repository)",
+      "license_url": "https://github.com/VAST-AI-Research/TripoSR/blob/107cefdc244c39106fa830359024f6a2f1c78871/LICENSE",
+      "note": "A real phone photo (3024 x 4032) with its background: what background removal and the relief are checked on."
+    }
+  ]
+}

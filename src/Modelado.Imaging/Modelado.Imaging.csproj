@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pixels: decoding (EXIF orientation applied), resampling, masks and PNG encoding. No UI type
+       and no ONNX Runtime type, so it is testable on its own and on any OS. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Modelado.Imaging</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Decoding and encoding (PNG, JPEG, WebP, BMP, GIF, HEIF where the OS has it). MIT. -->
+    <PackageReference Include="SkiaSharp" Version="4.153.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.153.1" Condition="!$([MSBuild]::IsOSPlatform('Windows'))" />
+  </ItemGroup>
+
+</Project>

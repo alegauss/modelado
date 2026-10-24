@@ -1,0 +1,29 @@
+<Project>
+
+  <!-- Inherits the repository's own gates, then adds what only a test project needs. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <OutputType>Exe</OutputType>
+
+    <!-- xunit.v3 on Microsoft.Testing.Platform, so run-tests, `dotnet test` and the assembly
+         launched directly agree on what ran. -->
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Repository.cs" Link="Repository.cs" />
+    <Using Include="Modelado.Tests" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
