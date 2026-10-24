@@ -2,19 +2,6 @@
 
 ## Block A — English everywhere
 
-### §MOD3 README in English
-
-Translate README.md whole: the operations table, Edit and refine, the export formats,
-how to run, prepare-models and publishing. Keep every number it quotes (triangle counts,
-timings) and check each one against the current code rather than translating it blind.
-Image alt text is translated too.
-
-Any other prose a person reads outside docs\ (for example comments in .cmd files and the
-$comment in model-sources.json) is checked in the same pass. Comments in .cs and .py
-files are already English, so confirm that and do not rewrite them.
-
-Done when a search for Portuguese across the repository, docs\ excluded, finds nothing.
-
 ## Block B — Windows interface built like PhotoBoost
 
 ### §MOD4 Brand, Appearance and Templates as in PhotoBoost

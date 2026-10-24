@@ -76,7 +76,7 @@
       "sha256_source": "computed",
       "license": "BSD-3-Clause",
       "license_url": "https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE",
-      "note": "Real-ESRGAN x4plus, the upscaler PhotoBoost also uses: 'Aperfeiçoar' sharpens a relief's or an imported model's texture with it, and a small photo before reconstruction. The RRDBNet architecture is vendored from BasicSR into scripts/archs/rrdbnet.py."
+      "note": "Real-ESRGAN x4plus, the upscaler PhotoBoost also uses: 'Edit and improve' sharpens a relief's or an imported model's texture with it, and a small photo before reconstruction. The RRDBNet architecture is vendored from BasicSR into scripts/archs/rrdbnet.py."
     }
   ],
   "$comment_test_images": "The fixed images export_models.py checks each ONNX export against PyTorch on. Downloaded into test-images/ beside the weights; never committed.",

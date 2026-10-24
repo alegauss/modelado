@@ -134,16 +134,16 @@ public sealed class MeshEditTests
     {
         Mesh a = Sphere(8), b = Sphere(10), c = Sphere(12);
         MeshHistory history = new();
-        history.Reset(a, "Objeto 3D");
-        history.Push(b, "Suavizar");
+        history.Reset(a, "3D Object");
+        history.Push(b, "Smooth");
 
         Assert.Same(a, history.Undo());
         Assert.True(history.CanRedo);
-        history.Push(c, "Simplificar");
+        history.Push(c, "Simplify");
         Assert.False(history.CanRedo);
         Assert.Same(a, history.Undo());
         Assert.False(history.CanUndo);
         Assert.Same(c, history.Redo());
-        Assert.Equal("Simplificar", history.CurrentLabel);
+        Assert.Equal("Simplify", history.CurrentLabel);
     }
 }
