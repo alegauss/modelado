@@ -8,6 +8,8 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
+- ✅ **MOD4** **Colours are hard-coded hex in MainWindow.xaml, with no Brand class, no theme setting and no shared control templates** — Each owned colour is declared once in Brand, a test refuses any other; windows take their theme from Appearance (design recorded in `src/Modelado.Imaging/Brand.cs`).
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads

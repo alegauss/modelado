@@ -51,7 +51,8 @@ public readonly record struct OrbitCamera(float Yaw = 0, float Pitch = 15, float
 public sealed class MeshRenderer
 {
     private const int Band = 32;
-    private static readonly Vector3 Clay = new(0.72f, 0.72f, 0.70f);
+    private static readonly Vector3 Clay = new(Brand.Clay.R / 255f, Brand.Clay.G / 255f, Brand.Clay.B / 255f);
+    private static readonly uint Edge = Argb(Brand.Edge);
     private readonly Mesh mesh;
     private readonly Vector3[] normals;
     private readonly Vector3[] albedo;
@@ -72,7 +73,7 @@ public sealed class MeshRenderer
     }
 
     /// <summary>The background, top and bottom of a vertical gradient, as 0xAARRGGBB.</summary>
-    public (uint Top, uint Bottom) Background { get; init; } = (0xFF3A3F47, 0xFF1C1F24);
+    public (uint Top, uint Bottom) Background { get; init; } = (Argb(Brand.ViewportTop), Argb(Brand.ViewportBottom));
 
     /// <summary>Draws into an image.</summary>
     /// <param name="width">Width in pixels.</param>
@@ -260,10 +261,12 @@ public sealed class MeshRenderer
             // A small bias, so an edge on the visible surface wins against that surface.
             if (z <= depth[index] + 2e-4f)
             {
-                pixels[index] = 0xFF2B2B2B;
+                pixels[index] = Edge;
             }
         }
     }
+
+    private static uint Argb((byte R, byte G, byte B) colour) => 0xFF000000u | ((uint)colour.R << 16) | ((uint)colour.G << 8) | colour.B;
 
     private static uint Pack(Vector3 colour)
     {

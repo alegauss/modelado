@@ -4,24 +4,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD4 Brand, Appearance and Templates as in PhotoBoost
-
-Model: D:\git\japode\photo-boost\src\PhotoBoost.App\Brand.cs, Appearance.cs and
-Templates.cs. Brand holds only the colours Fluent has no opinion on, as bytes, each
-converted at its own edge. For Modelado that is the viewport background (#FF1C1F24
-today), the empty-hint greys and the clay and wireframe colours MeshRenderer uses.
-Appearance is the ChromeTheme record (System, Light, Dark) handed to WPF's ThemeMode, so
-following Windows means following it while running. Templates builds the Ghost button
-template in code (a new one per call) for the glyph toolbar.
-
-An architecture test, as PhotoBoost has, fails on a colour literal written anywhere
-outside Brand. Styles.xaml keeps Card, Chip and the caption styles, renamed to
-PhotoBoost's names (GroupCard, StatusChip, StatCaption, SectionHeader) so the later
-screens copy over cleanly.
-
-Done when the window looks the same in dark mode, follows a light/dark switch while
-running, and the architecture test passes.
-
 ### §MOD5 Glyph toolbar with commands
 
 Model: the EditorToolbar in PhotoBoost's MainWindow.xaml (the ToolBarTray at the top,

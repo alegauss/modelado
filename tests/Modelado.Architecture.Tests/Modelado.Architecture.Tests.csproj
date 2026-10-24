@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Reads the sources rather than referencing the assemblies, so a rule broken in a file fails
+       here even when the code behind it still compiles. -->
+  <PropertyGroup>
+    <RootNamespace>Modelado.Architecture.Tests</RootNamespace>
+  </PropertyGroup>
+
+</Project>

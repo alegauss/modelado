@@ -33,7 +33,7 @@ public sealed class AboutWindow : Window
         MaxHeight = 760;
         ResizeMode = ResizeMode.NoResize;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        ThemeMode = ThemeMode.System;
+        ThemeMode = Theme.Mode(Appearance.Default.Theme);
         FontFamily = (FontFamily)Application.Current.FindResource("AppFont");
 
         string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "?";

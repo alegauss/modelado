@@ -47,6 +47,7 @@ public partial class MainWindow : Window, IDisposable
     {
         ArgumentNullException.ThrowIfNull(options);
         this.options = options;
+        ThemeMode = Theme.Mode(Appearance.Default.Theme);
         InitializeComponent();
 
         library = options.Models is { } folder ? new ModelLibrary([folder]) : ModelLibrary.Default();

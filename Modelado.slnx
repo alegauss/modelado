@@ -9,6 +9,7 @@
     <Project Path="src/Modelado.Inference/Modelado.Inference.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Modelado.Architecture.Tests/Modelado.Architecture.Tests.csproj" />
     <Project Path="tests/Modelado.Geometry.Tests/Modelado.Geometry.Tests.csproj" />
     <Project Path="tests/Modelado.Imaging.Tests/Modelado.Imaging.Tests.csproj" />
     <Project Path="tests/Modelado.Inference.Tests/Modelado.Inference.Tests.csproj" />

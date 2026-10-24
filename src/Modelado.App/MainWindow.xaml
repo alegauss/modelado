@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Modelado"
         Width="1280" Height="820" MinWidth="900" MinHeight="600"
-        ThemeMode="System"
         FontFamily="{StaticResource AppFont}"
         AllowDrop="True"
         WindowStartupLocation="CenterScreen">
@@ -44,17 +43,17 @@
     <!-- Viewer -->
     <Border Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
             BorderThickness="1" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
-      <Grid x:Name="Viewport" Background="#FF1C1F24" SizeChanged="OnViewportSizeChanged"
+      <Grid x:Name="Viewport" Background="{DynamicResource ViewportGroundBrush}" SizeChanged="OnViewportSizeChanged"
             MouseLeftButtonDown="OnViewportMouseDown" MouseMove="OnViewportMouseMove" MouseLeftButtonUp="OnViewportMouseUp"
             MouseWheel="OnViewportMouseWheel">
         <Image x:Name="ViewImage" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
         <StackPanel x:Name="EmptyHint" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
-          <TextBlock Text="Open or drop a photo of an object, or a 3D model" FontSize="20" FontWeight="SemiBold" Foreground="#FFE6E6E6" HorizontalAlignment="Center" />
-          <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="#FFA8ADB5"
+          <TextBlock Text="Open or drop a photo of an object, or a 3D model" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource HintTitleBrush}" HorizontalAlignment="Center" />
+          <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource HintTextBrush}"
                      Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
         </StackPanel>
         <TextBlock x:Name="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
-                   Foreground="#FFA8ADB5" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
+                   Foreground="{DynamicResource HintTextBrush}" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
       </Grid>
     </Border>
 
@@ -62,10 +61,10 @@
     <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="6,0,12,0" VerticalScrollBarVisibility="Auto">
       <StackPanel>
 
-        <Border Style="{StaticResource Card}">
+        <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="3D Object" Style="{StaticResource CardTitle}" />
-            <TextBlock Style="{StaticResource Caption}"
+            <TextBlock Text="3D Object" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource StatCaption}"
                        Text="A whole model, with the front, sides and back TripoSR infers from a single photo. Coloured per vertex." />
             <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ObjectResolution" SelectedIndex="2">
@@ -89,14 +88,14 @@
                       ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
             <Button x:Name="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
-            <TextBlock x:Name="ObjectModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+            <TextBlock x:Name="ObjectModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
           </StackPanel>
         </Border>
 
-        <Border Style="{StaticResource Card}">
+        <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Relief" Style="{StaticResource CardTitle}" />
-            <TextBlock Style="{StaticResource Caption}"
+            <TextBlock Text="Relief" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource StatCaption}"
                        Text="Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings." />
             <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ReliefResolution" SelectedIndex="1">
@@ -118,14 +117,14 @@
             <CheckBox x:Name="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
             <Button x:Name="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
-            <TextBlock x:Name="ReliefModelsText" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+            <TextBlock x:Name="ReliefModelsText" Style="{StaticResource StatCaption}" Margin="0,8,0,0" />
           </StackPanel>
         </Border>
 
-        <Border Style="{StaticResource Card}">
+        <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Edit and improve" Style="{StaticResource CardTitle}" />
-            <TextBlock Style="{StaticResource Caption}"
+            <TextBlock Text="Edit and improve" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource StatCaption}"
                        Text="For the generated model or an opened 3D model. Every step can be undone." />
             <TextBlock Style="{StaticResource FieldLabel}">
               <Run Text="Simplify to " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" of the triangles" />
@@ -160,10 +159,10 @@
         </Border>
 
         <!-- Progress of a reconstruction or a download -->
-        <Border x:Name="ProgressCard" Style="{StaticResource Card}" Visibility="Collapsed">
+        <Border x:Name="ProgressCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
           <StackPanel>
-            <TextBlock x:Name="ProgressTitle" Style="{StaticResource CardTitle}" />
-            <TextBlock x:Name="ProgressText" Style="{StaticResource Caption}" />
+            <TextBlock x:Name="ProgressTitle" Style="{StaticResource SectionHeader}" />
+            <TextBlock x:Name="ProgressText" Style="{StaticResource StatCaption}" />
             <ProgressBar x:Name="ProgressBar" Height="6" Minimum="0" Maximum="1" />
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
               <Button x:Name="PauseButton" Content="Pause" Padding="12,4" Click="OnPauseDownload" Visibility="Collapsed" />
@@ -172,12 +171,12 @@
           </StackPanel>
         </Border>
 
-        <Border Style="{StaticResource Card}">
+        <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Quality" Style="{StaticResource CardTitle}" />
+            <TextBlock Text="Quality" Style="{StaticResource SectionHeader}" />
             <RadioButton x:Name="QualityStandard" Content="Standard (FP16 on the GPU, half the download)" IsChecked="True" Checked="OnQualityChanged" />
             <RadioButton x:Name="QualityHigh" Content="High quality (FP32 throughout)" Margin="0,4,0,0" Checked="OnQualityChanged" />
-            <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+            <TextBlock Style="{StaticResource StatCaption}" Margin="0,8,0,0"
                        Text="On the CPU, FP32 is always used because it is faster there. Models are downloaded from Hugging Face on first use and checked by SHA-256." />
           </StackPanel>
         </Border>
@@ -187,10 +186,10 @@
 
     <!-- Status bar -->
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
-      <Border Style="{StaticResource Chip}" DockPanel.Dock="Left">
+      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
         <TextBlock x:Name="ProviderText" FontSize="12" Text="…" />
       </Border>
-      <Border Style="{StaticResource Chip}" DockPanel.Dock="Left" x:Name="MeshChip" Visibility="Collapsed">
+      <Border Style="{StaticResource StatusChip}" DockPanel.Dock="Left" x:Name="MeshChip" Visibility="Collapsed">
         <TextBlock x:Name="MeshText" FontSize="12" />
       </Border>
       <TextBlock x:Name="StatusText" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"

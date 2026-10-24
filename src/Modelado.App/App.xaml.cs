@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Media;
+using Modelado.Imaging;
 
 namespace Modelado.App;
 
@@ -13,6 +15,7 @@ public partial class App : Application
     {
         ArgumentNullException.ThrowIfNull(e);
         base.OnStartup(e);
+        AddBrandBrushes();
 
         (AppOptions? options, string? error) = CommandLine.Parse(e.Args);
         if (options is null)
@@ -25,5 +28,20 @@ public partial class App : Application
         MainWindow window = new(options);
         MainWindow = window;
         window.Show();
+    }
+
+    // Brand's colours become brushes here, the window's edge, under the keys the XAML names.
+    private void AddBrandBrushes()
+    {
+        Resources["ViewportGroundBrush"] = Frozen(Brand.ViewportBottom);
+        Resources["HintTitleBrush"] = Frozen(Brand.HintTitle);
+        Resources["HintTextBrush"] = Frozen(Brand.HintText);
+    }
+
+    private static SolidColorBrush Frozen((byte R, byte G, byte B) colour)
+    {
+        SolidColorBrush brush = new(Color.FromRgb(colour.R, colour.G, colour.B));
+        brush.Freeze();
+        return brush;
     }
 }
