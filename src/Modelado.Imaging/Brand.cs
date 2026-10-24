@@ -31,4 +31,22 @@ public static class Brand
 
     /// <summary>The triangle edges the wireframe view draws over the clay.</summary>
     public static readonly (byte R, byte G, byte B) Edge = (0x2B, 0x2B, 0x2B);
+
+    /// <summary>
+    /// The app icon's tile, top-left of its gradient (MOD7): a cool blue, the sibling of
+    /// PhotoBoost's warm clay tile.
+    /// </summary>
+    public static readonly (byte R, byte G, byte B) IconTileLight = (0x5B, 0x9B, 0xE6);
+
+    /// <summary>The tile's bottom-right; also the mesh lines drawn on the cube at large sizes.</summary>
+    public static readonly (byte R, byte G, byte B) IconTileDeep = (0x23, 0x4F, 0x9C);
+
+    /// <summary>The cube's top face, the one the light falls on.</summary>
+    public static readonly (byte R, byte G, byte B) IconCubeTop = (0xFF, 0xFF, 0xFF);
+
+    /// <summary>The cube's left face, a step darker.</summary>
+    public static readonly (byte R, byte G, byte B) IconCubeLeft = (0xD6, 0xE5, 0xF8);
+
+    /// <summary>The cube's right face, the one in shade.</summary>
+    public static readonly (byte R, byte G, byte B) IconCubeRight = (0xA4, 0xC1, 0xEA);
 }

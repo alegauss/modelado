@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Modelado.App"
         Title="Modelado"
+        Icon="pack://application:,,,/Modelado.ico"
         Width="1280" Height="820" MinWidth="900" MinHeight="600"
         FontFamily="{StaticResource AppFont}"
         AllowDrop="True"

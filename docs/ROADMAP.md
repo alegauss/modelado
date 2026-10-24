@@ -13,7 +13,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD7** (deps: MOD4 ✅) **The window and the taskbar show WPF's default icon** — PhotoBoost ships its own .ico as a resource, and Modelado is otherwise indistinguishable from any other WPF app on the taskbar. → §MOD7
 - 📋 **MOD8** (deps: MOD5 ✅) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
 - 📋 **MOD9** (deps: MOD4 ✅) **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — PhotoBoost's status bar says where inference runs, how long the last run took and what is in progress, wherever the panel has scrolled to. → §MOD9
 - 📋 **MOD10** (deps: MOD4 ✅) **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — PhotoBoost's open screen is a card with the formats, an Open button and an error line, and the operations panel only appears once something is open. → §MOD10
@@ -47,7 +46,7 @@
 
 ## Block F — Installer, releases and auto update
 
-- 📋 **MOD28** (deps: MOD3 ✅, MOD7) **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — PhotoBoost, claude-tray and freewilly each ship an Inno Setup installer, and auto update is a new installer upgrading in place. → §MOD28
+- 📋 **MOD28** (deps: MOD3 ✅, MOD7 ✅) **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — PhotoBoost, claude-tray and freewilly each ship an Inno Setup installer, and auto update is a new installer upgrading in place. → §MOD28
 - 📋 **MOD29** (deps: MOD14, MOD28) **Nothing publishes a release: no tag-driven build, no GitHub release with the installer and a SHA256SUMS file** — The updater can only trust what a release states, and freewilly's release.yml is what makes the tag, the file name and the digest agree. → §MOD29
 - 📋 **MOD30** (deps: MOD9, MOD29) **An installed copy has no way to learn that a newer release exists** — A fix reaches only whoever goes looking for it, which is the gap claude-tray's Updater and freewilly's ReleaseCheck were each written to close. → §MOD30
 - 📋 **MOD31** (deps: MOD30) **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — claude-tray downloads its installer, runs it silently and relaunches, and freewilly verifies the digest first; Modelado should do both. → §MOD31

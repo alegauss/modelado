@@ -12,6 +12,7 @@
 - ✅ **MOD5** **The toolbar is a row of text buttons wired to Click handlers, with no glyphs and no commands that enable themselves** — The toolbar is glyph buttons on commands shared with their shortcuts, dimmed when they cannot run; turns and Mirror moved up from the Edit card.
 - ✅ **MOD6** **The progress card sits mid-panel between the Edit and Quality cards, so a running job can scroll out of sight** — A running job is pinned above the scrolling cards with Cancel, seen and stoppable however far the cards scroll (design superseded: PhotoBoost's 300 px clips these cards; 340 px stays).
 - ✅ **MOD50** **run-tests.cmd fails the Python suite where python on PATH is the Microsoft Store stub, though Python is installed** — run-tests.cmd uses .venv, a python that runs, or the one Python registered, and the guest gate runs scripts\tests green.
+- ✅ **MOD7** **The window and the taskbar show WPF's default icon** — Modelado wears its own icon, a cube on a blue tile drawn per size by tools/Modelado.Icon, in the exe, the window and the taskbar.
 
 ## Block C — Existing code wired into the window
 

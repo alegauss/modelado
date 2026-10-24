@@ -24,16 +24,6 @@ read "0.8 s", and a test pins the startup culture.
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD7 App icon
-
-Model: PhotoBoost.ico as a Resource and
-Window.Icon="pack://application:,,,/PhotoBoost.ico", plus ApplicationIcon in the csproj
-so the exe carries it too. Modelado.ico holds 16, 24, 32, 48 and 256 px. It should be a
-simple mark that reads at 16 px (a cube or a mesh), in the family of PhotoBoost's mark,
-with its colours declared in Brand if they are drawn in code.
-
-Done when the exe in Explorer, the window title bar and the taskbar all show it.
-
 ### §MOD8 AutomationIds and winwright cases
 
 Model: D:\git\japode\photo-boost\winwright.json, cases\window.cases.json,

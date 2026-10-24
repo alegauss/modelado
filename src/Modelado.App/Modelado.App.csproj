@@ -15,7 +15,14 @@
     <!-- WPF0001: ThemeMode is still marked [Experimental] and is the supported way to follow
          the system's light or dark theme with the Fluent styles. -->
     <NoWarn>$(NoWarn);WPF0001</NoWarn>
+    <!-- MOD7: the icon the exe carries in Explorer; the window takes the same file as a resource.
+         tools\Modelado.Icon draws it. -->
+    <ApplicationIcon>Modelado.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Modelado.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
