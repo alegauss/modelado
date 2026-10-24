@@ -1,6 +1,7 @@
 <Window x:Class="Modelado.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Modelado.App"
         Title="Modelado"
         Width="1280" Height="820" MinWidth="900" MinHeight="600"
         FontFamily="{StaticResource AppFont}"
@@ -18,27 +19,82 @@
       <ColumnDefinition Width="340" />
     </Grid.ColumnDefinitions>
 
-    <!-- Toolbar -->
-    <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="12,10,12,6">
-      <Button x:Name="OpenButton" Content="Open…" Padding="14,6" Click="OnOpen"
-              ToolTip="A photo of an object (PNG, JPEG, WebP) to make a model from, or a 3D model (GLB, OBJ, PLY, STL) to edit and improve. You can also drag the file onto the window. Ctrl+O" />
-      <Button x:Name="ExportButton" Content="Save as…" Padding="14,6" Margin="8,0,0,0" Click="OnExport" IsEnabled="False"
-              ToolTip="Saves the model as GLB, OBJ, PLY or STL. Ctrl+S" />
-      <Button x:Name="UndoButton" Content="Undo" Padding="12,6" Margin="8,0,0,0" Click="OnUndo" IsEnabled="False" ToolTip="Goes back to the previous version of the model. Ctrl+Z" />
-      <Button x:Name="RedoButton" Content="Redo" Padding="12,6" Margin="4,0,0,0" Click="OnRedo" IsEnabled="False" ToolTip="Ctrl+Y" />
-      <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
-      <TextBlock Text="View:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-      <ComboBox x:Name="ViewChoice" Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
-        <ComboBoxItem Content="Model in colour" />
-        <ComboBoxItem Content="Model in clay" />
-        <ComboBoxItem Content="Mesh (edges)" />
-        <ComboBoxItem Content="Input photo" />
-      </ComboBox>
-      <Button x:Name="ResetViewButton" Content="Recentre" Padding="12,6" Margin="8,0,0,0" Click="OnResetView" IsEnabled="False"
-              ToolTip="Goes back to the front view. Double-clicking the model does the same." />
-      <Border Width="1" Margin="14,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
-      <Button Content="About and models" Padding="12,6" Click="OnAbout" />
-    </StackPanel>
+    <!-- MOD5: the toolbar, after PhotoBoost's (PB63, PB65, PB66). Its groups, in order: Open and
+         Save as; Undo and Redo; the quarter turns and Mirror. On the right, how the model is
+         shown and the front view, as PhotoBoost places its compare modes. Each button is a glyph
+         with an accessible name, an AutomationId and a tooltip naming its shortcut, and goes
+         through a command, so the button and the key share one CanExecute: what needs a model
+         is off without one, and everything but the view waits for a running operation. A WPF
+         ToolBar moves what does not fit into its overflow menu rather than clipping it. -->
+    <DockPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="12,8,12,6">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+        <TextBlock Text="View:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        <ComboBox x:Name="ViewChoice" AutomationProperties.AutomationId="ViewChoice" AutomationProperties.Name="View"
+                  Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
+          <ComboBoxItem Content="Model in colour" />
+          <ComboBoxItem Content="Model in clay" />
+          <ComboBoxItem Content="Mesh (edges)" />
+          <ComboBoxItem Content="Input photo" />
+        </ComboBox>
+        <Button x:Name="ResetViewButton" AutomationProperties.AutomationId="ResetViewButton" AutomationProperties.Name="Front view"
+                Command="{x:Static local:MainWindow.ResetViewCommand}" Margin="6,0,0,0" Padding="8,4"
+                ToolTip="Front view (Home). Double-clicking the model does the same.">
+          <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE80F;" />
+        </Button>
+        <Border Width="1" Margin="12,4" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+        <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" Content="About and models" Padding="12,6" Click="OnAbout" />
+      </StackPanel>
+      <ToolBarTray Background="Transparent" IsLocked="True" Margin="0,0,12,0">
+        <ToolBar x:Name="EditorToolbar" AutomationProperties.AutomationId="EditorToolbar" AutomationProperties.Name="Editor"
+                 Background="Transparent">
+          <Button x:Name="ToolbarOpen" AutomationProperties.AutomationId="ToolbarOpen" AutomationProperties.Name="Open"
+                  Command="Open"
+                  ToolTip="Open a photo of an object (PNG, JPEG, WebP) to make a model from, or a 3D model (GLB, OBJ, PLY, STL) to edit. You can also drop the file on the window. (Ctrl+O)">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE8E5;" />
+          </Button>
+          <Button x:Name="ToolbarSaveAs" AutomationProperties.AutomationId="ToolbarSaveAs" AutomationProperties.Name="Save as"
+                  Command="SaveAs" ToolTip="Save the model as GLB, OBJ, PLY or STL (Ctrl+S)">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE792;" />
+          </Button>
+          <Separator />
+          <Button x:Name="UndoButton" AutomationProperties.AutomationId="UndoButton" AutomationProperties.Name="Undo"
+                  Command="Undo" ToolTip="Undo: back to the previous version of the model (Ctrl+Z)">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7A7;" />
+          </Button>
+          <Button x:Name="RedoButton" AutomationProperties.AutomationId="RedoButton" AutomationProperties.Name="Redo"
+                  Command="Redo" ToolTip="Redo (Ctrl+Y or Ctrl+Shift+Z)">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7A6;" />
+          </Button>
+          <Separator />
+          <!-- The font has one rotate glyph; the axis it turns about is written beside it. -->
+          <Button x:Name="RotateXButton" AutomationProperties.AutomationId="RotateXButton" AutomationProperties.Name="Turn about X"
+                  Command="{x:Static local:MainWindow.RotateXCommand}" ToolTip="Turn 90° about the X axis, for a model lying down">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
+              <TextBlock Text="X" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="RotateYButton" AutomationProperties.AutomationId="RotateYButton" AutomationProperties.Name="Turn about Y"
+                  Command="{x:Static local:MainWindow.RotateYCommand}" ToolTip="Turn 90° about the vertical axis">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
+              <TextBlock Text="Y" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="RotateZButton" AutomationProperties.AutomationId="RotateZButton" AutomationProperties.Name="Turn about Z"
+                  Command="{x:Static local:MainWindow.RotateZCommand}" ToolTip="Turn 90° about the Z axis">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
+              <TextBlock Text="Z" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="MirrorButton" AutomationProperties.AutomationId="MirrorButton" AutomationProperties.Name="Mirror"
+                  Command="{x:Static local:MainWindow.MirrorCommand}" ToolTip="Mirror left to right">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE8AB;" />
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
+    </DockPanel>
 
     <!-- Viewer -->
     <Border Grid.Row="1" Grid.Column="0" Margin="12,0,6,0" CornerRadius="8" ClipToBounds="True"
@@ -143,12 +199,6 @@
                       ToolTip="Deletes small loose fragments, under 5% of the largest part." />
               <Button x:Name="FlattenButton" Content="Flat base" Margin="4,0,0,4" Click="OnFlatten" IsEnabled="False"
                       ToolTip="Flattens the bottom 3%, so the model stands on the printer bed." />
-              <Button x:Name="MirrorButton" Content="Mirror" Margin="0,0,4,4" Click="OnMirror" IsEnabled="False" />
-              <StackPanel Orientation="Horizontal" Margin="4,0,0,4">
-                <Button x:Name="RotateXButton" Content="↻X" Width="44" Click="OnRotate" Tag="X" IsEnabled="False" ToolTip="Turns 90° about the X axis (for models lying down)." />
-                <Button x:Name="RotateYButton" Content="↻Y" Width="44" Margin="4,0" Click="OnRotate" Tag="Y" IsEnabled="False" ToolTip="Turns 90° about the vertical axis." />
-                <Button x:Name="RotateZButton" Content="↻Z" Width="44" Click="OnRotate" Tag="Z" IsEnabled="False" ToolTip="Turns 90° about the Z axis." />
-              </StackPanel>
             </UniformGrid>
             <TextBlock Text="With AI" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
             <Button x:Name="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
@@ -197,16 +247,21 @@
     </DockPanel>
   </Grid>
 
+  <!-- MOD5: Open, Undo and Redo bring their own Ctrl+O, Ctrl+Z and Ctrl+Y; Save as has no gesture
+       of its own, so Ctrl+S is bound here, and Ctrl+Shift+Z is the other redo people reach for. -->
   <Window.InputBindings>
-    <KeyBinding Key="O" Modifiers="Control" Command="{x:Static ApplicationCommands.Open}" />
-    <KeyBinding Key="S" Modifiers="Control" Command="{x:Static ApplicationCommands.Save}" />
-    <KeyBinding Key="Z" Modifiers="Control" Command="{x:Static ApplicationCommands.Undo}" />
-    <KeyBinding Key="Y" Modifiers="Control" Command="{x:Static ApplicationCommands.Redo}" />
+    <KeyBinding Command="SaveAs" Key="S" Modifiers="Ctrl" />
+    <KeyBinding Command="Redo" Key="Z" Modifiers="Ctrl+Shift" />
   </Window.InputBindings>
   <Window.CommandBindings>
-    <CommandBinding Command="{x:Static ApplicationCommands.Open}" Executed="OnOpen" />
-    <CommandBinding Command="{x:Static ApplicationCommands.Save}" Executed="OnExport" />
-    <CommandBinding Command="{x:Static ApplicationCommands.Undo}" Executed="OnUndo" />
-    <CommandBinding Command="{x:Static ApplicationCommands.Redo}" Executed="OnRedo" />
+    <CommandBinding Command="Open" Executed="OnOpen" CanExecute="CanOpen" />
+    <CommandBinding Command="SaveAs" Executed="OnExport" CanExecute="CanSave" />
+    <CommandBinding Command="Undo" Executed="OnUndo" CanExecute="CanUndo" />
+    <CommandBinding Command="Redo" Executed="OnRedo" CanExecute="CanRedo" />
+    <CommandBinding Command="{x:Static local:MainWindow.RotateXCommand}" Executed="OnRotate" CanExecute="CanEdit" />
+    <CommandBinding Command="{x:Static local:MainWindow.RotateYCommand}" Executed="OnRotate" CanExecute="CanEdit" />
+    <CommandBinding Command="{x:Static local:MainWindow.RotateZCommand}" Executed="OnRotate" CanExecute="CanEdit" />
+    <CommandBinding Command="{x:Static local:MainWindow.MirrorCommand}" Executed="OnMirror" CanExecute="CanEdit" />
+    <CommandBinding Command="{x:Static local:MainWindow.ResetViewCommand}" Executed="OnResetView" CanExecute="CanResetView" />
   </Window.CommandBindings>
 </Window>

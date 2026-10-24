@@ -11,10 +11,9 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD5** (deps: MOD4 ✅) **The toolbar is a row of text buttons wired to Click handlers, with no glyphs and no commands that enable themselves** — PhotoBoost's ToolBar shares one CanExecute between each button and its shortcut, so nothing can run while it should not. → §MOD5
 - 📋 **MOD6** (deps: MOD4 ✅) **The progress card sits mid-panel between the Edit and Quality cards, so a running job can scroll out of sight** — PhotoBoost pins the run in progress above the cards, so its progress, its cancel and its end are seen without scrolling. → §MOD6
 - 📋 **MOD7** (deps: MOD4 ✅) **The window and the taskbar show WPF's default icon** — PhotoBoost ships its own .ico as a resource, and Modelado is otherwise indistinguishable from any other WPF app on the taskbar. → §MOD7
-- 📋 **MOD8** (deps: MOD5) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
+- 📋 **MOD8** (deps: MOD5 ✅) **No control has an AutomationId and there are no UI cases, so nothing proves a screen works** — PhotoBoost drives its window with winwright cases (cases\*.cases.json), which is the evidence a UI task ships on. → §MOD8
 - 📋 **MOD9** (deps: MOD4 ✅) **The status bar is a bare panel with a provider chip and a text line: no job, last-run or download chips, no About** — PhotoBoost's status bar says where inference runs, how long the last run took and what is in progress, wherever the panel has scrolled to. → §MOD9
 - 📋 **MOD10** (deps: MOD4 ✅) **With nothing open there is only a hint over the viewport: no drop zone, no Open button, nowhere to show an open error** — PhotoBoost's open screen is a card with the formats, an Open button and an error line, and the operations panel only appears once something is open. → §MOD10
 - 📋 **MOD11** (deps: MOD9) **About is a separate modal window built in code, not a panel that takes the stage's place as in PhotoBoost** — PhotoBoost shows About and the download offer in the window itself, so the status bar and a running download stay visible behind them. → §MOD11
@@ -28,7 +27,7 @@
 - 📋 **MOD16** (deps: MOD1 ✅) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
 - 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
 - 📋 **MOD18** (deps: MOD11) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18
-- 📋 **MOD19** (deps: MOD5) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
+- 📋 **MOD19** (deps: MOD5 ✅) **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A picture of the model is what gets shared or put in a listing, and today that means a screen capture of the viewport, cropped by hand. → §MOD19
 - 📋 **MOD48** (deps: —) **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — Scripts and the Blender add-on drive the CLI and need a readable error and a non-zero exit, not a crash or a misspelt edit reported as success. → §MOD48
 
 ## Block D — Model downloads

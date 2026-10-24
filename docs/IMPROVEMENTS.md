@@ -4,22 +4,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD5 Glyph toolbar with commands
-
-Model: the EditorToolbar in PhotoBoost's MainWindow.xaml (the ToolBarTray at the top,
-PB63, PB65, PB66). Modelado's groups: Open (Ctrl+O) and Export (Ctrl+S); Undo (Ctrl+Z)
-and Redo (Ctrl+Y, Ctrl+Shift+Z); rotate X, Y and Z and Mirror (moved here from the Edit
-card); then, on the right, the view choice (colours, clay, wireframe, input photo) and
-Reset view, as PhotoBoost places its compare modes.
-
-Each button is a Segoe Fluent Icons glyph with AutomationProperties.Name, an
-AutomationId and a tooltip naming its shortcut. Each goes through a CommandBinding with
-CanExecute: off with no model, and off while an operation runs, as Undo already is. The
-ToolBar's overflow takes what does not fit at MinWidth 900.
-
-Done when every button and shortcut does the same thing, a disabled command disables
-both, and the window at 900 px wide clips nothing.
-
 ### §MOD6 Pinned job panel
 
 Model: PhotoBoost's JobPanel (PB60), docked at the top of the Operations DockPanel,

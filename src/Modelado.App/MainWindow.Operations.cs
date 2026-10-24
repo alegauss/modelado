@@ -109,8 +109,6 @@ public partial class MainWindow
         bool idle = !on && photo is not null;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
         UpdateEditButtons();
-        OpenButton.IsEnabled = !on;
-        ExportButton.IsEnabled = !on && mesh is not null;
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
     }
 

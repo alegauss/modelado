@@ -50,6 +50,13 @@ public partial class MainWindow : Window, IDisposable
         ThemeMode = Theme.Mode(Appearance.Default.Theme);
         InitializeComponent();
 
+        // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
+        foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton))
+        {
+            button.Template = Templates.Ghost();
+            button.Padding = new Thickness(6, 4, 6, 4);
+        }
+
         library = options.Models is { } folder ? new ModelLibrary([folder]) : ModelLibrary.Default();
         try
         {
@@ -96,7 +103,17 @@ public partial class MainWindow : Window, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private async void OnOpen(object sender, RoutedEventArgs e)
+    /// <summary>Back to the front view, Home; the toolbar's button and a double-click on the model (MOD5).</summary>
+    public static readonly RoutedUICommand ResetViewCommand = new(
+        "Front view", "ResetView", typeof(MainWindow), [new KeyGesture(Key.Home)]);
+
+    private void CanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy;
+
+    private void CanSave(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && mesh is not null;
+
+    private void CanResetView(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ShowingModel;
+
+    private async void OnOpen(object sender, ExecutedRoutedEventArgs e)
     {
         string photos = string.Join(';', ImageCodec.Extensions.Select(x => "*" + x));
         string models = string.Join(';', MeshImport.Extensions.Select(x => "*" + x));
@@ -186,8 +203,6 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{Path.GetFileName(path)} · Modelado";
         EmptyHint.Visibility = Visibility.Collapsed;
         MeshChip.Visibility = Visibility.Collapsed;
-        ExportButton.IsEnabled = false;
-        ResetViewButton.IsEnabled = false;
         ViewChoice.IsEnabled = false;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
@@ -211,7 +226,7 @@ public partial class MainWindow : Window, IDisposable
     {
         mesh = result;
         renderer = new MeshRenderer(result);
-        ViewChoice.IsEnabled = ExportButton.IsEnabled = ResetViewButton.IsEnabled = true;
+        ViewChoice.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles{(result.DoubleSided ? " · open" : "")}";
@@ -358,7 +373,7 @@ public partial class MainWindow : Window, IDisposable
         ViewImage.Source = source;
     }
 
-    private void OnExport(object sender, RoutedEventArgs e)
+    private void OnExport(object sender, ExecutedRoutedEventArgs e)
     {
         if (mesh is null || busy)
         {

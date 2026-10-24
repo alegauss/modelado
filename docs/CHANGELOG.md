@@ -9,6 +9,7 @@
 ## Block B — Windows interface built like PhotoBoost
 
 - ✅ **MOD4** **Colours are hard-coded hex in MainWindow.xaml, with no Brand class, no theme setting and no shared control templates** — Each owned colour is declared once in Brand, a test refuses any other; windows take their theme from Appearance (design recorded in `src/Modelado.Imaging/Brand.cs`).
+- ✅ **MOD5** **The toolbar is a row of text buttons wired to Click handlers, with no glyphs and no commands that enable themselves** — The toolbar is glyph buttons on commands shared with their shortcuts, dimmed when they cannot run; turns and Mirror moved up from the Edit card.
 
 ## Block C — Existing code wired into the window
 

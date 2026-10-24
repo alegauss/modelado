@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Modelado.Geometry;
 using Modelado.Inference.Pipelines;
 
@@ -14,19 +15,38 @@ namespace Modelado.App;
 /// </summary>
 public partial class MainWindow
 {
+    /// <summary>A quarter turn about the X axis, for a model lying down (MOD5).</summary>
+    public static readonly RoutedUICommand RotateXCommand = new("Turn about X", "RotateX", typeof(MainWindow));
+
+    /// <summary>A quarter turn about the vertical axis.</summary>
+    public static readonly RoutedUICommand RotateYCommand = new("Turn about Y", "RotateY", typeof(MainWindow));
+
+    /// <summary>A quarter turn about the Z axis.</summary>
+    public static readonly RoutedUICommand RotateZCommand = new("Turn about Z", "RotateZ", typeof(MainWindow));
+
+    /// <summary>A mirror left to right; no shortcut, as in most editors.</summary>
+    public static readonly RoutedUICommand MirrorCommand = new("Mirror", "Mirror", typeof(MainWindow));
+
     private void UpdateEditButtons()
     {
         bool can = !busy && mesh is not null;
-        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MirrorButton, RotateXButton, RotateYButton, RotateZButton])
+        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton])
         {
             button.IsEnabled = can;
         }
 
         UpscaleTextureButton.IsEnabled = can && mesh!.Texture is not null;
         ReprojectButton.IsEnabled = can && reference is not null && mesh!.TexCoords is null;
-        UndoButton.IsEnabled = !busy && history.CanUndo;
-        RedoButton.IsEnabled = !busy && history.CanRedo;
+
+        // The toolbar's commands ask their CanExecute again, now rather than at the next input.
+        CommandManager.InvalidateRequerySuggested();
     }
+
+    private void CanEdit(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && mesh is not null;
+
+    private void CanUndo(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && history.CanUndo;
+
+    private void CanRedo(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && history.CanRedo;
 
     private void OnSimplifyAmountChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
@@ -73,12 +93,12 @@ public partial class MainWindow
     private async void OnFlatten(object sender, RoutedEventArgs e) =>
         await EditAsync("Flat base", (m, _, _) => MeshEdit.FlattenBase(m, 0.03f)).ConfigureAwait(true);
 
-    private async void OnMirror(object sender, RoutedEventArgs e) =>
+    private async void OnMirror(object sender, ExecutedRoutedEventArgs e) =>
         await EditAsync("Mirror", (m, _, _) => MeshEdit.Mirror(m)).ConfigureAwait(true);
 
-    private async void OnRotate(object sender, RoutedEventArgs e)
+    private async void OnRotate(object sender, ExecutedRoutedEventArgs e)
     {
-        Axis axis = (string)((Button)sender).Tag switch { "X" => Axis.X, "Y" => Axis.Y, _ => Axis.Z };
+        Axis axis = e.Command == RotateXCommand ? Axis.X : e.Command == RotateYCommand ? Axis.Y : Axis.Z;
         await EditAsync($"Turn about {axis}", (m, _, _) => MeshEdit.Rotate(m, axis, 90)).ConfigureAwait(true);
     }
 
@@ -103,7 +123,7 @@ public partial class MainWindow
         await EditAsync("Photo colours", (m, _, _) => ColorProjection.Project(m, from.Image).Mesh).ConfigureAwait(true);
     }
 
-    private void OnUndo(object sender, RoutedEventArgs e)
+    private void OnUndo(object sender, ExecutedRoutedEventArgs e)
     {
         if (!busy && history.Undo() is { } previous)
         {
@@ -112,7 +132,7 @@ public partial class MainWindow
         }
     }
 
-    private void OnRedo(object sender, RoutedEventArgs e)
+    private void OnRedo(object sender, ExecutedRoutedEventArgs e)
     {
         if (!busy && history.Redo() is { } next)
         {
@@ -145,7 +165,7 @@ public partial class MainWindow
                 Display(after);
             }
 
-            Status($"{label}: {before.TriangleCount:N0} → {after.TriangleCount:N0} triangles in {clock.Elapsed.TotalSeconds:0.0} s. Ctrl+Z undoes it.");
+            Status($"{label}: {before.TriangleCount:N0} â†’ {after.TriangleCount:N0} triangles in {clock.Elapsed.TotalSeconds:0.0} s. Ctrl+Z undoes it.");
         }
         catch (OperationCanceledException)
         {
