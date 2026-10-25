@@ -352,7 +352,7 @@
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "RadioButton#ExportPlyAscii", "act": "read", "absent": true, "named": "PLY's options are gone" },
-        { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "Saved at 100 mm on its longest side; the slicer can scale it.", "named": "and STL says the size it writes" }
+        { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "STL is read in millimetres, so the size above is the print's.", "named": "and STL says its size is in millimetres" }
       ]
     },
 
@@ -381,6 +381,29 @@
         { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/text.ply", "named": "text.ply is dropped back in" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "text.ply", "named": "it opens" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with the same counts" }
+      ]
+    },
+
+    {
+      "name": "the Export card writes STL at the longest side typed, the same bytes the CLI's --size writes",
+      "catches": "a size box the save ignores, a unit that does not follow the format, or a window that scales differently from modelado-cli",
+      "filed": "MOD15",
+      "tags": ["export", "dialog"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "units", "named": "GLB is sized in its own units" },
+        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "one unit on the longest side" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "mm", "named": "STL is sized in millimetres" },
+        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "100", "named": "100 mm by default" },
+        { "locator": "Edit#ExportSize", "act": "set value", "with": "80", "expect": "80", "reads": "value", "named": "80 is typed" },
+        { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "expect": "80 × 80 × 80 mm (width × height × depth)", "named": "the box it gives is shown" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/eighty", "named": "the dialog is told to save eighty" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved eighty.stl", "named": "the card says it wrote eighty.stl" },
+        { "file": "{files}/eighty.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-80mm.stl", "named": "byte for byte what modelado-cli edit --size 80 writes" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Saved eighty.stl · 80 mm on the longest side", "named": "the status bar says the size" }
       ]
     },
 

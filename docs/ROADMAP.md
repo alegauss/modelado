@@ -17,7 +17,6 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD15** (deps: MOD13 ✅) **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — A print has a real size, and a figurine meant to be 40 mm or 200 mm tall needs rescaling in the slicer today. → §MOD15
 - 📋 **MOD16** (deps: MOD1 ✅) **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — A small fragment worth keeping, or a model whose base needs more than 3% cut, cannot be handled without dropping to the command line. → §MOD16
 - 📋 **MOD17** (deps: MOD1 ✅) **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — Step 1 recovers thin parts the coarse pass misses, and a raw unsmoothed mesh is what some people want to sculpt from, so both belong on the card. → §MOD17
 - 📋 **MOD18** (deps: MOD11 ✅) **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — On a GPU that fails or is slower than the CPU for a model, the only remedy today is a shortcut with a flag nobody knows exists. → §MOD18

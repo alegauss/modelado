@@ -308,6 +308,15 @@
               <RadioButton x:Name="ExportPlyAscii" AutomationProperties.AutomationId="ExportPlyAscii" GroupName="PlyEncoding"
                            Content="ASCII, readable as text" Margin="0,4,0,0" />
             </StackPanel>
+            <!-- MOD15: the size the CLI's -\-size takes, in the format's unit, and the box it gives. -->
+            <TextBlock Text="Longest side" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+            <DockPanel>
+              <TextBlock x:Name="ExportSizeUnit" AutomationProperties.AutomationId="ExportSizeUnit" DockPanel.Dock="Right"
+                         VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="36" />
+              <TextBox x:Name="ExportSize" AutomationProperties.AutomationId="ExportSize" AutomationProperties.Name="Longest side"
+                       Text="1" TextChanged="OnExportSizeChanged" />
+            </DockPanel>
+            <TextBlock x:Name="ExportDimensions" AutomationProperties.AutomationId="ExportDimensions" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
             <TextBlock x:Name="ExportNote" AutomationProperties.AutomationId="ExportNote" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
             <Button x:Name="ExportSaveAs" AutomationProperties.AutomationId="ExportSaveAs" Content="Save as…" Command="SaveAs"

@@ -117,7 +117,7 @@ public partial class MainWindow : Window, IDisposable
 
     private void CanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy;
 
-    private void CanSave(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && mesh is not null;
+    private void CanSave(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy && mesh is not null && ExportSizeValue is not null;
 
     private void CanResetView(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = ShowingModel;
 

@@ -24,6 +24,8 @@
 
 ## Block C — Existing code wired into the window
 
+- ✅ **MOD15** **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — The Export card takes the longest side in mm for STL or units otherwise, shows the box it gives, and saves through Mesh.Placed, byte for byte what the CLI's --size writes.
+
 ## Block D — Model downloads
 
 - ✅ **MOD47** **The download tests fail to construct when the loopback server's first random port is already taken** — The download test server opens a fresh listener on each port attempt, so a busy port means another try instead of a red suite.

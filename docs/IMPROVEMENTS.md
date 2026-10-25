@@ -41,20 +41,6 @@ down and read JobChip, then LastRun ("Relief · <s> s · CPU").
 
 ## Block C — Existing code wired into the window
 
-### §MOD15 Export size in the window
-
-MainWindow.xaml.cs saves through mesh.Placed(stl ? 100 : 1): STL always at 100 mm, every
-other format at 1 unit. The CLI's --size takes any value. The size goes on the Export
-card as a "Longest side" number box with the unit shown per format (mm for STL, units
-otherwise), defaulting to today's values, plus the three dimensions it gives, read live
-as the box changes.
-
-Scaling happens at export only and is not a version in the history, as in the CLI. Both
-go through Mesh.Placed, with no second scaler.
-
-Done when an STL exported at 80 mm opens in a slicer at 80 mm on its longest side, and
-the CLI and the window write identical files for the same model and size.
-
 ### §MOD16 Edit amounts in the window
 
 MainWindow.Edits.cs calls MeshCleanup.Smooth(m, 3), MeshCleanup.RemoveSmallPieces(m,
