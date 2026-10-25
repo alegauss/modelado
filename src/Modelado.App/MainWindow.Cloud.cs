@@ -120,6 +120,7 @@ public partial class MainWindow
         }
 
         UpdateCloudEdit();
+        UpdateGenerate();
 
         List<ICloudProvider> ready = [.. CloudProviders.For(CloudCapability.ImageTo3D, CloudServices).Concat(CloudProviders.For(CloudCapability.TextTo3D, CloudServices))
             .Distinct().Where(p => cloudKeys.Has(p.Id))];
@@ -144,7 +145,7 @@ public partial class MainWindow
         }
 
         CloudJobRequest request = CloudRequest(withImage: false);
-        string estimate = service.EstimateCost(request) is { } cost ? string.Create(CultureInfo.InvariantCulture, $" · ~{cost.Amount:0} {cost.Unit}") : "";
+        string estimate = service.EstimateCost(request) is { } cost ? $" · ~{cost}" : "";
         CloudGenerate.Content = $"Generate with {service.DisplayName}{estimate}";
         CloudGenerate.IsEnabled = !busy && (service.Capabilities & request.Action) == request.Action
             && (request.Action == CloudCapability.ImageTo3D ? photo is not null : !string.IsNullOrWhiteSpace(CloudPrompt.Text));
@@ -180,7 +181,7 @@ public partial class MainWindow
 
         CloudJobRequest request = CloudRequest(withImage: true);
         string what = request.Image is { } image ? $"This photo, {Size(image.Length)}," : "This description";
-        string cost = service.EstimateCost(request) is { } estimate ? string.Create(CultureInfo.InvariantCulture, $" for about {estimate.Amount:0} {estimate.Unit}") : "";
+        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
         CloudConsentText.Text = $"{what} goes to {service.DisplayName}{cost}.";
         pendingCloud = request;
         CloudConsent.Visibility = Visibility.Visible;
@@ -222,13 +223,16 @@ public partial class MainWindow
 
         // A new model is the first version of a new history; an edit of the open one is pushed onto
         // its history, so Undo returns to the local version.
-        Action<Mesh> land = request.Action is CloudCapability.Remesh or CloudCapability.Retexture
-            ? made =>
+        Func<CloudResult, Task> land = request.Action switch
+        {
+            CloudCapability.Remesh or CloudCapability.Retexture => AsMesh(made =>
             {
                 history.Push(made, title);
                 Display(made);
-            }
-            : made => ShowMesh(made, input, null, title);
+            }),
+            CloudCapability.TextToImage => ShowCandidatesAsync,
+            _ => AsMesh(made => ShowMesh(made, input, null, title)),
+        };
         await FollowCloudAsync(service, request.Action, title, land, (spending, progress, tracked, token) =>
             CloudJobs.RunAsync(service, key, request, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
     }
@@ -266,7 +270,7 @@ public partial class MainWindow
     }
 
     private static string Estimate(ICloudProvider service, CloudCapability action) =>
-        service.EstimateCost(new CloudJobRequest(action)) is { } cost ? string.Create(CultureInfo.InvariantCulture, $" · ~{cost.Amount:0} {cost.Unit}") : "";
+        service.EstimateCost(new CloudJobRequest(action)) is { } cost ? $" · ~{cost}" : "";
 
     private CloudJobRequest CloudEditRequest(CloudCapability action, byte[] model) => action == CloudCapability.Remesh
         ? new CloudJobRequest(action, Model: model, Options: new Dictionary<string, string>(StringComparer.Ordinal)
@@ -295,7 +299,7 @@ public partial class MainWindow
         using MemoryStream glb = new();
         MeshExport.WriteGlb(mesh, glb);
         CloudJobRequest request = CloudEditRequest(action, glb.ToArray());
-        string cost = service.EstimateCost(request) is { } estimate ? string.Create(CultureInfo.InvariantCulture, $" for about {estimate.Amount:0} {estimate.Unit}") : "";
+        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
         CloudEditConsentText.Text = string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Size(glb.Length)} as a GLB, goes to {service.DisplayName}{cost}.");
         pendingCloud = request;
         CloudEditConsent.Visibility = Visibility.Visible;
@@ -339,7 +343,8 @@ public partial class MainWindow
             return;
         }
 
-        await FollowCloudAsync(service, action, title, made => ShowMesh(made, null, null, title), (spending, progress, tracked, token) =>
+        Func<CloudResult, Task> land = action == CloudCapability.TextToImage ? ShowCandidatesAsync : AsMesh(made => ShowMesh(made, null, null, title));
+        await FollowCloudAsync(service, action, title, land, (spending, progress, tracked, token) =>
             CloudJobs.ResumeAsync(service, key, action, job, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
     }
 
@@ -347,7 +352,7 @@ public partial class MainWindow
     // result shown as the model's first version, labelled with the service. Closing the window
     // leaves the job running at the service, kept by id for the next start.
     private async Task FollowCloudAsync(
-        ICloudProvider service, CloudCapability action, string title, Action<Mesh> land,
+        ICloudProvider service, CloudCapability action, string title, Func<CloudResult, Task> land,
         Func<CloudSpending, IProgress<CloudJobStatus>, Action<string>, CancellationToken, Task<CloudResult>> follow)
     {
         if (busy)
@@ -381,9 +386,8 @@ public partial class MainWindow
             CloudSpending spending = new(new CloudLedger(CloudLedger.DefaultPath), new Dictionary<string, CloudBudget>());
             CloudResult result = await follow(spending, progress, Keep, cancel.Token).ConfigureAwait(true);
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
-            Mesh made = await Task.Run(() => CloudJobs.ToMesh(result), cancel.Token).ConfigureAwait(true);
-            land(made);
-            string spent = result.Actual is { } actual ? string.Create(CultureInfo.InvariantCulture, $" · {actual.Amount:0} {actual.Unit}") : "";
+            await land(result).ConfigureAwait(true);
+            string spent = result.Actual is { } actual ? $" · {actual}" : "";
             LastRunSaid($"{title}{spent}");
         }
         catch (OperationCanceledException)

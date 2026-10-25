@@ -119,6 +119,15 @@
       "shareable": false
     },
     {
+      // MOD39: nothing open, Ideogram stood in by the fixture server, LOCALAPPDATA of its own.
+      "name": "an empty window with Ideogram stood in by the fixture server",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD37: the settings.json a run left with a Meshy job in flight, and no key beside it.
       "name": "a window started with a cloud job kept from the last run but no key to follow it",
       "files": [{ "from": "cases/fixtures/settings-cloud-job.json", "to": "Modelado/settings.json" }],
@@ -685,6 +694,36 @@
         { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/original", "named": "the dialog is told to save original" },
         { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved original.stl", "named": "it is written" },
         { "file": "{files}/original.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-100mm.stl", "named": "byte for byte what modelado-cli edit --size 100 writes for the untouched cube" }
+      ]
+    },
+
+    {
+      "name": "with an Ideogram key the drop zone draws four candidate photos from a description, and the one chosen opens",
+      "catches": "a generator offered with no key, a price the options do not set, a description sent without consent, or a candidate that does not open as a photo",
+      "filed": "MOD39",
+      "tags": ["cloud", "drop", "about"],
+      "fixture": "an empty window with Ideogram stood in by the fixture server",
+      "steps": [
+        { "locator": "Text#DropTitle", "act": "read", "reads": "name", "expect": "Drop a photo or a 3D model here", "named": "the drop zone is shown" },
+        { "locator": "Button#DropGenerate", "act": "read", "absent": true, "named": "with no generator before a key" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "the Ideogram key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once Ideogram's dry run accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#DropGenerate", "act": "read", "reads": "name", "expect": "Generate a photo with Ideogram…", "named": "the drop zone offers to draw a photo" },
+        { "locator": "Button#DropGenerate", "act": "invoke", "named": "which is pressed" },
+        { "locator": "Edit#GenerateTemplate", "act": "read", "reads": "value", "matches": "^\\{object\\}, one whole object, centred", "named": "the template asking for what reconstruction needs is shown" },
+        { "locator": "Edit#GeneratePrompt", "act": "set value", "with": "a wooden chair", "reads": "value", "expect": "a wooden chair", "named": "the object is described" },
+        { "locator": "Button#GenerateRun", "act": "read", "reads": "name", "expect": "Generate 4 with Ideogram · ~$0.12", "named": "four candidates, priced" },
+        { "locator": "Button#GenerateRun", "act": "invoke", "named": "Generate is pressed" },
+        { "locator": "Text#GenerateConsentText", "act": "read", "reads": "name", "expect": "This description goes to Ideogram for about $0.12.", "named": "it says what goes where before sending" },
+        { "locator": "Button#GenerateSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Text#GenerateStatus", "act": "read", "reads": "name", "expect": "4 candidates: press one to open it.", "named": "the candidates come back" },
+        { "locator": "Button#Candidate-4", "act": "read", "reads": "name", "expect": "Candidate 4", "named": "side by side" },
+        { "locator": "Button#Candidate-2", "act": "invoke", "named": "the second is chosen" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-2\\.png · 64 × 48$", "named": "it opens as a photo, saved with its seed in the name" },
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the operations take it" }
       ]
     },
 

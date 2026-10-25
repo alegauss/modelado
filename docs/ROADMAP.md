@@ -36,8 +36,8 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- 📋 **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — Ideogram can draw the single, centred object on a plain background that TripoSR works best from, turning a text idea into a 3D model in two steps. → §MOD39
-- 📋 **MOD40** (deps: MOD39) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
+- ⏳ **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅, MOD20) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A chosen candidate has not been through TripoSR, which needs the models MOD20 publishes. → §MOD39
+- 📋 **MOD40** (deps: MOD39 ⏳) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
 - 📋 **MOD55** (deps: MOD37 ✅) **The window shows no cloud usage panel or budget chip, so a service's spend and limit are never seen** — MOD41's ledger and budgets refuse an over-budget job, but a person sees the refusal only when it happens, not the approach to it. → §MOD55
 
 ## Block I — Blender integration: AI tools for existing Blender models
@@ -87,6 +87,12 @@
   with a real Meshy key: the Meshy card runs Image to 3D on the open photo after its
   consent line, the GLB lands as a version labelled Meshy AI: image to 3D, and it and
   TripoSR's model are refined and saved.
+
+## Done when — MOD39
+
+- **A drawn candidate becomes a TripoSR model** On the guest with the published models:
+  a candidate chosen on the drop zone is generated with 3D Object, and the PNG it was
+  saved as still carries its prompt in an iTXt chunk.
 
 ## Non-goals
 

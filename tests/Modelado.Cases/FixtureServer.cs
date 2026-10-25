@@ -80,10 +80,10 @@ public sealed class FixtureServer : IDisposable
             try
             {
                 NetworkStream stream = client.GetStream();
-                (string method, string path, long? from, string? authorization) = await ReadRequestAsync(stream, stop).ConfigureAwait(false);
-                if (path.StartsWith("/meshy/", StringComparison.Ordinal))
+                (string method, string path, long? from, string? authorization, string? apiKey) = await ReadRequestAsync(stream, stop).ConfigureAwait(false);
+                if (path.StartsWith("/meshy/", StringComparison.Ordinal) || path.StartsWith("/ideogram/", StringComparison.Ordinal))
                 {
-                    (int status, string json) = Meshy(method, path, authorization);
+                    (int status, string json) = path.StartsWith("/meshy/", StringComparison.Ordinal) ? Meshy(method, path, authorization) : Ideogram(method, path, apiKey);
                     await WriteAsync(stream, string.Create(CultureInfo.InvariantCulture, $"HTTP/1.1 {status} Fixture\r\nContent-Type: application/json\r\nContent-Length: {Encoding.UTF8.GetByteCount(json)}\r\nConnection: close\r\n\r\n{json}"), stop).ConfigureAwait(false);
                     return;
                 }
@@ -152,11 +152,35 @@ public sealed class FixtureServer : IDisposable
         };
     }
 
+    /// <summary>MOD39: the key the Ideogram stand-in takes, under /ideogram/.</summary>
+    public const string IdeogramKey = "case-ideogram-key";
+
+    // Every generation completes at once with candidate.png (the photo fixture) four times, for
+    // $0.12; a dry run prices without generating.
+    private static (int Status, string Json) Ideogram(string method, string path, string? apiKey)
+    {
+        if (apiKey != IdeogramKey)
+        {
+            return (401, """{"message": "Access denied. Please verify your API Token is valid."}""");
+        }
+
+        string image = string.Create(CultureInfo.InvariantCulture, $"http://127.0.0.1:{Port}/files/candidate.png");
+        return (method, path) switch
+        {
+            ("POST", "/ideogram/v2/image/generate/ideogram-3?dry_run=true") => (200, """{"object": "price_quote", "usd_micros": 30000, "qualifier": "exact"}"""),
+            ("POST", "/ideogram/v2/image/generate/ideogram-3") => (200, """{"generation_id": "case-generation", "seed": 7}"""),
+            ("GET", "/ideogram/v2/generations/case-generation") => (200, string.Create(
+                CultureInfo.InvariantCulture,
+                $$$"""{"generation_id": "case-generation", "status": "completed", "usage_cost_usd_micros": 120000, "data": [{{{string.Join(", ", Enumerable.Range(1, 4).Select(n => $$$"""{"prompt": "a wooden chair, centred", "seed": {{{n}}}, "url": "{{{image}}}", "is_image_safe": true}"""))}}}]}""")),
+            _ => (404, """{"message": "Not found"}"""),
+        };
+    }
+
     private static string Done(string id, int credits, string glb) => string.Create(
         CultureInfo.InvariantCulture,
         $$$"""{"id": "{{{id}}}", "status": "SUCCEEDED", "progress": 100, "consumed_credits": {{{credits}}}, "model_urls": {"glb": "http://127.0.0.1:{{{Port}}}/files/{{{glb}}}"}}""");
 
-    private static async Task<(string Method, string Path, long? From, string? Authorization)> ReadRequestAsync(NetworkStream stream, CancellationToken stop)
+    private static async Task<(string Method, string Path, long? From, string? Authorization, string? ApiKey)> ReadRequestAsync(NetworkStream stream, CancellationToken stop)
     {
         StringBuilder head = new();
         byte[] one = new byte[1];
@@ -176,10 +200,10 @@ public sealed class FixtureServer : IDisposable
         string path = request is [_, var target, ..] ? target : "/";
         long? from = null;
         long body = 0;
-        string? authorization = null;
+        string? authorization = null, apiKey = null;
         foreach (string line in lines)
         {
-            const string Prefix = "range: bytes=", Length = "content-length:", Auth = "authorization:";
+            const string Prefix = "range: bytes=", Length = "content-length:", Auth = "authorization:", Key = "api-key:";
             if (line.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)
                 && long.TryParse(line[Prefix.Length..].Split('-')[0], NumberStyles.None, CultureInfo.InvariantCulture, out long start))
             {
@@ -192,6 +216,10 @@ public sealed class FixtureServer : IDisposable
             else if (line.StartsWith(Auth, StringComparison.OrdinalIgnoreCase))
             {
                 authorization = line[Auth.Length..].Trim();
+            }
+            else if (line.StartsWith(Key, StringComparison.OrdinalIgnoreCase))
+            {
+                apiKey = line[Key.Length..].Trim();
             }
         }
 
@@ -208,7 +236,7 @@ public sealed class FixtureServer : IDisposable
             left -= read;
         }
 
-        return (method, path, from, authorization);
+        return (method, path, from, authorization, apiKey);
     }
 
     private static Task WriteAsync(NetworkStream stream, string text, CancellationToken stop) =>

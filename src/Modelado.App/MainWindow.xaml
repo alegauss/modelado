@@ -126,6 +126,58 @@
             <TextBlock x:Name="OpenError" AutomationProperties.AutomationId="OpenError" TextWrapping="Wrap" TextAlignment="Center"
                        HorizontalAlignment="Center" Margin="0,12,0,0" Visibility="Collapsed"
                        Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+            <!-- MOD39: no photo yet? One drawn by a cloud service that holds a key, from a description
+                 wrapped in what reconstruction needs, which the user sees and can change. -->
+            <Button x:Name="DropGenerate" AutomationProperties.AutomationId="DropGenerate" HorizontalAlignment="Center" Margin="0,12,0,0"
+                    Padding="16,4" Click="OnDropGenerate" Visibility="Collapsed" />
+            <StackPanel x:Name="GeneratePanel" AutomationProperties.AutomationId="GeneratePanel" Margin="0,12,0,0" Visibility="Collapsed">
+              <TextBlock Text="The object" Style="{StaticResource FieldLabel}" />
+              <TextBox x:Name="GeneratePrompt" AutomationProperties.AutomationId="GeneratePrompt" AutomationProperties.Name="The object"
+                       MaxLength="300" TextChanged="OnGenerateChanged" ToolTip="What to draw, e.g. a wooden chair." />
+              <TextBlock Text="Asked as" Style="{StaticResource FieldLabel}" />
+              <TextBox x:Name="GenerateTemplate" AutomationProperties.AutomationId="GenerateTemplate" AutomationProperties.Name="Asked as"
+                       TextWrapping="Wrap" AcceptsReturn="False" TextChanged="OnGenerateChanged"
+                       Text="{}{object}, one whole object, centred, three-quarter view from slightly above, soft even studio light, plain light grey background, no text, nothing else in the picture"
+                       ToolTip="{}{object} is replaced by the object; the rest asks for what a 3D reconstruction works best from." />
+              <UniformGrid Columns="3" Margin="0,8,0,0">
+                <ComboBox x:Name="GenerateAspect" AutomationProperties.AutomationId="GenerateAspect" AutomationProperties.Name="Shape" Margin="0,0,4,0"
+                          SelectedIndex="0" SelectionChanged="OnGenerateOptionChanged">
+                  <ComboBoxItem Content="Square" Tag="1x1" />
+                  <ComboBoxItem Content="4:3" Tag="4x3" />
+                  <ComboBoxItem Content="3:4" Tag="3x4" />
+                </ComboBox>
+                <ComboBox x:Name="GenerateSpeed" AutomationProperties.AutomationId="GenerateSpeed" AutomationProperties.Name="Quality" Margin="2,0,2,0"
+                          SelectedIndex="0" SelectionChanged="OnGenerateOptionChanged">
+                  <ComboBoxItem Content="Quick" Tag="turbo" />
+                  <ComboBoxItem Content="Default" Tag="default" />
+                  <ComboBoxItem Content="Best" Tag="quality" />
+                </ComboBox>
+                <ComboBox x:Name="GenerateCount" AutomationProperties.AutomationId="GenerateCount" AutomationProperties.Name="Candidates" Margin="4,0,0,0"
+                          SelectedIndex="3" SelectionChanged="OnGenerateOptionChanged">
+                  <ComboBoxItem Content="1 image" Tag="1" />
+                  <ComboBoxItem Content="2 images" Tag="2" />
+                  <ComboBoxItem Content="3 images" Tag="3" />
+                  <ComboBoxItem Content="4 images" Tag="4" />
+                </ComboBox>
+              </UniformGrid>
+              <Button x:Name="GenerateRun" AutomationProperties.AutomationId="GenerateRun" Margin="0,10,0,0" Padding="0,6" HorizontalAlignment="Stretch"
+                      Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateRun" />
+              <Border x:Name="GenerateConsent" AutomationProperties.AutomationId="GenerateConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                      Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+                <StackPanel>
+                  <TextBlock x:Name="GenerateConsentText" AutomationProperties.AutomationId="GenerateConsentText" TextWrapping="Wrap" />
+                  <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button x:Name="GenerateSend" AutomationProperties.AutomationId="GenerateSend" Content="Send it" Padding="12,2" Click="OnGenerateSend" />
+                    <Button x:Name="GenerateCancel" AutomationProperties.AutomationId="GenerateCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                            Click="OnGenerateNotNow" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              <TextBlock x:Name="GenerateStatus" AutomationProperties.AutomationId="GenerateStatus" Style="{StaticResource StatCaption}" Margin="0,8,0,0"
+                         TextWrapping="Wrap" />
+              <!-- The candidates side by side; the one pressed opens as if it had been dropped. -->
+              <WrapPanel x:Name="GenerateCandidates" AutomationProperties.AutomationId="GenerateCandidates" Margin="0,6,0,0" />
+            </StackPanel>
           </StackPanel>
         </Border>
         <!-- MOD10, after PhotoBoost's ViewerOpenError (PB64): a file that could not be opened while

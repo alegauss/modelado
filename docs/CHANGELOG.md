@@ -62,6 +62,7 @@
 - ✅ **MOD42** **A cloud action gives no estimate of what it will cost before it runs** — A dated price table estimates each cloud action from its options, a job the budget cannot cover is refused before upload, and the ledger keeps estimate and actual; MOD55 is the window.
 - ✅ **MOD37 (provider, window and resume)** **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — MeshyProvider runs image and text to 3D; About stores a tested key; the Cloud 3D card prices, asks and lands Meshy's model, and a job outlives a restart.
 - ✅ **MOD38** **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — The Edit card remeshes or retextures the open model through Meshy after its consent line, each a version, and two undos give back its bytes (design superseded: retexture takes a prompt, no image).
+- ✅ **MOD39 (Ideogram and the drop zone)** **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — With an Ideogram key the drop zone draws priced, agreed candidates from a templated description, and the chosen one opens as a PNG that carries its prompt.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

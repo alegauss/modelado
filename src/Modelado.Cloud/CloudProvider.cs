@@ -76,7 +76,8 @@ public sealed record CloudJobStatus(CloudJobState State, double Progress = 0, st
 /// <param name="Bytes">The file.</param>
 /// <param name="Extension">Its kind: ".glb" for a model, ".png" or ".jpg" for an image.</param>
 /// <param name="Actual">MOD42: what the job cost, where the service reports it; the estimate stands in otherwise.</param>
-public sealed record CloudResult(byte[] Bytes, string Extension, CloudCost? Actual = null)
+/// <param name="Images">MOD39: every candidate an image job made, the first of them being <paramref name="Bytes"/>.</param>
+public sealed record CloudResult(byte[] Bytes, string Extension, CloudCost? Actual = null, IReadOnlyList<CloudImage>? Images = null)
 {
     /// <summary>True for a model, false for an image.</summary>
     public bool IsModel => string.Equals(Extension, ".glb", StringComparison.OrdinalIgnoreCase);
@@ -95,7 +96,19 @@ public sealed record CloudUsage(string Summary, double? Remaining);
 /// <summary>What an action is expected to cost before it runs, for MOD42.</summary>
 /// <param name="Amount">How much, in the service's unit.</param>
 /// <param name="Unit">"credits", "USD" and so on.</param>
-public sealed record CloudCost(double Amount, string Unit);
+public sealed record CloudCost(double Amount, string Unit)
+{
+    /// <summary>How a person reads it: "$0.12" for dollars, "30 credits" for credits.</summary>
+    public override string ToString() => Unit == "USD"
+        ? string.Create(System.Globalization.CultureInfo.InvariantCulture, $"${Amount:0.00}")
+        : string.Create(System.Globalization.CultureInfo.InvariantCulture, $"{Amount:0.##} {Unit}");
+}
+
+/// <summary>One image a service made, with what made it (MOD39).</summary>
+/// <param name="Bytes">The encoded image.</param>
+/// <param name="Prompt">The prompt it was made from, as the service rewrote it.</param>
+/// <param name="Seed">The seed that remakes it, where the service gives one.</param>
+public sealed record CloudImage(byte[] Bytes, string Prompt, long? Seed);
 
 /// <summary>
 /// One cloud service (MOD36). A new service is one class behind this interface, not a new screen:

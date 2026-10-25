@@ -21,7 +21,7 @@ public static class CloudProviders
     /// <param name="apis">API roots by provider id; the services' own where none is named.</param>
     /// <returns>The services.</returns>
     public static IReadOnlyList<ICloudProvider> Build(IReadOnlyDictionary<string, Uri>? apis) =>
-        [new Providers.MeshyProvider(Http, apis?.GetValueOrDefault("meshy"))];
+        [new Providers.MeshyProvider(Http, apis?.GetValueOrDefault("meshy")), new Providers.IdeogramProvider(Http, apis?.GetValueOrDefault("ideogram"))];
 
     /// <summary>The registered services that can do an action.</summary>
     /// <param name="action">The action.</param>

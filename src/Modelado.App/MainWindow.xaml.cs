@@ -82,6 +82,7 @@ public partial class MainWindow : Window, IDisposable
             }
 
             StartUpdateChecks();
+            UpdateCloudCard();
             await ResumeCloudJobAsync().ConfigureAwait(true);
         };
     }

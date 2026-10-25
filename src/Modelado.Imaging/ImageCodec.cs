@@ -54,6 +54,102 @@ public static class ImageCodec
         return data.ToArray();
     }
 
+    /// <summary>
+    /// Encodes an image as PNG carrying text (MOD39): each entry an iTXt chunk, PNG's UTF-8 text,
+    /// placed after the header, so a generated image keeps the prompt and seed that remake it.
+    /// </summary>
+    /// <param name="image">The image.</param>
+    /// <param name="text">Keyword and text, e.g. "Prompt": "a wooden chair".</param>
+    /// <returns>The PNG file's bytes.</returns>
+    public static byte[] EncodePng(RgbaImage image, IReadOnlyDictionary<string, string> text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        byte[] png = EncodePng(image);
+        const int AfterHeader = 8 + 4 + 4 + 13 + 4; // signature, then IHDR's length, type, data and CRC
+        using MemoryStream output = new();
+        output.Write(png, 0, AfterHeader);
+        foreach ((string keyword, string value) in text)
+        {
+            if (keyword.Length is 0 or > 79 || keyword.Any(c => c is < ' ' or > '~'))
+            {
+                throw new ArgumentException($"'{keyword}' is not a PNG text keyword.", nameof(text));
+            }
+
+            // keyword \0, uncompressed (0, 0), no language tag \0, no translated keyword \0, UTF-8 text.
+            byte[] data = [.. System.Text.Encoding.Latin1.GetBytes(keyword), 0, 0, 0, 0, 0, .. System.Text.Encoding.UTF8.GetBytes(value)];
+            WriteChunk(output, "iTXt", data);
+        }
+
+        output.Write(png, AfterHeader, png.Length - AfterHeader);
+        return output.ToArray();
+    }
+
+    /// <summary>The iTXt and tEXt entries a PNG carries.</summary>
+    /// <param name="png">The PNG file's bytes.</param>
+    /// <returns>Keyword and text; empty for a file that is not a PNG.</returns>
+    public static IReadOnlyDictionary<string, string> ReadPngText(byte[] png)
+    {
+        ArgumentNullException.ThrowIfNull(png);
+        Dictionary<string, string> text = new(StringComparer.Ordinal);
+        for (int at = 8; at + 12 <= png.Length;)
+        {
+            int length = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(at));
+            if (length < 0 || at + 12 + length > png.Length)
+            {
+                break;
+            }
+
+            string type = System.Text.Encoding.ASCII.GetString(png, at + 4, 4);
+            ReadOnlySpan<byte> data = png.AsSpan(at + 8, length);
+            int nul = data.IndexOf((byte)0);
+            if (nul > 0 && type is "tEXt")
+            {
+                text[System.Text.Encoding.Latin1.GetString(data[..nul])] = System.Text.Encoding.Latin1.GetString(data[(nul + 1)..]);
+            }
+            else if (nul > 0 && type is "iTXt" && data.Length >= nul + 3 && data[nul + 1] == 0)
+            {
+                ReadOnlySpan<byte> rest = data[(nul + 3)..];
+                int language = rest.IndexOf((byte)0);
+                int translated = language < 0 ? -1 : rest[(language + 1)..].IndexOf((byte)0);
+                if (translated >= 0)
+                {
+                    text[System.Text.Encoding.Latin1.GetString(data[..nul])] = System.Text.Encoding.UTF8.GetString(rest[(language + 1 + translated + 1)..]);
+                }
+            }
+
+            at += 12 + length;
+        }
+
+        return text;
+    }
+
+    private static void WriteChunk(Stream output, string type, byte[] data)
+    {
+        Span<byte> number = stackalloc byte[4];
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(number, data.Length);
+        output.Write(number);
+        byte[] typed = [.. System.Text.Encoding.ASCII.GetBytes(type), .. data];
+        output.Write(typed);
+        System.Buffers.Binary.BinaryPrimitives.WriteUInt32BigEndian(number, Crc32(typed));
+        output.Write(number);
+    }
+
+    // PNG's CRC-32 (ISO 3309), over a chunk's type and data.
+    private static uint Crc32(byte[] bytes)
+    {
+        uint crc = uint.MaxValue;
+        foreach (byte b in bytes)
+        {
+            crc ^= b;
+            for (int k = 0; k < 8; k++)
+            {
+                crc = (crc & 1) != 0 ? 0xEDB88320 ^ (crc >> 1) : crc >> 1;
+            }
+        }
+
+        return ~crc;
+    }
+
     /// <summary>Writes an image as a PNG file.</summary>
     /// <param name="image">The image.</param>
     /// <param name="path">The file to create or replace.</param>
