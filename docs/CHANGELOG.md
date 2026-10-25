@@ -64,6 +64,7 @@
 - ✅ **MOD37 (provider, window and resume)** **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — MeshyProvider runs image and text to 3D; About stores a tested key; the Cloud 3D card prices, asks and lands Meshy's model, and a job outlives a restart.
 - ✅ **MOD38** **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — The Edit card remeshes or retextures the open model through Meshy after its consent line, each a version, and two undos give back its bytes (design superseded: retexture takes a prompt, no image).
 - ✅ **MOD39 (Ideogram and the drop zone)** **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — With an Ideogram key the drop zone draws priced, agreed candidates from a templated description, and the chosen one opens as a PNG that carries its prompt.
+- ✅ **MOD55** **The window shows no cloud usage panel or budget chip, so a service's spend and limit are never seen** — About sets each service's monthly budget and shows its spend, balance and estimate drift; the chip counts it down and warns; a job it cannot cover is held (design superseded: no rate-limit row yet).
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

@@ -660,6 +660,38 @@
     },
 
     {
+      "name": "a cloud budget set in About is counted down on the status bar, warns when nearly spent, and holds a job it cannot cover",
+      "catches": "a budget that is not kept, a chip that does not follow the spend, a warning that never comes, or a job sent past its budget",
+      "filed": "MOD55",
+      "tags": ["cloud", "about", "status-bar"],
+      "fixture": "a window with the photo open and Meshy AI stood in by the fixture server",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "Button#CloudChip", "act": "read", "absent": true, "named": "no cloud chip without a key" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-meshy", "act": "set value", "with": "msy_case_key", "named": "the Meshy AI key is typed" },
+        { "locator": "Button#CloudSave-meshy", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "once Meshy accepts it" },
+        { "locator": "Edit#CloudBudget-meshy", "act": "set value", "with": "35", "reads": "value", "expect": "35", "named": "a budget of 35 credits is typed" },
+        { "locator": "Button#CloudBudgetSave-meshy", "act": "invoke", "named": "and set" },
+        { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Budget 35 a month: within it\\.", "named": "the row shows the budget, untouched" },
+        { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI reports 470 credits left\\.", "named": "and the balance Meshy reports" },
+        { "locator": "Button#CloudChip", "act": "read", "reads": "name", "expect": "Meshy AI · 0 of 35 credits this month", "named": "the status bar counts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#CloudGenerate", "act": "invoke", "named": "Generate with Meshy is pressed" },
+        { "locator": "Text#CloudConsentText", "act": "read", "reads": "name", "matches": "for about 30 credits\\. 35 of 35 left this month\\.$", "named": "the consent line says what the budget leaves" },
+        { "locator": "Button#CloudConsentSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model lands" },
+        { "locator": "Button#CloudChip", "act": "read", "reads": "name", "expect": "Meshy AI · 30 of 35 credits this month · nearly spent", "named": "and the chip says the budget is nearly spent" },
+        { "locator": "Button#CloudGenerate", "act": "invoke", "named": "Generate is pressed again" },
+        { "locator": "Text#CloudConsentText", "act": "read", "reads": "name", "matches": "budget for this month is too small for it: ~30 with 5 of 35 left; raise it in About to send this\\.$", "named": "it says the budget cannot cover it" },
+        { "locator": "Button#CloudConsentSend", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and holds Send" },
+        { "locator": "Button#CloudChip", "act": "invoke", "named": "the chip is pressed" },
+        { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI: image to 3D: 1 job\\(s\\), estimated 30, charged 30\\.", "named": "About shows the estimate against the charge" }
+      ]
+    },
+
+    {
       "name": "the open model is remeshed and retextured through Meshy AI, each a version, and both undone give back the original's bytes",
       "catches": "a remesh or retexture sent without consent, priced wrong, landing as a new history, or an undo that does not return the local model exactly",
       "filed": "MOD38",

@@ -36,7 +36,6 @@
 
 - ⏳ **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅, MOD20) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A chosen candidate has not been through TripoSR, which needs the models MOD20 publishes. → §MOD39
 - 📋 **MOD40** (deps: MOD39 ⏳) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
-- 📋 **MOD55** (deps: MOD37 ✅) **The window shows no cloud usage panel or budget chip, so a service's spend and limit are never seen** — MOD41's ledger and budgets refuse an over-budget job, but a person sees the refusal only when it happens, not the approach to it. → §MOD55
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

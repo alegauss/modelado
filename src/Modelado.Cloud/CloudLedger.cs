@@ -86,6 +86,14 @@ public sealed class CloudLedger
     public double Spent(string provider, DateTimeOffset? since = null) =>
         Entries.Where(e => e.Provider == provider && (since is null || e.At >= since)).Sum(e => e.Amount);
 
+    /// <summary>MOD55: each action's estimate against what it cost, over the jobs that ran to the end.</summary>
+    /// <param name="provider">The provider's id.</param>
+    /// <returns>Per action: jobs, the estimates' sum and the actuals' sum.</returns>
+    public IReadOnlyList<(CloudCapability Action, int Jobs, double Estimated, double Actual)> Drift(string provider) =>
+        [.. Entries.Where(e => e.Provider == provider && e.Outcome == "succeeded" && e.Estimated is not null)
+            .GroupBy(e => e.Action)
+            .Select(g => (g.Key, g.Count(), g.Sum(e => e.Estimated!.Value), g.Sum(e => e.Amount)))];
+
     /// <summary>The first moment of the month <paramref name="now"/> is in, in its own offset.</summary>
     /// <param name="now">A moment.</param>
     /// <returns>The month's start.</returns>

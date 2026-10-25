@@ -247,29 +247,6 @@ badly.
 Done when a relief gets a stone texture from a prompt, the seam test passes, and Undo
 restores the photo texture.
 
-### §MOD55 Cloud usage panel and chip
-
-MOD41 and MOD42 built the figures in Modelado.Cloud and left their window here, since it
-shows only once a key is stored, which needs MOD37's first provider. CloudLedger keeps
-each job's provider, action, estimate, actual, time and outcome. CloudBudget and
-BudgetState give Ok, Warning past WarnAt and Exceeded at the limit. CloudPrices
-estimates an action from a dated price table, and CloudJobs.RunAsync, given a
-CloudSpending, records each job and refuses with BudgetExceededException, before any
-upload, one the budget cannot cover.
-
-Build the window over them. A "Cloud usage" panel, from About and from a status-bar chip
-that appears once any key is stored, has a row per provider: the key's state
-(ValidateKeyAsync), the balance where UsageAsync reports one, and this app's spend
-today, this month and in total, said to be its own where no balance is reported. It also
-has the monthly budget and warning share the user sets, estimate against actual per
-action, and a flag on a price table CloudPrices.IsStale calls old.
-
-The action's button carries its estimate ("Generate with Meshy · ~30 credits") and
-updates as options change. The consent line repeats it beside what the budget leaves.
-The chip turns amber at Warning, and an action the budget cannot cover says why before
-it runs. Rate-limit errors show on the row with when they clear. A winwright case drives
-it with a stand-in provider on the cases' fixture server.
-
 ## Block I — Blender integration: AI tools for existing Blender models
 
 ### §MOD43 Blender add-on with Modelado's edits

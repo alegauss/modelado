@@ -709,6 +709,11 @@
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
       <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" DockPanel.Dock="Right"
               Content="About and models" Padding="10,2" Margin="6,0,0,0" Click="OnAbout" />
+      <!-- MOD55: once a cloud key is stored, the service closest to its budget and what it has cost
+           this month; it says when a budget is nearly spent, and opens About at Cloud services. -->
+      <Button x:Name="CloudChip" AutomationProperties.AutomationId="CloudChip" DockPanel.Dock="Right"
+              Padding="10,2" Margin="6,0,0,0" Click="OnCloudChip" Visibility="Collapsed"
+              ToolTip="What the cloud services have cost this month, and their budgets" />
       <!-- MOD30: a newer release, found by the check; it opens About at its Updates section. -->
       <Button x:Name="UpdateChip" AutomationProperties.AutomationId="UpdateChip" DockPanel.Dock="Right"
               Padding="10,2" Margin="6,0,0,0" Click="OnUpdateChip" Visibility="Collapsed"

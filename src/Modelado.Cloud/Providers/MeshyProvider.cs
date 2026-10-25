@@ -55,6 +55,9 @@ public sealed class MeshyProvider : ICloudProvider
     public static CloudPrices PriceTable => Prices.Value;
 
     /// <inheritdoc/>
+    CloudPrices? ICloudProvider.Prices => PriceTable;
+
+    /// <inheritdoc/>
     public string Id => "meshy";
 
     /// <inheritdoc/>

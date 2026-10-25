@@ -85,7 +85,9 @@ public partial class MainWindow
 
         CloudJobRequest request = GenerateRequest();
         string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
-        GenerateConsentText.Text = $"This description goes to {service.DisplayName}{cost}.";
+        (string note, bool blocked) = BudgetNote(service, request);
+        GenerateConsentText.Text = $"This description goes to {service.DisplayName}{cost}.{note}";
+        GenerateSend.IsEnabled = !blocked;
         pendingCloud = request;
         GenerateConsent.Visibility = Visibility.Visible;
     }

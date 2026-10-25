@@ -131,6 +131,9 @@ public interface ICloudProvider
     /// <summary>What it can do.</summary>
     CloudCapability Capabilities { get; }
 
+    /// <summary>MOD55: the dated price table its estimates come from, or null where it has none.</summary>
+    CloudPrices? Prices => null;
+
     /// <summary>Asks the service whether a key works.</summary>
     /// <param name="key">The key.</param>
     /// <param name="cancellation">Cancellation.</param>

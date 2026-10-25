@@ -102,6 +102,7 @@ public partial class MainWindow
         buttons.Children.Add(remove);
         buttons.Children.Add(page);
         row.Children.Add(buttons);
+        row.Children.Add(CloudUsageRow(service));
         return row;
     }
 
@@ -121,6 +122,7 @@ public partial class MainWindow
 
         UpdateCloudEdit();
         UpdateGenerate();
+        UpdateCloudChip();
 
         List<ICloudProvider> ready = [.. CloudProviders.For(CloudCapability.ImageTo3D, CloudServices).Concat(CloudProviders.For(CloudCapability.TextTo3D, CloudServices))
             .Distinct().Where(p => cloudKeys.Has(p.Id))];
@@ -182,7 +184,9 @@ public partial class MainWindow
         CloudJobRequest request = CloudRequest(withImage: true);
         string what = request.Image is { } image ? $"This photo, {Size(image.Length)}," : "This description";
         string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
-        CloudConsentText.Text = $"{what} goes to {service.DisplayName}{cost}.";
+        (string note, bool blocked) = BudgetNote(service, request);
+        CloudConsentText.Text = $"{what} goes to {service.DisplayName}{cost}.{note}";
+        CloudConsentSend.IsEnabled = !blocked;
         pendingCloud = request;
         CloudConsent.Visibility = Visibility.Visible;
     }
@@ -300,7 +304,9 @@ public partial class MainWindow
         MeshExport.WriteGlb(mesh, glb);
         CloudJobRequest request = CloudEditRequest(action, glb.ToArray());
         string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
-        CloudEditConsentText.Text = string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Size(glb.Length)} as a GLB, goes to {service.DisplayName}{cost}.");
+        (string note, bool blocked) = BudgetNote(service, request);
+        CloudEditConsentText.Text = string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Size(glb.Length)} as a GLB, goes to {service.DisplayName}{cost}.{note}");
+        CloudEditSend.IsEnabled = !blocked;
         pendingCloud = request;
         CloudEditConsent.Visibility = Visibility.Visible;
     }
@@ -383,8 +389,7 @@ public partial class MainWindow
 
         try
         {
-            CloudSpending spending = new(new CloudLedger(CloudLedger.DefaultPath), new Dictionary<string, CloudBudget>());
-            CloudResult result = await follow(spending, progress, Keep, cancel.Token).ConfigureAwait(true);
+            CloudResult result = await follow(Spending(), progress, Keep, cancel.Token).ConfigureAwait(true);
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             await land(result).ConfigureAwait(true);
             string spent = result.Actual is { } actual ? $" · {actual}" : "";
@@ -405,6 +410,7 @@ public partial class MainWindow
             cloudRunning = false;
             work = null;
             SetBusy(false, title, download: false);
+            UpdateCloudChip();
         }
     }
 }
