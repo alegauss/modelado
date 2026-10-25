@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using Modelado.Cli;
 using Modelado.Geometry;
 using Modelado.Imaging;
 using Modelado.Inference;
@@ -46,22 +47,16 @@ if (args.Length == 0 || args[0] is "-h" or "--help")
     return 0;
 }
 
-Dictionary<string, string?> options = new(StringComparer.Ordinal);
-List<string> positional = [];
-for (int i = 1; i < args.Length; i++)
+// MOD48: refused here, before anything loads, as ERROR and an exit code a script can read.
+(CliArguments? parsed, string? refusal, int refusalCode) = CliArguments.Parse(args);
+if (parsed is null)
 {
-    if (args[i].StartsWith("--", StringComparison.Ordinal) || args[i] == "-o")
-    {
-        string key = args[i] == "-o" ? "--out" : args[i];
-        bool flag = key is "--keep-background" or "--remove-background" or "--high" or "--enhance" or "--no-project"
-            or "--mirror" or "--fill-holes" or "--subdivide" or "--upscale-texture";
-        options[key] = flag ? "true" : i + 1 < args.Length ? args[++i] : throw new ArgumentException($"{key} needs a value.");
-    }
-    else
-    {
-        positional.Add(args[i]);
-    }
+    await Console.Error.WriteLineAsync($"ERROR {refusal}{(CliArguments.Commands.Contains(args[0]) ? "" : $"\n{Usage}")}").ConfigureAwait(false);
+    return refusalCode;
 }
+
+IReadOnlyDictionary<string, string?> options = parsed.Options;
+List<string> positional = [.. parsed.Positional];
 
 try
 {

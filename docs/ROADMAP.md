@@ -17,7 +17,6 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD48** (deps: —) **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — Scripts and the Blender add-on drive the CLI and need a readable error and a non-zero exit, not a crash or a misspelt edit reported as success. → §MOD48
 - 📋 **MOD52** (deps: —) **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — On a machine with two GPUs, or one too small for TripoSR's encoder, the chip is the first place a person looks and it names neither. → §MOD52
 
 ## Block D — Model downloads

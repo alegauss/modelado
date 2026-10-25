@@ -45,23 +45,6 @@ CPU.
 
 ## Block C — Existing code wired into the window
 
-### §MOD48 CLI refuses bad arguments cleanly
-
-`tools\Modelado.Cli\Program.cs` parses its options before the `try` that turns an
-`ArgumentException` into `ERROR <message>` and exit 1. So `modelado-cli edit x.glb
---smooth` (a value-taking option last) throws `--smooth needs a value.` as an unhandled
-exception: a stack trace and exit -1 (0xE0434352), which a script or the Blender add-on
-(MOD43) cannot read as a usage error. Any unknown `--option` is also taken silently,
-eating the next argument as its value, so a misspelt `--simplfy 0.25` leaves the model
-untouched and reports success.
-
-Move the parse inside the `try` (or catch around it) so a missing value prints `ERROR
---x needs a value.` and exits 1. Keep a set of the options each command accepts and
-refuse any other with `ERROR Unknown option: --x.` and exit 2, the code the
-unknown-command branch already uses. Cover both with a test that runs the CLI's parse,
-which may mean lifting it into a small class the tests can call, as
-`src\Modelado.App\CommandLine.cs` already is for the app.
-
 ### §MOD52 Name the GPU on the provider chip
 
 MOD9's provider chip reads "DirectML" or "CPU". PhotoBoost's reads "DirectML · NVIDIA
