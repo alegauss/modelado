@@ -1,0 +1,10 @@
+{
+  "provider": "meshy",
+  "unit": "credits",
+  "read": "2026-10-25",
+  "source": "https://docs.meshy.ai/en/api/pricing",
+  "actions": {
+    "ImageTo3D": { "base": 20, "options": { "texture": { "true": 10 }, "model": { "meshy-6-lite": -15 } } },
+    "TextTo3D": { "base": 20, "options": { "texture": { "true": 10 }, "model": { "meshy-6-lite": -15 } } }
+  }
+}

@@ -59,6 +59,7 @@
 - ✅ **MOD36** **The app has no way to use a cloud 3D or image service: no place for an API key, no provider abstraction** — Modelado.Cloud holds the provider interface, one submit-poll-fetch job runner and a DPAPI key store; a fake provider drives a job into the history (design superseded: its About part is MOD37's).
 - ✅ **MOD41** **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — A ledger keeps each cloud job's cost across restarts; budgets warn past 80% and refuse a job at 100% before it is sent; MOD55 is the window (design recorded in `src/Modelado.Cloud/CloudLedger.cs`).
 - ✅ **MOD42** **A cloud action gives no estimate of what it will cost before it runs** — A dated price table estimates each cloud action from its options, a job the budget cannot cover is refused before upload, and the ledger keeps estimate and actual; MOD55 is the window.
+- ✅ **MOD37 (the Meshy provider)** **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — MeshyProvider runs image and text to 3D over Meshy's API, checks a key against the balance and prices each action from a dated table.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

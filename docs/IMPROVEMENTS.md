@@ -43,6 +43,26 @@ Advanced) gives the triangle count modelado-cli object --step 1 --smooth 0 gives
 same photo. And MOD18's: after choosing the CPU in About, the next run's LastRun says
 CPU.
 
+### §MOD56 Cases wait for the opened file
+
+Two cases in `cases\window.cases.json` went red on one guest run and green on the next,
+with nothing in the app changed between them (the MOD37 gate, 2026-10-25):
+
+- "the 3D Object card's Advanced settings start closed …": step 1 reads
+  `Group#ObjectAdvanced` and found nothing for 5.3 s; every later step passed.
+- "the Export card writes STL and ASCII PLY …": its first act, expanding
+  `ComboBox#ExportFormat`, found nothing for 10 s and the case stopped.
+
+Both are the first step on a window that opens a file at launch (`--open`). The
+operations panel and the Export card appear only once that file is shown, and on a slow
+guest that took longer than winwright's resolve timeout. MOD54 fixed the same race in
+the Save view case by reading first what proves the file is shown.
+
+Give every case on an `--open` fixture a first step that waits for the file: a read of
+`Text#SourceText` or `Text#MeshText` expecting its value. If that is not enough, raise
+the project's resolve timeout in `winwright.json` for these fixtures. Then run the gate
+three times in a row and expect three greens.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
