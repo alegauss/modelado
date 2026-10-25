@@ -13,7 +13,6 @@
 ## Block B — Windows interface built like PhotoBoost
 
 - 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
-- 📋 **MOD56** (deps: —) **Cases on an --open fixture act before the file is shown, so a slow guest turns the gate red at random** — A gate that fails without a fault trains everyone to rerun it, which is how a real regression gets waved through. → §MOD56
 
 ## Block C — Existing code wired into the window
 

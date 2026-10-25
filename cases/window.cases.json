@@ -202,6 +202,7 @@
       "tags": ["download", "operations"],
       "fixture": "a window with a photo open, downloading from the fixture server",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed with no models" },
         { "locator": "Text#ConsentTitle", "act": "read", "reads": "name", "expect": "Relief needs a one-time download", "named": "the offer opens in place of the stage" },
         { "locator": "List#ConsentFiles > ListItem[order=top]", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · FP32 · 1 MB · from 127.0.0.1:47631/files", "named": "the model, its variant, its size and its source" },
@@ -231,6 +232,7 @@
       "tags": ["download", "operations"],
       "fixture": "a window with a photo open and a fresh models folder",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
         { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "the 3D Object card names its download and its size" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "and so does the Relief card" },
         { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "depth-anything-v2-small, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "which model, and from where" },
@@ -256,6 +258,7 @@
       "tags": ["about", "download"],
       "fixture": "a window with a photo open, to download and remove a model",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
         { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "it is paused at once" },
@@ -350,6 +353,7 @@
       "tags": ["history", "edit", "toolbar"],
       "fixture": "a window on the cube fixture, to edit",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "List#History > ListItem[order=top]", "act": "read", "reads": "name", "expect": "1. Opened", "named": "the history starts at the opened model" },
         { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Turn 90° about X", "named": "the turn is the second version" },
@@ -374,6 +378,7 @@
       "tags": ["export"],
       "fixture": "a window on the cube fixture, to edit",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "The model has no colours, so it is saved grey.", "named": "GLB is first, and the grey cube is said to stay grey" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
@@ -392,6 +397,7 @@
       "tags": ["export", "dialog", "drop"],
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -420,6 +426,7 @@
       "tags": ["export", "dialog"],
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "units", "named": "GLB is sized in its own units" },
         { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "one unit on the longest side" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
@@ -496,6 +503,7 @@
       "tags": ["object"],
       "fixture": "a window opened on the photo fixture",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
         { "locator": "Group#ObjectAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "Advanced starts closed" },
         { "locator": "Group#ObjectAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "and opens" },
         { "locator": "CheckBox#ObjectEveryPoint", "act": "read", "reads": "toggle", "expect": "Off", "named": "coarse step 2, the CLI's default" },
@@ -520,6 +528,7 @@
       "tags": ["edit", "export", "dialog"],
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "Text#SmoothText", "act": "read", "reads": "name", "expect": "3 passes", "named": "Smooth starts at 3 passes" },
         { "locator": "Text#PiecesText", "act": "read", "reads": "name", "expect": "under 5%", "named": "loose pieces at under 5%" },
         { "locator": "Text#FlattenText", "act": "read", "reads": "name", "expect": "3%", "named": "and the flat base at 3%" },

@@ -13,7 +13,9 @@
     // The window shows before the models list is fetched, so a launch past a few seconds is itself
     // a finding; ten still fails a hang rather than waiting on it.
     "launch": 10000,
-    // Long enough for the models list to fail or answer and an opened model to load.
+    // Long enough for the models list to fail or answer and an opened model to load. Not longer:
+    // an "absent" step waits all of it, so MOD56 doubling it ran the suite past its hang limit;
+    // a case on an --open window waits for its file in its first step instead.
     "resolve": 10000,
     "act": 5000,
     "poll": 25,
