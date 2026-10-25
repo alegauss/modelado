@@ -1,0 +1,54 @@
+# MOD29: a tag v<x.y.z> becomes a GitHub release holding Modelado-Setup-<x.y.z>.exe and
+# SHA256SUMS, after freewilly's release.yml. build\update-release.cmd makes the tag after the whole
+# suite passed on the VMware guest (MOD14), so this is the clean-room build: one checkout, one
+# toolchain, nothing of the maintainer's machine in it.
+#
+# build\release-files.ps1 is the same script the local path runs: it refuses a tag whose version
+# disagrees with Directory.Build.props, the built Modelado.exe or the installer's file name, and
+# writes the installer, its sums and the notes. One implementation, so the asset name and the
+# digest the updater (MOD30, MOD31) depends on cannot drift between the two.
+
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  # A second opinion about a tag the local path already released: choose the tag as the ref.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The notes are the commits since the previous tag, which a shallow clone has none of.
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build with warnings as errors
+        run: dotnet build Modelado.slnx --configuration Release --nologo
+
+      - name: Publish and build the installer
+        shell: cmd
+        run: build\build-installer.cmd
+
+      - name: The tag, the build and the installer agree
+        run: .\build\release-files.ps1 -Version ("$env:GITHUB_REF_NAME" -replace '^v', '')
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $version = "$env:GITHUB_REF_NAME" -replace '^v', ''
+          gh release create "$env:GITHUB_REF_NAME" "artifacts\release\Modelado-Setup-$version.exe" "artifacts\release\SHA256SUMS" `
+            --title "Modelado $version" --notes-file artifacts\release\notes.md

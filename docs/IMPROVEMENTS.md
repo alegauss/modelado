@@ -145,7 +145,10 @@ sets the version in Directory.Build.props, runs the whole suite on the VMware gu
 The tag triggers release.yml on alegauss/modelado. It builds on windows-latest, refuses
 a tag whose version disagrees with the props or the installer's file name, and publishes
 a GitHub release holding Modelado-Setup-<x.y.z>.exe and SHA256SUMS. The release notes
-are the CHANGELOG entries since the previous tag.
+are the commit titles since the previous tag, each naming its MOD id, written by
+build\release-files.ps1; that script, the workflow and update-release.cmd are built and
+checked locally. What is left is a pushed test tag: its release's SHA256SUMS must match
+the installer, and a tag that disagrees with the props must fail the workflow.
 
 No code signing for now. The release notes say SmartScreen will warn, and the sums file
 is what the updater checks.

@@ -99,6 +99,19 @@ Modelado** for .glb, .obj, .ply and .stl. Models are not bundled. A newer instal
 place and keeps the downloaded models; uninstalling asks whether to delete them.
 `check-installer-vm.ps1` installs, upgrades, opens a model and uninstalls on the VMware guest.
 
+### A release
+
+```
+build\update-release 0.2.0          sets the version, runs the suite on the guest, builds and tags
+build\update-release 0.2.0 push     and pushes the branch and the tag
+```
+
+Pushing the tag `v0.2.0` runs `.github\workflows\release.yml`, which builds again on a clean
+Windows runner and publishes a GitHub release holding `Modelado-Setup-0.2.0.exe` and
+`SHA256SUMS`. `build\release-files.ps1`, which both paths run, refuses a tag whose version
+disagrees with `Directory.Build.props`, the built exe or the installer's name. The installer is not
+code-signed yet, so SmartScreen warns; the sums file is what to check it against.
+
 ### Where the models live
 
 The app looks for each model in order:
