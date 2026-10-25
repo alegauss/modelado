@@ -80,6 +80,8 @@ public partial class MainWindow : Window, IDisposable
             {
                 await OpenAsync(open).ConfigureAwait(true);
             }
+
+            StartUpdateChecks();
         };
     }
 
@@ -96,6 +98,9 @@ public partial class MainWindow : Window, IDisposable
         work?.Dispose();
         runner.Dispose();
         http.Dispose();
+        updateTimer.Stop();
+        updateRetry.Stop();
+        releasesHttp.Dispose();
         GC.SuppressFinalize(this);
     }
 

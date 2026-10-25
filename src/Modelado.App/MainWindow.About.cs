@@ -55,6 +55,7 @@ public partial class MainWindow
         string reason = providerReason ?? (options.Provider == providerChoice ? "Chosen by --provider for this run." : "");
         AboutProviderReason.Text = reason;
         AboutProviderReason.Visibility = reason.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+        FillUpdates();
 
         AboutModelsFolder.Text = $"From {string.Join(" and ", library.Roots)}";
 

@@ -29,8 +29,7 @@
 
 ## Block F — Installer, releases and auto update
 
-- 📋 **MOD30** (deps: MOD9 ✅, MOD29 ✅) **An installed copy has no way to learn that a newer release exists** — A fix reaches only whoever goes looking for it, which is the gap claude-tray's Updater and freewilly's ReleaseCheck were each written to close. → §MOD30
-- 📋 **MOD31** (deps: MOD30) **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — claude-tray downloads its installer, runs it silently and relaunches, and freewilly verifies the digest first; Modelado should do both. → §MOD31
+- 📋 **MOD31** (deps: MOD30 ✅) **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — claude-tray downloads its installer, runs it silently and relaunches, and freewilly verifies the digest first; Modelado should do both. → §MOD31
 
 ## Block G — Public site for 3D modelling
 

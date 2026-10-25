@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace Modelado.Inference;
@@ -11,15 +10,8 @@ public static class ProviderSetting
 {
     private const string Key = "provider";
 
-    /// <summary>
-    /// %LOCALAPPDATA%\Modelado\settings.json. The variable is read first, so a launch that points it
-    /// elsewhere finds its own file; Windows' known folder answers when it is not set.
-    /// </summary>
-    public static string DefaultPath =>
-        Path.Combine(
-            Environment.GetEnvironmentVariable("LOCALAPPDATA") is { Length: > 0 } local ? local : Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Modelado",
-            "settings.json");
+    /// <summary>%LOCALAPPDATA%\Modelado\settings.json, <see cref="SettingsFile.DefaultPath"/>.</summary>
+    public static string DefaultPath => SettingsFile.DefaultPath;
 
     /// <summary>The choice the file holds.</summary>
     /// <param name="path">The settings file.</param>
@@ -28,11 +20,9 @@ public static class ProviderSetting
     {
         try
         {
-            return File.Exists(path) && JsonNode.Parse(File.ReadAllText(path)) is JsonObject settings && settings[Key] is JsonValue value
-                ? Parse(value.GetValue<string>())
-                : null;
+            return SettingsFile.Read(path, Key) is { } value ? Parse(value.GetValue<string>()) : null;
         }
-        catch (Exception error) when (error is JsonException or InvalidOperationException or FormatException or IOException or UnauthorizedAccessException)
+        catch (Exception error) when (error is InvalidOperationException or FormatException)
         {
             return null;
         }
@@ -41,25 +31,7 @@ public static class ProviderSetting
     /// <summary>Writes the choice, keeping whatever else the file holds.</summary>
     /// <param name="path">The settings file; its folder is created.</param>
     /// <param name="choice">Where inference should run.</param>
-    public static void Save(string path, ProviderChoice choice)
-    {
-        JsonObject settings = new();
-        try
-        {
-            if (File.Exists(path) && JsonNode.Parse(File.ReadAllText(path)) is JsonObject existing)
-            {
-                settings = existing;
-            }
-        }
-        catch (JsonException)
-        {
-            // A file that does not read is replaced rather than kept.
-        }
-
-        settings[Key] = Name(choice);
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        File.WriteAllText(path, settings.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-    }
+    public static void Save(string path, ProviderChoice choice) => SettingsFile.Write(path, Key, JsonValue.Create(Name(choice)));
 
     /// <summary>The CLI's name for a choice.</summary>
     /// <param name="choice">The choice.</param>

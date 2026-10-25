@@ -82,7 +82,11 @@ slightly above. A PNG already cut out (with transparency) is used as it is. Trip
 sides the photo does not show, so the back of an asymmetric object comes out approximate.
 
 The app's command-line options: `--open <photo>`, `--models <folder>`,
-`--provider auto|dml|cpu`, `--quality standard|high`, `--manifest <url>`.
+`--provider auto|dml|cpu`, `--quality standard|high`, `--manifest <url>`, `--releases <url>|off`.
+
+Once after it opens and then once a day, the window asks GitHub's release API whether a newer
+release exists, sending only its name and version, and says so in the status bar. **About**
+checks by hand and turns the automatic check off; `--releases off` skips it for one run.
 
 ### The installer
 

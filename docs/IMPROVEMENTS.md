@@ -156,27 +156,6 @@ is what the updater checks.
 Done when tagging a test version produces a release whose sums file matches the
 installer it holds, and a mismatched tag fails the workflow.
 
-### §MOD30 Release check
-
-Model: D:\Git\alegauss\freewilly\src\FreeWilly.Core\Releases\ReleaseCheck.cs, with
-claude-tray's src\Tray\Updater.cs as the simpler sibling. It reads
-https://api.github.com/repos/alegauss/modelado/releases/latest behind an IReleaseFeed
-seam, so the parsing is tested without the network. It compares the tag to the running
-assembly version, and finds Modelado-Setup-<x.y.z>.exe and SHA256SUMS among the assets.
-A release with two installers answering the pattern is refused rather than resolved by
-taking the first.
-
-It is silent on every failure (offline, proxy, rate limit, no releases yet): each reads
-as "nothing newer". It runs once at startup after the window shows, then every 24 hours,
-never during an operation, and sends a User-Agent.
-
-A newer release shows as a status-bar chip, "Update 1.2.0 available", which opens About
-at its update section. About also has "Check for updates" and a setting to turn the
-automatic check off.
-
-Done when the tests cover newer, same, older, malformed and two-installer feeds, and the
-chip appears on the guest against a test release.
-
 ### §MOD31 Apply an update
 
 Model: freewilly's ReleaseUpdate.cs and ReleaseSums.cs, and claude-tray's Updater, which

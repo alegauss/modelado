@@ -1,0 +1,8 @@
+{
+  "tag_name": "v99.0.0",
+  "html_url": "http://127.0.0.1:47631/files/release.json",
+  "assets": [
+    { "name": "Modelado-Setup-99.0.0.exe", "browser_download_url": "http://127.0.0.1:47631/files/Modelado-Setup-99.0.0.exe" },
+    { "name": "SHA256SUMS", "browser_download_url": "http://127.0.0.1:47631/files/SHA256SUMS" }
+  ]
+}

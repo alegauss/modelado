@@ -1,34 +1,35 @@
 {
   // MOD8: the first cases, read through the accessibility tree. Every later UI task adds its own.
   // Paths are relative to winwright.json's folder, where the app is started. --provider cpu keeps
-  // every desk the same; none of these needs a model, so none needs .cache\models.
+  // every desk the same, and --releases off keeps the release check (MOD30) off GitHub; none of
+  // these needs a model, so none needs .cache\models.
 
   "fixtures": [
     {
       "name": "the window a default installation opens",
-      "arguments": ["--provider", "cpu"],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
       "shareable": true
     },
     {
       "name": "a window opened on the photo fixture",
-      "arguments": ["--open", "cases/fixtures/photo.png", "--provider", "cpu"],
+      "arguments": ["--open", "cases/fixtures/photo.png", "--provider", "cpu", "--releases", "off"],
       "shareable": true
     },
     {
       // Not lent: its case edits the model.
       "name": "a window on the cube fixture, to edit",
-      "arguments": ["--open", "cases/fixtures/cube.obj", "--provider", "cpu"],
+      "arguments": ["--open", "cases/fixtures/cube.obj", "--provider", "cpu", "--releases", "off"],
       "shareable": false
     },
     {
       // Not lent: its case opens About and closes it.
       "name": "a window to open About in",
-      "arguments": ["--provider", "cpu"],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
       "shareable": false
     },
     {
       "name": "a window asked to open a model that is not there",
-      "arguments": ["--open", "cases/fixtures/missing.obj", "--provider", "cpu"],
+      "arguments": ["--open", "cases/fixtures/missing.obj", "--provider", "cpu", "--releases", "off"],
       "shareable": true
     },
     {
@@ -36,7 +37,7 @@
       // into a models folder staged empty. The stand-in is sent at 40 KB/s, so it never finishes here.
       "name": "a window downloading from the fixture server",
       "files": ["cases/fixtures/notes.txt"],
-      "arguments": ["--models", "{files}/models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "arguments": ["--models", "{files}/models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu", "--releases", "off"],
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
@@ -45,14 +46,14 @@
       // written files can be dropped back in.
       "name": "a window on a staged cube, to save through the Export card",
       "files": ["cases/fixtures/cube.obj"],
-      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu"],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off"],
       "shareable": false
     },
     {
       // MOD21: a photo open, its models folder staged empty, the fixture server's manifest.
       "name": "a window with a photo open, downloading from the fixture server",
       "files": ["cases/fixtures/photo.png"],
-      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/relief-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/relief-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu", "--releases", "off"],
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
@@ -60,7 +61,7 @@
       // MOD22: the same, with a models folder of its own, so its badges count from nothing.
       "name": "a window with a photo open and a fresh models folder",
       "files": ["cases/fixtures/photo.png"],
-      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/first-use-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/first-use-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu", "--releases", "off"],
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
@@ -68,7 +69,7 @@
       // MOD23: a models folder of its own, which the case fills by downloading and then empties.
       "name": "a window with a photo open, to download and remove a model",
       "files": ["cases/fixtures/photo.png"],
-      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/removal-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/removal-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu", "--releases", "off"],
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
@@ -76,6 +77,7 @@
       // MOD18: no --provider, and LOCALAPPDATA staged empty, so the choice About saves is this run's own.
       "name": "a window with no saved settings, to choose where inference runs",
       "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--releases", "off"],
       "variables": { "LOCALAPPDATA": "{files}" },
       "shareable": false
     },
@@ -83,13 +85,24 @@
       // MOD18: the settings.json an earlier run saved with the CPU chosen, where Modelado looks for it.
       "name": "a window started after the CPU was chosen in About",
       "files": [{ "from": "cases/fixtures/settings-cpu.json", "to": "Modelado/settings.json" }],
+      "arguments": ["--releases", "off"],
       "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
+      // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
+      // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
+      "name": "a window offered a newer release by the fixture server",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--releases", "http://127.0.0.1:47631/files/release.json", "--provider", "cpu"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
     {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
-      "arguments": ["--provider", "cpu"],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
       "shareable": false
     }
   ],
@@ -140,6 +153,7 @@
         { "locator": "Text#JobChip", "act": "read", "absent": true, "named": "no run in progress" },
         { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "no download in progress" },
         { "locator": "Text#LastRun", "act": "read", "absent": true, "named": "and nothing run yet" },
+        { "locator": "Button#UpdateChip", "act": "read", "absent": true, "named": "no update offered with --releases off (MOD30)" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "About and models", "named": "About sits in the status bar" }
       ]
     },
@@ -547,6 +561,27 @@
         { "locator": "Text#AboutVersion", "act": "read", "absent": true, "named": "About has closed" },
         { "locator": "Text#DropTitle", "act": "read", "reads": "name", "expect": "Drop a photo or a 3D model here", "named": "and the stage is back" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "About and models", "named": "with the button named for About again" }
+      ]
+    },
+
+    {
+      "name": "a newer release shows as a chip that opens About's Updates, where the automatic check turns off",
+      "catches": "a release check that never runs at start, a chip naming another version, an About that does not say what is available, or a setting that does not take",
+      "filed": "MOD30",
+      "tags": ["updates", "about"],
+      "fixture": "a window offered a newer release by the fixture server",
+      "steps": [
+        { "locator": "Button#UpdateChip", "act": "read", "reads": "name", "expect": "Update 99.0.0 available", "named": "the status bar offers v99.0.0" },
+        { "locator": "Button#UpdateChip", "act": "invoke", "named": "the chip is pressed" },
+        { "locator": "Text#AboutUpdateStatus", "act": "read", "reads": "name", "matches": "^Modelado 99\\.0\\.0 is available; this is \\d+\\.\\d+\\.\\d+\\.$", "named": "About says what is available and what runs" },
+        { "locator": "Button#AboutReleasePage", "act": "read", "reads": "name", "expect": "Open the release page", "named": "and offers the release's page" },
+        { "locator": "CheckBox#AboutAutoUpdate", "act": "read", "reads": "toggle", "expect": "On", "named": "the automatic check is on by default" },
+        { "locator": "CheckBox#AboutAutoUpdate", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "it is turned off" },
+        { "locator": "Button#AboutCheckUpdates", "act": "invoke", "named": "Check for updates is pressed by hand" },
+        { "locator": "Text#AboutUpdateStatus", "act": "read", "reads": "name", "matches": "^Modelado 99\\.0\\.0 is available", "named": "a check by hand still runs and answers" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "and opened again" },
+        { "locator": "CheckBox#AboutAutoUpdate", "act": "read", "reads": "toggle", "expect": "Off", "named": "the choice was kept" }
       ]
     },
 

@@ -8,11 +8,15 @@ namespace Modelado.App;
 /// <param name="Provider">Where inference runs, or null for the choice About saved (MOD18).</param>
 /// <param name="HighQuality">fp32 on the GPU too.</param>
 /// <param name="Manifest">A models manifest URL replacing the embedded one, or null.</param>
-public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest);
+/// <param name="Releases">
+/// MOD30: a release description URL replacing GitHub's API, "off" for no automatic check this run, or
+/// null for the API.
+/// </param>
+public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest, string? Releases = null);
 
 /// <summary>
 /// Parses Modelado.exe's arguments:
-/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url</c>.
+/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url  --releases url|off</c>.
 /// A bare path opens that photo, so "Open with" and drag-onto-the-exe work.
 /// </summary>
 public static class CommandLine
@@ -23,7 +27,7 @@ public static class CommandLine
     public static (AppOptions? Options, string? Error) Parse(IReadOnlyList<string> args)
     {
         ArgumentNullException.ThrowIfNull(args);
-        string? open = null, models = null, manifest = null;
+        string? open = null, models = null, manifest = null, releases = null;
         ProviderChoice? provider = null;
         bool high = false;
         for (int i = 0; i < args.Count; i++)
@@ -52,6 +56,9 @@ public static class CommandLine
                 case "--manifest":
                     manifest = value;
                     break;
+                case "--releases":
+                    releases = value;
+                    break;
                 case "--provider":
                     provider = ProviderSetting.Parse(value);
                     if (provider is null)
@@ -73,6 +80,6 @@ public static class CommandLine
             }
         }
 
-        return (new AppOptions(open, models, provider, high, manifest), null);
+        return (new AppOptions(open, models, provider, high, manifest, releases), null);
     }
 }

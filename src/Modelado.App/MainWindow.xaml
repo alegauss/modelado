@@ -420,6 +420,19 @@
           <TextBlock x:Name="AboutVersion" AutomationProperties.AutomationId="AboutVersion" Style="{StaticResource StatCaption}" />
           <TextBlock x:Name="AboutInference" AutomationProperties.AutomationId="AboutInference" Style="{StaticResource StatCaption}" Margin="0,2,0,16" />
 
+          <!-- MOD30: whether a newer release exists, asked of GitHub's release API. -->
+          <TextBlock x:Name="AboutUpdatesHeader" Text="Updates" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="AboutUpdateStatus" AutomationProperties.AutomationId="AboutUpdateStatus" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
+          <WrapPanel>
+            <Button x:Name="AboutCheckUpdates" AutomationProperties.AutomationId="AboutCheckUpdates" Content="Check for updates"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnCheckForUpdates" />
+            <Button x:Name="AboutReleasePage" AutomationProperties.AutomationId="AboutReleasePage" Content="Open the release page"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnOpenReleasePage" Visibility="Collapsed" />
+          </WrapPanel>
+          <CheckBox x:Name="AboutAutoUpdate" AutomationProperties.AutomationId="AboutAutoUpdate" Content="Check for updates by itself, once a day"
+                    Margin="0,0,0,16" Checked="OnAutoUpdateChanged" Unchecked="OnAutoUpdateChanged"
+                    ToolTip="Asks api.github.com for the latest release, sending only Modelado's name and version." />
+
           <!-- MOD18: what the provider flag sets, chosen here, saved per user and applied to the next operation. -->
           <TextBlock Text="Where inference runs" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <RadioButton x:Name="ProviderAuto" AutomationProperties.AutomationId="ProviderAuto" GroupName="Provider" Checked="OnProviderChanged"
@@ -546,6 +559,10 @@
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
       <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" DockPanel.Dock="Right"
               Content="About and models" Padding="10,2" Margin="6,0,0,0" Click="OnAbout" />
+      <!-- MOD30: a newer release, found by the check; it opens About at its Updates section. -->
+      <Button x:Name="UpdateChip" AutomationProperties.AutomationId="UpdateChip" DockPanel.Dock="Right"
+              Padding="10,2" Margin="6,0,0,0" Click="OnUpdateChip" Visibility="Collapsed"
+              Style="{DynamicResource AccentButtonStyle}" ToolTip="See what is new and how to install it" />
       <Border x:Name="ProviderChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
         <TextBlock x:Name="ProviderStatus" AutomationProperties.AutomationId="ProviderStatus" FontSize="12" Text="…" />
       </Border>
