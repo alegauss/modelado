@@ -25,6 +25,7 @@
 ## Block C — Existing code wired into the window
 
 - ✅ **MOD15** **The window always exports STL at 100 mm on its longest side; the size the CLI's --size takes cannot be chosen** — The Export card takes the longest side in mm for STL or units otherwise, shows the box it gives, and saves through Mesh.Placed, byte for byte what the CLI's --size writes.
+- ✅ **MOD16** **Edit amounts are fixed in the window (smooth 3 passes, pieces under 5%, flat base at 3%) though the CLI takes each one** — Smooth passes, the loose-piece share and the flat-base height each have a slider beside their button, are named in the history, and give the CLI's mesh byte for byte.
 
 ## Block D — Model downloads
 

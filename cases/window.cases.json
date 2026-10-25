@@ -408,6 +408,37 @@
     },
 
     {
+      "name": "the Edit card's amounts give the mesh the CLI gives for the same values",
+      "catches": "a slider the edit ignores, a label that names another amount than the one applied, or a window that edits differently from modelado-cli",
+      "filed": "MOD16",
+      "tags": ["edit", "export", "dialog"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SmoothText", "act": "read", "reads": "name", "expect": "3 passes", "named": "Smooth starts at 3 passes" },
+        { "locator": "Text#PiecesText", "act": "read", "reads": "name", "expect": "under 5%", "named": "loose pieces at under 5%" },
+        { "locator": "Text#FlattenText", "act": "read", "reads": "name", "expect": "3%", "named": "and the flat base at 3%" },
+        { "locator": "Slider#PiecesAmount", "act": "set range", "with": "2", "reads": "range", "expect": "2", "named": "loose pieces is set to 2%" },
+        { "locator": "Text#PiecesText", "act": "read", "reads": "name", "expect": "under 2%", "named": "its label follows" },
+        { "locator": "Button#PiecesButton", "act": "invoke", "named": "Remove loose pieces is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Remove pieces under 2% · ", "named": "the run names 2%" },
+        { "locator": "Slider#SmoothAmount", "act": "set range", "with": "5", "reads": "range", "expect": "5", "named": "Smooth is set to 5 passes" },
+        { "locator": "Text#SmoothText", "act": "read", "reads": "name", "expect": "5 passes", "named": "its label follows" },
+        { "locator": "Button#SmoothButton", "act": "invoke", "named": "Smooth is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Smooth, 5 passes · ", "named": "the run names 5 passes" },
+        { "locator": "Slider#FlattenAmount", "act": "set range", "with": "6", "reads": "range", "expect": "6", "named": "the flat base is set to 6%" },
+        { "locator": "Button#FlattenButton", "act": "invoke", "named": "Flat base is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Flat base at 6% · ", "named": "the run names 6%" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Flat base at 6%$", "named": "and the history keeps the amount" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/edited", "named": "the dialog is told to save edited" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved edited.stl", "named": "the card says it wrote edited.stl" },
+        { "file": "{files}/edited.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-edited.stl", "named": "byte for byte what modelado-cli edit --remove-pieces 0.02 --smooth 5 --flatten 0.06 --size 100 writes" }
+      ]
+    },
+
+    {
       "name": "About opens in the window with the version and closes again",
       "catches": "an About button that opens nothing, opens a separate window, or cannot be closed",
       "filed": "MOD11",

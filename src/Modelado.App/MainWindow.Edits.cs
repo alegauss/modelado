@@ -56,6 +56,26 @@ public partial class MainWindow
         }
     }
 
+    // MOD16: the sliders hold whole passes and whole percent; the share is that integer over 100, so it
+    // is the double (or float) the CLI parses from the same "0.06".
+    private int SmoothPasses => (int)SmoothAmount.Value;
+
+    private int PiecesPercent => (int)PiecesAmount.Value;
+
+    private int FlattenPercent => (int)FlattenAmount.Value;
+
+    private void OnEditAmountChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (SmoothText is null || PiecesText is null || FlattenText is null)
+        {
+            return;
+        }
+
+        SmoothText.Text = SmoothPasses == 1 ? "1 pass" : $"{SmoothPasses} passes";
+        PiecesText.Text = $"under {PiecesPercent}%";
+        FlattenText.Text = $"{FlattenPercent}%";
+    }
+
     private async void OnSimplify(object sender, RoutedEventArgs e)
     {
         double share = SimplifyAmount.Value;
@@ -73,8 +93,11 @@ public partial class MainWindow
         await EditAsync("Subdivide", (m, _, _) => MeshEdit.Subdivide(m)).ConfigureAwait(true);
     }
 
-    private async void OnSmooth(object sender, RoutedEventArgs e) =>
-        await EditAsync("Smooth, 3 passes", (m, _, _) => MeshCleanup.Smooth(m, 3)).ConfigureAwait(true);
+    private async void OnSmooth(object sender, RoutedEventArgs e)
+    {
+        int passes = SmoothPasses;
+        await EditAsync(passes == 1 ? "Smooth, 1 pass" : $"Smooth, {passes} passes", (m, _, _) => MeshCleanup.Smooth(m, passes)).ConfigureAwait(true);
+    }
 
     private async void OnFillHoles(object sender, RoutedEventArgs e)
     {
@@ -87,11 +110,17 @@ public partial class MainWindow
         LastRunSaid(filled == 0 ? "Fill holes · no holes to fill" : $"Fill holes · {filled} hole(s) filled{(mesh!.DoubleSided ? " · some open edges remain" : " · the mesh is closed")}");
     }
 
-    private async void OnRemovePieces(object sender, RoutedEventArgs e) =>
-        await EditAsync("Remove pieces under 5%", (m, _, _) => MeshCleanup.RemoveSmallPieces(m, 0.05)).ConfigureAwait(true);
+    private async void OnRemovePieces(object sender, RoutedEventArgs e)
+    {
+        int percent = PiecesPercent;
+        await EditAsync($"Remove pieces under {percent}%", (m, _, _) => MeshCleanup.RemoveSmallPieces(m, percent / 100.0)).ConfigureAwait(true);
+    }
 
-    private async void OnFlatten(object sender, RoutedEventArgs e) =>
-        await EditAsync("Flat base at 3%", (m, _, _) => MeshEdit.FlattenBase(m, 0.03f)).ConfigureAwait(true);
+    private async void OnFlatten(object sender, RoutedEventArgs e)
+    {
+        int percent = FlattenPercent;
+        await EditAsync($"Flat base at {percent}%", (m, _, _) => MeshEdit.FlattenBase(m, percent / 100f)).ConfigureAwait(true);
+    }
 
     private async void OnMirror(object sender, ExecutedRoutedEventArgs e) =>
         await EditAsync("Mirror", (m, _, _) => MeshEdit.Mirror(m)).ConfigureAwait(true);

@@ -41,22 +41,6 @@ down and read JobChip, then LastRun ("Relief · <s> s · CPU").
 
 ## Block C — Existing code wired into the window
 
-### §MOD16 Edit amounts in the window
-
-MainWindow.Edits.cs calls MeshCleanup.Smooth(m, 3), MeshCleanup.RemoveSmallPieces(m,
-0.05) and MeshEdit.FlattenBase(m, 0.03f). The CLI's --smooth N, --remove-pieces F and
---flatten F take each value. Simplify already has its slider, which is the pattern to
-follow: a slider per amount on the Edit card, its value in the label, and the amount
-written into the history label ("Smooth ×5", "Remove pieces under 2%", "Flat base at
-6%").
-
-So the card stays short, each amount can sit in a compact row beside its button instead
-of a separate field block, as PhotoBoost's Restore faces card puts Strength beside its
-slider.
-
-Done when each amount set in the window gives the same mesh as the CLI with the same
-value.
-
 ### §MOD17 Object sampling and smoothing on the card
 
 MainWindow.Operations.cs builds ObjectOptions with Resolution, DensityThreshold,
