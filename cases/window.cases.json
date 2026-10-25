@@ -432,6 +432,7 @@
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
         { "locator": "Button#SaveViewButton", "act": "read", "reads": "name", "expect": "Save view as image", "named": "the toolbar names its camera button" },
+        { "locator": "Button#SaveViewButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and it can be pressed once the cube is shown (MOD54)" },
         { "locator": "Button#SaveViewButton", "act": "invoke", "named": "Save view as image is pressed" },
         { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/view", "named": "the dialog is told to save view, at the 2048 px it offers first" },
         { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "the dialog closed" },

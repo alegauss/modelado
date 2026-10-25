@@ -29,6 +29,7 @@
 - ✅ **MOD17** **The 3D Object card always samples at coarse step 2 with 2 smoothing passes; the CLI's --step and --smooth are absent** — An Advanced expander on the 3D Object card, closed by default, sets step 1 or 2, 0-6 smoothing passes and the loose-piece share; real-model parity waits in MOD53.
 - ✅ **MOD18** **Where inference runs (auto, DirectML or CPU) can only be chosen with --provider at launch, not from the window** — About offers Automatic, GPU (DirectML) or CPU; the next operation runs there, the chip follows at once, and settings.json keeps it for the next start.
 - ✅ **MOD19** **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A camera button beside Front view saves the view shown as a PNG, 1024 to 4096 px on the long side, on a transparent background, through the function the CLI's --preview calls.
+- ✅ **MOD54** **The Save view as image case presses the camera button before the staged cube has opened, and breaks on a slow guest** — The Save view as image case waits for the camera button to be enabled, so it presses it only once the staged cube is shown.
 
 ## Block D — Model downloads
 
