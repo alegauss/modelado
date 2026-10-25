@@ -210,27 +210,6 @@ a template missing an anchor fails its check.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD36 Cloud provider interface and API keys
-
-A new Modelado.Cloud assembly holds ICloudProvider: Id, DisplayName, Capabilities
-(ImageTo3D, TextTo3D, Remesh, Retexture, TextToImage, Texture), a key validator, a usage
-reader, and a cost estimator per action (the next three tasks build on these). Jobs are
-submitted, polled and cancelled through one shape, since every such service runs
-asynchronously, with progress reported through the same JobPanel the local operations
-use.
-
-About gains "Cloud services". Each provider shows a key field with Test, Remove and a
-link to where the key is made. Keys are stored with Windows DPAPI (ProtectedData,
-CurrentUser) in the settings folder, never in plain text, never logged, and never in a
-crash report.
-
-With no key, nothing in the app mentions the network. Results come back as a GLB or an
-image and enter MeshHistory as a version labelled with the service ("Meshy: image to
-3D"), so Undo, the edit tools and export apply to them unchanged.
-
-Done when a fake provider in the tests drives a job from submit to a version in the
-history, and a stored key is unreadable as another Windows user.
-
 ### §MOD37 Meshy AI: image and text to 3D
 
 The first ICloudProvider is MeshyProvider, over Meshy's REST API with the user's Bearer
@@ -245,6 +224,11 @@ Meshy AI") and the projected cost (MOD42). The job runs in the JobPanel with Mes
 progress, can be cancelled, and survives a restart by its task id. The GLB it returns is
 downloaded, imported through MeshImport with its textures, and pushed as a version in
 the history.
+
+It also brings About's "Cloud services", which MOD36 left for the first provider: each
+of CloudProviders.All with a key field, Test (ValidateKeyAsync), Remove and a link to
+its KeyPage, storing through CloudKeys. Run jobs with CloudJobs.RunAsync, and label the
+version with CloudJobs.Label.
 
 Done when the same photo goes through TripoSR and through Meshy (with a real key, on the
 guest), and both results can be refined and exported.

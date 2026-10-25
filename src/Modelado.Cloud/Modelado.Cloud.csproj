@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- MOD36: the seam for cloud 3D and image services (Meshy, Ideogram, and whatever follows): one
+       provider interface, the jobs every such service runs, and the API keys, kept with DPAPI. It
+       reads Imaging and Geometry, to turn a result into a model or an image, and never sees a UI
+       type. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Modelado.Cloud</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
+    <ProjectReference Include="..\Modelado.Geometry\Modelado.Geometry.csproj" />
+  </ItemGroup>
+
+</Project>
