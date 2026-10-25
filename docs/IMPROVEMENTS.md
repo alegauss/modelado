@@ -158,24 +158,6 @@ installer it holds, and a mismatched tag fails the workflow.
 
 ## Block G — Public site for 3D modelling
 
-### §MOD32 Site workspace like PhotoBoost's
-
-Model: D:\git\japode\photo-boost\site (README.md is the map). It is a self-contained
-Vite + React 19 + TypeScript + Tailwind v4 workspace in site\, which dotnet build and
-run-tests.cmd neither build nor need. The chrome (nav, footer, buttons, theme toggle)
-comes from @viglet/viglet-design-system/site, with the colours from its tokens. The
-prerender and the social card come from its /vite helpers, as on PhotoBoost and
-claude-tray.
-
-English only, at /modelado/, per this roadmap's non-goal: one content.ts holds every
-word, without PhotoBoost's i18n.tsx or pt route. The public/icon.svg and favicon.svg are
-drawn from the app icon (MOD7). The prerender writes the title, description, canonical,
-og.png and apple-touch-icon, by replace-or-throw, so a template that lost an anchor
-fails the build.
-
-npm run build is the gate for site tasks. Done when it builds, npm run preview shows the
-page with nav, footer and theme toggle, and Lighthouse has no accessibility errors.
-
 ### §MOD33 Hero: photo to a model you can orbit
 
 Model: PhotoBoost's Hero.tsx and Compare.tsx (drag anywhere, or the keyboard through a

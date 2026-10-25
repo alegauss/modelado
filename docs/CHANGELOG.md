@@ -51,6 +51,8 @@
 
 ## Block G — Public site for 3D modelling
 
+- ✅ **MOD32** **Modelado has no public site: nowhere to see what it makes, try a result or download it** — site\ builds a prerendered English page at /modelado/ with the design system's nav, footer and theme toggle; Lighthouse accessibility scores 100 (design recorded in `site/README.md`).
+
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models

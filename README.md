@@ -214,6 +214,11 @@ What it does, step by step (each step can be run on its own):
    and it knows each file's size and hash without the network. While that file is empty, the app
    reads the repository's latest manifest.
 
+## The site
+
+`site\` is the public site, a Vite + React workspace of its own that the .NET build and the tests
+never touch; [site/README.md](site/README.md) is its map, and `npm run build` there is its gate.
+
 ## Tests
 
 ```

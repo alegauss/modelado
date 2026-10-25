@@ -1,0 +1,128 @@
+@import "tailwindcss";
+/* The ground, the type and the colours are the design system's: tokens.css (its default, cool
+   tone) keyed by data-theme for the mode, and site.css for the nav, footer and buttons. The layout
+   below is Modelado's own. No webfont is fetched: --font-sans names Inter with system fallbacks. */
+@import "@viglet/viglet-design-system/tokens.css";
+@import "@viglet/viglet-design-system/site.css";
+
+:root {
+  --wrap: 1180px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+img {
+  max-width: 100%;
+}
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+section {
+  padding: 96px 0;
+  position: relative;
+}
+@media (max-width: 700px) {
+  section {
+    padding: 64px 0;
+  }
+}
+
+.eyebrow {
+  color: var(--vg-brand);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.sec-head {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+.sec-head h2 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+}
+
+/* On a phone the nav keeps the theme toggle: the download is the intro's own first button. */
+@media (max-width: 560px) {
+  .vg-site-nav .vg-site-btn-primary {
+    display: none;
+  }
+}
+
+.intro {
+  padding: 88px 0 72px;
+}
+.intro h1 {
+  font-size: clamp(2.4rem, 5.6vw, 4.1rem);
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  max-width: 900px;
+  margin-bottom: 22px;
+  text-wrap: balance;
+}
+.intro-lead {
+  color: var(--vg-muted-foreground);
+  font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+  line-height: 1.6;
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.what {
+  background: var(--vg-muted);
+}
+.what-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .what-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.what-item {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--vg-card);
+  border: 1px solid var(--vg-border);
+}
+.what-item h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.what-item p {
+  color: var(--vg-muted-foreground);
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
