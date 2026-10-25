@@ -47,6 +47,7 @@
 - ✅ **MOD28** **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — build-installer.cmd builds a per-user Inno Setup installer with Open with; a guest check installs, upgrades, opens a model, uninstalls (design recorded in `build/installer.iss`).
 - ✅ **MOD29 (the workflow and scripts)** **Nothing publishes a release: no tag-driven build, no GitHub release with the installer and a SHA256SUMS file** — A v-tag runs release.yml: it refuses a version the props, exe or installer name disagree with, and releases the installer with SHA256SUMS.
 - ✅ **MOD30** **An installed copy has no way to learn that a newer release exists** — The window checks GitHub for a newer release at start and daily, shows it as a status-bar chip, and About checks by hand or turns it off (design recorded in `src/Modelado.Inference/ReleaseCheck.cs`).
+- ✅ **MOD31** **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — About's Update and restart fetches the installer, refuses it unless SHA256SUMS matches, runs it silently and relaunches; the guest proved both (design superseded: a running operation must end first).
 
 ## Block G — Public site for 3D modelling
 

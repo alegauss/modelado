@@ -75,8 +75,16 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent
+; MOD31: the app's own update runs this silently with /relaunch=1, so Modelado comes back at the
+; new version; a silent install without it starts nothing.
+Filename: "{app}\{#MyAppExeName}"; Flags: nowait; Check: Relaunching
 
 [Code]
+function Relaunching: Boolean;
+begin
+  Result := ExpandConstant('{param:relaunch|0}') = '1';
+end;
+
 // The models each operation downloaded live outside {app}, in %LOCALAPPDATA%\Modelado\models
 // (ModelLibrary.DefaultDownloadRoot), so an upgrade never touches them. Uninstalling asks whether
 // to delete them too; a silent uninstall keeps them, since they take gigabytes to fetch again.

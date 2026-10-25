@@ -428,7 +428,25 @@
                     Padding="12,4" Margin="0,0,8,6" Click="OnCheckForUpdates" />
             <Button x:Name="AboutReleasePage" AutomationProperties.AutomationId="AboutReleasePage" Content="Open the release page"
                     Padding="12,4" Margin="0,0,8,6" Click="OnOpenReleasePage" Visibility="Collapsed" />
+            <!-- MOD31: downloads the installer, checks it against SHA256SUMS, runs it and restarts. -->
+            <Button x:Name="AboutInstallUpdate" AutomationProperties.AutomationId="AboutInstallUpdate" Content="Update and restart"
+                    Padding="12,4" Margin="0,0,8,6" Click="OnInstallUpdate" Visibility="Collapsed"
+                    Style="{DynamicResource AccentButtonStyle}" />
           </WrapPanel>
+          <!-- An unsaved model is lost on restart, so the update asks here first, not in a dialog. -->
+          <Border x:Name="AboutUpdateConfirm" AutomationProperties.AutomationId="AboutUpdateConfirm" Padding="12,10" Margin="0,0,0,10" CornerRadius="6"
+                  Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+            <StackPanel>
+              <TextBlock x:Name="AboutUpdateUnsaved" AutomationProperties.AutomationId="AboutUpdateUnsaved" TextWrapping="Wrap"
+                         Text="The model shown has not been saved, and restarting loses it and its history. Save it with Save as first, or update anyway." />
+              <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Button x:Name="AboutUpdateAnyway" AutomationProperties.AutomationId="AboutUpdateAnyway" Content="Update and lose it" Padding="12,2"
+                        Click="OnUpdateAnyway" />
+                <Button x:Name="AboutUpdateKeep" AutomationProperties.AutomationId="AboutUpdateKeep" Content="Keep it" Padding="12,2" Margin="8,0,0,0"
+                        Click="OnUpdateKeep" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
           <CheckBox x:Name="AboutAutoUpdate" AutomationProperties.AutomationId="AboutAutoUpdate" Content="Check for updates by itself, once a day"
                     Margin="0,0,0,16" Checked="OnAutoUpdateChanged" Unchecked="OnAutoUpdateChanged"
                     ToolTip="Asks api.github.com for the latest release, sending only Modelado's name and version." />

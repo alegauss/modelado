@@ -29,8 +29,6 @@
 
 ## Block F — Installer, releases and auto update
 
-- 📋 **MOD31** (deps: MOD30 ✅) **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — claude-tray downloads its installer, runs it silently and relaunches, and freewilly verifies the digest first; Modelado should do both. → §MOD31
-
 ## Block G — Public site for 3D modelling
 
 - 📋 **MOD32** (deps: MOD3 ✅) **Modelado has no public site: nowhere to see what it makes, try a result or download it** — PhotoBoost's site is how people find and judge it, and Modelado needs the same front door, built around 3D models instead of photos. → §MOD32

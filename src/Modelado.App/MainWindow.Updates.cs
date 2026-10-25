@@ -95,6 +95,87 @@ public partial class MainWindow
         UpdateChip.Visibility = newerRelease is null ? Visibility.Collapsed : Visibility.Visible;
         AboutUpdateStatus.Text = updateSaid;
         AboutReleasePage.Visibility = newerRelease?.PageUrl is null ? Visibility.Collapsed : Visibility.Visible;
+        AboutInstallUpdate.Visibility = newerRelease is null ? Visibility.Collapsed : Visibility.Visible;
+        AboutInstallUpdate.IsEnabled = !installingUpdate;
+    }
+
+    // MOD31: each version of the model shown, and the one last opened from or saved to a file; an
+    // update restarts the app, which loses the history, so a version never saved is asked about.
+    private int shownVersion;
+    private int savedVersion;
+    private bool installingUpdate;
+
+    private bool UnsavedModel => mesh is not null && shownVersion != savedVersion;
+
+    private async void OnInstallUpdate(object sender, RoutedEventArgs e)
+    {
+        if (newerRelease is null || installingUpdate)
+        {
+            return;
+        }
+
+        if (busy)
+        {
+            updateSaid = $"{ProgressTitle.Text} is running: let it finish or cancel it, then update.";
+            ShowUpdate();
+            return;
+        }
+
+        if (UnsavedModel)
+        {
+            AboutUpdateConfirm.Visibility = Visibility.Visible;
+            return;
+        }
+
+        await InstallUpdateAsync(newerRelease).ConfigureAwait(true);
+    }
+
+    private async void OnUpdateAnyway(object sender, RoutedEventArgs e)
+    {
+        AboutUpdateConfirm.Visibility = Visibility.Collapsed;
+        if (newerRelease is { } release && !busy)
+        {
+            await InstallUpdateAsync(release).ConfigureAwait(true);
+        }
+    }
+
+    private void OnUpdateKeep(object sender, RoutedEventArgs e) => AboutUpdateConfirm.Visibility = Visibility.Collapsed;
+
+    // Downloads and verifies the installer, starts it and exits; the installer upgrades in place and
+    // starts Modelado again. A refused or failed download says why and installs nothing.
+    private async Task InstallUpdateAsync(AvailableRelease release)
+    {
+        installingUpdate = true;
+        ShowUpdate();
+        Progress<DownloadProgress> progress = new(p =>
+        {
+            updateSaid = p.Stage == DownloadStage.Verifying
+                ? $"Checking Modelado {release.Version} against {ReleaseCheck.SumsAssetName}…"
+                : $"Downloading Modelado {release.Version}: {100 * p.Done / Math.Max(1, p.Total)}%";
+            ShowUpdate();
+        });
+        try
+        {
+            string installer = await ReleaseUpdate.DownloadAsync(http, release, ReleaseUpdate.DefaultFolder, progress, CancellationToken.None).ConfigureAwait(true);
+            updateSaid = $"Installing Modelado {release.Version}; it starts again when done.";
+            ShowUpdate();
+            Process.Start(ReleaseUpdate.InstallerStart(installer));
+            Application.Current.Shutdown();
+        }
+        catch (InvalidDataException refused)
+        {
+            updateSaid = $"{refused.Message} Nothing was installed.";
+        }
+        catch (Exception error) when (error is HttpRequestException or IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
+        {
+            updateSaid = $"The update could not be installed: {error.Message}";
+        }
+        finally
+        {
+            installingUpdate = false;
+        }
+
+        ShowUpdate();
     }
 
     // About's half, filled each time it opens.

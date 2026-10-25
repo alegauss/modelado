@@ -156,24 +156,6 @@ is what the updater checks.
 Done when tagging a test version produces a release whose sums file matches the
 installer it holds, and a mismatched tag fails the workflow.
 
-### §MOD31 Apply an update
-
-Model: freewilly's ReleaseUpdate.cs and ReleaseSums.cs, and claude-tray's Updater, which
-downloads to %TEMP% and runs the installer silently. "Update and restart" in About (and
-on the chip) downloads the installer with progress in the status bar, resumable like a
-model download. It checks the file's SHA-256 against its line in SHA256SUMS and refuses
-on any mismatch or a missing line, deleting the file.
-
-It waits for a running operation to finish, or offers to cancel it. It asks to export an
-unsaved model first, since MeshHistory is lost on exit. Then it starts the installer
-with /VERYSILENT /SUPPRESSMSGBOXES /NORESTART, which upgrades in place through the
-shared AppId and relaunches Modelado, and the app exits.
-
-Never automatic: the check may run by itself, the install only on a click.
-
-Done when, on the VMware guest, an installed older build updates to a test release and
-relaunches at the new version, and a tampered installer is refused.
-
 ## Block G — Public site for 3D modelling
 
 ### §MOD32 Site workspace like PhotoBoost's

@@ -21,7 +21,8 @@ public interface IReleaseFeed
 /// <param name="InstallerUrl">Where the installer is.</param>
 /// <param name="SumsUrl">Where SHA256SUMS is.</param>
 /// <param name="PageUrl">The release's page, for a person to read.</param>
-public sealed record AvailableRelease(Version Version, string Tag, string InstallerName, string InstallerUrl, string SumsUrl, string? PageUrl);
+/// <param name="InstallerBytes">The installer's size, which its download is held to (MOD31).</param>
+public sealed record AvailableRelease(Version Version, string Tag, string InstallerName, string InstallerUrl, string SumsUrl, string? PageUrl, long InstallerBytes);
 
 /// <summary>What a check came to.</summary>
 /// <param name="Newer">The newer release, or null.</param>
@@ -118,6 +119,7 @@ public sealed partial class ReleaseCheck
             }
 
             string? installerName = null, installerUrl = null, sumsUrl = null;
+            long installerBytes = 0;
             foreach (JsonElement asset in assets.EnumerateArray())
             {
                 if (asset.ValueKind != JsonValueKind.Object
@@ -141,13 +143,15 @@ public sealed partial class ReleaseCheck
                     }
 
                     (installerName, installerUrl) = (name, url);
+                    installerBytes = asset.TryGetProperty("size", out JsonElement size) && size.ValueKind == JsonValueKind.Number && size.TryGetInt64(out long bytes) ? bytes : 0;
                 }
             }
 
+            // An installer of no stated size cannot be held to one, so it is not offered.
             string? page = root.TryGetProperty("html_url", out JsonElement html) && html.ValueKind == JsonValueKind.String ? html.GetString() : null;
-            return installerName is null || installerUrl is null || sumsUrl is null
+            return installerName is null || installerUrl is null || sumsUrl is null || installerBytes <= 0
                 ? null
-                : new AvailableRelease(version, tag, installerName, installerUrl, sumsUrl, page);
+                : new AvailableRelease(version, tag, installerName, installerUrl, sumsUrl, page, installerBytes);
         }
         catch (JsonException)
         {

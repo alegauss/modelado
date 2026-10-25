@@ -217,6 +217,7 @@ public partial class MainWindow : Window, IDisposable
         Title = $"{Path.GetFileName(path)} · Modelado";
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
         ShowMesh(loaded, null, null, "Opened");
+        savedVersion = shownVersion;
         ShowSource(Path.GetFileName(path));
         Opened();
     }
@@ -274,6 +275,7 @@ public partial class MainWindow : Window, IDisposable
     private void Display(Mesh result)
     {
         mesh = result;
+        shownVersion++;
         renderer = new MeshRenderer(result);
         ViewChoice.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;

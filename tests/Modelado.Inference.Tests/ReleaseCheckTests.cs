@@ -12,7 +12,7 @@ public sealed class ReleaseCheckTests
         {
           "tag_name": "{{tag}}",
           "html_url": "https://github.com/alegauss/modelado/releases/tag/{{tag}}",
-          "assets": [{{string.Join(",", assets.Select(a => $$"""{"name": "{{a}}", "browser_download_url": "https://example.test/{{a}}"}"""))}}]
+          "assets": [{{string.Join(",", assets.Select(a => $$"""{"name": "{{a}}", "size": 1000, "browser_download_url": "https://example.test/{{a}}"}"""))}}]
         }
         """;
 
@@ -69,6 +69,15 @@ public sealed class ReleaseCheckTests
     public void An_installer_without_its_sums_offers_nothing()
     {
         Assert.Null(ReleaseCheck.NewerThan(Feed("v0.3.0", "Modelado-Setup-0.3.0.exe"), Running));
+    }
+
+    [Fact]
+    public void An_installer_of_no_stated_size_offers_nothing()
+    {
+        // MOD31: the download is held to the size the release states.
+        string json = Feed("v0.3.0", "Modelado-Setup-0.3.0.exe", "SHA256SUMS").Replace("\"size\": 1000, ", "", StringComparison.Ordinal);
+
+        Assert.Null(ReleaseCheck.NewerThan(json, Running));
     }
 
     [Fact]

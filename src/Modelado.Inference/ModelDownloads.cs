@@ -237,38 +237,65 @@ public static class ModelDownloads
                 continue;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            string part = path + ".part";
-            long before = done;
-            TimeSpan pause = retryDelay ?? TimeSpan.FromSeconds(1);
-            for (int attempt = 1; ; attempt++)
-            {
-                try
-                {
-                    await FetchAsync(http, expected, part, label, before, total, speed, progress, cancellation).ConfigureAwait(false);
-                    break;
-                }
-                catch (Exception failure) when (Transient(failure) && !cancellation.IsCancellationRequested && attempt < Attempts)
-                {
-                    progress?.Report(new DownloadProgress(label, before + PartialBytes(path), total, DownloadStage.Retrying));
-                    await Task.Delay(pause, cancellation).ConfigureAwait(false);
-                    pause *= 2;
-                }
-            }
-
-            progress?.Report(new DownloadProgress(label, before + expected.Bytes, total, DownloadStage.Verifying, speed.BytesPerSecond));
-            if (!Valid(part, expected))
-            {
-                File.Delete(part);
-                throw new InvalidDataException($"{label} arrived different from the manifest (size or SHA-256), so it was deleted and nothing was loaded.");
-            }
-
-            File.Move(part, path, overwrite: true);
+            await FetchVerifiedAsync(http, expected, path, label, done, total, speed, progress, retryDelay, cancellation).ConfigureAwait(false);
             fetched++;
-            done = before + expected.Bytes;
+            done += expected.Bytes;
         }
 
         return new DownloadResult(fetched, present);
+    }
+
+    /// <summary>
+    /// Fetches one file the way a model file is fetched: to a .part beside it, resumed by Range,
+    /// retried after a network failure, and moved into place only once its size and SHA-256 match.
+    /// MOD31 fetches an update's installer through it.
+    /// </summary>
+    /// <param name="http">The client.</param>
+    /// <param name="expected">Where the file is and what it must be.</param>
+    /// <param name="path">Where it goes.</param>
+    /// <param name="label">What progress calls it.</param>
+    /// <param name="progress">Told after each chunk, and when it is verified or retried.</param>
+    /// <param name="cancellation">Cancels between chunks; the .part stays, so a later fetch resumes it.</param>
+    /// <param name="retryDelay">The first pause before a retry; one second unless set.</param>
+    /// <returns>A task.</returns>
+    /// <exception cref="InvalidDataException">It arrived with another size or SHA-256; it was deleted.</exception>
+    public static Task DownloadFileAsync(HttpClient http, ManifestFile expected, string path, string label, IProgress<DownloadProgress>? progress, CancellationToken cancellation, TimeSpan? retryDelay = null)
+    {
+        ArgumentNullException.ThrowIfNull(http);
+        ArgumentNullException.ThrowIfNull(expected);
+        return Valid(path, expected)
+            ? Task.CompletedTask
+            : FetchVerifiedAsync(http, expected, path, label, 0, expected.Bytes, new Speed(), progress, retryDelay, cancellation);
+    }
+
+    private static async Task FetchVerifiedAsync(HttpClient http, ManifestFile expected, string path, string label, long before, long total, Speed speed, IProgress<DownloadProgress>? progress, TimeSpan? retryDelay, CancellationToken cancellation)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+        string part = path + ".part";
+        TimeSpan pause = retryDelay ?? TimeSpan.FromSeconds(1);
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                await FetchAsync(http, expected, part, label, before, total, speed, progress, cancellation).ConfigureAwait(false);
+                break;
+            }
+            catch (Exception failure) when (Transient(failure) && !cancellation.IsCancellationRequested && attempt < Attempts)
+            {
+                progress?.Report(new DownloadProgress(label, before + PartialBytes(path), total, DownloadStage.Retrying));
+                await Task.Delay(pause, cancellation).ConfigureAwait(false);
+                pause *= 2;
+            }
+        }
+
+        progress?.Report(new DownloadProgress(label, before + expected.Bytes, total, DownloadStage.Verifying, speed.BytesPerSecond));
+        if (!Valid(part, expected))
+        {
+            File.Delete(part);
+            throw new InvalidDataException($"{label} arrived different from what it should be (size or SHA-256), so it was deleted and not used.");
+        }
+
+        File.Move(part, path, overwrite: true);
     }
 
     // One attempt at one file: resumes from the .part when the server honours a range, and

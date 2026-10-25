@@ -159,6 +159,7 @@ public partial class MainWindow
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(size), path, choices);
             string names = string.Join(", ", written.Select(Path.GetFileName));
             ExportStatus.Text = $"Saved {names}";
+            savedVersion = shownVersion;
             LastRunSaid(string.Create(CultureInfo.CurrentCulture, $"Saved {names} · {size:0.##} {(format == "stl" ? "mm" : "units")} on the longest side"));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)

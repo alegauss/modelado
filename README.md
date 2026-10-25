@@ -86,7 +86,10 @@ The app's command-line options: `--open <photo>`, `--models <folder>`,
 
 Once after it opens and then once a day, the window asks GitHub's release API whether a newer
 release exists, sending only its name and version, and says so in the status bar. **About**
-checks by hand and turns the automatic check off; `--releases off` skips it for one run.
+checks by hand and turns the automatic check off; `--releases off` skips it for one run. Its
+**Update and restart** downloads the installer, refuses it unless it matches the release's
+`SHA256SUMS`, runs it silently over the installed copy and starts Modelado again. It never runs
+by itself, and it asks first when the model shown has not been saved.
 
 ### The installer
 
