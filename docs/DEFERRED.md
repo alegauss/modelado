@@ -16,6 +16,8 @@
 
 ## Block G — Public site for 3D modelling
 
+- ⏸ **MOD35** (deps: MOD32 ✅) **Nothing builds and deploys the site when it changes** — set aside (needs Pages enabled and a push): Pages is not switched to GitHub Actions and nothing is pushed, so no deploy has proved a content.ts change goes live. → §MOD35
+
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models
