@@ -8,8 +8,6 @@
 
 ## Block A — English everywhere
 
-- 📋 **MOD49** (deps: —) **Counts, sizes and timings in the window and the CLI use the system culture, so 980.000 triangles reads as 980** — An English interface with pt-BR separators misstates every number by a factor of a thousand or swaps decimal marks. → §MOD49
-
 ## Block B — Windows interface built like PhotoBoost
 
 - 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53

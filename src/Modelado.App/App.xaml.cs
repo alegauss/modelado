@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using Modelado.Imaging;
@@ -14,6 +15,13 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(e);
+
+        // MOD49: the window speaks English only (a multilingual interface is a non-goal), so it
+        // formats in one culture too: 980,000 triangles and 0.8 s on every machine, set before any
+        // window or thread exists.
+        CultureInfo english = CultureInfo.GetCultureInfo("en-US");
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = english;
+        CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = english;
         base.OnStartup(e);
         AddBrandBrushes();
 

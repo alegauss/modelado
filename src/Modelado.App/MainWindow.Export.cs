@@ -22,10 +22,13 @@ public partial class MainWindow
 
     private string ExportExtension => (string)((ComboBoxItem)ExportFormat.SelectedItem).Tag;
 
-    /// <summary>The longest side typed, or null when it is not a size above zero.</summary>
+    /// <summary>
+    /// The longest side typed, or null when it is not a size above zero. A decimal comma is read
+    /// as a decimal point, since the window formats in en-US (MOD49) while a person on a comma
+    /// machine types "1,5"; a size has no thousands to separate.
+    /// </summary>
     private float? ExportSizeValue =>
-        (double.TryParse(ExportSize.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out double size)
-         || double.TryParse(ExportSize.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out size))
+        double.TryParse(ExportSize.Text.Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out double size)
         && size > 0 && size <= 1e6 ? (float)size : null;
 
     private void OnExportFormatChanged(object sender, SelectionChangedEventArgs e)

@@ -2,26 +2,6 @@
 
 ## Block A — English everywhere
 
-### §MOD49 Numbers formatted in one culture
-
-The window's text is English (MOD1), but its numbers are formatted in the system
-culture: `{n:N0}`, `{x:P0}`, `{s:0.0}` and `CultureInfo.CurrentCulture` in
-MainWindow.xaml.cs, MainWindow.Operations.cs, MainWindow.Edits.cs and
-MainWindow.Downloads.cs (16 sites). On a pt-BR machine a 980 000 triangle mesh shows as
-"980.000 triangles", which an English reader takes for 980, and "0,8 s" and "1,1 GB" mix
-decimal commas into English sentences. The CLI already formats its own parsing with
-InvariantCulture but prints counts with the current culture too.
-
-The non-goal "A Portuguese or multilingual interface" settles the choice: the app speaks
-one language, so it should format in one culture. Set
-`CultureInfo.DefaultThreadCurrentCulture` and `DefaultThreadCurrentUICulture` to en-US
-at startup in App.OnStartup (and at the top of the CLI's Program.cs), before any window
-or thread exists, rather than threading a culture through every format call. Keep file
-parsing on InvariantCulture as it is.
-
-Done when, on a machine set to pt-BR, the mesh chip reads "980,000 triangles", timings
-read "0.8 s", and a test pins the startup culture.
-
 ## Block B — Windows interface built like PhotoBoost
 
 ### §MOD53 Status bar chips for a reconstruction and a download

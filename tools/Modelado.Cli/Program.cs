@@ -43,6 +43,10 @@ const string Usage = """
             --json                    prints the result as one JSON object on stdout, the rest on stderr
     """;
 
+// MOD49: English output in one culture, as the window's, whatever the machine is set to.
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
 if (args.Length == 0 || args[0] is "-h" or "--help")
 {
     Console.WriteLine(Usage);

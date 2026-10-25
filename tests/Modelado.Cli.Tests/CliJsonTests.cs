@@ -49,6 +49,24 @@ public sealed class CliJsonTests : IDisposable
     }
 
     [Fact]
+    public void Counts_are_written_in_one_culture_whatever_the_machine_is_set_to()
+    {
+        // MOD49: four subdivisions take the cube past a thousand triangles, where a pt-BR machine
+        // would write 3.072, which an English reader takes for three.
+        string model = Path.Combine(Repository.Root, "cases", "fixtures", "cube.obj");
+        string error = "";
+        for (int pass = 1; pass <= 4; pass++)
+        {
+            string next = Path.Combine(folder, $"pass{pass}.glb");
+            (int code, _, error) = Run("edit", model, "-o", next, "--subdivide", "--provider", "cpu");
+            Assert.Equal(0, code);
+            model = next;
+        }
+
+        Assert.Contains("3,072 triangles", error + Run("edit", model, "-o", Path.Combine(folder, "last.glb"), "--provider", "cpu").Out, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_failure_is_an_error_in_the_json_and_exit_one()
     {
         (int code, string output, _) = Run("edit", Path.Combine(folder, "missing.obj"), "-o", Path.Combine(folder, "out.stl"), "--json", "--provider", "cpu");

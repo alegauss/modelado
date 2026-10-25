@@ -5,6 +5,7 @@
 - ✅ **MOD1** **Every button, tooltip, caption, status line and dialog in the app window and About window is in Portuguese** — Every caption, tooltip, status line, dialog and the About window read in English, worded after PhotoBoost where the concept is the same.
 - ✅ **MOD2** **modelado-cli usage, progress and errors, and the app's command-line errors, are printed in Portuguese** — modelado-cli's usage, progress, counts and errors, and the app's command-line refusals, print in English with English placeholders.
 - ✅ **MOD3** **README.md is written in Portuguese** — README.md reads in English with its numbers checked against the code, and no Portuguese is left in the repository outside docs.
+- ✅ **MOD49** **Counts, sizes and timings in the window and the CLI use the system culture, so 980.000 triangles reads as 980** — The app and the CLI set en-US for every thread at start, so a pt-BR machine reads 3,072 triangles and 0.8 s, and a typed 1,5 still sizes as 1.5.
 
 ## Block B — Windows interface built like PhotoBoost
 
