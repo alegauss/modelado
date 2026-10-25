@@ -44,6 +44,8 @@
 
 ## Block F — Installer, releases and auto update
 
+- ✅ **MOD28** **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — build-installer.cmd builds a per-user Inno Setup installer with Open with; a guest check installs, upgrades, opens a model, uninstalls (design recorded in `build/installer.iss`).
+
 ## Block G — Public site for 3D modelling
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures

@@ -84,6 +84,21 @@ sides the photo does not show, so the back of an asymmetric object comes out app
 The app's command-line options: `--open <photo>`, `--models <folder>`,
 `--provider auto|dml|cpu`, `--quality standard|high`, `--manifest <url>`.
 
+### The installer
+
+```
+build\build-installer.cmd
+powershell -NoProfile -File build\check-installer-vm.ps1
+```
+
+`build-installer.cmd` publishes the app and `modelado-cli` self-contained for win-x64, collects
+the packages' licences and compiles `build\installer.iss` with Inno Setup 6 into
+`artifacts\installer\Modelado-Setup-<version>.exe`. It installs per user, without administrator
+rights, into `%LOCALAPPDATA%\Programs\Modelado`, with a Start menu entry and **Open with
+Modelado** for .glb, .obj, .ply and .stl. Models are not bundled. A newer installer upgrades in
+place and keeps the downloaded models; uninstalling asks whether to delete them.
+`check-installer-vm.ps1` installs, upgrades, opens a model and uninstalls on the VMware guest.
+
 ### Where the models live
 
 The app looks for each model in order:

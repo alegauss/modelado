@@ -135,25 +135,6 @@ is chosen on the Relief card, and Relief runs with it.
 
 ## Block F — Installer, releases and auto update
 
-### §MOD28 Inno Setup installer
-
-Model: D:\git\japode\photo-boost\build\installer.iss, build-installer.cmd and
-collect-notices.ps1. It is a per-user install (no admin) with a fixed AppId that every
-later version keeps, so a new installer upgrades in place, which the updater relies on.
-It publishes Modelado.App self-contained for win-x64, plus modelado-cli beside it.
-
-It adds a Start menu entry and offers "Open with Modelado" for .glb, .obj, .ply and .stl
-(the bare-path argument CommandLine.cs already takes). The third-party notices are
-collected from the NuGet packages and the models' licenses, and the uninstaller asks
-whether to keep the downloaded models.
-
-Models are not bundled: they download on first use (block D), so the installer stays
-small. The output is Modelado-Setup-<x.y.z>.exe, the version-in-the-name pattern
-freewilly uses.
-
-Done when the installer is built, installed on the VMware guest, opens a model from
-Explorer, upgrades over an older build keeping the models, and uninstalls cleanly.
-
 ### §MOD29 Release pipeline on GitHub
 
 Model: D:\Git\alegauss\freewilly\.github\workflows\release.yml and PhotoBoost's
