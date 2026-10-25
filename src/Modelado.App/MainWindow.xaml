@@ -43,6 +43,12 @@
                 ToolTip="Front view (Home). Double-clicking the model does the same.">
           <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE80F;" />
         </Button>
+        <!-- MOD19: the view shown, drawn again at the size the dialog's file type names. -->
+        <Button x:Name="SaveViewButton" AutomationProperties.AutomationId="SaveViewButton" AutomationProperties.Name="Save view as image"
+                Command="{x:Static local:MainWindow.SaveViewCommand}" Margin="2,0,0,0" Padding="8,4"
+                ToolTip="Save view as image: this camera and view style as a PNG, 1024 to 4096 px on the long side, on a transparent background">
+          <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE722;" />
+        </Button>
       </StackPanel>
       <ToolBarTray Background="Transparent" IsLocked="True" Margin="0,0,12,0">
         <ToolBar x:Name="EditorToolbar" AutomationProperties.AutomationId="EditorToolbar" AutomationProperties.Name="Editor"
@@ -585,5 +591,6 @@
     <CommandBinding Command="{x:Static local:MainWindow.RotateZCommand}" Executed="OnRotate" CanExecute="CanEdit" />
     <CommandBinding Command="{x:Static local:MainWindow.MirrorCommand}" Executed="OnMirror" CanExecute="CanEdit" />
     <CommandBinding Command="{x:Static local:MainWindow.ResetViewCommand}" Executed="OnResetView" CanExecute="CanResetView" />
+    <CommandBinding Command="{x:Static local:MainWindow.SaveViewCommand}" Executed="OnSaveView" CanExecute="CanResetView" />
   </Window.CommandBindings>
 </Window>

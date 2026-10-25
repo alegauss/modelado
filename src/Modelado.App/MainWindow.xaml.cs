@@ -53,7 +53,7 @@ public partial class MainWindow : Window, IDisposable
         InitializeComponent();
 
         // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
-        foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton))
+        foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton).Append(SaveViewButton))
         {
             button.Template = Templates.Ghost();
             button.Padding = new Thickness(6, 4, 6, 4);
@@ -102,6 +102,12 @@ public partial class MainWindow : Window, IDisposable
     /// <summary>Back to the front view, Home; the toolbar's button and a double-click on the model (MOD5).</summary>
     public static readonly RoutedUICommand ResetViewCommand = new(
         "Front view", "ResetView", typeof(MainWindow), [new KeyGesture(Key.Home)]);
+
+    /// <summary>The view shown, saved as a PNG; the toolbar's camera button (MOD19).</summary>
+    public static readonly RoutedUICommand SaveViewCommand = new("Save view as image", "SaveView", typeof(MainWindow));
+
+    // MOD19: the long sides the Save dialog offers, one per file type, in the order it lists them.
+    private static readonly int[] ViewSides = [MeshRenderer.MinViewSide, 2048, MeshRenderer.MaxViewSide];
 
     private void CanOpen(object sender, CanExecuteRoutedEventArgs e) => e.CanExecute = !busy;
 
@@ -312,6 +318,45 @@ public partial class MainWindow : Window, IDisposable
     {
         camera = new OrbitCamera();
         RequestRender();
+    }
+
+    // MOD19: the camera, view style and viewport proportions shown, drawn again at the chosen size
+    // through MeshRenderer.SaveView, the function the CLI's --preview calls.
+    private async void OnSaveView(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (!ShowingModel || Viewport.ActualWidth < 2 || Viewport.ActualHeight < 2)
+        {
+            return;
+        }
+
+        SaveFileDialog dialog = new()
+        {
+            Title = "Save the view as an image",
+            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "model") + " view",
+            Filter = string.Join('|', ViewSides.Select(side => $"PNG, {side} px on the long side|*.png")),
+            FilterIndex = 2,
+            DefaultExt = ".png",
+            AddExtension = true,
+        };
+        if (dialog.ShowDialog(this) != true)
+        {
+            return;
+        }
+
+        string path = Path.ChangeExtension(dialog.FileName, ".png");
+        (int width, int height) = MeshRenderer.ViewSize(ViewSides[Math.Clamp(dialog.FilterIndex, 1, ViewSides.Length) - 1], Viewport.ActualWidth, Viewport.ActualHeight);
+        MeshRenderer shown = renderer!;
+        OrbitCamera from = camera;
+        RenderStyle style = ViewStyle;
+        try
+        {
+            await Task.Run(() => shown.SaveView(path, width, height, from, style)).ConfigureAwait(true);
+            LastRunSaid($"Saved {Path.GetFileName(path)} · {width} × {height} px");
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            LastRunSaid($"{Path.GetFileName(path)} could not be saved", error.Message);
+        }
     }
 
     private void OnViewportSizeChanged(object sender, SizeChangedEventArgs e) => RequestRender();

@@ -37,7 +37,7 @@ const string Usage = """
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
             --manifest <url>          --size <units> (longest side when saving)
-            --preview <image.png>     saves a rendered view
+            --preview <image.png>     saves a rendered view, on a transparent background
     """;
 
 if (args.Length == 0 || args[0] is "-h" or "--help")
@@ -192,8 +192,8 @@ void Save(Mesh mesh, string output, Stopwatch total)
     Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
     if (Get("--preview", null) is { } preview)
     {
-        MeshRenderer renderer = new(mesh);
-        ImageCodec.SavePng(renderer.RenderImage(800, 800, new OrbitCamera(Yaw: 25, Pitch: 15)), preview);
+        // The function the window's Save view as image calls too (MOD19).
+        new MeshRenderer(mesh).SaveView(preview, 800, 800, new OrbitCamera(Yaw: 25, Pitch: 15));
         Console.WriteLine($"view -> {preview}");
     }
 }

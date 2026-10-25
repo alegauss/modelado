@@ -75,16 +75,47 @@ public sealed class MeshRenderer
     /// <summary>The background, top and bottom of a vertical gradient, as 0xAARRGGBB.</summary>
     public (uint Top, uint Bottom) Background { get; init; } = (Argb(Brand.ViewportTop), Argb(Brand.ViewportBottom));
 
+    /// <summary>The longest side a saved view may have, and the shortest (MOD19).</summary>
+    public const int MinViewSide = 1024, MaxViewSide = 4096;
+
+    /// <summary>The pixel size of a view with this long side and the viewport's proportions.</summary>
+    /// <param name="longSide">Pixels on the longer side.</param>
+    /// <param name="width">The viewport's width, in any unit.</param>
+    /// <param name="height">The viewport's height, in the same unit.</param>
+    /// <returns>The width and height in pixels.</returns>
+    public static (int Width, int Height) ViewSize(int longSide, double width, double height)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(width, 0);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(height, 0);
+        return width >= height
+            ? (longSide, Math.Max(1, (int)Math.Round(longSide * height / width)))
+            : (Math.Max(1, (int)Math.Round(longSide * width / height)), longSide);
+    }
+
+    /// <summary>
+    /// Writes the view as a PNG on a transparent background: the one function the CLI's --preview
+    /// and the window's Save view as image share (MOD19), so the same camera gives the same bytes.
+    /// It is drawn at the size asked, never scaled up from the viewport's pixels.
+    /// </summary>
+    /// <param name="path">The file to create or replace.</param>
+    /// <param name="width">Width in pixels.</param>
+    /// <param name="height">Height in pixels.</param>
+    /// <param name="camera">Where from.</param>
+    /// <param name="style">How.</param>
+    public void SaveView(string path, int width, int height, OrbitCamera camera, RenderStyle style = RenderStyle.Color) =>
+        ImageCodec.SavePng(RenderImage(width, height, camera, style, transparent: true), path);
+
     /// <summary>Draws into an image.</summary>
     /// <param name="width">Width in pixels.</param>
     /// <param name="height">Height in pixels.</param>
     /// <param name="camera">Where from.</param>
     /// <param name="style">How.</param>
+    /// <param name="transparent">Leaves the background clear instead of the gradient.</param>
     /// <returns>The picture.</returns>
-    public RgbaImage RenderImage(int width, int height, OrbitCamera camera, RenderStyle style = RenderStyle.Color)
+    public RgbaImage RenderImage(int width, int height, OrbitCamera camera, RenderStyle style = RenderStyle.Color, bool transparent = false)
     {
         uint[] bgra = new uint[width * height];
-        Render(bgra, width, height, camera, style);
+        Draw(bgra, width, height, camera, style, transparent ? (0u, 0u) : Background);
         RgbaImage image = new(width, height);
         for (int i = 0; i < bgra.Length; i++)
         {
@@ -92,7 +123,7 @@ public sealed class MeshRenderer
             image.Pixels[i * 4] = (byte)(p >> 16);
             image.Pixels[(i * 4) + 1] = (byte)(p >> 8);
             image.Pixels[(i * 4) + 2] = (byte)p;
-            image.Pixels[(i * 4) + 3] = 255;
+            image.Pixels[(i * 4) + 3] = (byte)(p >> 24);
         }
 
         return image;
@@ -104,7 +135,10 @@ public sealed class MeshRenderer
     /// <param name="height">Height in pixels.</param>
     /// <param name="camera">Where from.</param>
     /// <param name="style">How.</param>
-    public void Render(uint[] pixels, int width, int height, OrbitCamera camera, RenderStyle style = RenderStyle.Color)
+    public void Render(uint[] pixels, int width, int height, OrbitCamera camera, RenderStyle style = RenderStyle.Color) =>
+        Draw(pixels, width, height, camera, style, Background);
+
+    private void Draw(uint[] pixels, int width, int height, OrbitCamera camera, RenderStyle style, (uint Top, uint Bottom) background)
     {
         ArgumentNullException.ThrowIfNull(pixels);
         if (pixels.Length < width * height)
@@ -155,7 +189,7 @@ public sealed class MeshRenderer
         Parallel.For(0, bands, band =>
         {
             int y0 = band * Band, y1 = Math.Min(height, y0 + Band);
-            FillBackground(pixels, depth, width, height, y0, y1);
+            FillBackground(pixels, depth, width, height, y0, y1, background);
             for (int i = 0; i < t.Length; i += 3)
             {
                 DrawTriangle(pixels, depth, width, y0, y1, screen, shade, t[i], t[i + 1], t[i + 2], twoSided);
@@ -174,11 +208,11 @@ public sealed class MeshRenderer
         });
     }
 
-    private void FillBackground(uint[] pixels, float[] depth, int width, int height, int y0, int y1)
+    private static void FillBackground(uint[] pixels, float[] depth, int width, int height, int y0, int y1, (uint Top, uint Bottom) background)
     {
         for (int y = y0; y < y1; y++)
         {
-            uint colour = Mix(Background.Top, Background.Bottom, (float)y / Math.Max(1, height - 1));
+            uint colour = Mix(background.Top, background.Bottom, (float)y / Math.Max(1, height - 1));
             pixels.AsSpan(y * width, width).Fill(colour);
             depth.AsSpan(y * width, width).Fill(float.MaxValue);
         }
@@ -284,6 +318,6 @@ public sealed class MeshRenderer
             return (uint)Math.Clamp(from + ((to - from) * t), 0, 255);
         }
 
-        return 0xFF000000u | (Channel(16) << 16) | (Channel(8) << 8) | Channel(0);
+        return (Channel(24) << 24) | (Channel(16) << 16) | (Channel(8) << 8) | Channel(0);
     }
 }

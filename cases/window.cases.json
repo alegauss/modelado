@@ -124,7 +124,8 @@
         { "locator": "Button#ToolbarSaveAs", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "Save as waits for a model" },
         { "locator": "Button#UndoButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and so does Undo" },
         { "locator": "Button#RotateXButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and so do the turns" },
-        { "locator": "Button#ResetViewButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and the front view" }
+        { "locator": "Button#ResetViewButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and the front view" },
+        { "locator": "Button#SaveViewButton", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and saving the view (MOD19)" }
       ]
     },
 
@@ -418,6 +419,25 @@
         { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved eighty.stl", "named": "the card says it wrote eighty.stl" },
         { "file": "{files}/eighty.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-80mm.stl", "named": "byte for byte what modelado-cli edit --size 80 writes" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Saved eighty.stl · 80 mm on the longest side", "named": "the status bar says the size" }
+      ]
+    },
+
+    {
+      // The PNG is dropped back in because a file step claims only sameBytesAs, and the viewport's
+      // proportions, so the saved bytes, differ from one desk to the next (WW573).
+      "name": "Save view as image writes a 2048 px PNG of the view, clear around the model",
+      "catches": "a camera button that saves nothing, scales the viewport's pixels instead of drawing at 2048, or saves the background gradient",
+      "filed": "MOD19",
+      "tags": ["export", "dialog", "toolbar", "drop"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Button#SaveViewButton", "act": "read", "reads": "name", "expect": "Save view as image", "named": "the toolbar names its camera button" },
+        { "locator": "Button#SaveViewButton", "act": "invoke", "named": "Save view as image is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/view", "named": "the dialog is told to save view, at the 2048 px it offers first" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "the dialog closed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Saved view\\.png · (2048 × \\d+|\\d+ × 2048) px$", "named": "the status bar says it wrote view.png at 2048 on the long side" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/view.png", "named": "view.png is dropped back in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^view\\.png · (2048 × \\d+|\\d+ × 2048) · cut out$", "named": "it opens at that size, its background transparent" }
       ]
     },
 

@@ -45,21 +45,6 @@ CPU.
 
 ## Block C — Existing code wired into the window
 
-### §MOD19 Save the view as an image
-
-The CLI's --preview renders the model through MeshRenderer into a PNG. The window
-renders through the same MeshRenderer into ViewImage every frame. A toolbar button,
-"Save view as image…" (a camera glyph), writes the current camera and view style
-(colours, clay or wireframe) at a chosen size, 1024 to 4096 px on the long side,
-rendered offscreen at that size rather than scaled up from the viewport. The background
-is transparent for PNG.
-
-The CLI's --preview and the button share one function, so their output for the same
-camera matches byte for byte.
-
-Done when a saved 2048 px PNG matches the view on screen, and a case in MOD8's suite
-saves one.
-
 ### §MOD48 CLI refuses bad arguments cleanly
 
 `tools\Modelado.Cli\Program.cs` parses its options before the `try` that turns an
