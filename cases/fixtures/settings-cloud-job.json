@@ -1,0 +1,7 @@
+{
+  "cloudJob": {
+    "provider": "meshy",
+    "job": "image:case-image",
+    "action": "ImageTo3D"
+  }
+}

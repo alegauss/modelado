@@ -20,4 +20,6 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
+- ⏸ **MOD37** (deps: MOD36 ✅, MOD42 ✅) **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — set aside (a real run spends the owner's credits): No run has used a real key yet: one Meshy job spends about 30 of the owner's credits. → §MOD37
+
 ## Block I — Blender integration: AI tools for existing Blender models

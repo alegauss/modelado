@@ -22,11 +22,12 @@ public static class CloudJobs
     /// <param name="cancellation">Cancels it, at the service too.</param>
     /// <param name="poll">How long between polls.</param>
     /// <param name="spending">MOD41: the ledger every job is recorded in and the budgets that refuse one.</param>
+    /// <param name="tracked">Told the job's id when it is submitted and each time it moves, so a caller can keep it across a restart.</param>
     /// <returns>What the job made.</returns>
     /// <exception cref="InvalidOperationException">The service failed or cancelled the job.</exception>
     /// <exception cref="BudgetExceededException">The service's monthly budget is spent; nothing was submitted.</exception>
     public static async Task<CloudResult> RunAsync(
-        ICloudProvider provider, string key, CloudJobRequest request, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll = null, CloudSpending? spending = null)
+        ICloudProvider provider, string key, CloudJobRequest request, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll = null, CloudSpending? spending = null, Action<string>? tracked = null)
     {
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(request);
@@ -44,22 +45,58 @@ public static class CloudJobs
         }
 
         string job = await provider.SubmitAsync(key, request, cancellation).ConfigureAwait(false);
+        tracked?.Invoke(job);
         progress?.Report(new CloudJobStatus(CloudJobState.Queued));
+        return await FollowAsync(provider, key, request.Action, job, estimate, progress, cancellation, poll, spending, tracked).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Follows a job submitted before (MOD37), by the id <c>tracked</c> last gave, as the app does
+    /// at start for one that was running when it closed: polled to its end and fetched as if it
+    /// had never stopped.
+    /// </summary>
+    /// <param name="provider">The service.</param>
+    /// <param name="key">The user's key for it.</param>
+    /// <param name="action">What it was asked to do.</param>
+    /// <param name="job">Its id.</param>
+    /// <param name="progress">Told each status.</param>
+    /// <param name="cancellation">Cancels it, at the service too.</param>
+    /// <param name="poll">How long between polls.</param>
+    /// <param name="spending">Where it is recorded when it ends.</param>
+    /// <param name="tracked">Told each time it moves.</param>
+    /// <returns>What the job made.</returns>
+    public static Task<CloudResult> ResumeAsync(
+        ICloudProvider provider, string key, CloudCapability action, string job, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll = null, CloudSpending? spending = null, Action<string>? tracked = null)
+    {
+        ArgumentNullException.ThrowIfNull(provider);
+        ArgumentException.ThrowIfNullOrEmpty(job);
+        return FollowAsync(provider, key, action, job, null, progress, cancellation, poll, spending, tracked);
+    }
+
+    private static async Task<CloudResult> FollowAsync(
+        ICloudProvider provider, string key, CloudCapability action, string job, CloudCost? estimate, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll, CloudSpending? spending, Action<string>? tracked)
+    {
         try
         {
             while (true)
             {
                 CloudJobStatus status = await provider.PollAsync(key, job, cancellation).ConfigureAwait(false);
+                if (status.NextJobId is { } moved && moved != job)
+                {
+                    job = moved;
+                    tracked?.Invoke(job);
+                }
+
                 progress?.Report(status);
                 switch (status.State)
                 {
                     case CloudJobState.Succeeded:
                         CloudResult result = await provider.ResultAsync(key, job, cancellation).ConfigureAwait(false);
-                        spending?.Record(provider.Id, request.Action, estimate, result.Actual ?? estimate, "succeeded");
+                        spending?.Record(provider.Id, action, estimate, result.Actual ?? estimate, "succeeded");
                         return result;
                     case CloudJobState.Failed or CloudJobState.Cancelled:
                         string outcome = status.State == CloudJobState.Failed ? "failed" : "cancelled";
-                        spending?.Record(provider.Id, request.Action, estimate, null, outcome);
+                        spending?.Record(provider.Id, action, estimate, null, outcome);
                         throw new InvalidOperationException($"{provider.DisplayName} {outcome} the job{(status.Message is null ? "." : $": {status.Message}")}");
                 }
 
@@ -79,7 +116,7 @@ public static class CloudJobs
                 // The job may run on at the service; there is nothing more to do from here.
             }
 
-            spending?.Record(provider.Id, request.Action, estimate, null, "cancelled");
+            spending?.Record(provider.Id, action, estimate, null, "cancelled");
             throw;
         }
     }

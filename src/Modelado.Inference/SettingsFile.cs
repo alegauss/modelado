@@ -35,6 +35,40 @@ public static class SettingsFile
         }
     }
 
+    /// <summary>One setting's object, e.g. MOD37's cloud job kept across a restart.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="key">The setting.</param>
+    /// <returns>The object, or null when there is none or the file does not read.</returns>
+    public static JsonObject? ReadObject(string path, string key)
+    {
+        try
+        {
+            return File.Exists(path) && JsonNode.Parse(File.ReadAllText(path)) is JsonObject settings ? settings[key] as JsonObject : null;
+        }
+        catch (Exception error) when (error is JsonException or IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Forgets one setting, keeping the others.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="key">The setting.</param>
+    public static void Remove(string path, string key)
+    {
+        try
+        {
+            if (File.Exists(path) && JsonNode.Parse(File.ReadAllText(path)) is JsonObject settings && settings.Remove(key))
+            {
+                File.WriteAllText(path, settings.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+            }
+        }
+        catch (JsonException)
+        {
+            // A file that does not read holds nothing to forget.
+        }
+    }
+
     /// <summary>Writes one setting, keeping whatever else the file holds.</summary>
     /// <param name="path">The settings file; its folder is created.</param>
     /// <param name="key">The setting.</param>

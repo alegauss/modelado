@@ -110,6 +110,15 @@
       "shareable": false
     },
     {
+      // MOD37: the settings.json a run left with a Meshy job in flight, and no key beside it.
+      "name": "a window started with a cloud job kept from the last run but no key to follow it",
+      "files": [{ "from": "cases/fixtures/settings-cloud-job.json", "to": "Modelado/settings.json" }],
+      "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu", "--releases", "off"],
@@ -629,6 +638,19 @@
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model is shown" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Meshy AI: image to 3D$", "named": "as a version labelled with the service" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D · 30 credits", "named": "and the status bar says what it cost" }
+      ]
+    },
+
+    {
+      "name": "a cloud job kept from the last run is taken up at start, and one with no key is said and dropped",
+      "catches": "a kept job ignored at start, one followed with no key, or one that stays kept and is reported at every start",
+      "filed": "MOD37",
+      "tags": ["cloud", "startup"],
+      "fixture": "a window started with a cloud job kept from the last run but no key to follow it",
+      "steps": [
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D (resumed): its key is gone, so it was left at the service.", "named": "the kept job is named, and why it is not followed" },
+        { "locator": "Text#JobChip", "act": "read", "absent": true, "named": "nothing runs" },
+        { "file": "{files}/Modelado/settings.json", "act": "read", "sameBytesAs": "cases/fixtures/settings-empty.json", "named": "and the job is no longer kept" }
       ]
     },
 

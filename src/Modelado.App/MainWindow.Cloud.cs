@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Modelado.Cloud;
 using Modelado.Geometry;
 using Modelado.Imaging;
+using Modelado.Inference;
 
 namespace Modelado.App;
 
@@ -216,8 +217,51 @@ public partial class MainWindow
         }
 
         RgbaImage? input = request.Action == CloudCapability.ImageTo3D ? photo : null;
+        await FollowCloudAsync(service, request.Action, title, input, (spending, progress, tracked, token) =>
+            CloudJobs.RunAsync(service, key, request, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
+    }
+
+    // MOD37: a job the app was following when it closed, kept in settings.json by its id, is
+    // followed again at start: its result is what the user already agreed to pay for.
+    private const string KeptJob = "cloudJob";
+    private bool cloudRunning;
+
+    private async Task ResumeCloudJobAsync()
+    {
+        if (SettingsFile.ReadObject(SettingsFile.DefaultPath, KeptJob) is not { } kept
+            || kept["provider"]?.GetValue<string>() is not { } id || kept["job"]?.GetValue<string>() is not { } job
+            || !Enum.TryParse(kept["action"]?.GetValue<string>(), out CloudCapability action))
+        {
+            return;
+        }
+
+        string title = $"{(CloudServices.FirstOrDefault(p => p.Id == id) is { } found ? CloudJobs.Label(found, action) : id)} (resumed)";
+        if (CloudServices.FirstOrDefault(p => p.Id == id) is not { } service || cloudKeys.Load(id) is not { } key)
+        {
+            SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
+            LastRunSaid($"{title}: its key is gone, so it was left at the service.");
+            return;
+        }
+
+        await FollowCloudAsync(service, action, title, null, (spending, progress, tracked, token) =>
+            CloudJobs.ResumeAsync(service, key, action, job, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
+    }
+
+    // As a local operation runs: the job panel, Cancel (which the service is told of), and the
+    // result shown as the model's first version, labelled with the service. Closing the window
+    // leaves the job running at the service, kept by id for the next start.
+    private async Task FollowCloudAsync(
+        ICloudProvider service, CloudCapability action, string title, RgbaImage? input,
+        Func<CloudSpending, IProgress<CloudJobStatus>, Action<string>, CancellationToken, Task<CloudResult>> follow)
+    {
+        if (busy)
+        {
+            return;
+        }
+
         using CancellationTokenSource cancel = new();
         work = cancel;
+        cloudRunning = true;
         SetBusy(true, title, download: false);
         Progress<CloudJobStatus> progress = new(status =>
         {
@@ -229,11 +273,18 @@ public partial class MainWindow
             };
             ProgressBar.Value = status.Progress;
         });
+        void Keep(string job) => SettingsFile.Write(SettingsFile.DefaultPath, KeptJob, new System.Text.Json.Nodes.JsonObject
+        {
+            ["provider"] = service.Id,
+            ["job"] = job,
+            ["action"] = action.ToString(),
+        });
 
         try
         {
             CloudSpending spending = new(new CloudLedger(CloudLedger.DefaultPath), new Dictionary<string, CloudBudget>());
-            CloudResult result = await CloudJobs.RunAsync(service, key, request, progress, cancel.Token, spending: spending).ConfigureAwait(true);
+            CloudResult result = await follow(spending, progress, Keep, cancel.Token).ConfigureAwait(true);
+            SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             Mesh made = await Task.Run(() => CloudJobs.ToMesh(result), cancel.Token).ConfigureAwait(true);
             ShowMesh(made, input, null, title);
             string spent = result.Actual is { } actual ? string.Create(CultureInfo.InvariantCulture, $" · {actual.Amount:0} {actual.Unit}") : "";
@@ -241,14 +292,17 @@ public partial class MainWindow
         }
         catch (OperationCanceledException)
         {
+            SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             LastRunSaid($"{title}: cancelled");
         }
         catch (Exception error) when (error is InvalidOperationException or HttpRequestException or InvalidDataException or IOException or JsonException)
         {
+            SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             LastRunSaid($"{title}: failed", error.Message);
         }
         finally
         {
+            cloudRunning = false;
             work = null;
             SetBusy(false, title, download: false);
         }

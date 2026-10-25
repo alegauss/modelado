@@ -82,6 +82,7 @@ public partial class MainWindow : Window, IDisposable
             }
 
             StartUpdateChecks();
+            await ResumeCloudJobAsync().ConfigureAwait(true);
         };
     }
 
@@ -94,7 +95,13 @@ public partial class MainWindow : Window, IDisposable
         }
 
         disposed = true;
-        work?.Cancel();
+
+        // MOD37: a cloud job is left running at the service, kept by id for the next start.
+        if (!cloudRunning)
+        {
+            work?.Cancel();
+        }
+
         work?.Dispose();
         runner.Dispose();
         http.Dispose();

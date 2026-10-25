@@ -106,6 +106,63 @@ public sealed class MeshyProviderTests
     }
 
     [Fact]
+    public async Task A_job_hands_on_each_id_it_goes_by_and_resumes_by_it_in_a_fresh_provider()
+    {
+        // MOD37: what the window keeps across a restart, and a new process picking it up.
+        FakeMeshy first = new FakeMeshy()
+            .Answer("POST /openapi/v2/text-to-3d", """{"result": "pre-1"}""")
+            .Answer("POST /openapi/v2/text-to-3d", """{"result": "ref-1"}""")
+            .Answer("GET /openapi/v2/text-to-3d/pre-1", Task("SUCCEEDED", 100, 20))
+            .Answer("GET /openapi/v2/text-to-3d/ref-1", Task("IN_PROGRESS", 50, 10));
+        List<string> ids = [];
+        using CancellationTokenSource closing = new();
+        Task<CloudResult> running = CloudJobs.RunAsync(
+            Meshy(first), "k", new CloudJobRequest(CloudCapability.TextTo3D, Prompt: "a chair"), null, closing.Token, TimeSpan.FromMilliseconds(10), tracked: ids.Add);
+        while (ids.Count < 2)
+        {
+            await System.Threading.Tasks.Task.Delay(10, TestContext.Current.CancellationToken);
+        }
+
+        Assert.Equal(["text:pre-1:tex", "textref:pre-1:ref-1"], ids);
+
+        FakeMeshy later = new FakeMeshy()
+            .Answer("GET /openapi/v2/text-to-3d/pre-1", Task("SUCCEEDED", 100, 20))
+            .Answer("GET /openapi/v2/text-to-3d/ref-1", Task("SUCCEEDED", 100, 10));
+        CloudResult result = await CloudJobs.ResumeAsync(Meshy(later), "k", CloudCapability.TextTo3D, ids[^1], null, TestContext.Current.CancellationToken, TimeSpan.Zero);
+
+        Assert.Equal(new CloudCost(30, "credits"), result.Actual);
+        Assert.DoesNotContain(later.Sent, s => s.Line.StartsWith("POST", StringComparison.Ordinal));
+        first.Answer("DELETE /openapi/v2/text-to-3d/ref-1", "{}");
+        await closing.CancelAsync();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => running);
+    }
+
+    [Fact]
+    public async Task An_untextured_text_job_is_the_preview_alone()
+    {
+        FakeMeshy fake = new FakeMeshy()
+            .Answer("POST /openapi/v2/text-to-3d", """{"result": "pre-2"}""")
+            .Answer("GET /openapi/v2/text-to-3d/pre-2", Task("SUCCEEDED", 100, 20));
+
+        CloudResult result = await CloudJobs.RunAsync(
+            Meshy(fake), "k", new CloudJobRequest(CloudCapability.TextTo3D, Prompt: "a chair", Options: new Dictionary<string, string> { ["texture"] = "false" }),
+            null, TestContext.Current.CancellationToken, TimeSpan.Zero);
+
+        Assert.Equal(new CloudCost(20, "credits"), result.Actual);
+        Assert.Single(fake.Sent, s => s.Line.StartsWith("POST", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("image:")]
+    [InlineData("text:pre:glossy")]
+    [InlineData("textref:pre")]
+    [InlineData("other:x")]
+    public async Task An_id_that_is_not_a_meshy_job_is_refused(string id)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(() => Meshy(new FakeMeshy()).PollAsync("k", id, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
     public async Task A_failed_task_says_what_meshy_said()
     {
         FakeMeshy fake = new FakeMeshy()

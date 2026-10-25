@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
@@ -21,12 +20,14 @@ namespace Modelado.Cloud.Providers;
 /// <item>model: latest, meshy-7.1, meshy-6 or meshy-6-lite (ai_model).</item>
 /// </list>
 /// A text-to-3D job is Meshy's preview and, with a texture, the refine Meshy runs on it: one job
-/// here, its id the preview's, the refine submitted when the preview succeeds. Meshy has no
+/// here, submitted as the preview and moved on to the refine when the preview succeeds. A job's id
+/// carries all of that, so it is resumed by id alone after a restart, by any instance. Meshy has no
 /// cancel: DELETE refunds a task still pending and is refused for one running, which runs on.
 /// </summary>
 public sealed class MeshyProvider : ICloudProvider
 {
-    private const string ImageJob = "image:", TextJob = "text:";
+    private const string ImageJobName = "image", TextJobName = "text", RefinedJobName = "textref";
+    private const string ImageJob = ImageJobName + ":", TextJob = TextJobName + ":", RefinedJob = RefinedJobName + ":";
     private static readonly Lazy<CloudPrices> Prices = new(() =>
     {
         using Stream stream = typeof(MeshyProvider).Assembly.GetManifestResourceStream("Modelado.Cloud.Providers.meshy-prices.json")!;
@@ -36,9 +37,6 @@ public sealed class MeshyProvider : ICloudProvider
 
     private readonly HttpClient http;
     private readonly Uri api;
-
-    // A text job's refine, by its preview's id, once the preview has succeeded.
-    private readonly ConcurrentDictionary<string, string> refines = new(StringComparer.Ordinal);
 
     /// <summary>A provider over a client the caller owns.</summary>
     /// <param name="http">The client.</param>
@@ -141,49 +139,44 @@ public sealed class MeshyProvider : ICloudProvider
         }
 
         string id = await CreateAsync(path, key, body, cancellation).ConfigureAwait(false);
-        string job = (request.Action == CloudCapability.ImageTo3D ? ImageJob : TextJob) + id;
-        if (request.Action == CloudCapability.TextTo3D && options["texture"] == "true")
+        if (request.Action == CloudCapability.ImageTo3D)
         {
-            // Marked for refining: the refine is submitted once the preview has succeeded.
-            refines[id] = options["pbr"] == "true" ? "pending-pbr" : "pending";
+            return ImageJob + id;
         }
 
-        return job;
+        // What the preview is to become, in its id: refined, with PBR maps, or left bare.
+        string mode = options["texture"] != "true" ? "bare" : options["pbr"] == "true" ? "pbr" : "tex";
+        return $"{TextJob}{id}:{mode}";
     }
 
     /// <inheritdoc/>
     public async Task<CloudJobStatus> PollAsync(string key, string jobId, CancellationToken cancellation)
     {
-        (string path, string id, bool text) = Parse(jobId);
-        if (text && refines.TryGetValue(id, out string? refine))
+        MeshyJob job = Parse(jobId);
+        if (job.Refine is { } refine)
         {
-            if (refine.StartsWith("pending", StringComparison.Ordinal))
-            {
-                JsonNode preview = await TaskAsync(path, id, key, cancellation).ConfigureAwait(false);
-                CloudJobStatus first = StatusOf(preview);
-                if (first.State != CloudJobState.Succeeded)
-                {
-                    return first with { Progress = first.Progress / 2 };
-                }
-
-                JsonObject body = new() { ["mode"] = "refine", ["preview_task_id"] = id, ["enable_pbr"] = refine == "pending-pbr", ["target_formats"] = new JsonArray("glb") };
-                refines[id] = await CreateAsync(path, key, body, cancellation).ConfigureAwait(false);
-                return new CloudJobStatus(CloudJobState.Running, 0.5, "Texturing");
-            }
-
-            CloudJobStatus second = StatusOf(await TaskAsync(path, refine, key, cancellation).ConfigureAwait(false));
+            CloudJobStatus second = StatusOf(await TaskAsync(job.Path, refine, key, cancellation).ConfigureAwait(false));
             return second with { Progress = 0.5 + (second.Progress / 2) };
         }
 
-        return StatusOf(await TaskAsync(path, id, key, cancellation).ConfigureAwait(false));
+        CloudJobStatus first = StatusOf(await TaskAsync(job.Path, job.Task, key, cancellation).ConfigureAwait(false));
+        if (job.Mode is null or "bare" || first.State != CloudJobState.Succeeded)
+        {
+            return job.Mode is null or "bare" ? first : first with { Progress = first.Progress / 2 };
+        }
+
+        // The preview is done: its refine starts, and the job goes on under both ids, so a restart
+        // finds it where it is.
+        JsonObject body = new() { ["mode"] = "refine", ["preview_task_id"] = job.Task, ["enable_pbr"] = job.Mode == "pbr", ["target_formats"] = new JsonArray("glb") };
+        string refined = await CreateAsync(job.Path, key, body, cancellation).ConfigureAwait(false);
+        return new CloudJobStatus(CloudJobState.Running, 0.5, "Texturing", $"{RefinedJob}{job.Task}:{refined}");
     }
 
     /// <inheritdoc/>
     public async Task CancelAsync(string key, string jobId, CancellationToken cancellation)
     {
-        (string path, string id, _) = Parse(jobId);
-        string task = refines.TryGetValue(id, out string? refine) && !refine.StartsWith("pending", StringComparison.Ordinal) ? refine : id;
-        using HttpResponseMessage response = await SendAsync(HttpMethod.Delete, $"{path}/{task}", key, null, cancellation).ConfigureAwait(false);
+        MeshyJob job = Parse(jobId);
+        using HttpResponseMessage response = await SendAsync(HttpMethod.Delete, $"{job.Path}/{job.Refine ?? job.Task}", key, null, cancellation).ConfigureAwait(false);
         if (response.StatusCode == HttpStatusCode.Conflict)
         {
             throw new InvalidOperationException("Meshy AI runs a task it has started to the end; it cannot be stopped.");
@@ -195,18 +188,17 @@ public sealed class MeshyProvider : ICloudProvider
     /// <inheritdoc/>
     public async Task<CloudResult> ResultAsync(string key, string jobId, CancellationToken cancellation)
     {
-        (string path, string id, _) = Parse(jobId);
-        JsonNode task = await TaskAsync(path, id, key, cancellation).ConfigureAwait(false);
+        MeshyJob job = Parse(jobId);
+        JsonNode task = await TaskAsync(job.Path, job.Task, key, cancellation).ConfigureAwait(false);
         double credits = task["consumed_credits"]?.GetValue<double>() ?? 0;
-        if (refines.TryGetValue(id, out string? refine) && !refine.StartsWith("pending", StringComparison.Ordinal))
+        if (job.Refine is { } refine)
         {
-            task = await TaskAsync(path, refine, key, cancellation).ConfigureAwait(false);
+            task = await TaskAsync(job.Path, refine, key, cancellation).ConfigureAwait(false);
             credits += task["consumed_credits"]?.GetValue<double>() ?? 0;
         }
 
         string url = task["model_urls"]?["glb"]?.GetValue<string>() ?? throw new InvalidDataException("Meshy AI's task has no GLB.");
         byte[] glb = await http.GetByteArrayAsync(new Uri(url), cancellation).ConfigureAwait(false);
-        refines.TryRemove(id, out _);
         return new CloudResult(glb, ".glb", new CloudCost(credits, "credits"));
     }
 
@@ -225,10 +217,22 @@ public sealed class MeshyProvider : ICloudProvider
         };
     }
 
-    private static (string Path, string Id, bool Text) Parse(string jobId) =>
-        jobId.StartsWith(ImageJob, StringComparison.Ordinal) ? ("openapi/v1/image-to-3d", jobId[ImageJob.Length..], false)
-        : jobId.StartsWith(TextJob, StringComparison.Ordinal) ? ("openapi/v2/text-to-3d", jobId[TextJob.Length..], true)
-        : throw new ArgumentException($"'{jobId}' is not a Meshy AI job.", nameof(jobId));
+    // image:<task>, text:<preview>:<bare|tex|pbr>, textref:<preview>:<refine>.
+    private static MeshyJob Parse(string jobId)
+    {
+        const string Image = "openapi/v1/image-to-3d", Text = "openapi/v2/text-to-3d";
+        string[] parts = jobId.Split(':');
+        return parts switch
+        {
+            [ImageJobName, var task] when task.Length > 0 => new MeshyJob(Image, task, null, null),
+            [TextJobName, var preview, var mode] when preview.Length > 0 && mode is "bare" or "tex" or "pbr" => new MeshyJob(Text, preview, mode, null),
+            [RefinedJobName, var preview, var refine] when preview.Length > 0 && refine.Length > 0 => new MeshyJob(Text, preview, null, refine),
+            _ => throw new ArgumentException($"'{jobId}' is not a Meshy AI job.", nameof(jobId)),
+        };
+    }
+
+    /// <summary>A job's tasks: the one first submitted, what it is to become, and its refine once started.</summary>
+    private readonly record struct MeshyJob(string Path, string Task, string? Mode, string? Refine);
 
     private static double Credits(JsonNode? balance) => balance?["balance"]?.GetValue<double>() ?? 0;
 

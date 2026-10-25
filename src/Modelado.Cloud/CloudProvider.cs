@@ -62,7 +62,11 @@ public enum CloudJobState
 /// <param name="State">Where it is.</param>
 /// <param name="Progress">0 to 1, as far as the service says.</param>
 /// <param name="Message">The service's words, for a failure in particular.</param>
-public sealed record CloudJobStatus(CloudJobState State, double Progress = 0, string? Message = null)
+/// <param name="NextJobId">
+/// The id the job goes on under, where it moved to another task (Meshy's refine after its
+/// preview), so a job kept across a restart is resumed where it is now.
+/// </param>
+public sealed record CloudJobStatus(CloudJobState State, double Progress = 0, string? Message = null, string? NextJobId = null)
 {
     /// <summary>True once the job will not change again.</summary>
     public bool Finished => State is CloudJobState.Succeeded or CloudJobState.Failed or CloudJobState.Cancelled;
