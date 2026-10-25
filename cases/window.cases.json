@@ -73,6 +73,20 @@
       "shareable": false
     },
     {
+      // MOD18: no --provider, and LOCALAPPDATA staged empty, so the choice About saves is this run's own.
+      "name": "a window with no saved settings, to choose where inference runs",
+      "files": ["cases/fixtures/notes.txt"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
+      // MOD18: the settings.json an earlier run saved with the CPU chosen, where Modelado looks for it.
+      "name": "a window started after the CPU was chosen in About",
+      "files": [{ "from": "cases/fixtures/settings-cpu.json", "to": "Modelado/settings.json" }],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu"],
@@ -404,6 +418,39 @@
         { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved eighty.stl", "named": "the card says it wrote eighty.stl" },
         { "file": "{files}/eighty.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-80mm.stl", "named": "byte for byte what modelado-cli edit --size 80 writes" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Saved eighty.stl · 80 mm on the longest side", "named": "the status bar says the size" }
+      ]
+    },
+
+    {
+      "name": "choosing the CPU in About moves the status chip to the CPU without a restart",
+      "catches": "a choice that only takes effect after a restart, a chip still naming the old provider, or a fresh installation that does not start on Automatic",
+      "filed": "MOD18",
+      "tags": ["about", "provider"],
+      "fixture": "a window with no saved settings, to choose where inference runs",
+      "steps": [
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "matches": "^(DirectML|CPU)$", "named": "Automatic resolves to one of the two" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "RadioButton#ProviderAuto", "act": "read", "reads": "selected", "expect": "selected", "named": "nothing saved starts on Automatic" },
+        { "locator": "RadioButton#ProviderCpu", "act": "select", "reads": "selected", "expect": "selected", "named": "the CPU is chosen" },
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "expect": "CPU", "named": "the chip says CPU at once" },
+        { "locator": "Text#AboutInference", "act": "read", "reads": "name", "matches": "on the CPU\\. No photo", "named": "and About says the CPU" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "expect": "CPU", "named": "the chip still says CPU outside About" }
+      ]
+    },
+
+    {
+      "name": "a start after the CPU was chosen reads the saved choice",
+      "catches": "a choice that is saved and never read back, or read and not shown in About",
+      "filed": "MOD18",
+      "tags": ["about", "provider"],
+      "fixture": "a window started after the CPU was chosen in About",
+      "steps": [
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "expect": "CPU", "named": "the saved CPU is where inference runs" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "RadioButton#ProviderCpu", "act": "read", "reads": "selected", "expect": "selected", "named": "About shows the CPU chosen" },
+        { "locator": "Text#AboutProviderReason", "act": "read", "absent": true, "named": "with no --provider note, since none was given" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
       ]
     },
 

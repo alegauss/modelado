@@ -5,10 +5,10 @@ namespace Modelado.App;
 /// <summary>What the app was started with.</summary>
 /// <param name="Open">A photo to open, or null.</param>
 /// <param name="Models">A models folder replacing the default ones, or null.</param>
-/// <param name="Provider">Where inference runs.</param>
+/// <param name="Provider">Where inference runs, or null for the choice About saved (MOD18).</param>
 /// <param name="HighQuality">fp32 on the GPU too.</param>
 /// <param name="Manifest">A models manifest URL replacing the embedded one, or null.</param>
-public sealed record AppOptions(string? Open, string? Models, ProviderChoice Provider, bool HighQuality, string? Manifest);
+public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest);
 
 /// <summary>
 /// Parses Modelado.exe's arguments:
@@ -24,7 +24,7 @@ public static class CommandLine
     {
         ArgumentNullException.ThrowIfNull(args);
         string? open = null, models = null, manifest = null;
-        ProviderChoice provider = ProviderChoice.Auto;
+        ProviderChoice? provider = null;
         bool high = false;
         for (int i = 0; i < args.Count; i++)
         {
@@ -53,19 +53,10 @@ public static class CommandLine
                     manifest = value;
                     break;
                 case "--provider":
-                    switch (value)
+                    provider = ProviderSetting.Parse(value);
+                    if (provider is null)
                     {
-                        case "auto":
-                            provider = ProviderChoice.Auto;
-                            break;
-                        case "dml":
-                            provider = ProviderChoice.DirectML;
-                            break;
-                        case "cpu":
-                            provider = ProviderChoice.Cpu;
-                            break;
-                        default:
-                            return (null, $"--provider {value}: use auto, dml or cpu.");
+                        return (null, $"--provider {value}: use auto, dml or cpu.");
                     }
 
                     break;

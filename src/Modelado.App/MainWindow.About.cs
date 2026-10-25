@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Automation;
 using Modelado.Inference;
 using Modelado.Inference.Pipelines;
 
@@ -43,6 +44,18 @@ public partial class MainWindow
         AboutVersion.Text = $"Version {version}";
         AboutInference.Text = "Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. " +
             $"Inference runs in ONNX Runtime, {(provider == ExecutionProvider.DirectML ? "on the GPU with DirectML" : "on the CPU")}. No photo is uploaded anywhere.";
+        fillingProvider = true;
+        (providerChoice switch
+        {
+            ProviderChoice.Cpu => ProviderCpu,
+            ProviderChoice.DirectML => ProviderDirectML,
+            _ => ProviderAuto,
+        }).IsChecked = true;
+        fillingProvider = false;
+        string reason = providerReason ?? (options.Provider == providerChoice ? "Chosen by --provider for this run." : "");
+        AboutProviderReason.Text = reason;
+        AboutProviderReason.Visibility = reason.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
         AboutModelsFolder.Text = $"From {string.Join(" and ", library.Roots)}";
 
         library.Refresh();
@@ -123,6 +136,67 @@ public partial class MainWindow
         return FirstUseCards.FirstOrDefault(card => card.Downloading is not null && card.Models().Contains(model, StringComparer.Ordinal)) is { } downloading
             ? $"{model} is being downloaded for {downloading.Title}; cancel or finish that first."
             : null;
+    }
+
+    private bool fillingProvider;
+
+    private void ResolveProvider(ProviderChoice choice)
+    {
+        providerChoice = choice;
+        try
+        {
+            (provider, providerReason) = ExecutionProviders.Resolve(choice);
+        }
+        catch (InvalidOperationException error)
+        {
+            (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
+        }
+    }
+
+    private void ShowProvider()
+    {
+        ProviderStatus.Text = ProviderLabel;
+
+        // Why it is not the GPU, where a person looking at "CPU" will look.
+        ProviderChip.ToolTip = providerReason;
+        AutomationProperties.SetHelpText(ProviderStatus, providerReason ?? "");
+    }
+
+    // MOD18: the next operation builds its sessions on the new provider; nothing restarts.
+    private async void OnProviderChanged(object sender, RoutedEventArgs e)
+    {
+        ProviderChoice choice = sender switch
+        {
+            _ when sender == ProviderCpu => ProviderChoice.Cpu,
+            _ when sender == ProviderDirectML => ProviderChoice.DirectML,
+            _ => ProviderChoice.Auto,
+        };
+        if (fillingProvider || busy || choice == providerChoice)
+        {
+            return;
+        }
+
+        ResolveProvider(choice);
+        ReleaseSessions();
+        ShowProvider();
+        string? unsaved = null;
+        try
+        {
+            ProviderSetting.Save(ProviderSetting.DefaultPath, choice);
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            unsaved = $"The choice is used until Modelado closes but could not be saved: {error.Message}";
+        }
+
+        FillAbout();
+        if (unsaved is not null)
+        {
+            AboutProviderReason.Text = unsaved;
+            AboutProviderReason.Visibility = Visibility.Visible;
+        }
+
+        await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 
     // The sessions keep the ONNX files open, so they are let go before a file is deleted.

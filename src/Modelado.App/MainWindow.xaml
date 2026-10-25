@@ -414,6 +414,19 @@
           <TextBlock x:Name="AboutVersion" AutomationProperties.AutomationId="AboutVersion" Style="{StaticResource StatCaption}" />
           <TextBlock x:Name="AboutInference" AutomationProperties.AutomationId="AboutInference" Style="{StaticResource StatCaption}" Margin="0,2,0,16" />
 
+          <!-- MOD18: what the provider flag sets, chosen here, saved per user and applied to the next operation. -->
+          <TextBlock Text="Where inference runs" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <RadioButton x:Name="ProviderAuto" AutomationProperties.AutomationId="ProviderAuto" GroupName="Provider" Checked="OnProviderChanged"
+                       Content="Automatic (the GPU with DirectML when it works, the CPU otherwise)" />
+          <RadioButton x:Name="ProviderDirectML" AutomationProperties.AutomationId="ProviderDirectML" GroupName="Provider" Checked="OnProviderChanged"
+                       Content="GPU (DirectML)" Margin="0,4,0,0" />
+          <RadioButton x:Name="ProviderCpu" AutomationProperties.AutomationId="ProviderCpu" GroupName="Provider" Checked="OnProviderChanged"
+                       Content="CPU" Margin="0,4,0,0"
+                       ToolTip="For a GPU that fails or is slower than the CPU for a model." />
+          <TextBlock x:Name="AboutProviderReason" AutomationProperties.AutomationId="AboutProviderReason" Style="{StaticResource StatCaption}" Margin="0,6,0,0" />
+          <TextBlock Style="{StaticResource StatCaption}" Margin="0,2,0,16"
+                     Text="The choice applies to the next operation and is kept for the next start; --provider on the command line still wins for that run." />
+
           <TextBlock Text="Models" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutModelsFolder" AutomationProperties.AutomationId="AboutModelsFolder" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
           <ListBox x:Name="AboutModels" AutomationProperties.AutomationId="AboutModels" AutomationProperties.Name="Models"

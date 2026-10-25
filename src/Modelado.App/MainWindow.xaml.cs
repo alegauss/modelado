@@ -22,8 +22,9 @@ public partial class MainWindow : Window, IDisposable
 {
     private readonly AppOptions options;
     private readonly ModelLibrary library;
-    private readonly ExecutionProvider provider;
-    private readonly string? providerReason;
+    private ProviderChoice providerChoice;
+    private ExecutionProvider provider;
+    private string? providerReason;
     private ModelRunner runner;
 
     private RgbaImage? photo;
@@ -59,15 +60,8 @@ public partial class MainWindow : Window, IDisposable
         }
 
         library = options.Models is { } folder ? new ModelLibrary([folder]) : ModelLibrary.Default();
-        try
-        {
-            (provider, providerReason) = ExecutionProviders.Resolve(options.Provider);
-        }
-        catch (InvalidOperationException error)
-        {
-            (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
-        }
-
+        // MOD18: --provider wins for this run; otherwise the choice About saved, then Automatic.
+        ResolveProvider(options.Provider ?? ProviderSetting.Load(ProviderSetting.DefaultPath) ?? ProviderChoice.Auto);
         StartFirstUse();
 
         // MOD10: the formats the drop zone lists are the ones the codecs read, not a copy of them.
@@ -75,13 +69,7 @@ public partial class MainWindow : Window, IDisposable
 
         QualityHigh.IsChecked = options.HighQuality;
         runner = new ModelRunner(library, provider, options.HighQuality);
-        ProviderStatus.Text = ProviderLabel;
-        if (providerReason is not null)
-        {
-            // Why it is not the GPU, where a person looking at "CPU" will look.
-            ProviderChip.ToolTip = providerReason;
-            AutomationProperties.SetHelpText(ProviderStatus, providerReason);
-        }
+        ShowProvider();
 
         Drop += OnDrop;
         Closed += (_, _) => Dispose();

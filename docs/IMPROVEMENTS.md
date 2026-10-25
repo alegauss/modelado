@@ -40,25 +40,10 @@ once MOD20 has published the models, start a Relief on the guest with the cards 
 down and read JobChip, then LastRun ("Relief · <s> s · CPU"). With the models there,
 also close MOD17's check: a 3D Object at step 1 with 0 smoothing passes (the card's
 Advanced) gives the triangle count modelado-cli object --step 1 --smooth 0 gives on the
-same photo.
+same photo. And MOD18's: after choosing the CPU in About, the next run's LastRun says
+CPU.
 
 ## Block C — Existing code wired into the window
-
-### §MOD18 Provider choice in the window
-
-MainWindow resolves options.Provider once, in the constructor, through
-ExecutionProviders.Resolve, and the status-bar chip shows the result. The choice goes in
-the About panel, under where inference runs, as Automatic, GPU (DirectML) or CPU, with
-the reason the last resolve gave (for example why DirectML was refused). A change
-applies to the next operation: the runner's sessions are dropped and rebuilt, and
-nothing restarts the app.
-
-The choice persists per user (a small settings file under LocalAppData, the same place
-PhotoBoost keeps its Appearance), and --provider on the command line still wins for that
-run.
-
-Done when switching to CPU makes the next reconstruction run on the CPU, the chip says
-so, and the choice is still there after a restart.
 
 ### §MOD19 Save the view as an image
 

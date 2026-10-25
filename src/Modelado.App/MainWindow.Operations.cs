@@ -136,6 +136,7 @@ public partial class MainWindow
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
         UpdateEditButtons();
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
+        ProviderAuto.IsEnabled = ProviderDirectML.IsEnabled = ProviderCpu.IsEnabled = !on;
         if (!on)
         {
             RunPending(); // An operation whose download finished while this ran (MOD22).
