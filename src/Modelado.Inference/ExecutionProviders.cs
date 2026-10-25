@@ -46,6 +46,13 @@ public static class ExecutionProviders
         _ => (ExecutionProvider.Cpu, "DirectML is not available in this build, so the CPU is used."),
     };
 
+    /// <summary>The provider chip's words (MOD52): "CPU", "DirectML", or the GPU's name and video memory beside it.</summary>
+    /// <param name="provider">Where sessions are built.</param>
+    /// <param name="adapter">The GPU DirectML runs on, or null when it cannot be named.</param>
+    /// <returns>"DirectML · NVIDIA GeForce RTX 4060, 8 GB", "DirectML" or "CPU".</returns>
+    public static string Label(ExecutionProvider provider, GpuAdapter? adapter) =>
+        provider == ExecutionProvider.Cpu ? "CPU" : adapter is null ? "DirectML" : $"DirectML · {adapter.Label}";
+
     /// <summary>The variant a quality setting runs on a provider.</summary>
     /// <param name="provider">Where it runs.</param>
     /// <param name="high">True for High quality.</param>

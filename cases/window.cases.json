@@ -449,7 +449,7 @@
       "tags": ["about", "provider"],
       "fixture": "a window with no saved settings, to choose where inference runs",
       "steps": [
-        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "matches": "^(DirectML|CPU)$", "named": "Automatic resolves to one of the two" },
+        { "locator": "Text#ProviderStatus", "act": "read", "reads": "name", "matches": "^(DirectML( · .+, \\d+ [MG]B)?|CPU)$", "named": "Automatic resolves to one of the two, DirectML naming its GPU where it can (MOD52)" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
         { "locator": "RadioButton#ProviderAuto", "act": "read", "reads": "selected", "expect": "selected", "named": "nothing saved starts on Automatic" },
         { "locator": "RadioButton#ProviderCpu", "act": "select", "reads": "selected", "expect": "selected", "named": "the CPU is chosen" },

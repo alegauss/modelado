@@ -31,6 +31,7 @@
 - ✅ **MOD19** **The CLI's --preview writes a rendered view of the model, but the window cannot save the view it shows as an image** — A camera button beside Front view saves the view shown as a PNG, 1024 to 4096 px on the long side, on a transparent background, through the function the CLI's --preview calls.
 - ✅ **MOD54** **The Save view as image case presses the camera button before the staged cube has opened, and breaks on a slow guest** — The Save view as image case waits for the camera button to be enabled, so it presses it only once the staged cube is shown.
 - ✅ **MOD48** **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — modelado-cli checks options per command first: a missing value is ERROR with exit 1, an unknown option or command ERROR with exit 2 (design recorded in `tools/Modelado.Cli/CliArguments.cs`).
+- ✅ **MOD52** **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — The provider chip and the CLI name DirectML's GPU and video memory, e.g. DirectML · NVIDIA GeForce RTX 4060, 8 GB, read from DXGI adapter 0 (design superseded: the guest's VMware GPU is named).
 
 ## Block D — Model downloads
 

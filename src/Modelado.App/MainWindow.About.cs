@@ -151,11 +151,16 @@ public partial class MainWindow
         {
             (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
         }
+
+        // MOD52: the GPU device 0 is, which is the one sessions are built on.
+        gpu = provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice() : null;
     }
+
+    private GpuAdapter? gpu;
 
     private void ShowProvider()
     {
-        ProviderStatus.Text = ProviderLabel;
+        ProviderStatus.Text = ExecutionProviders.Label(provider, gpu);
 
         // Why it is not the GPU, where a person looking at "CPU" will look.
         ProviderChip.ToolTip = providerReason;

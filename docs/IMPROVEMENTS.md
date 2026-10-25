@@ -45,26 +45,6 @@ CPU.
 
 ## Block C — Existing code wired into the window
 
-### §MOD52 Name the GPU on the provider chip
-
-MOD9's provider chip reads "DirectML" or "CPU". PhotoBoost's reads "DirectML · NVIDIA
-GeForce RTX 4060, 8 GB": its ProviderDetector (PhotoBoost.Inference) probes a session
-and reads the adapter's description and dedicated video memory, and
-ProviderSelection.Label composes the chip. Modelado's ExecutionProviders.Resolve only
-checks that the ONNX Runtime build carries DirectML, and always asks for device 0, so
-nothing in it knows which GPU that is.
-
-Read the adapter DirectML will use: device 0 is DXGI's first adapter, so enumerate it
-through IDXGIFactory1::EnumAdapters1 and take DXGI_ADAPTER_DESC1's Description and
-DedicatedVideoMemory, skipping the Microsoft Basic Render Driver
-(DXGI_ADAPTER_FLAG_SOFTWARE), which is what the VMware guest has. Return it from Resolve
-beside the provider, as an `Adapter(string Name, long VideoMemory)` or null, and label
-the chip "DirectML · <name>, <n> GB". Keep it in Modelado.Inference, where the CLI can
-print it too.
-
-Done when the chip names the GPU on a desk with one, still reads "CPU" on the guest, and
-a test covers the label for both.
-
 ## Block D — Model downloads
 
 ### §MOD20 Export, publish and embed the first manifest

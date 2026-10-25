@@ -5,7 +5,6 @@
 - MOD20
 - Block B
 - Block D
-- Block C
 
 ## Block A — English everywhere
 
@@ -16,8 +15,6 @@
 - 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
 
 ## Block C — Existing code wired into the window
-
-- 📋 **MOD52** (deps: —) **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — On a machine with two GPUs, or one too small for TripoSR's encoder, the chip is the first place a person looks and it names neither. → §MOD52
 
 ## Block D — Model downloads
 

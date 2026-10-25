@@ -72,7 +72,9 @@ try
     };
     (ExecutionProvider provider, string? reason) = ExecutionProviders.Resolve(choice);
     using ModelRunner runner = new(library, provider, options.ContainsKey("--high"));
-    Console.WriteLine($"Running on {(provider == ExecutionProvider.DirectML ? "GPU (DirectML)" : "CPU")}{(reason is null ? "" : $": {reason}")}");
+    // MOD52: the words the window's provider chip shows, the GPU named.
+    string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice() : null);
+    Console.WriteLine($"Running on {where}{(reason is null ? "" : $": {reason}")}");
 
     switch (args[0])
     {
