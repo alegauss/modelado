@@ -20,10 +20,10 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly HashSet<string> Flags = new(StringComparer.Ordinal)
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
-        "--mirror", "--fill-holes", "--subdivide", "--upscale-texture",
+        "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json",
     };
 
-    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--size", "--preview"];
+    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--size", "--preview", "--json"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {

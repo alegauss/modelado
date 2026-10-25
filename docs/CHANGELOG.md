@@ -66,3 +66,4 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
+- ✅ **MOD43 (modelado-cli --json)** **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — modelado-cli --json prints one JSON object on stdout (files written, counts, each edit and its time, warnings or the error) for the add-on to read.

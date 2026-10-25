@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json.Nodes;
 using Modelado.Cli;
 using Modelado.Geometry;
 using Modelado.Imaging;
@@ -39,6 +40,7 @@ const string Usage = """
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
             --manifest <url>          --size <units> (longest side when saving)
             --preview <image.png>     saves a rendered view, on a transparent background
+            --json                    prints the result as one JSON object on stdout, the rest on stderr
     """;
 
 if (args.Length == 0 || args[0] is "-h" or "--help")
@@ -57,6 +59,17 @@ if (parsed is null)
 
 IReadOnlyDictionary<string, string?> options = parsed.Options;
 List<string> positional = [.. parsed.Positional];
+
+// MOD43: with --json every line a person reads goes to stderr and stdout carries one JSON object
+// (what was written, the counts, each edit and its time, warnings, or the error), which the
+// Blender add-on reads instead of parsing text.
+bool json = options.ContainsKey("--json");
+TextWriter stdout = Console.Out;
+JsonObject report = new() { ["command"] = args[0] };
+if (json)
+{
+    Console.SetOut(Console.Error);
+}
 
 try
 {
@@ -134,9 +147,10 @@ try
             if (runner.Notice is { } notice)
             {
                 Console.WriteLine(notice);
+                report["warnings"] = new JsonArray(notice);
             }
 
-            return 0;
+            return Done(0);
 
         case "edit":
             string modelPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which model? " + Usage);
@@ -169,7 +183,7 @@ try
             model = Edit(model, "--flatten", value => MeshEdit.FlattenBase(model, float.Parse(value, CultureInfo.InvariantCulture)));
             model = Edit(model, "--upscale-texture", _ => Upscaling.UpscaleTexture(runner, model));
             Save(model, edited, clock);
-            return 0;
+            return Done(0);
 
         default:
             await Console.Error.WriteLineAsync($"Unknown command: {args[0]}\n{Usage}").ConfigureAwait(false);
@@ -179,7 +193,21 @@ try
 catch (Exception error) when (error is ArgumentException or InvalidDataException or InvalidOperationException or FileNotFoundException or HttpRequestException)
 {
     await Console.Error.WriteLineAsync($"ERROR {error.Message}").ConfigureAwait(false);
-    return 1;
+    report["error"] = error.Message;
+    return Done(1);
+}
+
+// The exit code, and with --json the report on the real stdout.
+int Done(int code)
+{
+    if (json)
+    {
+        report["exitCode"] = code;
+        stdout.WriteLine(report.ToJsonString());
+        stdout.Flush();
+    }
+
+    return code;
 }
 
 void Save(Mesh mesh, string output, Stopwatch total)
@@ -187,6 +215,10 @@ void Save(Mesh mesh, string output, Stopwatch total)
     mesh = options.ContainsKey("--size") ? mesh.Placed((float)Number("--size", 1)) : mesh;
     IReadOnlyList<string> written = MeshExport.Save(mesh, output);
     Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
+    report["written"] = new JsonArray([.. written.Select(path => JsonValue.Create(Path.GetFullPath(path)))]);
+    report["vertices"] = mesh.VertexCount;
+    report["triangles"] = mesh.TriangleCount;
+    report["seconds"] = Math.Round(total.Elapsed.TotalSeconds, 3);
     if (Get("--preview", null) is { } preview)
     {
         // The function the window's Save view as image calls too (MOD19).
@@ -205,6 +237,12 @@ Mesh Edit(Mesh mesh, string key, Func<string, Mesh> edit)
     Stopwatch clock = Stopwatch.StartNew();
     Mesh result = edit(value ?? "");
     Console.WriteLine($"  {key,-18} {result.TriangleCount,10:N0} triangles  {clock.Elapsed.TotalSeconds,6:0.00} s");
+    if (report["edits"] is not JsonArray edits)
+    {
+        report["edits"] = edits = [];
+    }
+
+    edits.Add(new JsonObject { ["edit"] = key, ["value"] = value, ["triangles"] = result.TriangleCount, ["seconds"] = Math.Round(clock.Elapsed.TotalSeconds, 3) });
     return result;
 }
 

@@ -42,10 +42,9 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD43** (deps: MOD2 ✅, MOD16 ✅) **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — Blender is where most existing models live, and Modelado's cleanup and AI tools are most useful applied to them in place. → §MOD43
-- 📋 **MOD44** (deps: MOD20, MOD43) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
-- 📋 **MOD45** (deps: MOD38 ✅, MOD40, MOD43) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
-- 📋 **MOD46** (deps: MOD12 ✅, MOD43) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — Some work needs the window (orbiting, comparing versions, several edits in a row), and the result must land back on the object it came from. → §MOD46
+- 📋 **MOD44** (deps: MOD20, MOD43 ✅) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
+- 📋 **MOD45** (deps: MOD38 ✅, MOD40, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
+- 📋 **MOD46** (deps: MOD12 ✅, MOD43 ✅) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — Some work needs the window (orbiting, comparing versions, several edits in a row), and the result must land back on the object it came from. → §MOD46
 
 ## Done when — Block H
 
