@@ -12,7 +12,16 @@ public static class CloudProviders
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(100) };
 
     /// <summary>Every registered service.</summary>
-    public static IReadOnlyList<ICloudProvider> All { get; } = [new Providers.MeshyProvider(Http)];
+    public static IReadOnlyList<ICloudProvider> All { get; } = Build(null);
+
+    /// <summary>
+    /// Every registered service, each over the API root an override names: the app's
+    /// --cloud-api id=url, a stand-in the way --manifest and --releases are.
+    /// </summary>
+    /// <param name="apis">API roots by provider id; the services' own where none is named.</param>
+    /// <returns>The services.</returns>
+    public static IReadOnlyList<ICloudProvider> Build(IReadOnlyDictionary<string, Uri>? apis) =>
+        [new Providers.MeshyProvider(Http, apis?.GetValueOrDefault("meshy"))];
 
     /// <summary>The registered services that can do an action.</summary>
     /// <param name="action">The action.</param>

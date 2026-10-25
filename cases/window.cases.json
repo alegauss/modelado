@@ -100,6 +100,16 @@
       "shareable": false
     },
     {
+      // MOD37: the photo open, Meshy AI stood in by the fixture server (FixtureServer.Meshy), and
+      // LOCALAPPDATA staged empty, so the key the case stores is this run's and no other.
+      "name": "a window with the photo open and Meshy AI stood in by the fixture server",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu", "--releases", "off"],
@@ -591,6 +601,34 @@
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "and opened again" },
         { "locator": "CheckBox#AboutAutoUpdate", "act": "read", "reads": "toggle", "expect": "Off", "named": "the choice was kept" }
+      ]
+    },
+
+    {
+      "name": "a Meshy AI key stored in About brings the Cloud 3D card, which prices, asks, and puts Meshy's model in the history",
+      "catches": "a cloud card shown with no key, a key stored without being tested, an estimate the options do not move, an upload without consent, or a result that does not land as a version",
+      "filed": "MOD37",
+      "tags": ["cloud", "about", "operations"],
+      "fixture": "a window with the photo open and Meshy AI stood in by the fixture server",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "Button#CloudGenerate", "act": "read", "absent": true, "named": "no cloud action without a key" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-meshy", "act": "set value", "with": "msy_case_key", "named": "the Meshy AI key is typed" },
+        { "locator": "Button#CloudSave-meshy", "act": "invoke", "named": "Save and test is pressed" },
+        { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "Meshy accepts it and says the balance" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~30 credits", "named": "the card offers Meshy, priced textured" },
+        { "locator": "CheckBox#CloudTexture", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the texture is turned off" },
+        { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~20 credits", "named": "and the estimate drops to the bare shape's" },
+        { "locator": "CheckBox#CloudTexture", "act": "toggle", "reads": "toggle", "expect": "On", "named": "the texture is turned back on" },
+        { "locator": "Button#CloudGenerate", "act": "invoke", "named": "Generate is pressed" },
+        { "locator": "Text#CloudConsentText", "act": "read", "reads": "name", "matches": "^This photo, .+, goes to Meshy AI for about 30 credits\\.$", "named": "it says what goes where, for how much, before sending" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "in the card, not a dialog" },
+        { "locator": "Button#CloudConsentSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model is shown" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Meshy AI: image to 3D$", "named": "as a version labelled with the service" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D · 30 credits", "named": "and the status bar says what it cost" }
       ]
     },
 

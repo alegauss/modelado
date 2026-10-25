@@ -81,6 +81,11 @@ Tips for a good 3D Object: a single, whole object, centred, on a plain backgroun
 slightly above. A PNG already cut out (with transparency) is used as it is. TripoSR invents the
 sides the photo does not show, so the back of an asymmetric object comes out approximate.
 
+**Cloud services** are optional. A Meshy AI key stored in **About** (kept encrypted for your
+Windows user) brings a **Cloud 3D** card: image or text to 3D through Meshy, priced on its
+button, sent only after the card says what goes and for how many credits, and returned as a
+version in the history like a local result. Without a key nothing reaches a cloud service.
+
 The app's command-line options: `--open <photo>`, `--models <folder>`,
 `--provider auto|dml|cpu`, `--quality standard|high`, `--manifest <url>`, `--releases <url>|off`.
 

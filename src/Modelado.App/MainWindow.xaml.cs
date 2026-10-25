@@ -188,6 +188,7 @@ public partial class MainWindow : Window, IDisposable
         EmptyHint.Visibility = Visibility.Collapsed;
         Operations.Visibility = Visibility.Visible;
         LastRunSaid(null);
+        UpdateCloudCard();
     }
 
     // A model to edit and improve: no photo, so the two reconstructions wait for one.

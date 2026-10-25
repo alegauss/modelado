@@ -267,6 +267,48 @@
           </StackPanel>
         </Border>
 
+        <!-- MOD37: image or text to 3D through a cloud service, shown only once one holds a key.
+             The options are the ones every such service shares; each provider maps them to its own
+             API and prices them, so the button carries the estimate before anything is sent. -->
+        <Border x:Name="CloudCard" AutomationProperties.AutomationId="CloudCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
+          <StackPanel>
+            <TextBlock Text="Cloud 3D" Style="{StaticResource SectionHeader}" />
+            <TextBlock Style="{StaticResource StatCaption}"
+                       Text="A textured model from a cloud service, from the open photo or a description. What is sent, and what it costs, is said before it goes." />
+            <TextBlock Text="Service" Style="{StaticResource FieldLabel}" />
+            <ComboBox x:Name="CloudService" AutomationProperties.AutomationId="CloudService" AutomationProperties.Name="Service"
+                      DisplayMemberPath="DisplayName" SelectionChanged="OnCloudOptionChanged" />
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+              <RadioButton x:Name="CloudFromPhoto" AutomationProperties.AutomationId="CloudFromPhoto" GroupName="CloudSource"
+                           Content="From the photo" IsChecked="True" Checked="OnCloudOptionChanged" />
+              <RadioButton x:Name="CloudFromText" AutomationProperties.AutomationId="CloudFromText" GroupName="CloudSource"
+                           Content="From a description" Margin="12,0,0,0" Checked="OnCloudOptionChanged" />
+            </StackPanel>
+            <TextBox x:Name="CloudPrompt" AutomationProperties.AutomationId="CloudPrompt" AutomationProperties.Name="Description"
+                     Margin="0,6,0,0" Visibility="Collapsed" TextWrapping="Wrap" MaxLength="800" TextChanged="OnCloudPromptChanged" />
+            <CheckBox x:Name="CloudTexture" AutomationProperties.AutomationId="CloudTexture" Content="Textured" IsChecked="True" Margin="0,8,0,0"
+                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="Off gives the bare shape, for less." />
+            <CheckBox x:Name="CloudPbr" AutomationProperties.AutomationId="CloudPbr" Content="PBR maps (metal, roughness, normals)" Margin="0,4,0,0"
+                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" />
+            <CheckBox x:Name="CloudQuads" AutomationProperties.AutomationId="CloudQuads" Content="Quad topology" Margin="0,4,0,0"
+                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="Quads rather than triangles, for editing in Blender." />
+            <Button x:Name="CloudGenerate" AutomationProperties.AutomationId="CloudGenerate" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    Style="{DynamicResource AccentButtonStyle}" Click="OnCloudGenerate" />
+            <!-- Nothing leaves the PC before this is agreed to, each time. -->
+            <Border x:Name="CloudConsent" AutomationProperties.AutomationId="CloudConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                    Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock x:Name="CloudConsentText" AutomationProperties.AutomationId="CloudConsentText" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                  <Button x:Name="CloudConsentSend" AutomationProperties.AutomationId="CloudConsentSend" Content="Send it" Padding="12,2" Click="OnCloudSend" />
+                  <Button x:Name="CloudConsentCancel" AutomationProperties.AutomationId="CloudConsentCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                          Click="OnCloudNotNow" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Border>
+
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
             <TextBlock Text="Edit and improve" Style="{StaticResource SectionHeader}" />
@@ -450,6 +492,15 @@
           <CheckBox x:Name="AboutAutoUpdate" AutomationProperties.AutomationId="AboutAutoUpdate" Content="Check for updates by itself, once a day"
                     Margin="0,0,0,16" Checked="OnAutoUpdateChanged" Unchecked="OnAutoUpdateChanged"
                     ToolTip="Asks api.github.com for the latest release, sending only Modelado's name and version." />
+
+          <!-- MOD37: one row per cloud service the build knows, filled in code from
+               CloudProviders, so a new service is a class behind the provider interface and no new
+               screen. A key is kept encrypted for this Windows user; nothing reaches a service
+               without one. -->
+          <TextBlock Text="Cloud services" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Style="{StaticResource StatCaption}" Margin="0,0,0,6" TextWrapping="Wrap"
+                     Text="Optional. With a key, the service's actions appear beside the local ones, and nothing is sent until you agree to it each time." />
+          <StackPanel x:Name="AboutCloudServices" AutomationProperties.AutomationId="AboutCloudServices" Margin="0,0,0,16" />
 
           <!-- MOD18: what the provider flag sets, chosen here, saved per user and applied to the next operation. -->
           <TextBlock Text="Where inference runs" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />

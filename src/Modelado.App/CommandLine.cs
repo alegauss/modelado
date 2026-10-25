@@ -12,11 +12,12 @@ namespace Modelado.App;
 /// MOD30: a release description URL replacing GitHub's API, "off" for no automatic check this run, or
 /// null for the API.
 /// </param>
-public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest, string? Releases = null);
+/// <param name="CloudApis">MOD37: cloud services' API roots by provider id, standing in for their own.</param>
+public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest, string? Releases = null, IReadOnlyDictionary<string, Uri>? CloudApis = null);
 
 /// <summary>
 /// Parses Modelado.exe's arguments:
-/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url  --releases url|off</c>.
+/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url  --releases url|off  --cloud-api id=url</c>.
 /// A bare path opens that photo, so "Open with" and drag-onto-the-exe work.
 /// </summary>
 public static class CommandLine
@@ -28,6 +29,7 @@ public static class CommandLine
     {
         ArgumentNullException.ThrowIfNull(args);
         string? open = null, models = null, manifest = null, releases = null;
+        Dictionary<string, Uri> cloudApis = new(StringComparer.Ordinal);
         ProviderChoice? provider = null;
         bool high = false;
         for (int i = 0; i < args.Count; i++)
@@ -59,6 +61,14 @@ public static class CommandLine
                 case "--releases":
                     releases = value;
                     break;
+                case "--cloud-api":
+                    if (value.Split('=', 2) is not [{ Length: > 0 } id, var url] || !Uri.TryCreate(url.EndsWith('/') ? url : url + "/", UriKind.Absolute, out Uri? api))
+                    {
+                        return (null, $"--cloud-api {value}: use id=url, e.g. meshy=http://127.0.0.1:8080/.");
+                    }
+
+                    cloudApis[id] = api;
+                    break;
                 case "--provider":
                     provider = ProviderSetting.Parse(value);
                     if (provider is null)
@@ -80,6 +90,6 @@ public static class CommandLine
             }
         }
 
-        return (new AppOptions(open, models, provider, high, manifest, releases), null);
+        return (new AppOptions(open, models, provider, high, manifest, releases, cloudApis), null);
     }
 }

@@ -36,7 +36,7 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- ⏳ **MOD37** (deps: MOD36 ✅, MOD42 ✅) **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — The window: About's Cloud services keys, a Meshy card with its options, consent and the job panel; and one run with a real key. → §MOD37
+- ⏳ **MOD37** (deps: MOD36 ✅, MOD42 ✅) **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — A Meshy job does not yet survive a restart by its task id, and no run has used a real key. → §MOD37
 - 📋 **MOD38** (deps: MOD37 ⏳) **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — A rough TripoSR mesh or an imported model often needs clean topology or a new texture from a prompt, which Meshy offers and the local tools do not. → §MOD38
 - 📋 **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — Ideogram can draw the single, centred object on a plain background that TripoSR works best from, turning a text idea into a 3D model in two steps. → §MOD39
 - 📋 **MOD40** (deps: MOD39) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40

@@ -137,6 +137,7 @@ public partial class MainWindow
         UpdateEditButtons();
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
         ProviderAuto.IsEnabled = ProviderDirectML.IsEnabled = ProviderCpu.IsEnabled = !on;
+        UpdateCloudCard();
         if (!on)
         {
             RunPending(); // An operation whose download finished while this ran (MOD22).

@@ -28,6 +28,7 @@
     <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
     <ProjectReference Include="..\Modelado.Geometry\Modelado.Geometry.csproj" />
     <ProjectReference Include="..\Modelado.Inference\Modelado.Inference.csproj" />
+    <ProjectReference Include="..\Modelado.Cloud\Modelado.Cloud.csproj" />
   </ItemGroup>
 
 </Project>
