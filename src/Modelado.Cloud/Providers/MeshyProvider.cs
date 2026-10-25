@@ -17,8 +17,11 @@ namespace Modelado.Cloud.Providers;
 /// <item>pbr: true or false (enable_pbr);</item>
 /// <item>topology: triangle or quad;</item>
 /// <item>polycount: a number (target_polycount, which turns remeshing on);</item>
-/// <item>model: latest, meshy-7.1, meshy-6 or meshy-6-lite (ai_model).</item>
+/// <item>model: latest, meshy-7.1, meshy-6 or meshy-6-lite (ai_model);</item>
+/// <item>keepuv: true or false, for Retexture (enable_original_uv).</item>
 /// </list>
+/// MOD38: Remesh (/openapi/v1/remesh) and Retexture (/openapi/v1/retexture) take the open model as
+/// a GLB data URI, up to the 100 MB Meshy accepts that way.
 /// A text-to-3D job is Meshy's preview and, with a texture, the refine Meshy runs on it: one job
 /// here, submitted as the preview and moved on to the refine when the preview succeeds. A job's id
 /// carries all of that, so it is resumed by id alone after a restart, by any instance. Meshy has no
@@ -27,7 +30,7 @@ namespace Modelado.Cloud.Providers;
 public sealed class MeshyProvider : ICloudProvider
 {
     private const string ImageJobName = "image", TextJobName = "text", RefinedJobName = "textref";
-    private const string ImageJob = ImageJobName + ":", TextJob = TextJobName + ":", RefinedJob = RefinedJobName + ":";
+    private const string TextJob = TextJobName + ":", RefinedJob = RefinedJobName + ":";
     private static readonly Lazy<CloudPrices> Prices = new(() =>
     {
         using Stream stream = typeof(MeshyProvider).Assembly.GetManifestResourceStream("Modelado.Cloud.Providers.meshy-prices.json")!;
@@ -61,7 +64,10 @@ public sealed class MeshyProvider : ICloudProvider
     public Uri KeyPage => new("https://www.meshy.ai/settings/api");
 
     /// <inheritdoc/>
-    public CloudCapability Capabilities => CloudCapability.ImageTo3D | CloudCapability.TextTo3D;
+    public CloudCapability Capabilities => CloudCapability.ImageTo3D | CloudCapability.TextTo3D | CloudCapability.Remesh | CloudCapability.Retexture;
+
+    /// <summary>MOD38: the largest model Meshy takes as a data URI; a larger one is refused before it is sent.</summary>
+    public const long MaxModelBytes = 100L * 1024 * 1024;
 
     /// <summary>The request's options with Meshy's defaults filled in, which is what is sent and priced.</summary>
     /// <param name="request">The request.</param>
@@ -133,15 +139,43 @@ public sealed class MeshyProvider : ICloudProvider
             body["prompt"] = request.Prompt ?? throw new ArgumentException("Text to 3D needs a prompt.", nameof(request));
             path = "openapi/v2/text-to-3d";
         }
+        else if (request.Action is CloudCapability.Remesh or CloudCapability.Retexture)
+        {
+            // MOD38: the open model, as a GLB. The model fields Meshy's generation takes do not apply.
+            byte[] model = request.Model ?? throw new ArgumentException($"{request.Action} needs a model.", nameof(request));
+            if (model.Length > MaxModelBytes)
+            {
+                throw new InvalidOperationException($"The model is {model.Length / (1024 * 1024)} MB as a GLB, over the {MaxModelBytes / (1024 * 1024)} MB Meshy AI takes; Simplify it first.");
+            }
+
+            body.Remove("ai_model");
+            body["model_url"] = $"data:application/octet-stream;base64,{Convert.ToBase64String(model)}";
+            if (request.Action == CloudCapability.Remesh)
+            {
+                body.Remove("should_remesh");
+                body["target_polycount"] ??= 30000;
+                path = "openapi/v1/remesh";
+            }
+            else
+            {
+                body.Remove("topology");
+                body.Remove("should_remesh");
+                body.Remove("target_polycount");
+                body["text_style_prompt"] = request.Prompt ?? throw new ArgumentException("Retexture needs a prompt.", nameof(request));
+                body["enable_original_uv"] = options.TryGetValue("keepuv", out string? keep) && keep == "true";
+                body["enable_pbr"] = options["pbr"] == "true";
+                path = "openapi/v1/retexture";
+            }
+        }
         else
         {
             throw new InvalidOperationException($"Meshy AI cannot do {request.Action}.");
         }
 
         string id = await CreateAsync(path, key, body, cancellation).ConfigureAwait(false);
-        if (request.Action == CloudCapability.ImageTo3D)
+        if (request.Action != CloudCapability.TextTo3D)
         {
-            return ImageJob + id;
+            return $"{KindOf(request.Action)}:{id}";
         }
 
         // What the preview is to become, in its id: refined, with PBR maps, or left bare.
@@ -217,14 +251,24 @@ public sealed class MeshyProvider : ICloudProvider
         };
     }
 
-    // image:<task>, text:<preview>:<bare|tex|pbr>, textref:<preview>:<refine>.
+    private static string KindOf(CloudCapability action) => action switch
+    {
+        CloudCapability.ImageTo3D => ImageJobName,
+        CloudCapability.Remesh => "remesh",
+        _ => "retexture",
+    };
+
+    // image:<task>, remesh:<task>, retexture:<task>, text:<preview>:<bare|tex|pbr>,
+    // textref:<preview>:<refine>.
     private static MeshyJob Parse(string jobId)
     {
-        const string Image = "openapi/v1/image-to-3d", Text = "openapi/v2/text-to-3d";
+        const string Text = "openapi/v2/text-to-3d";
         string[] parts = jobId.Split(':');
         return parts switch
         {
-            [ImageJobName, var task] when task.Length > 0 => new MeshyJob(Image, task, null, null),
+            [ImageJobName, var task] when task.Length > 0 => new MeshyJob("openapi/v1/image-to-3d", task, null, null),
+            ["remesh", var task] when task.Length > 0 => new MeshyJob("openapi/v1/remesh", task, null, null),
+            ["retexture", var task] when task.Length > 0 => new MeshyJob("openapi/v1/retexture", task, null, null),
             [TextJobName, var preview, var mode] when preview.Length > 0 && mode is "bare" or "tex" or "pbr" => new MeshyJob(Text, preview, mode, null),
             [RefinedJobName, var preview, var refine] when preview.Length > 0 && refine.Length > 0 => new MeshyJob(Text, preview, null, refine),
             _ => throw new ArgumentException($"'{jobId}' is not a Meshy AI job.", nameof(jobId)),

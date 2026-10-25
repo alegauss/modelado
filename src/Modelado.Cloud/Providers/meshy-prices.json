@@ -5,6 +5,8 @@
   "source": "https://docs.meshy.ai/en/api/pricing",
   "actions": {
     "ImageTo3D": { "base": 20, "options": { "texture": { "true": 10 }, "model": { "meshy-6-lite": -15 } } },
-    "TextTo3D": { "base": 20, "options": { "texture": { "true": 10 }, "model": { "meshy-6-lite": -15 } } }
+    "TextTo3D": { "base": 20, "options": { "texture": { "true": 10 }, "model": { "meshy-6-lite": -15 } } },
+    "Remesh": { "base": 5 },
+    "Retexture": { "base": 10 }
   }
 }

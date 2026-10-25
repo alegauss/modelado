@@ -377,6 +377,35 @@
             </Border>
             <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
                     ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
+            <!-- MOD38: the open model remeshed or retextured by a cloud service holding a key, as a
+                 new version, so Undo returns to the local one. What goes, and for how much, is
+                 said first. -->
+            <StackPanel x:Name="CloudEditGroup" Visibility="Collapsed">
+              <TextBlock x:Name="CloudEditTitle" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
+              <DockPanel>
+                <TextBlock Text="triangles" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0" />
+                <TextBox x:Name="CloudRemeshPolycount" AutomationProperties.AutomationId="CloudRemeshPolycount" AutomationProperties.Name="Remesh to"
+                         Text="30000" TextChanged="OnCloudEditChanged" ToolTip="100 to 300,000: the clean mesh's triangle count." />
+              </DockPanel>
+              <CheckBox x:Name="CloudRemeshQuads" AutomationProperties.AutomationId="CloudRemeshQuads" Content="Quad topology" Margin="0,4,0,0" />
+              <Button x:Name="CloudRemesh" AutomationProperties.AutomationId="CloudRemesh" Margin="0,6,0,0" Click="OnCloudRemesh" />
+              <TextBox x:Name="CloudRetexturePrompt" AutomationProperties.AutomationId="CloudRetexturePrompt" AutomationProperties.Name="New texture"
+                       Margin="0,10,0,0" MaxLength="800" TextWrapping="Wrap" TextChanged="OnCloudEditChanged"
+                       ToolTip="What the new surface looks like, e.g. weathered oak, painted steel." />
+              <CheckBox x:Name="CloudKeepUv" AutomationProperties.AutomationId="CloudKeepUv" Content="Keep the model's UVs" Margin="0,4,0,0" />
+              <Button x:Name="CloudRetexture" AutomationProperties.AutomationId="CloudRetexture" Margin="0,6,0,0" Click="OnCloudRetexture" />
+              <Border x:Name="CloudEditConsent" AutomationProperties.AutomationId="CloudEditConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                      Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+                <StackPanel>
+                  <TextBlock x:Name="CloudEditConsentText" AutomationProperties.AutomationId="CloudEditConsentText" TextWrapping="Wrap" />
+                  <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button x:Name="CloudEditSend" AutomationProperties.AutomationId="CloudEditSend" Content="Send it" Padding="12,2" Click="OnCloudEditSend" />
+                    <Button x:Name="CloudEditCancel" AutomationProperties.AutomationId="CloudEditCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                            Click="OnCloudEditNotNow" />
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </StackPanel>
           </StackPanel>
         </Border>
 

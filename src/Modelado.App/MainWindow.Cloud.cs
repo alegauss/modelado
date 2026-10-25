@@ -119,6 +119,8 @@ public partial class MainWindow
             return;
         }
 
+        UpdateCloudEdit();
+
         List<ICloudProvider> ready = [.. CloudProviders.For(CloudCapability.ImageTo3D, CloudServices).Concat(CloudProviders.For(CloudCapability.TextTo3D, CloudServices))
             .Distinct().Where(p => cloudKeys.Has(p.Id))];
         CloudCard.Visibility = ready.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -217,8 +219,102 @@ public partial class MainWindow
         }
 
         RgbaImage? input = request.Action == CloudCapability.ImageTo3D ? photo : null;
-        await FollowCloudAsync(service, request.Action, title, input, (spending, progress, tracked, token) =>
+
+        // A new model is the first version of a new history; an edit of the open one is pushed onto
+        // its history, so Undo returns to the local version.
+        Action<Mesh> land = request.Action is CloudCapability.Remesh or CloudCapability.Retexture
+            ? made =>
+            {
+                history.Push(made, title);
+                Display(made);
+            }
+            : made => ShowMesh(made, input, null, title);
+        await FollowCloudAsync(service, request.Action, title, land, (spending, progress, tracked, token) =>
             CloudJobs.RunAsync(service, key, request, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
+    }
+
+    // MOD38's half: the open model remeshed or retextured by the first service with a key that can.
+    private ICloudProvider? CloudEditService => CloudServices.FirstOrDefault(p =>
+        (p.Capabilities & (CloudCapability.Remesh | CloudCapability.Retexture)) != CloudCapability.None && cloudKeys.Has(p.Id));
+
+    private int? RemeshPolycount =>
+        int.TryParse(CloudRemeshPolycount.Text.Replace(",", "", StringComparison.Ordinal).Replace(".", "", StringComparison.Ordinal), NumberStyles.None, CultureInfo.InvariantCulture, out int count)
+        && count is >= 100 and <= 300_000 ? count : null;
+
+    private void UpdateCloudEdit()
+    {
+        // The card's check boxes raise Checked while the window is still being built, before this
+        // group below them exists.
+        if (CloudEditGroup is null || CloudRetexture is null || CloudKeepUv is null)
+        {
+            return;
+        }
+
+        ICloudProvider? service = CloudEditService;
+        CloudEditGroup.Visibility = service is not null && mesh is not null ? Visibility.Visible : Visibility.Collapsed;
+        if (service is null || mesh is null)
+        {
+            return;
+        }
+
+        CloudEditTitle.Text = $"With {service.DisplayName}";
+        CloudKeepUv.IsEnabled = mesh.TexCoords is not null;
+        CloudRemesh.Content = $"Remesh{Estimate(service, CloudCapability.Remesh)}";
+        CloudRetexture.Content = $"Retexture{Estimate(service, CloudCapability.Retexture)}";
+        CloudRemesh.IsEnabled = !busy && (service.Capabilities & CloudCapability.Remesh) != 0 && RemeshPolycount is not null;
+        CloudRetexture.IsEnabled = !busy && (service.Capabilities & CloudCapability.Retexture) != 0 && !string.IsNullOrWhiteSpace(CloudRetexturePrompt.Text);
+    }
+
+    private static string Estimate(ICloudProvider service, CloudCapability action) =>
+        service.EstimateCost(new CloudJobRequest(action)) is { } cost ? string.Create(CultureInfo.InvariantCulture, $" · ~{cost.Amount:0} {cost.Unit}") : "";
+
+    private CloudJobRequest CloudEditRequest(CloudCapability action, byte[] model) => action == CloudCapability.Remesh
+        ? new CloudJobRequest(action, Model: model, Options: new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["polycount"] = RemeshPolycount!.Value.ToString(CultureInfo.InvariantCulture),
+            ["topology"] = CloudRemeshQuads.IsChecked == true ? "quad" : "triangle",
+        })
+        : new CloudJobRequest(action, Prompt: CloudRetexturePrompt.Text.Trim(), Model: model, Options: new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["keepuv"] = CloudKeepUv.IsEnabled && CloudKeepUv.IsChecked == true ? "true" : "false",
+        });
+
+    private void OnCloudEditChanged(object sender, TextChangedEventArgs e) => UpdateCloudEdit();
+
+    private void OnCloudRemesh(object sender, RoutedEventArgs e) => AskCloudEdit(CloudCapability.Remesh);
+
+    private void OnCloudRetexture(object sender, RoutedEventArgs e) => AskCloudEdit(CloudCapability.Retexture);
+
+    private void AskCloudEdit(CloudCapability action)
+    {
+        if (busy || mesh is null || CloudEditService is not { } service)
+        {
+            return;
+        }
+
+        using MemoryStream glb = new();
+        MeshExport.WriteGlb(mesh, glb);
+        CloudJobRequest request = CloudEditRequest(action, glb.ToArray());
+        string cost = service.EstimateCost(request) is { } estimate ? string.Create(CultureInfo.InvariantCulture, $" for about {estimate.Amount:0} {estimate.Unit}") : "";
+        CloudEditConsentText.Text = string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Size(glb.Length)} as a GLB, goes to {service.DisplayName}{cost}.");
+        pendingCloud = request;
+        CloudEditConsent.Visibility = Visibility.Visible;
+    }
+
+    private void OnCloudEditNotNow(object sender, RoutedEventArgs e)
+    {
+        pendingCloud = null;
+        CloudEditConsent.Visibility = Visibility.Collapsed;
+    }
+
+    private async void OnCloudEditSend(object sender, RoutedEventArgs e)
+    {
+        CloudEditConsent.Visibility = Visibility.Collapsed;
+        if (pendingCloud is { } request && CloudEditService is { } service)
+        {
+            pendingCloud = null;
+            await RunCloudAsync(service, request).ConfigureAwait(true);
+        }
     }
 
     // MOD37: a job the app was following when it closed, kept in settings.json by its id, is
@@ -243,7 +339,7 @@ public partial class MainWindow
             return;
         }
 
-        await FollowCloudAsync(service, action, title, null, (spending, progress, tracked, token) =>
+        await FollowCloudAsync(service, action, title, made => ShowMesh(made, null, null, title), (spending, progress, tracked, token) =>
             CloudJobs.ResumeAsync(service, key, action, job, progress, token, spending: spending, tracked: tracked)).ConfigureAwait(true);
     }
 
@@ -251,7 +347,7 @@ public partial class MainWindow
     // result shown as the model's first version, labelled with the service. Closing the window
     // leaves the job running at the service, kept by id for the next start.
     private async Task FollowCloudAsync(
-        ICloudProvider service, CloudCapability action, string title, RgbaImage? input,
+        ICloudProvider service, CloudCapability action, string title, Action<Mesh> land,
         Func<CloudSpending, IProgress<CloudJobStatus>, Action<string>, CancellationToken, Task<CloudResult>> follow)
     {
         if (busy)
@@ -286,7 +382,7 @@ public partial class MainWindow
             CloudResult result = await follow(spending, progress, Keep, cancel.Token).ConfigureAwait(true);
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             Mesh made = await Task.Run(() => CloudJobs.ToMesh(result), cancel.Token).ConfigureAwait(true);
-            ShowMesh(made, input, null, title);
+            land(made);
             string spent = result.Actual is { } actual ? string.Create(CultureInfo.InvariantCulture, $" · {actual.Amount:0} {actual.Unit}") : "";
             LastRunSaid($"{title}{spent}");
         }

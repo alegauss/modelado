@@ -61,6 +61,7 @@
 - ✅ **MOD41** **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — A ledger keeps each cloud job's cost across restarts; budgets warn past 80% and refuse a job at 100% before it is sent; MOD55 is the window (design recorded in `src/Modelado.Cloud/CloudLedger.cs`).
 - ✅ **MOD42** **A cloud action gives no estimate of what it will cost before it runs** — A dated price table estimates each cloud action from its options, a job the budget cannot cover is refused before upload, and the ledger keeps estimate and actual; MOD55 is the window.
 - ✅ **MOD37 (provider, window and resume)** **Meshy AI cannot be used: no image-to-3D or text-to-3D through it, beside the local TripoSR** — MeshyProvider runs image and text to 3D; About stores a tested key; the Cloud 3D card prices, asks and lands Meshy's model, and a job outlives a restart.
+- ✅ **MOD38** **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — The Edit card remeshes or retextures the open model through Meshy after its consent line, each a version, and two undos give back its bytes (design superseded: retexture takes a prompt, no image).
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

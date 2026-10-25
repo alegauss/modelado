@@ -110,6 +110,15 @@
       "shareable": false
     },
     {
+      // MOD38: the cube staged for saving, with Meshy AI stood in and LOCALAPPDATA of its own.
+      "name": "a window on a staged cube with Meshy AI stood in by the fixture server",
+      "files": ["cases/fixtures/cube.obj"],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD37: the settings.json a run left with a Meshy job in flight, and no key beside it.
       "name": "a window started with a cloud job kept from the last run but no key to follow it",
       "files": [{ "from": "cases/fixtures/settings-cloud-job.json", "to": "Modelado/settings.json" }],
@@ -638,6 +647,44 @@
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model is shown" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Meshy AI: image to 3D$", "named": "as a version labelled with the service" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D · 30 credits", "named": "and the status bar says what it cost" }
+      ]
+    },
+
+    {
+      "name": "the open model is remeshed and retextured through Meshy AI, each a version, and both undone give back the original's bytes",
+      "catches": "a remesh or retexture sent without consent, priced wrong, landing as a new history, or an undo that does not return the local model exactly",
+      "filed": "MOD38",
+      "tags": ["cloud", "edit", "export", "dialog"],
+      "fixture": "a window on a staged cube with Meshy AI stood in by the fixture server",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "Button#CloudRemesh", "act": "read", "absent": true, "named": "no cloud edit without a key" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-meshy", "act": "set value", "with": "msy_case_key", "named": "the Meshy AI key is typed" },
+        { "locator": "Button#CloudSave-meshy", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "once Meshy accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#CloudRemesh", "act": "read", "reads": "name", "expect": "Remesh · ~5 credits", "named": "the Edit card offers Meshy's remesh, priced" },
+        { "locator": "Button#CloudRemesh", "act": "invoke", "named": "Remesh is pressed" },
+        { "locator": "Text#CloudEditConsentText", "act": "read", "reads": "name", "matches": "^This model, 12 triangles, .+ as a GLB, goes to Meshy AI for about 5 credits\\.$", "named": "it says what goes, before sending" },
+        { "locator": "Button#CloudEditSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "26 vertices · 48 triangles", "named": "the remeshed model is shown" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "^2\\. Meshy AI: remesh$", "named": "as the second version" },
+        { "locator": "Edit#CloudRetexturePrompt", "act": "set value", "with": "weathered oak", "reads": "value", "expect": "weathered oak", "named": "a new texture is described" },
+        { "locator": "Button#CloudRetexture", "act": "invoke", "named": "Retexture is pressed" },
+        { "locator": "Text#CloudEditConsentText", "act": "read", "reads": "name", "matches": "^This model, 48 triangles, .+ goes to Meshy AI for about 10 credits\\.$", "named": "it says what goes again" },
+        { "locator": "Button#CloudEditSend", "act": "invoke", "named": "Send it is pressed again" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "^3\\. Meshy AI: retexture$", "named": "the retexture is the third version" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "26 vertices · 48 triangles", "named": "back to the remesh" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "and again" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "back to the cube as opened" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/original", "named": "the dialog is told to save original" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved original.stl", "named": "it is written" },
+        { "file": "{files}/original.stl", "act": "read", "sameBytesAs": "cases/fixtures/cube-100mm.stl", "named": "byte for byte what modelado-cli edit --size 100 writes for the untouched cube" }
       ]
     },
 

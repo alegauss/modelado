@@ -298,6 +298,7 @@ public partial class MainWindow : Window, IDisposable
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
             $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
         UpdateEditButtons();
+        UpdateCloudCard();
         RequestRender();
     }
 

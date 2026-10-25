@@ -163,6 +163,60 @@ public sealed class MeshyProviderTests
     }
 
     [Fact]
+    public async Task The_open_model_goes_up_as_a_glb_to_be_remeshed()
+    {
+        // MOD38.
+        FakeMeshy fake = new FakeMeshy()
+            .Answer("POST /openapi/v1/remesh", """{"result": "rem-1"}""")
+            .Answer("GET /openapi/v1/remesh/rem-1", Task("SUCCEEDED", 100, 5));
+        Dictionary<string, string> options = new() { ["topology"] = "quad", ["polycount"] = "2000" };
+
+        CloudResult result = await CloudJobs.RunAsync(
+            Meshy(fake), "k", new CloudJobRequest(CloudCapability.Remesh, Model: Glb, Options: options), null, TestContext.Current.CancellationToken, TimeSpan.Zero);
+
+        JsonNode body = fake.Sent[0].Body!;
+        Assert.Equal($"data:application/octet-stream;base64,{Convert.ToBase64String(Glb)}", body["model_url"]!.GetValue<string>());
+        Assert.Equal(("quad", 2000), (body["topology"]!.GetValue<string>(), body["target_polycount"]!.GetValue<int>()));
+        Assert.Null(body["ai_model"]);
+        Assert.Equal(new CloudCost(5, "credits"), result.Actual);
+    }
+
+    [Fact]
+    public async Task A_retexture_sends_the_model_and_the_prompt()
+    {
+        FakeMeshy fake = new FakeMeshy().Answer("POST /openapi/v1/retexture", """{"result": "tex-1"}""");
+
+        string job = await Meshy(fake).SubmitAsync(
+            "k", new CloudJobRequest(CloudCapability.Retexture, Prompt: "weathered oak", Model: Glb, Options: new Dictionary<string, string> { ["keepuv"] = "true" }), TestContext.Current.CancellationToken);
+
+        JsonNode body = fake.Sent[0].Body!;
+        Assert.Equal("retexture:tex-1", job);
+        Assert.Equal(("weathered oak", true, false), (body["text_style_prompt"]!.GetValue<string>(), body["enable_original_uv"]!.GetValue<bool>(), body["enable_pbr"]!.GetValue<bool>()));
+        Assert.Null(body["topology"]);
+    }
+
+    [Fact]
+    public async Task A_model_over_meshys_upload_limit_is_refused_before_it_is_sent()
+    {
+        FakeMeshy fake = new();
+        byte[] huge = new byte[MeshyProvider.MaxModelBytes + 1];
+
+        InvalidOperationException refused = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            Meshy(fake).SubmitAsync("k", new CloudJobRequest(CloudCapability.Remesh, Model: huge), TestContext.Current.CancellationToken));
+
+        Assert.Contains("Simplify it first", refused.Message, StringComparison.Ordinal);
+        Assert.Empty(fake.Sent);
+    }
+
+    [Theory]
+    [InlineData(CloudCapability.Remesh, 5)]
+    [InlineData(CloudCapability.Retexture, 10)]
+    public void Remesh_and_retexture_are_priced(CloudCapability action, double credits)
+    {
+        Assert.Equal(new CloudCost(credits, "credits"), Meshy(new FakeMeshy()).EstimateCost(new CloudJobRequest(action)));
+    }
+
+    [Fact]
     public async Task A_failed_task_says_what_meshy_said()
     {
         FakeMeshy fake = new FakeMeshy()

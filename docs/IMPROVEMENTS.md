@@ -233,21 +233,6 @@ version with CloudJobs.Label.
 Done when the same photo goes through TripoSR and through Meshy (with a real key, on the
 guest), and both results can be refined and exported.
 
-### §MOD38 Meshy AI: remesh and retexture the open model
-
-The Edit and refine card gains a "With Meshy AI" group, shown only with a key: Remesh
-(target polycount, quad or triangle topology) and Retexture (a text prompt or a style
-image, keeping the model's UVs or making new ones). The open model is exported to GLB,
-uploaded, processed, and the result comes back as a new version, so Undo returns to the
-local one.
-
-The consent line names what goes ("This model, 151k triangles, 6.4 MB GLB, goes to Meshy
-AI") with the projected cost, as for generation. A model over Meshy's upload limit is
-refused before upload, offering the local Simplify first.
-
-Done when a TripoSR result is remeshed and then retextured through Meshy, both steps are
-undone, and the original returns byte for byte.
-
 ### §MOD39 Ideogram: a reference image from a prompt
 
 IdeogramProvider is the second ICloudProvider, with the TextToImage capability, over

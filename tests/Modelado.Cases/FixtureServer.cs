@@ -143,9 +143,18 @@ public sealed class FixtureServer : IDisposable
             ("GET", "/meshy/openapi/v1/image-to-3d/case-image") => (200, string.Create(
                 CultureInfo.InvariantCulture,
                 $$$"""{"id": "case-image", "status": "SUCCEEDED", "progress": 100, "consumed_credits": 30, "model_urls": {"glb": "http://127.0.0.1:{{{Port}}}/files/cube.glb"}}""")),
+            // MOD38: a remesh gives the cube subdivided, a retexture the cube as it was.
+            ("POST", "/meshy/openapi/v1/remesh") => (200, """{"result": "case-remesh"}"""),
+            ("GET", "/meshy/openapi/v1/remesh/case-remesh") => (200, Done("case-remesh", 5, "remeshed.glb")),
+            ("POST", "/meshy/openapi/v1/retexture") => (200, """{"result": "case-retexture"}"""),
+            ("GET", "/meshy/openapi/v1/retexture/case-retexture") => (200, Done("case-retexture", 10, "cube.glb")),
             _ => (404, """{"message": "Not found"}"""),
         };
     }
+
+    private static string Done(string id, int credits, string glb) => string.Create(
+        CultureInfo.InvariantCulture,
+        $$$"""{"id": "{{{id}}}", "status": "SUCCEEDED", "progress": 100, "consumed_credits": {{{credits}}}, "model_urls": {"glb": "http://127.0.0.1:{{{Port}}}/files/{{{glb}}}"}}""");
 
     private static async Task<(string Method, string Path, long? From, string? Authorization)> ReadRequestAsync(NetworkStream stream, CancellationToken stop)
     {
