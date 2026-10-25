@@ -408,6 +408,30 @@
     },
 
     {
+      "name": "the 3D Object card's Advanced settings start closed at the CLI's defaults and take step 1 and no smoothing",
+      "catches": "advanced settings left open on a short card, defaults that differ from modelado-cli object, or a label that does not follow its slider",
+      "filed": "MOD17",
+      "tags": ["object"],
+      "fixture": "a window opened on the photo fixture",
+      "steps": [
+        { "locator": "Group#ObjectAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "Advanced starts closed" },
+        { "locator": "Group#ObjectAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "and opens" },
+        { "locator": "CheckBox#ObjectEveryPoint", "act": "read", "reads": "toggle", "expect": "Off", "named": "coarse step 2, the CLI's default" },
+        { "locator": "Slider#ObjectSmoothing", "act": "read", "reads": "range", "expect": "2", "named": "2 smoothing passes, the CLI's default" },
+        { "locator": "Slider#ObjectPieces", "act": "read", "reads": "range", "expect": "5", "named": "loose pieces under 5%, the pipeline's default" },
+        { "locator": "CheckBox#ObjectEveryPoint", "act": "toggle", "reads": "toggle", "expect": "On", "named": "every grid point is chosen" },
+        { "locator": "Slider#ObjectSmoothing", "act": "set range", "with": "0", "reads": "range", "expect": "0", "named": "no smoothing" },
+        { "locator": "Text#ObjectSmoothingLabel", "act": "read", "reads": "name", "expect": "Smoothing passes: 0", "named": "the passes label follows" },
+        { "locator": "Slider#ObjectPieces", "act": "set range", "with": "12", "reads": "range", "expect": "12", "named": "loose pieces under 12%" },
+        { "locator": "Text#ObjectPiecesLabel", "act": "read", "reads": "name", "expect": "Drop loose pieces under 12%", "named": "the share label follows" },
+        { "locator": "CheckBox#ObjectEveryPoint", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the shared window is put back: coarse step" },
+        { "locator": "Slider#ObjectSmoothing", "act": "set range", "with": "2", "reads": "range", "expect": "2", "named": "2 passes" },
+        { "locator": "Slider#ObjectPieces", "act": "set range", "with": "5", "reads": "range", "expect": "5", "named": "5%" },
+        { "locator": "Group#ObjectAdvanced", "act": "collapse", "reads": "expanded", "expect": "Collapsed", "named": "Advanced closes again" }
+      ]
+    },
+
+    {
       "name": "the Edit card's amounts give the mesh the CLI gives for the same values",
       "catches": "a slider the edit ignores, a label that names another amount than the one applied, or a window that edits differently from modelado-cli",
       "filed": "MOD16",

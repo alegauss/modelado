@@ -183,6 +183,27 @@
                       ToolTip="TripoSR colours from a 64 × 64 grid; this lays the photo's own colours back on the side it shows." />
             <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="Enhance a small photo first (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
                       ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
+            <!-- MOD17: the CLI's -\-step and -\-smooth, and the loose-piece share it fixes, closed by default. -->
+            <Expander x:Name="ObjectAdvanced" AutomationProperties.AutomationId="ObjectAdvanced" Header="Advanced" Margin="0,8,0,0" IsExpanded="False">
+              <StackPanel Margin="0,4,0,0">
+                <CheckBox x:Name="ObjectEveryPoint" AutomationProperties.AutomationId="ObjectEveryPoint" Content="Sample every grid point (slower, catches thin parts)"
+                          ToolTip="Evaluates all of the grid instead of about a quarter of it, so sampling takes about 4× as long; thin legs and handles the coarse pass skips are kept." />
+                <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectSmoothingLabel">
+                  <Run Text="Smoothing passes: " /><Run x:Name="ObjectSmoothingText" Text="2" />
+                </TextBlock>
+                <Slider x:Name="ObjectSmoothing" AutomationProperties.AutomationId="ObjectSmoothing" AutomationProperties.Name="Smoothing passes"
+                        Minimum="0" Maximum="6" Value="2" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="1"
+                        ValueChanged="OnObjectAdvancedChanged"
+                        ToolTip="Taubin passes after the surface is drawn; 0 keeps the raw mesh to sculpt from. Each pass is a small share of a run at 256." />
+                <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectPiecesLabel">
+                  <Run Text="Drop loose pieces under " /><Run x:Name="ObjectPiecesText" Text="5%" />
+                </TextBlock>
+                <Slider x:Name="ObjectPieces" AutomationProperties.AutomationId="ObjectPieces" AutomationProperties.Name="Drop loose pieces under"
+                        Minimum="0" Maximum="20" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
+                        ValueChanged="OnObjectAdvancedChanged"
+                        ToolTip="Fragments smaller than this share of the largest part are dropped; 0 keeps every piece. It adds next to nothing to the run's time." />
+              </StackPanel>
+            </Expander>
             <Button x:Name="ObjectButton" AutomationProperties.AutomationId="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
             <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how

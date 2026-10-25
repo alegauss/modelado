@@ -39,8 +39,22 @@ public partial class MainWindow
             RemoveBackground: ObjectRemoveBackground.IsChecked == true,
             DensityThreshold: (float)ObjectThreshold.Value,
             EnhancePhoto: enhance,
-            ProjectPhoto: ObjectProjectPhoto.IsChecked == true);
+            ProjectPhoto: ObjectProjectPhoto.IsChecked == true,
+            CoarseStep: ObjectEveryPoint.IsChecked == true ? 1 : 2,
+            SmoothingIterations: (int)ObjectSmoothing.Value,
+            KeepPieces: (int)ObjectPieces.Value / 100.0);
         await RunAsync(objectFirstUse!, (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+    }
+
+    private void OnObjectAdvancedChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (ObjectSmoothingText is null || ObjectPiecesText is null)
+        {
+            return;
+        }
+
+        ObjectSmoothingText.Text = $"{(int)ObjectSmoothing.Value}";
+        ObjectPiecesText.Text = $"{(int)ObjectPieces.Value}%";
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)

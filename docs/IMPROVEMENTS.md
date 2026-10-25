@@ -37,24 +37,12 @@ The download half is now held by a case: MOD11 added a fixture server to
 tests\Modelado.Cases and "About opens and closes during a download whose chip keeps
 going" reads DownloadChip against it on the guest. What is left is the reconstruction:
 once MOD20 has published the models, start a Relief on the guest with the cards scrolled
-down and read JobChip, then LastRun ("Relief · <s> s · CPU").
+down and read JobChip, then LastRun ("Relief · <s> s · CPU"). With the models there,
+also close MOD17's check: a 3D Object at step 1 with 0 smoothing passes (the card's
+Advanced) gives the triangle count modelado-cli object --step 1 --smooth 0 gives on the
+same photo.
 
 ## Block C — Existing code wired into the window
-
-### §MOD17 Object sampling and smoothing on the card
-
-MainWindow.Operations.cs builds ObjectOptions with Resolution, DensityThreshold,
-RemoveBackground, EnhancePhoto and ProjectPhoto, and leaves CoarseStep (2) and
-SmoothingIterations (2) at their defaults. KeepPieces (0.05) is also fixed, and the CLI
-has no flag for it either.
-
-These go in an "Advanced" expander on the 3D Object card, closed by default, so the card
-stays as short as PhotoBoost's: "Sample every grid point (slower, catches thin parts)"
-as a checkbox for step 1 or 2, "Smoothing passes" 0 to 6, and "Drop loose pieces under"
-0 to 20%. Their tooltips say what each costs in time at 256.
-
-Done when step 1 with no smoothing in the window gives the same triangle count as
-modelado-cli object --step 1 --smooth 0 on the same photo.
 
 ### §MOD18 Provider choice in the window
 
