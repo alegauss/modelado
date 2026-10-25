@@ -71,7 +71,8 @@ public sealed record CloudJobStatus(CloudJobState State, double Progress = 0, st
 /// <summary>What a finished job made.</summary>
 /// <param name="Bytes">The file.</param>
 /// <param name="Extension">Its kind: ".glb" for a model, ".png" or ".jpg" for an image.</param>
-public sealed record CloudResult(byte[] Bytes, string Extension)
+/// <param name="Actual">MOD42: what the job cost, where the service reports it; the estimate stands in otherwise.</param>
+public sealed record CloudResult(byte[] Bytes, string Extension, CloudCost? Actual = null)
 {
     /// <summary>True for a model, false for an image.</summary>
     public bool IsModel => string.Equals(Extension, ".glb", StringComparison.OrdinalIgnoreCase);

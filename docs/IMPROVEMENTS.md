@@ -282,50 +282,28 @@ badly.
 Done when a relief gets a stone texture from a prompt, the seam test passes, and Undo
 restores the photo texture.
 
-### §MOD42 Cost projection before each action
-
-Each ICloudProvider implements Estimate(action, options), returning the credits (and the
-currency amount where the plan has one) the action will take. It comes from a price
-table per provider, kept in a versioned JSON beside the provider with the date it was
-read from the service's pricing page, and refreshed from the API where the service
-exposes prices.
-
-The estimate shows on the button ("Generate with Meshy · ~30 credits") and updates live
-as the options change. The consent line repeats it beside the balance and budget left
-("~30 of 470 credits left this month"). An action that would cross the budget says so
-before it runs.
-
-After each job, the actual cost (from the API where reported, otherwise the estimate)
-goes into the usage ledger. The panel shows estimate against actual per action, so a
-stale price table shows up as a drift. A table older than 90 days is flagged.
-
-Done when, with a fake provider, each option change moves the estimate, an over-budget
-action is refused before upload, and the ledger records estimate and actual.
-
 ### §MOD55 Cloud usage panel and chip
 
-MOD41 built the figures in Modelado.Cloud and left their window here, since it shows
-only once a key is stored, which needs MOD37's first provider. What exists: CloudLedger
-(every job's provider, action, cost, time and outcome in cloud-ledger.jsonl),
-CloudBudget and BudgetState (Ok, Warning past WarnAt, Exceeded at the limit),
-CloudSpending.StateOf, and CloudJobs.RunAsync taking a CloudSpending, which records each
-job and throws BudgetExceededException before submitting one to a service whose budget
-is spent.
+MOD41 and MOD42 built the figures in Modelado.Cloud and left their window here, since it
+shows only once a key is stored, which needs MOD37's first provider. CloudLedger keeps
+each job's provider, action, estimate, actual, time and outcome. CloudBudget and
+BudgetState give Ok, Warning past WarnAt and Exceeded at the limit. CloudPrices
+estimates an action from a dated price table, and CloudJobs.RunAsync, given a
+CloudSpending, records each job and refuses with BudgetExceededException, before any
+upload, one the budget cannot cover.
 
 Build the window over them. A "Cloud usage" panel, from About and from a status-bar chip
-that appears once any key is stored, has a row per provider with:
+that appears once any key is stored, has a row per provider: the key's state
+(ValidateKeyAsync), the balance where UsageAsync reports one, and this app's spend
+today, this month and in total, said to be its own where no balance is reported. It also
+has the monthly budget and warning share the user sets, estimate against actual per
+action, and a flag on a price table CloudPrices.IsStale calls old.
 
-- the key's state (ValidateKeyAsync) and whether the service answers;
-- the balance where UsageAsync reports one;
-- this app's spend today, this month and in total from the ledger, saying it is this
-  app's own where the service reports no balance;
-- the monthly budget and warning share, which the user sets and which persist beside the
-  ledger.
-
-The chip turns amber at Warning and says so on the next consent line, and at Exceeded
-the action's button says why it will not run. Rate-limit and quota errors show on the
-row with the time they clear. A winwright case drives it with a stand-in provider served
-by the cases' fixture server.
+The action's button carries its estimate ("Generate with Meshy · ~30 credits") and
+updates as options change. The consent line repeats it beside what the budget leaves.
+The chip turns amber at Warning, and an action the budget cannot cover says why before
+it runs. Rate-limit errors show on the row with when they clear. A winwright case drives
+it with a stand-in provider on the cases' fixture server.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

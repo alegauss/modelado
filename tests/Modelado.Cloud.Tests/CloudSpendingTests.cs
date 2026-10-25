@@ -73,7 +73,7 @@ public sealed class CloudSpendingTests : IDisposable
         BudgetExceededException refused = await Assert.ThrowsAsync<BudgetExceededException>(() => Run(fake, spending));
 
         Assert.Equal(2, fake.Submitted);
-        Assert.Equal("Fake's budget for this month is spent (20 of 20); raise it in Cloud usage to run more.", refused.Message);
+        Assert.Equal("Fake's budget for this month is spent (20 of 20); raise it in Cloud usage to run this.", refused.Message);
     }
 
     [Fact]

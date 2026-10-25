@@ -10,7 +10,9 @@ namespace Modelado.Cloud;
 /// <param name="Unit">The service's unit, e.g. "credits".</param>
 /// <param name="At">When it finished.</param>
 /// <param name="Outcome">succeeded, failed or cancelled.</param>
-public sealed record LedgerEntry(string Provider, CloudCapability Action, double Amount, string Unit, DateTimeOffset At, string Outcome);
+/// <param name="Estimated">MOD42: what it was estimated to cost before it ran, beside the actual
+/// <paramref name="Amount"/>, so a stale price table shows as a drift.</param>
+public sealed record LedgerEntry(string Provider, CloudCapability Action, double Amount, string Unit, DateTimeOffset At, string Outcome, double? Estimated = null);
 
 /// <summary>
 /// What this app spent through each service (MOD41): every job's provider, action, cost, time and
@@ -165,8 +167,31 @@ public sealed record CloudSpending(CloudLedger Ledger, IReadOnlyDictionary<strin
     /// <summary>Records a finished job at the time it finished.</summary>
     /// <param name="provider">The provider's id.</param>
     /// <param name="action">What it did.</param>
-    /// <param name="cost">What it cost, or null where nothing was spent.</param>
+    /// <param name="estimate">What it was estimated to cost, or null where nothing priced it.</param>
+    /// <param name="actual">What it cost, or null where nothing was spent.</param>
     /// <param name="outcome">succeeded, failed or cancelled.</param>
-    public void Record(string provider, CloudCapability action, CloudCost? cost, string outcome) =>
-        Ledger.Record(new LedgerEntry(provider, action, cost?.Amount ?? 0, cost?.Unit ?? "", Now, outcome));
+    public void Record(string provider, CloudCapability action, CloudCost? estimate, CloudCost? actual, string outcome) =>
+        Ledger.Record(new LedgerEntry(provider, action, actual?.Amount ?? 0, actual?.Unit ?? estimate?.Unit ?? "", Now, outcome, estimate?.Amount));
+
+    /// <summary>Whether an action would take a service past its budget this month.</summary>
+    /// <param name="provider">The provider's id.</param>
+    /// <param name="estimate">What the action is estimated to cost.</param>
+    /// <returns>Why it would not run, or null when it may.</returns>
+    public string? Refusal(string provider, CloudCost? estimate)
+    {
+        (BudgetState state, double spent) = StateOf(provider);
+        if (!Budgets.TryGetValue(provider, out CloudBudget? budget))
+        {
+            return null;
+        }
+
+        if (state == BudgetState.Exceeded)
+        {
+            return $"spent ({spent:0.##} of {budget.Monthly:0.##})";
+        }
+
+        return estimate is not null && spent + estimate.Amount > budget.Monthly
+            ? $"too small for it: ~{estimate.Amount:0.##} with {budget.Monthly - spent:0.##} of {budget.Monthly:0.##} left"
+            : null;
+    }
 }

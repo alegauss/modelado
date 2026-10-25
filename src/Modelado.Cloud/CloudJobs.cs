@@ -35,10 +35,12 @@ public static class CloudJobs
             throw new InvalidOperationException($"{provider.DisplayName} cannot do {request.Action}.");
         }
 
-        if (spending?.StateOf(provider.Id) is (BudgetState.Exceeded, double spent))
+        // MOD42: refused before anything is uploaded, when the budget is spent or the action's
+        // estimate would cross it.
+        CloudCost? estimate = provider.EstimateCost(request);
+        if (spending?.Refusal(provider.Id, estimate) is { } why)
         {
-            throw new BudgetExceededException(
-                $"{provider.DisplayName}'s budget for this month is spent ({spent:0.##} of {spending.Budgets[provider.Id].Monthly:0.##}); raise it in Cloud usage to run more.");
+            throw new BudgetExceededException($"{provider.DisplayName}'s budget for this month is {why}; raise it in Cloud usage to run this.");
         }
 
         string job = await provider.SubmitAsync(key, request, cancellation).ConfigureAwait(false);
@@ -53,11 +55,11 @@ public static class CloudJobs
                 {
                     case CloudJobState.Succeeded:
                         CloudResult result = await provider.ResultAsync(key, job, cancellation).ConfigureAwait(false);
-                        spending?.Record(provider.Id, request.Action, provider.EstimateCost(request), "succeeded");
+                        spending?.Record(provider.Id, request.Action, estimate, result.Actual ?? estimate, "succeeded");
                         return result;
                     case CloudJobState.Failed or CloudJobState.Cancelled:
                         string outcome = status.State == CloudJobState.Failed ? "failed" : "cancelled";
-                        spending?.Record(provider.Id, request.Action, null, outcome);
+                        spending?.Record(provider.Id, request.Action, estimate, null, outcome);
                         throw new InvalidOperationException($"{provider.DisplayName} {outcome} the job{(status.Message is null ? "." : $": {status.Message}")}");
                 }
 
@@ -77,7 +79,7 @@ public static class CloudJobs
                 // The job may run on at the service; there is nothing more to do from here.
             }
 
-            spending?.Record(provider.Id, request.Action, null, "cancelled");
+            spending?.Record(provider.Id, request.Action, estimate, null, "cancelled");
             throw;
         }
     }
