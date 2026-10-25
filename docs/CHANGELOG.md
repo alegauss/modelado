@@ -57,6 +57,7 @@
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 - ✅ **MOD36** **The app has no way to use a cloud 3D or image service: no place for an API key, no provider abstraction** — Modelado.Cloud holds the provider interface, one submit-poll-fetch job runner and a DPAPI key store; a fake provider drives a job into the history (design superseded: its About part is MOD37's).
+- ✅ **MOD41** **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — A ledger keeps each cloud job's cost across restarts; budgets warn past 80% and refuse a job at 100% before it is sent; MOD55 is the window (design recorded in `src/Modelado.Cloud/CloudLedger.cs`).
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

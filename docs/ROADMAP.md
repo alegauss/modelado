@@ -40,8 +40,8 @@
 - 📋 **MOD38** (deps: MOD37) **An open model cannot be remeshed or retextured through Meshy, only edited with the local geometry tools** — A rough TripoSR mesh or an imported model often needs clean topology or a new texture from a prompt, which Meshy offers and the local tools do not. → §MOD38
 - 📋 **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — Ideogram can draw the single, centred object on a plain background that TripoSR works best from, turning a text idea into a 3D model in two steps. → §MOD39
 - 📋 **MOD40** (deps: MOD39) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
-- 📋 **MOD41** (deps: MOD9 ✅, MOD36 ✅) **Nothing shows each service's credits, usage or status, so a limit is found only when a job is refused** — Cloud jobs spend money or credits, and a person needs to see how close each service is to its limit before starting one, not after. → §MOD41
-- 📋 **MOD42** (deps: MOD41) **A cloud action gives no estimate of what it will cost before it runs** — Credits differ by action and options (texture on or off, polycount, four candidates or one), and a person should see the price before pressing, not on the bill. → §MOD42
+- 📋 **MOD42** (deps: MOD41 ✅) **A cloud action gives no estimate of what it will cost before it runs** — Credits differ by action and options (texture on or off, polycount, four candidates or one), and a person should see the price before pressing, not on the bill. → §MOD42
+- 📋 **MOD55** (deps: MOD37) **The window shows no cloud usage panel or budget chip, so a service's spend and limit are never seen** — MOD41's ledger and budgets refuse an over-budget job, but a person sees the refusal only when it happens, not the approach to it. → §MOD55
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

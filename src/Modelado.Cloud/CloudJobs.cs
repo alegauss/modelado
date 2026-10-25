@@ -21,16 +21,24 @@ public static class CloudJobs
     /// <param name="progress">Told each status.</param>
     /// <param name="cancellation">Cancels it, at the service too.</param>
     /// <param name="poll">How long between polls.</param>
+    /// <param name="spending">MOD41: the ledger every job is recorded in and the budgets that refuse one.</param>
     /// <returns>What the job made.</returns>
     /// <exception cref="InvalidOperationException">The service failed or cancelled the job.</exception>
+    /// <exception cref="BudgetExceededException">The service's monthly budget is spent; nothing was submitted.</exception>
     public static async Task<CloudResult> RunAsync(
-        ICloudProvider provider, string key, CloudJobRequest request, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll = null)
+        ICloudProvider provider, string key, CloudJobRequest request, IProgress<CloudJobStatus>? progress, CancellationToken cancellation, TimeSpan? poll = null, CloudSpending? spending = null)
     {
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(request);
         if ((provider.Capabilities & request.Action) != request.Action || request.Action == CloudCapability.None)
         {
             throw new InvalidOperationException($"{provider.DisplayName} cannot do {request.Action}.");
+        }
+
+        if (spending?.StateOf(provider.Id) is (BudgetState.Exceeded, double spent))
+        {
+            throw new BudgetExceededException(
+                $"{provider.DisplayName}'s budget for this month is spent ({spent:0.##} of {spending.Budgets[provider.Id].Monthly:0.##}); raise it in Cloud usage to run more.");
         }
 
         string job = await provider.SubmitAsync(key, request, cancellation).ConfigureAwait(false);
@@ -44,9 +52,13 @@ public static class CloudJobs
                 switch (status.State)
                 {
                     case CloudJobState.Succeeded:
-                        return await provider.ResultAsync(key, job, cancellation).ConfigureAwait(false);
+                        CloudResult result = await provider.ResultAsync(key, job, cancellation).ConfigureAwait(false);
+                        spending?.Record(provider.Id, request.Action, provider.EstimateCost(request), "succeeded");
+                        return result;
                     case CloudJobState.Failed or CloudJobState.Cancelled:
-                        throw new InvalidOperationException($"{provider.DisplayName} {(status.State == CloudJobState.Failed ? "failed" : "cancelled")} the job{(status.Message is null ? "." : $": {status.Message}")}");
+                        string outcome = status.State == CloudJobState.Failed ? "failed" : "cancelled";
+                        spending?.Record(provider.Id, request.Action, null, outcome);
+                        throw new InvalidOperationException($"{provider.DisplayName} {outcome} the job{(status.Message is null ? "." : $": {status.Message}")}");
                 }
 
                 await Task.Delay(poll ?? DefaultPoll, cancellation).ConfigureAwait(false);
@@ -65,6 +77,7 @@ public static class CloudJobs
                 // The job may run on at the service; there is nothing more to do from here.
             }
 
+            spending?.Record(provider.Id, request.Action, null, "cancelled");
             throw;
         }
     }

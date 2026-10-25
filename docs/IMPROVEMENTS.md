@@ -282,24 +282,6 @@ badly.
 Done when a relief gets a stone texture from a prompt, the seam test passes, and Undo
 restores the photo texture.
 
-### §MOD41 Usage and status monitor per service
-
-A "Cloud usage" panel (from About, and from a status-bar chip that appears once any key
-is stored) shows a row per provider. Each row has the key's state (valid, invalid,
-expired), the service's reachability, the balance or remaining credits where its API
-reports them, and the limit if the user sets one. It also shows what this app spent
-through it today, this month and in total, from a local ledger: every job's provider,
-action, cost, time and result, kept in the settings folder. Where the API reports no
-balance, the row says that its figures are this app's own spend, not the account's.
-
-The user sets a monthly budget per service and a warning threshold (default 80%).
-Crossing it turns the chip amber and says so on the next consent line. At 100%, jobs to
-that service are refused until the budget is raised. Rate-limit and quota errors from a
-service show on its row with the time they clear.
-
-Done when, with a fake provider in the tests, spending past 80% turns the chip amber,
-past 100% refuses the next job, and the ledger survives a restart.
-
 ### §MOD42 Cost projection before each action
 
 Each ICloudProvider implements Estimate(action, options), returning the credits (and the
@@ -319,6 +301,31 @@ stale price table shows up as a drift. A table older than 90 days is flagged.
 
 Done when, with a fake provider, each option change moves the estimate, an over-budget
 action is refused before upload, and the ledger records estimate and actual.
+
+### §MOD55 Cloud usage panel and chip
+
+MOD41 built the figures in Modelado.Cloud and left their window here, since it shows
+only once a key is stored, which needs MOD37's first provider. What exists: CloudLedger
+(every job's provider, action, cost, time and outcome in cloud-ledger.jsonl),
+CloudBudget and BudgetState (Ok, Warning past WarnAt, Exceeded at the limit),
+CloudSpending.StateOf, and CloudJobs.RunAsync taking a CloudSpending, which records each
+job and throws BudgetExceededException before submitting one to a service whose budget
+is spent.
+
+Build the window over them. A "Cloud usage" panel, from About and from a status-bar chip
+that appears once any key is stored, has a row per provider with:
+
+- the key's state (ValidateKeyAsync) and whether the service answers;
+- the balance where UsageAsync reports one;
+- this app's spend today, this month and in total from the ledger, saying it is this
+  app's own where the service reports no balance;
+- the monthly budget and warning share, which the user sets and which persist beside the
+  ledger.
+
+The chip turns amber at Warning and says so on the next consent line, and at Exceeded
+the action's button says why it will not run. Rate-limit and quota errors show on the
+row with the time they clear. A winwright case drives it with a stand-in provider served
+by the cases' fixture server.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
