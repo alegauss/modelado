@@ -202,7 +202,8 @@ public sealed class MeshImportTests : IDisposable
     [Fact]
     public void An_obj_takes_each_materials_kd_and_a_ply_its_diffuse_colours()
     {
-        // MOD59: two quads under two materials of the .mtl, one textured (its Kd is the texture's tint, left alone).
+        // MOD59: two quads under two materials of the .mtl; the second names a texture that is not
+        // there, so its Kd is what it shows.
         string obj = Path.Combine(folder, "kd.obj");
         File.WriteAllText(Path.Combine(folder, "kd.mtl"), "newmtl paint\nKd 0.8 0.1 0.1\n\nnewmtl decal\nKd 0.5 0.5 0.5\nmap_Kd missing.png\n");
         File.WriteAllText(obj, "mtllib kd.mtl\nv 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nv 2 0 0\nv 2 1 0\nusemtl paint\nf 1 2 3 4\nusemtl decal\nf 2 5 6 3\n");
@@ -213,9 +214,164 @@ public sealed class MeshImportTests : IDisposable
         Mesh orange = MeshImport.Load(ply);
 
         Assert.Equal(new Vector3(0.8f, 0.1f, 0.1f), painted.Colors![Nearest(painted, new Vector3(0, 1, 0))]);
-        Assert.Equal(Vector3.One, painted.Colors![Nearest(painted, new Vector3(2, 1, 0))]);
+        Assert.Equal(new Vector3(0.5f), painted.Colors![Nearest(painted, new Vector3(2, 1, 0))]);
         Assert.Equal(4 + 4, painted.VertexCount);
         Assert.Equal(128 / 255f, orange.Colors![0].Y, 0.001f);
+    }
+
+    private static RgbaImage Solid(byte r, byte g, byte b, int side = 8)
+    {
+        RgbaImage image = new(side, side);
+        for (int i = 0; i < image.Pixels.Length; i += 4)
+        {
+            (image.Pixels[i], image.Pixels[i + 1], image.Pixels[i + 2], image.Pixels[i + 3]) = (r, g, b, 255);
+        }
+
+        return image;
+    }
+
+    // A GLB of one triangle per material, each with UVs; a material with an image is textured by it,
+    // and every material carries its baseColorFactor (linear).
+    private static byte[] MaterialsGlb(params (float[] Factor, RgbaImage? Image)[] parts)
+    {
+        int n = parts.Length;
+        List<byte> bin = [];
+        List<string> accessors = [], views = [], meshes = [], materials = [], textures = [], images = [];
+        void View(byte[] bytes)
+        {
+            views.Add($$"""{"buffer":0,"byteOffset":{{bin.Count}},"byteLength":{{bytes.Length}}}""");
+            bin.AddRange(bytes);
+            while (bin.Count % 4 != 0)
+            {
+                bin.Add(0);
+            }
+        }
+
+        for (int t = 0; t < n; t++)
+        {
+            float[] corners = [t, 0, 0, t + 1, 0, 0, t, 1, 0];
+            float[] uv = [0.1f, 0.9f, 0.9f, 0.9f, 0.1f, 0.1f];
+            byte[] p = new byte[36], q = new byte[24];
+            Buffer.BlockCopy(corners, 0, p, 0, 36);
+            Buffer.BlockCopy(uv, 0, q, 0, 24);
+            View(p);
+            accessors.Add($$"""{"bufferView":{{views.Count - 1}},"componentType":5126,"count":3,"type":"VEC3","min":[{{t}},0,0],"max":[{{t + 1}},1,0]}""");
+            View(q);
+            accessors.Add($$"""{"bufferView":{{views.Count - 1}},"componentType":5126,"count":3,"type":"VEC2"}""");
+            meshes.Add($$$"""{"attributes":{"POSITION":{{{2 * t}}},"TEXCOORD_0":{{{(2 * t) + 1}}}},"material":{{{t}}}}""");
+            string factor = string.Join(",", parts[t].Factor.Select(f => f.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+            if (parts[t].Image is { } image)
+            {
+                View(ImageCodec.EncodePng(image));
+                images.Add($$"""{"bufferView":{{views.Count - 1}},"mimeType":"image/png"}""");
+                textures.Add($$"""{"source":{{images.Count - 1}}}""");
+                materials.Add($$$$"""{"pbrMetallicRoughness":{"baseColorFactor":[{{{{factor}}}},1],"baseColorTexture":{"index":{{{{textures.Count - 1}}}}}}}""");
+            }
+            else
+            {
+                materials.Add($$$"""{"pbrMetallicRoughness":{"baseColorFactor":[{{{factor}}},1]}}""");
+            }
+        }
+
+        string json = $$"""
+            {"asset":{"version":"2.0"},"scene":0,"scenes":[{"nodes":[0]}],"nodes":[{"mesh":0}],
+             "meshes":[{"primitives":[{{string.Join(",", meshes)}}]}],"materials":[{{string.Join(",", materials)}}],
+             "textures":[{{string.Join(",", textures)}}],"images":[{{string.Join(",", images)}}],"accessors":[{{string.Join(",", accessors)}}],
+             "bufferViews":[{{string.Join(",", views)}}],"buffers":[{"byteLength":{{bin.Count}}}]}
+            """;
+        byte[] text = Encoding.UTF8.GetBytes(json.PadRight((json.Length + 3) / 4 * 4));
+        using MemoryStream glb = new();
+        using BinaryWriter w = new(glb);
+        w.Write(0x46546C67u);
+        w.Write(2u);
+        w.Write((uint)(12 + 8 + text.Length + 8 + bin.Count));
+        w.Write((uint)text.Length);
+        w.Write(0x4E4F534Au);
+        w.Write(text);
+        w.Write((uint)bin.Count);
+        w.Write(0x004E4942u);
+        w.Write(bin.ToArray());
+        return glb.ToArray();
+    }
+
+    // The colour the mesh shows at a vertex near a position: its texture where it has one.
+    private static Vector3 Shown(Mesh mesh, Vector3 position)
+    {
+        int v = Nearest(mesh, position);
+        if (mesh.Texture is null)
+        {
+            return mesh.Colors![v];
+        }
+
+        (float r, float g, float b) = mesh.Texture.Sample(mesh.TexCoords![v].X, mesh.TexCoords[v].Y);
+        return new Vector3(r, g, b);
+    }
+
+    private static readonly float[] White = [1, 1, 1];
+
+    [Fact]
+    public void A_two_texture_glb_opens_with_each_part_in_its_own_texture()
+    {
+        // MOD59: a red and a blue texture, packed side by side into one atlas.
+        string path = Path.Combine(folder, "two.glb");
+        File.WriteAllBytes(path, MaterialsGlb((White, Solid(255, 0, 0)), (White, Solid(0, 0, 255))));
+
+        Mesh mesh = MeshImport.Load(path, out string? notice);
+
+        Assert.Null(notice);
+        Assert.Equal((16, 8), (mesh.Texture!.Width, mesh.Texture.Height));
+        Assert.True(Vector3.Distance(new Vector3(1, 0, 0), Shown(mesh, new Vector3(0, 1, 0))) < 0.02f, "the first part reads red");
+        Assert.True(Vector3.Distance(new Vector3(0, 0, 1), Shown(mesh, new Vector3(1, 1, 0))) < 0.02f, "the second blue");
+    }
+
+    [Fact]
+    public void A_plain_part_beside_a_textured_one_keeps_its_colour_in_the_atlas()
+    {
+        string path = Path.Combine(folder, "mixed.glb");
+        File.WriteAllBytes(path, MaterialsGlb((White, Solid(255, 0, 0)), ([0, 1, 0], null)));
+
+        Mesh mesh = MeshImport.Load(path);
+
+        Assert.True(Vector3.Distance(new Vector3(1, 0, 0), Shown(mesh, new Vector3(0, 1, 0))) < 0.02f, "the textured part reads red");
+        Assert.True(Vector3.Distance(new Vector3(0, 1, 0), Shown(mesh, new Vector3(1, 1, 0))) < 0.02f, "the plain part green, from its palette cell");
+    }
+
+    [Fact]
+    public void A_factor_tints_its_texture()
+    {
+        // Linear 0.5 is sRGB about 0.735: a white texture under it reads that grey.
+        string path = Path.Combine(folder, "tinted.glb");
+        File.WriteAllBytes(path, MaterialsGlb(([0.5f, 0.5f, 0.5f], Solid(255, 255, 255))));
+
+        Assert.Equal(0.735f, Shown(MeshImport.Load(path), new Vector3(0, 1, 0)).X, 0.01f);
+    }
+
+    [Fact]
+    public void Five_textures_are_baked_into_colours_and_said_so()
+    {
+        string path = Path.Combine(folder, "five.glb");
+        File.WriteAllBytes(path, MaterialsGlb([.. Enumerable.Range(0, 5).Select(i => (White, (RgbaImage?)Solid((byte)(i * 60), 0, 0)))]));
+
+        Mesh mesh = MeshImport.Load(path, out string? notice);
+
+        Assert.Null(mesh.Texture);
+        Assert.Equal(240 / 255f, mesh.Colors![Nearest(mesh, new Vector3(4, 1, 0))].X, 0.02f);
+        Assert.Equal("five.glb has 5 textures, more than the 4 one model can keep, so its colours were baked into its vertices.", notice);
+    }
+
+    [Fact]
+    public void An_obj_with_two_textured_materials_opens_with_each_in_its_own()
+    {
+        string obj = Path.Combine(folder, "pair.obj");
+        ImageCodec.SavePng(Solid(255, 0, 0), Path.Combine(folder, "red.png"));
+        ImageCodec.SavePng(Solid(0, 0, 255), Path.Combine(folder, "blue.png"));
+        File.WriteAllText(Path.Combine(folder, "pair.mtl"), "newmtl red\nKd 1 1 1\nmap_Kd red.png\nnewmtl blue\nKd 1 1 1\nmap_Kd blue.png\n");
+        File.WriteAllText(obj, "mtllib pair.mtl\nv 0 0 0\nv 1 0 0\nv 0 1 0\nv 2 0 0\nv 1 1 0\nvt 0.1 0.1\nvt 0.9 0.1\nvt 0.1 0.9\nusemtl red\nf 1/1 2/2 3/3\nusemtl blue\nf 2/1 4/2 5/3\n");
+
+        Mesh mesh = MeshImport.Load(obj);
+
+        Assert.True(Vector3.Distance(new Vector3(1, 0, 0), Shown(mesh, new Vector3(0, 1, 0))) < 0.02f, "the red material's face");
+        Assert.True(Vector3.Distance(new Vector3(0, 0, 1), Shown(mesh, new Vector3(1, 1, 0))) < 0.02f, "and the blue one's");
     }
 
     [Fact]

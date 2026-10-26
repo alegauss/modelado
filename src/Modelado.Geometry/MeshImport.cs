@@ -22,14 +22,23 @@ public static class MeshImport
     /// <param name="path">The file.</param>
     /// <returns>The mesh.</returns>
     /// <exception cref="InvalidDataException">The file is not a model this build can read.</exception>
-    public static Mesh Load(string path)
+    public static Mesh Load(string path) => Load(path, out _);
+
+    /// <summary>Reads a model by its extension, and says what of its materials could not be kept as they were.</summary>
+    /// <param name="path">The file.</param>
+    /// <param name="notice">Why its textures were baked into colours (MOD59), or null.</param>
+    /// <returns>The mesh.</returns>
+    /// <exception cref="InvalidDataException">The file is not a model this build can read.</exception>
+    public static Mesh Load(string path, out string? notice)
     {
+        notice = null;
         try
         {
+            string? said = null;
             Mesh mesh = MeshExport.FormatOf(path) switch
             {
-                MeshFormat.Glb => ReadGlb(File.ReadAllBytes(path)),
-                MeshFormat.Obj => ReadObj(path),
+                MeshFormat.Glb => ReadGlb(File.ReadAllBytes(path), Path.GetFileName(path), out said),
+                MeshFormat.Obj => ReadObj(path, out said),
                 MeshFormat.Ply => ReadPly(File.ReadAllBytes(path)),
                 _ => ReadStl(File.ReadAllBytes(path)),
             };
@@ -38,6 +47,7 @@ public static class MeshImport
                 throw new InvalidDataException($"{Path.GetFileName(path)} has no triangles.");
             }
 
+            notice = said;
             return mesh;
         }
         catch (Exception error) when (error is ArgumentException or IndexOutOfRangeException or FormatException or KeyNotFoundException or JsonException or OverflowException or InvalidOperationException)
@@ -219,7 +229,16 @@ public static class MeshImport
     /// <summary>Reads Wavefront OBJ, with its .mtl's diffuse texture when it names one beside the file.</summary>
     /// <param name="path">The .obj file.</param>
     /// <returns>The mesh.</returns>
-    public static Mesh ReadObj(string path)
+    public static Mesh ReadObj(string path) => ReadObj(path, out _);
+
+    /// <summary>
+    /// Reads Wavefront OBJ: each usemtl material's map_Kd texture or Kd colour, put into one mesh
+    /// (MOD59). Faces before any usemtl take the .mtl's first material, as one-material files expect.
+    /// </summary>
+    /// <param name="path">The .obj file.</param>
+    /// <param name="notice">Why its textures were baked into colours, or null.</param>
+    /// <returns>The mesh.</returns>
+    public static Mesh ReadObj(string path, out string? notice)
     {
         List<Vector3> v = [], vc = [];
         List<Vector2> vt = [];
@@ -227,10 +246,13 @@ public static class MeshImport
         Dictionary<(int, int, string?), int> corners = [];
         List<Vector3> positions = [], colors = [];
         List<Vector2> uvs = [];
+        List<int> partOf = [];
+        List<MaterialPart> parts = [new MaterialPart(null, Vector3.One)];
+        Dictionary<string, int> partFor = new(StringComparer.Ordinal);
+        Dictionary<string, RgbaImage?> images = new(StringComparer.Ordinal);
         bool hasColor = false;
-        string? mtl = null;
         string? current = null;
-        Dictionary<string, (Vector3 Kd, bool Mapped)> materials = new(StringComparer.Ordinal);
+        Dictionary<string, ObjMaterial> materials = new(StringComparer.Ordinal);
         string folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
         foreach (string raw in File.ReadLines(path))
         {
@@ -252,9 +274,9 @@ public static class MeshImport
                     vt.Add(new Vector2(Float(p[1]), 1 - (p.Length > 2 ? Float(p[2]) : 0)));
                     break;
                 case "mtllib":
-                    mtl = string.Join(' ', p[1..]);
-                    foreach ((string name, (Vector3, bool) described) in Materials(Path.Combine(folder, mtl)))
+                    foreach ((string name, ObjMaterial described) in Materials(Path.Combine(folder, string.Join(' ', p[1..]))))
                     {
+                        current ??= name;
                         materials[name] = described;
                     }
 
@@ -263,9 +285,20 @@ public static class MeshImport
                     current = string.Join(' ', p[1..]);
                     break;
                 case "f":
-                    // MOD59: a face of an untextured material takes its Kd, times the vertex's own colour.
-                    Vector3 kd = current is not null && materials.TryGetValue(current, out var used) && !used.Mapped ? used.Kd : Vector3.One;
+                    // MOD59: a face of a textured material reads its map_Kd; of an untextured one, its Kd
+                    // times the vertex's own colour. Each material is one part for MaterialAtlas.
+                    ObjMaterial? used = current is not null && materials.TryGetValue(current, out ObjMaterial found) ? found : null;
+                    RgbaImage? image = used?.Map is { } map ? Once(map) : null;
+                    Vector3 kd = used is { } plain && image is null ? plain.Kd : Vector3.One;
                     hasColor |= kd != Vector3.One;
+                    int part = 0;
+                    if (image is not null && !partFor.TryGetValue(current!, out part))
+                    {
+                        part = parts.Count;
+                        partFor[current!] = part;
+                        parts.Add(new MaterialPart(image, Vector3.One));
+                    }
+
                     List<int> face = [];
                     for (int i = 1; i < p.Length; i++)
                     {
@@ -279,6 +312,7 @@ public static class MeshImport
                             positions.Add(v[pi]);
                             colors.Add(vc[pi] * kd);
                             uvs.Add(ti >= 0 ? vt[ti] : Vector2.Zero);
+                            partOf.Add(ti >= 0 ? part : 0);
                         }
 
                         face.Add(index);
@@ -289,16 +323,33 @@ public static class MeshImport
             }
         }
 
-        RgbaImage? texture = mtl is null ? null : DiffuseTexture(Path.Combine(folder, mtl));
-        bool textured = texture is not null && vt.Count > 0;
         int[] t = [.. triangles];
-        return new Mesh([.. positions], t, hasColor ? [.. colors] : null, textured ? [.. uvs] : null, textured ? texture : null, !IsClosed(t));
+        return MaterialAtlas.Assemble(positions, t, colors, hasColor, uvs, partOf, parts, !IsClosed(t), Path.GetFileName(path), out notice);
+
+        // Each texture file decoded once, however many faces name it; a missing one is a flat part.
+        RgbaImage? Once(string file)
+        {
+            if (!images.TryGetValue(file, out RgbaImage? image))
+            {
+                image = File.Exists(file) ? ImageCodec.Load(file) : null;
+                images[file] = image;
+            }
+
+            return image;
+        }
     }
 
     /// <summary>Reads binary glTF 2.0: every mesh the default scene reaches, in world space.</summary>
     /// <param name="data">The file's bytes.</param>
     /// <returns>The meshes merged into one.</returns>
-    public static Mesh ReadGlb(byte[] data)
+    public static Mesh ReadGlb(byte[] data) => ReadGlb(data, "The model", out _);
+
+    /// <summary>Reads binary glTF 2.0, its materials' textures and colours put into one mesh (MOD59).</summary>
+    /// <param name="data">The file's bytes.</param>
+    /// <param name="name">What a notice calls the file.</param>
+    /// <param name="notice">Why its textures were baked into colours, or null.</param>
+    /// <returns>The meshes merged into one.</returns>
+    public static Mesh ReadGlb(byte[] data, string name, out string? notice)
     {
         ArgumentNullException.ThrowIfNull(data);
         if (data.Length < 20 || BinaryPrimitives.ReadUInt32LittleEndian(data) != 0x46546C67)
@@ -316,8 +367,9 @@ public static class MeshImport
         List<Vector3> positions = [], colors = [];
         List<Vector2> uvs = [];
         List<int> triangles = [];
-        bool anyColor = false, anyUv = false, doubleSided = false;
-        RgbaImage? texture = null;
+        bool anyColor = false, doubleSided = false;
+        List<int> partOf = [];
+        List<MaterialPart> parts = [];
         Dictionary<int, RgbaImage?> decoded = [];
 
         int scene = root.TryGetProperty("scene", out JsonElement s) ? s.GetInt32() : 0;
@@ -330,8 +382,7 @@ public static class MeshImport
         }
 
         int[] t = [.. triangles];
-        bool keepUv = anyUv && texture is not null;
-        return new Mesh([.. positions], t, anyColor ? [.. colors] : null, keepUv ? [.. uvs] : null, keepUv ? texture : null, doubleSided || !IsClosed(t));
+        return MaterialAtlas.Assemble(positions, t, colors, anyColor, uvs, partOf, parts, doubleSided || !IsClosed(t), name, out notice);
 
         void Visit(int index, Matrix4x4 parent)
         {
@@ -361,29 +412,28 @@ public static class MeshImport
                         own = gltf.BaseColorTexture(material!.Value);
                         decoded[key] = own;
                     }
-                    Vector3 factor = own is null && material is { } flat ? GltfReader.BaseColorFactor(flat) : Vector3.One;
+                    // A texture is used only where the primitive has coordinates to read it with.
+                    bool hasUv = attributes.TryGetProperty("TEXCOORD_0", out JsonElement uv);
+                    RgbaImage? used = hasUv ? own : null;
+                    Vector3 factor = material is { } any ? GltfReader.BaseColorFactor(any) : Vector3.One;
                     // White stays exactly white: ToSrgb(1) is 0.99999994, and a default material is not a colour.
                     Vector3 tint = factor == Vector3.One ? Vector3.One : new(ToSrgb(factor.X), ToSrgb(factor.Y), ToSrgb(factor.Z));
+                    // A flat part's tint goes into its colours; a textured part's into its texture (MaterialAtlas).
+                    Vector3 colourTint = used is null ? tint : Vector3.One;
                     if (attributes.TryGetProperty("COLOR_0", out JsonElement c))
                     {
                         anyColor = true;
-                        colors.AddRange(gltf.Colors(c.GetInt32()).Select(x => new Vector3(ToSrgb(x.X), ToSrgb(x.Y), ToSrgb(x.Z)) * tint));
+                        colors.AddRange(gltf.Colors(c.GetInt32()).Select(x => new Vector3(ToSrgb(x.X), ToSrgb(x.Y), ToSrgb(x.Z)) * colourTint));
                     }
                     else
                     {
-                        anyColor |= tint != Vector3.One;
-                        colors.AddRange(Enumerable.Repeat(tint, p.Length));
+                        anyColor |= colourTint != Vector3.One;
+                        colors.AddRange(Enumerable.Repeat(colourTint, p.Length));
                     }
 
-                    if (attributes.TryGetProperty("TEXCOORD_0", out JsonElement uv))
-                    {
-                        anyUv = true;
-                        uvs.AddRange(gltf.Vectors2(uv.GetInt32()));
-                    }
-                    else
-                    {
-                        uvs.AddRange(Enumerable.Repeat(Vector2.Zero, p.Length));
-                    }
+                    uvs.AddRange(hasUv ? gltf.Vectors2(uv.GetInt32()) : Enumerable.Repeat(Vector2.Zero, p.Length));
+                    partOf.AddRange(Enumerable.Repeat(parts.Count, p.Length));
+                    parts.Add(new MaterialPart(used, used is null ? Vector3.One : tint));
 
                     int[] indices = primitive.TryGetProperty("indices", out JsonElement ix) ? gltf.Indices(ix.GetInt32()) : [.. Enumerable.Range(0, p.Length)];
                     bool mirrored = world.GetDeterminant() < 0;
@@ -394,10 +444,9 @@ public static class MeshImport
                         triangles.Add(offset + indices[mirrored ? i + 1 : i + 2]);
                     }
 
-                    if (material is { } used)
+                    if (material is { } sides)
                     {
-                        doubleSided |= used.TryGetProperty("doubleSided", out JsonElement ds) && ds.GetBoolean();
-                        texture ??= own;
+                        doubleSided |= sides.TryGetProperty("doubleSided", out JsonElement ds) && ds.GetBoolean();
                     }
                 }
             }
@@ -412,30 +461,9 @@ public static class MeshImport
         }
     }
 
-    private static RgbaImage? DiffuseTexture(string mtlPath)
-    {
-        if (!File.Exists(mtlPath))
-        {
-            return null;
-        }
-
-        foreach (string line in File.ReadLines(mtlPath))
-        {
-            string trimmed = line.Trim();
-            if (trimmed.StartsWith("map_Kd ", StringComparison.Ordinal))
-            {
-                // Options such as -s come before the file name, which is the last word.
-                string file = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries)[^1];
-                string image = Path.Combine(Path.GetDirectoryName(mtlPath)!, file);
-                return File.Exists(image) ? ImageCodec.Load(image) : null;
-            }
-        }
-
-        return null;
-    }
-
-    // Each newmtl's diffuse colour (Kd, as the file writes it) and whether a map_Kd texture replaces it.
-    private static IEnumerable<(string Name, (Vector3 Kd, bool Mapped) Described)> Materials(string mtlPath)
+    // Each newmtl's diffuse colour (Kd, as the file writes it) and the map_Kd image that replaces it,
+    // resolved beside the .mtl; Map is null where there is none.
+    private static IEnumerable<(string Name, ObjMaterial Material)> Materials(string mtlPath)
     {
         if (!File.Exists(mtlPath))
         {
@@ -444,7 +472,7 @@ public static class MeshImport
 
         string? name = null;
         Vector3 kd = Vector3.One;
-        bool mapped = false;
+        string? map = null;
         foreach (string line in File.ReadLines(mtlPath))
         {
             string[] p = line.Trim().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
@@ -457,26 +485,29 @@ public static class MeshImport
             {
                 if (name is not null)
                 {
-                    yield return (name, (kd, mapped));
+                    yield return (name, new ObjMaterial(kd, map));
                 }
 
-                (name, kd, mapped) = (string.Join(' ', p[1..]), Vector3.One, false);
+                (name, kd, map) = (string.Join(' ', p[1..]), Vector3.One, null);
             }
             else if (p[0] == "Kd" && p.Length >= 4)
             {
                 kd = Vector3.Clamp(new Vector3(Float(p[1]), Float(p[2]), Float(p[3])), Vector3.Zero, Vector3.One);
             }
-            else if (p[0] == "map_Kd")
+            else if (p[0] == "map_Kd" && p.Length >= 2)
             {
-                mapped = true;
+                // Options such as -s come before the file name, which is the last word.
+                map = Path.Combine(Path.GetDirectoryName(mtlPath)!, p[^1]);
             }
         }
 
         if (name is not null)
         {
-            yield return (name, (kd, mapped));
+            yield return (name, new ObjMaterial(kd, map));
         }
     }
+
+    private readonly record struct ObjMaterial(Vector3 Kd, string? Map);
 
     private static int Resolve(int index, int count) => index > 0 ? index - 1 : count + index;
 

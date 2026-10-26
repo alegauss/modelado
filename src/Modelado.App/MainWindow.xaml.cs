@@ -208,11 +208,12 @@ public partial class MainWindow : Window, IDisposable
         }
 
         Mesh loaded;
+        string? notice = null;
         string? shown = SourceChip.Visibility == Visibility.Visible ? SourceText.Text : null;
         try
         {
             ShowSource($"Opening {Path.GetFileName(path)}…");
-            loaded = await Task.Run(() => MeshImport.Load(path)).ConfigureAwait(true);
+            loaded = await Task.Run(() => MeshImport.Load(path, out notice)).ConfigureAwait(true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
@@ -229,6 +230,12 @@ public partial class MainWindow : Window, IDisposable
         savedVersion = shownVersion;
         ShowSource(Path.GetFileName(path));
         Opened();
+
+        // MOD59: a model with more textures than one mesh keeps opens with them baked into its colours.
+        if (notice is not null)
+        {
+            LastRunSaid(notice);
+        }
     }
 
     private void OpenPhoto(string path)

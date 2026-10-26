@@ -37,7 +37,7 @@
 - ✅ **MOD54** **The Save view as image case presses the camera button before the staged cube has opened, and breaks on a slow guest** — The Save view as image case waits for the camera button to be enabled, so it presses it only once the staged cube is shown.
 - ✅ **MOD48** **modelado-cli crashes with a stack trace on an option missing its value, and silently accepts unknown options** — modelado-cli checks options per command first: a missing value is ERROR with exit 1, an unknown option or command ERROR with exit 2 (design recorded in `tools/Modelado.Cli/CliArguments.cs`).
 - ✅ **MOD52** **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — The provider chip and the CLI name DirectML's GPU and video memory, e.g. DirectML · NVIDIA GeForce RTX 4060, 8 GB, read from DXGI adapter 0 (design superseded: the guest's VMware GPU is named).
-- ✅ **MOD59 (flat material colours)** **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — An imported GLB's plain materials, an OBJ's Kd per usemtl and a PLY's diffuse colours now open as vertex colours; default white stays uncoloured.
+- ✅ **MOD59** **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — A model's several textures open packed into one atlas, plain parts in a palette tile and factors tinting their textures; past four they are baked to colours with a notice.
 
 ## Block D — Model downloads
 
