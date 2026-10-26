@@ -83,3 +83,4 @@
 ## Block I — Blender integration: AI tools for existing Blender models
 
 - ✅ **MOD43** **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — A Blender 4.2+ extension in blender/modelado runs Modelado's six edits on the selected object through modelado-cli --json, off the main thread with Esc to cancel, as one undo step.
+- ✅ **MOD44** **A photo cannot be turned into a 3D object or relief from inside Blender** — Blender's Generate from photo makes a 3D Object or a Relief at the 3D cursor at the size set, its colours shown, after consent when models are missing (design superseded: Meshy moved to MOD65).

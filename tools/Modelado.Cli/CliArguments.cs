@@ -20,7 +20,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly HashSet<string> Flags = new(StringComparer.Ordinal)
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
-        "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json",
+        "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json", "--dry-run",
     };
 
     private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json"];
@@ -30,7 +30,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
         ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
-        ["download"] = Takes(),
+        ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
     };
 

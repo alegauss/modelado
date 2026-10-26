@@ -94,22 +94,6 @@ Done when the speed table names a GPU and its timings come from those runs.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-### §MOD44 Generate from a photo into Blender
-
-The add-on's panel gains "Generate from photo". It picks an image file, or an image
-already loaded in the .blend, and offers 3D Object (TripoSR, local), Relief (Depth
-Anything, local) or, with a key, Meshy image to 3D. It takes the same main options as
-the window (resolution, thickness, relief height and base).
-
-The result is imported at the 3D cursor as a new object named after the photo, scaled to
-a size the user sets in the panel (default 0.2 m on the longest side), with its vertex
-colours or texture in a new material. Models download on first use through the CLI's
-download, with progress in Blender's status bar, after the same consent the window asks
-for.
-
-Done when the robot photo becomes an object at the cursor at 0.2 m with its colours
-visible in Material Preview, from a Blender with no models downloaded yet.
-
 ### §MOD45 AI actions in the Blender add-on
 
 The add-on's panel gains an "AI" group for the selected object. It has Upscale texture
@@ -146,3 +130,27 @@ importing the model.
 
 Done when an object goes to the window, gets three edits, is sent back twice, and both
 sends undo in Blender in order.
+
+### §MOD65 Meshy AI from Blender, through the CLI
+
+MOD44 gave the Blender add-on "Generate from photo" with the two local operations, 3D
+Object (TripoSR) and Relief (Depth Anything V2), through modelado-cli object and relief.
+Its design also named Meshy AI's image to 3D, with a key, and that was left out: the
+add-on drives only modelado-cli, and the CLI has no cloud command. The key lives in the
+window's DPAPI store (MOD36), the price table and the budget in Modelado.Cloud (MOD42,
+MOD55), and the consent line in the window.
+
+Build: a `modelado-cli cloud image-to-3d <photo> -o <out.glb> --service meshy` command
+over Modelado.Cloud's CloudJobs, reading the same key store and ledger as the window,
+with `--estimate --json` answering the price and the budget left before anything is
+sent, and the job followed to the end (or left at the service and said, as the window
+does on close). The add-on then offers "3D Object with Meshy AI" when that estimate
+answers, shows the price and what is sent in the same dialog MOD44's consent uses, and
+imports the result as it imports TripoSR's.
+
+MOD45 (texture and Meshy remesh or retexture from Blender) wants the same CLI door, so
+building this one first gives both.
+
+Done when the robot photo becomes a Meshy model at the 3D cursor from Blender with a
+stand-in service (the fixture server's Meshy), the price shown before anything is sent,
+and the spend appearing in the window's About.

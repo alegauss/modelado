@@ -26,8 +26,8 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD44** (deps: MOD20 ✅, MOD43 ✅) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
 - 📋 **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
+- 📋 **MOD65** (deps: —) **Blender's Generate from photo offers only the local operations, not Meshy AI's image to 3D** — Left from MOD44: the add-on drives only modelado-cli, which has no cloud command, key store access or price before sending. → §MOD65
 
 ## Done when — Block H
 

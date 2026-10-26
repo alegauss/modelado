@@ -38,6 +38,8 @@ const string Usage = """
         --tiles N            how many times it repeats across the longest side; default 2
         --upscale-texture    upscales the texture 4× with Real-ESRGAN
     modelado-cli download [object|relief|all]   downloads the missing models
+        --dry-run            says what would be downloaded, and fetches nothing
+        --remove-background  relief: U-2-Net too, which a relief of the object alone needs
     modelado-cli models                         lists the installed models
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
@@ -112,11 +114,12 @@ try
             IEnumerable<string> names = which switch
             {
                 "object" => ObjectReconstruction.Models,
-                "relief" => ReliefReconstruction.Models(true),
+                // What `relief` itself fetches: U-2-Net only with --remove-background, as there (MOD44).
+                "relief" => ReliefReconstruction.Models(options.ContainsKey("--remove-background")),
                 "all" => ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct(),
                 _ => throw new ArgumentException($"download {which}: use object, relief or all."),
             };
-            return await Download(runner, names.ToList()).ConfigureAwait(false);
+            return Done(await Download(runner, names.ToList()).ConfigureAwait(false));
 
         case "object" or "relief":
             string photoPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which photo? " + Usage);
@@ -279,6 +282,18 @@ async Task<int> Download(ModelRunner runner, IReadOnlyCollection<string> models)
     string variant = ExecutionProviders.VariantFor(runner.Provider, runner.HighQuality);
     ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
     long pending = ModelDownloads.PendingBytes(manifest, runner.Library.DownloadRoot, requests, runner.Library.Roots);
+    if (options.ContainsKey("--dry-run"))
+    {
+        // MOD44: what a first use would fetch, so a caller can ask before it does (the Blender add-on).
+        string[] missing = [.. runner.Missing(models).Select(r => r.Model)];
+        Console.WriteLine(missing.Length == 0 ? "Nothing to download." : $"Would download {pending / 1e6:0} MB to {runner.Library.DownloadRoot}: {string.Join(", ", missing)}");
+        report["pending"] = pending;
+        report["models"] = new JsonArray([.. missing.Select(m => JsonValue.Create(m))]);
+        report["licenses"] = new JsonArray([.. missing.Select(m => manifest.Model(m) is { } listed ? JsonValue.Create($"{m}: {listed.License}") : null)]);
+        report["from"] = string.Join(" and ", missing.Select(m => manifest.Model(m)?.Variants.Values.First().Url).OfType<string>().Select(u => new Uri(u).Host).Distinct());
+        return 0;
+    }
+
     Console.WriteLine($"Downloading {pending / 1e6:0} MB to {runner.Library.DownloadRoot}");
     int lastPercent = -1;
     DownloadResult result = await ModelDownloads.DownloadAsync(http, manifest, runner.Library.DownloadRoot, requests, new Progress<DownloadProgress>(p =>
