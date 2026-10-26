@@ -59,6 +59,13 @@ section {
   line-height: 1.12;
 }
 
+/* site.css's `.vg-site a { color: inherit }` outweighs its own `.vg-site-btn-primary { color: #fff }`,
+   so a primary button outside the nav took the page's text colour: black on the orange in the
+   light theme. The same white, at the weight that wins. */
+.vg-site a.vg-site-btn-primary {
+  color: #fff;
+}
+
 /* On a phone the nav keeps the theme toggle: the download is the intro's own first button. */
 @media (max-width: 560px) {
   .vg-site-nav .vg-site-btn-primary {
