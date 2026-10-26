@@ -137,6 +137,87 @@ public sealed class MeshImportTests : IDisposable
         Assert.Equal(2, MeshImport.Load(ply).TriangleCount);
     }
 
+    // A GLB of one triangle per material, each untextured with its own baseColorFactor (linear),
+    // as Blender, SketchUp and CAD exporters write a plain-coloured part.
+    private static byte[] FlatColouredGlb(params float[][] factors)
+    {
+        int n = factors.Length;
+        byte[] bin = new byte[n * 36];
+        for (int t = 0; t < n; t++)
+        {
+            float[] corners = [t, 0, 0, t + 1, 0, 0, t, 1, 0];
+            Buffer.BlockCopy(corners, 0, bin, t * 36, 36);
+        }
+
+        string accessors = string.Join(",", Enumerable.Range(0, n).Select(t =>
+            $$"""{"bufferView":0,"byteOffset":{{t * 36}},"componentType":5126,"count":3,"type":"VEC3","min":[{{t}},0,0],"max":[{{t + 1}},1,0]}"""));
+        string meshes = string.Join(",", Enumerable.Range(0, n).Select(t => $$"""{"attributes":{"POSITION":{{t}}},"material":{{t}}}"""));
+        string materials = string.Join(",", factors.Select(f =>
+            string.Create(System.Globalization.CultureInfo.InvariantCulture, $$$"""{"pbrMetallicRoughness":{"baseColorFactor":[{{{f[0]}}},{{{f[1]}}},{{{f[2]}}},1]}}""")));
+        string json = $$"""
+            {"asset":{"version":"2.0"},"scene":0,"scenes":[{"nodes":[0]}],"nodes":[{"mesh":0}],
+             "meshes":[{"primitives":[{{meshes}}]}],"materials":[{{materials}}],"accessors":[{{accessors}}],
+             "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":{{bin.Length}}}],"buffers":[{"byteLength":{{bin.Length}}}]}
+            """;
+        byte[] text = Encoding.UTF8.GetBytes(json.PadRight((json.Length + 3) / 4 * 4));
+        using MemoryStream glb = new();
+        using BinaryWriter w = new(glb);
+        w.Write(0x46546C67u);
+        w.Write(2u);
+        w.Write((uint)(12 + 8 + text.Length + 8 + bin.Length));
+        w.Write((uint)text.Length);
+        w.Write(0x4E4F534Au);
+        w.Write(text);
+        w.Write((uint)bin.Length);
+        w.Write(0x004E4942u);
+        w.Write(bin);
+        return glb.ToArray();
+    }
+
+    [Fact]
+    public void A_glb_whose_materials_are_plain_colours_opens_in_them()
+    {
+        // MOD59: three parts, red, green and a linear 0.2 grey (sRGB about 0.48), none textured.
+        string path = Path.Combine(folder, "parts.glb");
+        File.WriteAllBytes(path, FlatColouredGlb([1, 0, 0], [0, 1, 0], [0.2f, 0.2f, 0.2f]));
+
+        Mesh mesh = MeshImport.Load(path);
+
+        Assert.NotNull(mesh.Colors);
+        Assert.True(Vector3.Distance(new Vector3(1, 0, 0), mesh.Colors![Nearest(mesh, new Vector3(0, 0, 0))]) < 1e-5f, "the first part is red");
+        Assert.True(Vector3.Distance(new Vector3(0, 1, 0), mesh.Colors![Nearest(mesh, new Vector3(1, 1, 0))]) < 1e-5f, "the second green");
+        Assert.Equal(0.484f, mesh.Colors![Nearest(mesh, new Vector3(2, 1, 0))].X, 0.01f);
+    }
+
+    [Fact]
+    public void A_glb_whose_materials_are_all_default_white_has_no_colours()
+    {
+        // A white baseColorFactor is the default, not a colour: the model stays uncoloured.
+        string path = Path.Combine(folder, "white.glb");
+        File.WriteAllBytes(path, FlatColouredGlb([1, 1, 1], [1, 1, 1]));
+
+        Assert.Null(MeshImport.Load(path).Colors);
+    }
+
+    [Fact]
+    public void An_obj_takes_each_materials_kd_and_a_ply_its_diffuse_colours()
+    {
+        // MOD59: two quads under two materials of the .mtl, one textured (its Kd is the texture's tint, left alone).
+        string obj = Path.Combine(folder, "kd.obj");
+        File.WriteAllText(Path.Combine(folder, "kd.mtl"), "newmtl paint\nKd 0.8 0.1 0.1\n\nnewmtl decal\nKd 0.5 0.5 0.5\nmap_Kd missing.png\n");
+        File.WriteAllText(obj, "mtllib kd.mtl\nv 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nv 2 0 0\nv 2 1 0\nusemtl paint\nf 1 2 3 4\nusemtl decal\nf 2 5 6 3\n");
+        string ply = Path.Combine(folder, "diffuse.ply");
+        File.WriteAllText(ply, "ply\nformat ascii 1.0\nelement vertex 3\nproperty float x\nproperty float y\nproperty float z\nproperty uchar diffuse_red\nproperty uchar diffuse_green\nproperty uchar diffuse_blue\nelement face 1\nproperty list uchar int vertex_indices\nend_header\n0 0 0 255 128 0\n1 0 0 255 128 0\n0 1 0 255 128 0\n3 0 1 2\n");
+
+        Mesh painted = MeshImport.Load(obj);
+        Mesh orange = MeshImport.Load(ply);
+
+        Assert.Equal(new Vector3(0.8f, 0.1f, 0.1f), painted.Colors![Nearest(painted, new Vector3(0, 1, 0))]);
+        Assert.Equal(Vector3.One, painted.Colors![Nearest(painted, new Vector3(2, 1, 0))]);
+        Assert.Equal(4 + 4, painted.VertexCount);
+        Assert.Equal(128 / 255f, orange.Colors![0].Y, 0.001f);
+    }
+
     [Fact]
     public void A_broken_file_says_so()
     {

@@ -8,7 +8,7 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD59** (deps: —) **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — Seen by the user on an import; MeshImport keeps only vertex colours and the first base-colour texture, so plain coloured or multi-material models lose them. → §MOD59
+- ⏳ **MOD59** (deps: —) **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — A model with several textures still shows only the first on every part: no atlas, and a glTF factor tinting a texture is dropped. → §MOD59
 - 📋 **MOD62** (deps: —) **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying the Studio's 196,604-triangle bust relief to a third took 260 s on the guest's CPU; the chair's 150,000 took 0.9 s. → §MOD62
 - 📋 **MOD63** (deps: —) **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — The Studio's canyon relief is 4.1 MB as GLB, nearly all of it the 768 px photo, which as JPEG would be about 200 kB. → §MOD63
 
@@ -54,6 +54,13 @@
   guest with Ideogram and Meshy stood in by the fixture server: a textured model in
   Blender gets an Ideogram texture and a Meshy retexture, each priced before it is sent
   and undoable, and a declined action makes no request to the stand-in.
+
+## Done when — MOD59
+
+- **A two-texture GLB opens with each part in its own texture** MeshImport packs up to
+  four textures into one atlas with each part's UVs remapped, bakes the rest to vertex
+  colours with a notice, and keeps a factor tinting a texture; held by a MeshImport test
+  and one window case opening such a GLB.
 
 ## Non-goals
 

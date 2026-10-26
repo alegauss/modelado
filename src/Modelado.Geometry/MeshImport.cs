@@ -193,9 +193,10 @@ public static class MeshImport
                         case "x": position.X = (float)value; break;
                         case "y": position.Y = (float)value; break;
                         case "z": position.Z = (float)value; break;
-                        case "red" or "r": color.X = (float)value * scale; hasColor = true; break;
-                        case "green" or "g": color.Y = (float)value * scale; break;
-                        case "blue" or "b": color.Z = (float)value * scale; break;
+                        // MOD59: MeshLab and others write diffuse_red and the rest for the same thing.
+                        case "red" or "r" or "diffuse_red": color.X = (float)value * scale; hasColor = true; break;
+                        case "green" or "g" or "diffuse_green": color.Y = (float)value * scale; break;
+                        case "blue" or "b" or "diffuse_blue": color.Z = (float)value * scale; break;
                     }
                 }
 
@@ -223,11 +224,14 @@ public static class MeshImport
         List<Vector3> v = [], vc = [];
         List<Vector2> vt = [];
         List<int> triangles = [];
-        Dictionary<(int, int), int> corners = [];
+        Dictionary<(int, int, string?), int> corners = [];
         List<Vector3> positions = [], colors = [];
         List<Vector2> uvs = [];
         bool hasColor = false;
         string? mtl = null;
+        string? current = null;
+        Dictionary<string, (Vector3 Kd, bool Mapped)> materials = new(StringComparer.Ordinal);
+        string folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
         foreach (string raw in File.ReadLines(path))
         {
             string[] p = raw.Trim().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
@@ -249,20 +253,31 @@ public static class MeshImport
                     break;
                 case "mtllib":
                     mtl = string.Join(' ', p[1..]);
+                    foreach ((string name, (Vector3, bool) described) in Materials(Path.Combine(folder, mtl)))
+                    {
+                        materials[name] = described;
+                    }
+
+                    break;
+                case "usemtl":
+                    current = string.Join(' ', p[1..]);
                     break;
                 case "f":
+                    // MOD59: a face of an untextured material takes its Kd, times the vertex's own colour.
+                    Vector3 kd = current is not null && materials.TryGetValue(current, out var used) && !used.Mapped ? used.Kd : Vector3.One;
+                    hasColor |= kd != Vector3.One;
                     List<int> face = [];
                     for (int i = 1; i < p.Length; i++)
                     {
                         string[] refs = p[i].Split('/');
                         int pi = Resolve(int.Parse(refs[0], CultureInfo.InvariantCulture), v.Count);
                         int ti = refs.Length > 1 && refs[1].Length > 0 ? Resolve(int.Parse(refs[1], CultureInfo.InvariantCulture), vt.Count) : -1;
-                        if (!corners.TryGetValue((pi, ti), out int index))
+                        if (!corners.TryGetValue((pi, ti, current), out int index))
                         {
                             index = positions.Count;
-                            corners.Add((pi, ti), index);
+                            corners.Add((pi, ti, current), index);
                             positions.Add(v[pi]);
-                            colors.Add(vc[pi]);
+                            colors.Add(vc[pi] * kd);
                             uvs.Add(ti >= 0 ? vt[ti] : Vector2.Zero);
                         }
 
@@ -274,7 +289,7 @@ public static class MeshImport
             }
         }
 
-        RgbaImage? texture = mtl is null ? null : DiffuseTexture(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, mtl));
+        RgbaImage? texture = mtl is null ? null : DiffuseTexture(Path.Combine(folder, mtl));
         bool textured = texture is not null && vt.Count > 0;
         int[] t = [.. triangles];
         return new Mesh([.. positions], t, hasColor ? [.. colors] : null, textured ? [.. uvs] : null, textured ? texture : null, !IsClosed(t));
@@ -303,6 +318,7 @@ public static class MeshImport
         List<int> triangles = [];
         bool anyColor = false, anyUv = false, doubleSided = false;
         RgbaImage? texture = null;
+        Dictionary<int, RgbaImage?> decoded = [];
 
         int scene = root.TryGetProperty("scene", out JsonElement s) ? s.GetInt32() : 0;
         IEnumerable<int> nodes = root.TryGetProperty("scenes", out JsonElement scenes)
@@ -334,14 +350,29 @@ public static class MeshImport
                     Vector3[] p = gltf.Vectors3(attributes.GetProperty("POSITION").GetInt32());
                     int offset = positions.Count;
                     positions.AddRange(p.Select(x => Vector3.Transform(x, world)));
+
+                    // MOD59: an untextured material's flat colour (baseColorFactor, linear) is the
+                    // primitive's colour, times its COLOR_0 where it has one.
+                    int? materialIndex = primitive.TryGetProperty("material", out JsonElement m) ? m.GetInt32() : null;
+                    JsonElement? material = materialIndex is { } mi ? root.GetProperty("materials")[mi] : null;
+                    RgbaImage? own = null;
+                    if (materialIndex is { } key && !decoded.TryGetValue(key, out own))
+                    {
+                        own = gltf.BaseColorTexture(material!.Value);
+                        decoded[key] = own;
+                    }
+                    Vector3 factor = own is null && material is { } flat ? GltfReader.BaseColorFactor(flat) : Vector3.One;
+                    // White stays exactly white: ToSrgb(1) is 0.99999994, and a default material is not a colour.
+                    Vector3 tint = factor == Vector3.One ? Vector3.One : new(ToSrgb(factor.X), ToSrgb(factor.Y), ToSrgb(factor.Z));
                     if (attributes.TryGetProperty("COLOR_0", out JsonElement c))
                     {
                         anyColor = true;
-                        colors.AddRange(gltf.Colors(c.GetInt32()).Select(x => new Vector3(ToSrgb(x.X), ToSrgb(x.Y), ToSrgb(x.Z))));
+                        colors.AddRange(gltf.Colors(c.GetInt32()).Select(x => new Vector3(ToSrgb(x.X), ToSrgb(x.Y), ToSrgb(x.Z)) * tint));
                     }
                     else
                     {
-                        colors.AddRange(Enumerable.Repeat(Vector3.One, p.Length));
+                        anyColor |= tint != Vector3.One;
+                        colors.AddRange(Enumerable.Repeat(tint, p.Length));
                     }
 
                     if (attributes.TryGetProperty("TEXCOORD_0", out JsonElement uv))
@@ -363,11 +394,10 @@ public static class MeshImport
                         triangles.Add(offset + indices[mirrored ? i + 1 : i + 2]);
                     }
 
-                    if (primitive.TryGetProperty("material", out JsonElement m))
+                    if (material is { } used)
                     {
-                        JsonElement material = root.GetProperty("materials")[m.GetInt32()];
-                        doubleSided |= material.TryGetProperty("doubleSided", out JsonElement ds) && ds.GetBoolean();
-                        texture ??= gltf.BaseColorTexture(material);
+                        doubleSided |= used.TryGetProperty("doubleSided", out JsonElement ds) && ds.GetBoolean();
+                        texture ??= own;
                     }
                 }
             }
@@ -402,6 +432,50 @@ public static class MeshImport
         }
 
         return null;
+    }
+
+    // Each newmtl's diffuse colour (Kd, as the file writes it) and whether a map_Kd texture replaces it.
+    private static IEnumerable<(string Name, (Vector3 Kd, bool Mapped) Described)> Materials(string mtlPath)
+    {
+        if (!File.Exists(mtlPath))
+        {
+            yield break;
+        }
+
+        string? name = null;
+        Vector3 kd = Vector3.One;
+        bool mapped = false;
+        foreach (string line in File.ReadLines(mtlPath))
+        {
+            string[] p = line.Trim().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+            if (p.Length == 0)
+            {
+                continue;
+            }
+
+            if (p[0] == "newmtl")
+            {
+                if (name is not null)
+                {
+                    yield return (name, (kd, mapped));
+                }
+
+                (name, kd, mapped) = (string.Join(' ', p[1..]), Vector3.One, false);
+            }
+            else if (p[0] == "Kd" && p.Length >= 4)
+            {
+                kd = Vector3.Clamp(new Vector3(Float(p[1]), Float(p[2]), Float(p[3])), Vector3.Zero, Vector3.One);
+            }
+            else if (p[0] == "map_Kd")
+            {
+                mapped = true;
+            }
+        }
+
+        if (name is not null)
+        {
+            yield return (name, (kd, mapped));
+        }
     }
 
     private static int Resolve(int index, int count) => index > 0 ? index - 1 : count + index;
@@ -541,6 +615,12 @@ public static class MeshImport
 
             return result;
         }
+
+        /// <summary>A material's base colour factor, linear RGB; white where it names none.</summary>
+        public static Vector3 BaseColorFactor(JsonElement material) =>
+            material.TryGetProperty("pbrMetallicRoughness", out JsonElement pbr) && pbr.TryGetProperty("baseColorFactor", out JsonElement f)
+                ? new Vector3(Math.Clamp(f[0].GetSingle(), 0, 1), Math.Clamp(f[1].GetSingle(), 0, 1), Math.Clamp(f[2].GetSingle(), 0, 1))
+                : Vector3.One;
 
         public RgbaImage? BaseColorTexture(JsonElement material)
         {

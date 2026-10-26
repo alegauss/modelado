@@ -20,9 +20,9 @@ The fix bakes what a single Mesh cannot hold into what it can. A primitive or us
 group with a flat colour gets that colour as its vertex colours, times COLOR_0 where
 present. Where several textures exist, they are packed into one atlas with each group's
 UVs remapped into its tile; at most four textures, else they are baked to vertex colours
-with a notice. Done when a GLB with three plain-coloured materials, a two-texture GLB
-and an OBJ with Kd colours each open coloured, read through MeshImport tests and one
-window case.
+with a notice. Landed in part one: flat colours (baseColorFactor, Kd per usemtl, PLY's
+diffuse_*), held by MeshImport tests. Left: the atlas, the factor that tints a texture,
+and the window case.
 
 ### §MOD62 Simplify on a relief with a base
 
