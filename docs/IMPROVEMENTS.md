@@ -28,22 +28,6 @@ window case.
 
 ## Block E — Publishing custom models to Hugging Face
 
-### §MOD26 Verify a publish from the repository
-
-After commit 2 (the pinned manifest), publish_models.py downloads manifest.json from its
-resolve URL, then HEADs every file the manifest lists, checking size and the
-X-Linked-Etag that Hugging Face gives for LFS files (the SHA-256). It fully downloads
-and hashes any file whose header lacks it. The same check is a standalone
-scripts\verify_published.py --repo <id> [--revision <commit>], so a repository can be
-audited at any time without republishing.
-
-The embedded manifest is copied into src\Modelado.Inference only after the check passes.
-A failure names the file and what differed, and leaves the previous embedded manifest in
-place.
-
-Done when publishing to a test repository passes verification, and a file replaced by
-hand in that repository makes verify_published.py fail with its name.
-
 ### §MOD27 Custom model repositories in the window
 
 CommandLine.cs takes --manifest <url>, and ModelManifest refuses one it cannot trust

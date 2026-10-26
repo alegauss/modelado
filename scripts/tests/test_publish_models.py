@@ -120,11 +120,20 @@ class PublishModelsTests(unittest.TestCase):
 
         embedded = self.root / "embedded.json"
         hub = mock.Mock(HfApi=Api)
-        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}), mock.patch.object(pm, "EMBEDDED", embedded):
+        passes = mock.patch.object(pm.vp, "verify_repo", return_value=({}, []))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}), mock.patch.object(pm, "EMBEDDED", embedded), passes:
             pm.upload("t", self.models, self.stage, "me/models", False, ["my-depth"])
             self.assertFalse(embedded.exists())
             pm.upload("t", self.models, self.stage, "me/models", False)
             self.assertEqual(sorted(pm.HOSTED), sorted(m["name"] for m in json.loads(embedded.read_text(encoding="utf-8"))["models"]))
+
+        # MOD26: a repository that does not hold what was uploaded leaves the embedded copy alone.
+        embedded.write_text("previous", encoding="utf-8")
+        fails = mock.patch.object(pm.vp, "verify_repo", return_value=({}, ["u2net fp32: is 3 bytes; the manifest says 9"]))
+        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}), mock.patch.object(pm, "EMBEDDED", embedded), fails:
+            with self.assertRaisesRegex(pm.vp.VerifyError, "u2net fp32"):
+                pm.upload("t", self.models, self.stage, "me/models", False)
+        self.assertEqual("previous", embedded.read_text(encoding="utf-8"))
 
     def test_a_custom_publish_leaves_the_record_alone_and_names_its_manifest(self):
         write_model(self.models, "my-depth", {"fp32": b"custom"})

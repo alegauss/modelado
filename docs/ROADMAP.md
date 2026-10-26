@@ -14,7 +14,6 @@
 
 ## Block E — Publishing custom models to Hugging Face
 
-- 📋 **MOD26** (deps: MOD20 ✅) **publish_models.py never reads back what it uploaded, so a broken or truncated file is found only by the app** — The app refuses any file whose SHA-256 differs from the manifest, so a bad upload breaks every install until someone republishes. → §MOD26
 - 📋 **MOD27** (deps: MOD23 ✅, MOD24 ✅) **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — A custom model published to someone's own Hugging Face repository is useless to them until the window can be pointed at it and say what it holds. → §MOD27
 
 ## Block F — Installer, releases and auto update

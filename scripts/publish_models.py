@@ -14,6 +14,7 @@ Two commits:
 
 The pinned manifest is also copied into src/Modelado.Inference/models-manifest.json, which the
 app embeds: rebuild the app afterwards and it knows every size and hash without the network.
+That copy waits on verify_published.py's check of the repository as it now stands (MOD26).
 
     .venv\\Scripts\\python scripts\\publish_models.py --token-file D:\\Keys\\hf.txt
     .venv\\Scripts\\python scripts\\publish_models.py --repo me/my-models --token-file hf.txt
@@ -48,6 +49,7 @@ EMBEDDED = REPO / "src" / "Modelado.Inference" / "models-manifest.json"
 
 sys.path.insert(0, str(SCRIPTS))
 import build_manifest as bm  # noqa: E402
+import verify_published as vp  # noqa: E402
 
 REPO_ID = "alegauss/modelado-models"
 VERSION = "1"
@@ -132,6 +134,11 @@ def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: boo
         repo_id=repo_id,
         commit_message=f"manifest.json pinned to {files_commit[:12]}",
     )
+    # MOD26: read back what landed before the app is told to trust it. A failure leaves the
+    # embedded manifest as it was.
+    _, problems = vp.verify_repo(repo_id, pinned.oid, token)
+    if problems:
+        raise vp.VerifyError(f"{repo_id}@{pinned.oid[:12]} does not hold what was uploaded:\n  " + "\n  ".join(problems))
     if only == HOSTED:
         shutil.copyfile(stage_dir / "manifest.json", EMBEDDED)
     return {
@@ -176,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
             print("ERROR a write token is required: --token-file or HF_TOKEN", file=sys.stderr)
             return 2
         record = upload(token, args.models, args.stage, args.repo, args.private, only, allow)
-    except bm.ManifestError as error:
+    except (bm.ManifestError, vp.VerifyError) as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
     if only != HOSTED:

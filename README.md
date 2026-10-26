@@ -235,6 +235,16 @@ What it does, step by step (each step can be run on its own):
    and it knows each file's size and hash without the network. While that file is empty, the app
    reads the repository's latest manifest.
 
+   Before that copy, the script reads the repository back: every file the pinned manifest lists
+   is checked by size and SHA-256 (Hugging Face's `X-Linked-Etag` for an LFS file, a download
+   for the rest), and a difference names the file and leaves the embedded manifest as it was.
+   The same check runs on its own at any time, with nothing to upload:
+
+   ```
+   python scripts\verify_published.py
+   python scripts\verify_published.py --repo user/other-repo --revision <commit>
+   ```
+
    A model whose licence is not MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause or CC-BY-4.0 is
    refused before anything is staged, dry runs included, naming the model and its licence;
    `--allow-license "<licence>" --reason "<why>"` lets it through for that run and writes the
