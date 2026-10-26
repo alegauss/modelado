@@ -28,22 +28,6 @@ window case.
 
 ## Block E — Publishing custom models to Hugging Face
 
-### §MOD25 License gate on publish
-
-publish_models.py's docstring says every model is under a license that allows
-redistribution, and nothing checks it. Its model card writes "license: other" with a
-per-model table. A gate in build_manifest.py (so --dry-run catches it too) refuses a
-model whose meta.json license is not on an allow-list (MIT, Apache-2.0, BSD-2-Clause,
-BSD-3-Clause, CC-BY-4.0), naming the model and its license. --allow-license <id>
---reason "<why>" accepts one more for that run, and the reason goes into the model card
-beside it.
-
-Depth Anything V2 Base and Large (CC BY-NC 4.0) are the worked example of what must be
-refused. model-sources.json already notes why only Small is used.
-
-Done when staging a model with license CC-BY-NC-4.0 fails with its name, and passes with
---allow-license and a reason that appears in README.md.
-
 ### §MOD26 Verify a publish from the repository
 
 After commit 2 (the pinned manifest), publish_models.py downloads manifest.json from its

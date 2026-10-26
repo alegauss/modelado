@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -23,10 +24,28 @@ REPO = Path(__file__).resolve().parent.parent
 MODELS = REPO / ".cache" / "models"
 STAGE = REPO / ".cache" / "publish"
 MANIFEST_SCHEMA = 1
+# What a public repository may carry without asking (MOD25). Depth Anything V2 Base and Large,
+# CC BY-NC 4.0, are what this refuses: model-sources.json says why only Small is used.
+REDISTRIBUTABLE = ("MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0")
 
 
 class ManifestError(Exception):
     """A model folder is not ready to publish."""
+
+
+def redistributable(license_text: str, allowed: set[str]) -> bool:
+    """Whether every part of a license line is one `allowed` names.
+
+    A line names parts as meta.json writes them: "Apache-2.0 (U-2-Net weights), MIT (rembg
+    export)" is two, each with a note, and both must pass; "MIT OR Apache-2.0" passes on either.
+    The whole line may also be allowed as it is spelled.
+    """
+    if license_text.strip() in allowed:
+        return True
+    parts = [p for chunk in license_text.split(",") for p in chunk.split(" AND ")]
+    return bool(parts) and all(
+        any(re.sub(r"\([^)]*\)", "", choice).strip() in allowed for choice in part.split(" OR ")) for part in parts
+    )
 
 
 def sha256_of(path: Path) -> str:
@@ -37,6 +56,17 @@ def sha256_of(path: Path) -> str:
     return digest.hexdigest()
 
 
+def check_licenses(metas, allowed: set[str]) -> None:
+    """Refuse the first model a public repository may not carry, naming it and its license."""
+    for meta in metas:
+        license_text = meta["upstream"]["license"]
+        if not redistributable(license_text, allowed):
+            raise ManifestError(
+                f"{meta['name']}: its license, {license_text}, is not one a public repository may carry "
+                f"({', '.join(REDISTRIBUTABLE)}); if this one allows it, pass --allow-license \"{license_text}\" --reason \"<why>\""
+            )
+
+
 def build(
     models: Path,
     stage: Path,
@@ -45,8 +75,14 @@ def build(
     copy: bool = True,
     only: list[str] | None = None,
     variants_wanted: set[str] | None = None,
+    allow: dict[str, str] | None = None,
 ) -> dict:
-    """The manifest over every model, or `only` those, with every variant or `variants_wanted`."""
+    """The manifest over every model, or `only` those, with every variant or `variants_wanted`.
+
+    A model whose license is not in REDISTRIBUTABLE, nor in `allow` (license to the reason it
+    may be published anyway), is refused before anything is staged.
+    """
+    allowed = set(REDISTRIBUTABLE) | set(allow or {})
     folders = sorted(p.parent for p in models.glob("*/meta.json"))
     if only is not None:
         missing = [name for name in only if not (models / name / "meta.json").is_file()]
@@ -55,12 +91,14 @@ def build(
         folders = [models / name for name in only]
     if not folders:
         raise ManifestError(f"no meta.json under {models}; run scripts/export_models.py first")
+    metas = {folder: json.loads((folder / "meta.json").read_text(encoding="utf-8")) for folder in folders}
+    check_licenses(metas.values(), allowed)
     base = base_url.rstrip("/")
     stage.mkdir(parents=True, exist_ok=True)
     entries = []
     for folder in folders:
         meta_path = folder / "meta.json"
-        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        meta = metas[folder]
         name = meta["name"]
         variants = {}
         for variant, described in meta["variants"].items():
@@ -95,6 +133,20 @@ def build(
     return manifest
 
 
+def add_allow_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--allow-license", metavar="LICENSE", help="publish a model under this license too, for this run")
+    parser.add_argument("--reason", help="why --allow-license's license allows redistribution; it goes into the model card")
+
+
+def allowed_by(args: argparse.Namespace) -> dict[str, str]:
+    """--allow-license with its --reason, which the one is refused without."""
+    if (args.allow_license is None) != (args.reason is None):
+        raise ManifestError("--allow-license and --reason go together: name the license and say why it may be published")
+    if args.allow_license is not None and not args.reason.strip():
+        raise ManifestError("--reason is empty: say why the license allows redistribution")
+    return {} if args.allow_license is None else {args.allow_license: args.reason.strip()}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build manifest.json and stage the model files to publish.")
     parser.add_argument("--base-url", required=True, help="where the staged files will be served from")
@@ -102,9 +154,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--models", type=Path, default=MODELS, help="export output (default: .cache/models)")
     parser.add_argument("--stage", type=Path, default=STAGE, help="folder to stage into (default: .cache/publish)")
     parser.add_argument("--manifest-only", action="store_true", help="write manifest.json without copying files")
+    add_allow_arguments(parser)
     args = parser.parse_args(argv)
     try:
-        manifest = build(args.models, args.stage, args.base_url, args.version, copy=not args.manifest_only)
+        allow = allowed_by(args)
+        manifest = build(args.models, args.stage, args.base_url, args.version, copy=not args.manifest_only, allow=allow)
     except ManifestError as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1

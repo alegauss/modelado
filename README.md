@@ -235,6 +235,11 @@ What it does, step by step (each step can be run on its own):
    and it knows each file's size and hash without the network. While that file is empty, the app
    reads the repository's latest manifest.
 
+   A model whose licence is not MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause or CC-BY-4.0 is
+   refused before anything is staged, dry runs included, naming the model and its licence;
+   `--allow-license "<licence>" --reason "<why>"` lets it through for that run and writes the
+   reason into the model card.
+
    `--model <name>` (repeatable, with `--repo` of your own) publishes those models instead of
    the built-ins, and prints the manifest URL to give the app with `--manifest`; it leaves the
    embedded manifest and `scripts\published-models.json` alone.

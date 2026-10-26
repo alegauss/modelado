@@ -65,7 +65,7 @@ class PublishModelsTests(unittest.TestCase):
         self.assertEqual("hf_secret_value", pm.read_token(secret))
         calls = {}
 
-        def fake_upload(token, models, stage_dir, repo_id, private, only):
+        def fake_upload(token, models, stage_dir, repo_id, private, only, allow):
             calls["token"] = token
             return {"repo": repo_id, "version": pm.VERSION, "files_commit": "a", "manifest_commit": "b", "manifest_url": "u", "models": []}
 
@@ -84,6 +84,17 @@ class PublishModelsTests(unittest.TestCase):
         self.assertEqual(0, code)
         self.assertEqual(["my-depth-fp32.onnx"], sorted(p.name for p in self.stage.glob("*.onnx")))
         self.assertIn("| my-depth |", (self.stage / "README.md").read_text(encoding="utf-8"))
+
+    def test_a_license_allowed_by_hand_is_published_with_its_reason_in_the_card(self):
+        write_model(self.models, "nc-depth", {"fp32": b"nc"}, license_id="CC-BY-NC-4.0")
+        args = ["--dry-run", "--models", str(self.models), "--stage", str(self.stage), "--repo", "me/models", "--model", "nc-depth"]
+        with redirect_stderr(io.StringIO()) as err:
+            self.assertEqual(1, pm.main(args))
+        self.assertIn("nc-depth: its license, CC-BY-NC-4.0", err.getvalue())
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(0, pm.main([*args, "--allow-license", "CC-BY-NC-4.0", "--reason", "the author granted it in writing"]))
+        card = (self.stage / "README.md").read_text(encoding="utf-8")
+        self.assertIn("- **nc-depth** (CC-BY-NC-4.0): the author granted it in writing", card)
 
     def test_model_is_refused_on_the_built_ins_repository(self):
         with redirect_stderr(io.StringIO()) as err:
@@ -119,7 +130,7 @@ class PublishModelsTests(unittest.TestCase):
         write_model(self.models, "my-depth", {"fp32": b"custom"})
         seen = {}
 
-        def fake_upload(token, models, stage_dir, repo_id, private, only):
+        def fake_upload(token, models, stage_dir, repo_id, private, only, allow):
             seen["only"] = only
             return {"repo": repo_id, "version": pm.VERSION, "files_commit": "a", "manifest_commit": "b", "manifest_url": "https://u/manifest.json", "models": only}
 

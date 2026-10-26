@@ -50,6 +50,7 @@
 ## Block E — Publishing custom models to Hugging Face
 
 - ✅ **MOD24** **Only the models export_models.py builds can be published; a custom ONNX with its own meta.json has no way in** — add_model.py admits an ONNX model held to its task's built-in meta.json, and the guest's app ran Relief on one it added (design superseded: pipelines take models by fixed name).
+- ✅ **MOD25** **Publishing never checks that a model's license allows redistribution before uploading it to a public repository** — build_manifest.py refuses a model whose license a public repository may not carry, naming both; --allow-license with a --reason lets it through and the reason goes into the model card.
 
 ## Block F — Installer, releases and auto update
 

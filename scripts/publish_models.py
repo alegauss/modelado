@@ -2,6 +2,9 @@
 
 Every model Modelado runs is under a license that allows redistribution (MIT, Apache-2.0), so
 all of them are hosted in one public model repository, alegauss/modelado-models by default.
+build_manifest.py refuses any other license before anything is staged (MOD25), dry runs
+included; --allow-license <license> --reason "<why>" lets one more through for that run, and the
+reason is written into the model card beside it.
 Two commits:
 
   1. every variant and its meta.json under the flat names build_manifest.py stages, and a model
@@ -55,7 +58,7 @@ def _size(size: int) -> str:
     return f"{size / 1e6:.0f} MB" if size >= 10e6 else f"{size / 1e6:.1f} MB"
 
 
-def model_card(manifest: dict) -> str:
+def model_card(manifest: dict, allow: dict[str, str] | None = None) -> str:
     """The repository's README: what each file is, where it came from, and under which license."""
     lines = [
         "---",
@@ -86,15 +89,20 @@ def model_card(manifest: dict) -> str:
         "returns density and colour at any point of it, and the app extracts the mesh with marching cubes.",
         "",
     ]
+    allowed = [(m, allow[m["license"]]) for m in manifest["models"] if m["license"] in (allow or {})]
+    if allowed:
+        lines += ["## Licenses published by exception", ""]
+        lines += [f"- **{model['name']}** ({model['license']}): {reason}" for model, reason in allowed]
+        lines.append("")
     return "\n".join(lines)
 
 
-def stage(models: Path, stage_dir: Path, base_url: str, only: list[str] = HOSTED) -> dict:
+def stage(models: Path, stage_dir: Path, base_url: str, only: list[str] = HOSTED, allow: dict[str, str] | None = None) -> dict:
     """The files to upload, with manifest.json and README.md, for the given base URL."""
     if stage_dir.exists():
         shutil.rmtree(stage_dir)
-    manifest = bm.build(models, stage_dir, base_url, VERSION, only=only)
-    (stage_dir / "README.md").write_text(model_card(manifest), encoding="utf-8", newline="\n")
+    manifest = bm.build(models, stage_dir, base_url, VERSION, only=only, allow=allow)
+    (stage_dir / "README.md").write_text(model_card(manifest, allow), encoding="utf-8", newline="\n")
     return manifest
 
 
@@ -102,7 +110,7 @@ def resolve_base(repo_id: str, commit: str) -> str:
     return f"https://huggingface.co/{repo_id}/resolve/{commit}"
 
 
-def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: bool, only: list[str] = HOSTED) -> dict:
+def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: bool, only: list[str] = HOSTED, allow: dict[str, str] | None = None) -> dict:
     """The two commits; returns what scripts/published-models.json records."""
     from huggingface_hub import HfApi
 
@@ -111,13 +119,13 @@ def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: boo
 
     # Commit 1: the files and the card. The manifest staged beside them names a placeholder base,
     # so it is left out here and rebuilt against this commit below.
-    stage(models, stage_dir, resolve_base(repo_id, "pending"), only)
+    stage(models, stage_dir, resolve_base(repo_id, "pending"), only, allow)
     (stage_dir / "manifest.json").unlink()
     files = api.upload_folder(repo_id=repo_id, folder_path=str(stage_dir), commit_message=f"Modelado models, manifest version {VERSION}")
     files_commit = files.oid
 
     # Commit 2: manifest.json with every URL pinned to commit 1.
-    manifest = stage(models, stage_dir, resolve_base(repo_id, files_commit), only)
+    manifest = stage(models, stage_dir, resolve_base(repo_id, files_commit), only, allow)
     pinned = api.upload_file(
         path_or_fileobj=str(stage_dir / "manifest.json"),
         path_in_repo="manifest.json",
@@ -151,21 +159,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--stage", type=Path, default=STAGE, help="folder to stage into (default: .cache/publish)")
     parser.add_argument("--dry-run", action="store_true", help="stage and write the card and manifest, upload nothing")
     parser.add_argument("--model", action="append", default=[], metavar="NAME", help="publish this model instead of the built-ins; repeatable")
+    bm.add_allow_arguments(parser)
     args = parser.parse_args(argv)
     only = args.model or HOSTED
     if only != HOSTED and args.repo == REPO_ID:
         print(f"ERROR --model publishes to a repository of your own; {REPO_ID} holds the built-ins: pass --repo", file=sys.stderr)
         return 2
     try:
+        allow = bm.allowed_by(args)
         if args.dry_run:
-            manifest = stage(args.models, args.stage, resolve_base(args.repo, "DRY-RUN"), only)
+            manifest = stage(args.models, args.stage, resolve_base(args.repo, "DRY-RUN"), only, allow)
             print(f"staged {len(manifest['models'])} models in {args.stage}; nothing uploaded")
             return 0
         token = read_token(args.token_file)
         if token is None:
             print("ERROR a write token is required: --token-file or HF_TOKEN", file=sys.stderr)
             return 2
-        record = upload(token, args.models, args.stage, args.repo, args.private, only)
+        record = upload(token, args.models, args.stage, args.repo, args.private, only, allow)
     except bm.ManifestError as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
