@@ -36,7 +36,7 @@ public partial class MainWindow
 
         try
         {
-            manifest = await ModelDownloads.LoadManifestAsync(http, options.Manifest, CancellationToken.None).ConfigureAwait(true);
+            manifest = await WithSourcesAsync(await ModelDownloads.LoadManifestAsync(http, options.Manifest, CancellationToken.None).ConfigureAwait(true)).ConfigureAwait(true);
         }
         catch (Exception error) when (error is HttpRequestException or InvalidDataException or TaskCanceledException)
         {

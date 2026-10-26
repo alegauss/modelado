@@ -28,27 +28,6 @@ window case.
 
 ## Block E — Publishing custom models to Hugging Face
 
-### §MOD27 Custom model repositories in the window
-
-CommandLine.cs takes --manifest <url>, and ModelManifest refuses one it cannot trust
-(https, or loopback http for tests). About gains "Model sources": the built-in
-alegauss/modelado-models, always first and not removable, and any added source. A source
-can be given as a Hugging Face repository id (owner/name, resolving to its manifest.json
-at the latest commit, then pinned to that commit) or as a manifest URL.
-
-Adding one shows what it lists (each model, task, size and license) before it is saved.
-A model whose task the built-in already covers appears as a choice on that operation's
-card, for example "Upscaler: Real-ESRGAN x4plus (built-in) / <custom>". Sources persist
-per user beside the provider choice. --manifest still overrides them for one run.
-
-Landed in part one: ModelSources (Modelado.Inference) resolves, merges and keeps the
-sources in settings.json, Relief takes ReliefRunOptions.DepthModel, and modelado-cli has
---source and --depth-model; the window has none of it yet. The other pipelines still
-take their model by a constant name (as Relief did, Upscaling.Model, ...), so the card's
-choice has to reach the pipeline as a name. Done when a test repository published with
-MOD24's model (publish_models.py --model) is added by its id, its model is chosen on the
-Relief card, and Relief runs with it.
-
 ## Block F — Installer, releases and auto update
 
 ## Block G — Public site for 3D modelling

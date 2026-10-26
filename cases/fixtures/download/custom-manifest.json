@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "version": "custom",
+  "models": [
+    {
+      "name": "my-depth",
+      "task": "depth",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-depth-meta.json",
+        "bytes": 708,
+        "sha256": "889ca39cfb9558fc73fe5e667f1a36a20f50e8d2146ec551bfc2563211b398c3"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    }
+  ]
+}

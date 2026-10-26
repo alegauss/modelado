@@ -147,6 +147,25 @@
       "shareable": false
     },
     {
+      // MOD27: no --manifest, so the built-in list is the embedded one and nothing of it is fetched;
+      // LOCALAPPDATA staged empty for sources of this run's own, and a models folder of its own.
+      "name": "a window with a photo open and no model sources added",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/source-models", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
+      // MOD27: the settings.json a run left after adding the fixture server's custom manifest.
+      "name": "a window started with a model source already added",
+      "files": [{ "from": "cases/fixtures/photo.png", "to": "photo.png" }, { "from": "cases/fixtures/settings-sources.json", "to": "Modelado/settings.json" }],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/kept-source-models", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu", "--releases", "off"],
@@ -328,6 +347,59 @@
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "the Relief card offers its download again" },
         { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "and the 3D Object card is as it was" }
+      ]
+    },
+
+    {
+      "name": "a source added in About shows what it lists first, and its depth model is chosen and fetched from the Relief card",
+      "catches": "a source kept without saying what it holds, a card that never offers the source's model, or a choice the download ignores",
+      "filed": "MOD27",
+      "tags": ["about", "sources", "download", "operations"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ComboBox#ReliefDepthModel", "act": "read", "absent": true, "named": "with no source, the Relief card offers no choice" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#Source-0", "act": "read", "reads": "name", "expect": "alegauss/modelado-models (built in)", "named": "the built-in models are the first source" },
+        { "locator": "Button#RemoveSource-0", "act": "read", "absent": true, "named": "and cannot be removed" },
+        { "locator": "Edit#AboutSourceInput", "act": "set value", "with": "http://127.0.0.1:47631/files/custom-manifest.json", "reads": "value", "expect": "http://127.0.0.1:47631/files/custom-manifest.json", "named": "the fixture server's custom manifest is typed" },
+        { "locator": "Button#AboutAddSource", "act": "invoke", "named": "Add is pressed" },
+        { "locator": "Text#AboutSourcePreviewTitle", "act": "read", "reads": "name", "expect": "http://127.0.0.1:47631/files/custom-manifest.json lists 1 model. Add it?", "named": "it asks, in the panel" },
+        { "locator": "List#AboutSourcePreviewModels > ListItem[order=top]", "act": "read", "reads": "name", "expect": "my-depth · depth · 1 MB · MIT", "named": "naming each model, its task, size and license first" },
+        { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "not in a dialog" },
+        { "locator": "Button#AboutSourceKeep", "act": "invoke", "named": "Add this source is pressed" },
+        { "locator": "Text#Source-1", "act": "read", "reads": "name", "expect": "http://127.0.0.1:47631/files/custom-manifest.json", "named": "the source is listed after the built-in one" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the Relief card now offers a depth model" },
+        { "locator": "ComboBox#ReliefDepthModel > ListItem[order=top]", "act": "read", "reads": "name", "expect": "Depth Anything V2 Small (built in)", "named": "the built-in one first" },
+        { "locator": "ComboBox#ReliefDepthModel > ListItem[nameStarts=\"my-depth\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "the source's my-depth is chosen" },
+        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "my-depth, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "the card names what its first use now downloads" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "List#ConsentFiles > ListItem[order=top]", "act": "read", "reads": "name", "expect": "my-depth · FP32 · 1 MB · from 127.0.0.1:47631/files", "named": "the download offered is the chosen model's" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
+        { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Relief: \\d+ of 1 MB", "named": "and it is the one that starts" },
+        { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "it is paused from the card" },
+        { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "and the status bar no longer shows it" }
+      ]
+    },
+
+    {
+      "name": "a source added on an earlier run is listed at start, offered on the Relief card, and removed in About",
+      "catches": "a source that is lost on restart, or a removed one whose model the card still offers",
+      "filed": "MOD27",
+      "tags": ["about", "sources"],
+      "fixture": "a window started with a model source already added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the kept source's depth model is offered at start" },
+        { "locator": "ComboBox#ReliefDepthModel > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "my-depth (http://127.0.0.1:47631/files/custom-manifest.json)", "named": "named with the source it came from" },
+        { "locator": "ComboBox#ReliefDepthModel", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#Source-1", "act": "read", "reads": "name", "expect": "http://127.0.0.1:47631/files/custom-manifest.json", "named": "About lists the kept source" },
+        { "locator": "Button#RemoveSource-1", "act": "invoke", "named": "its Remove is pressed" },
+        { "locator": "Text#Source-1", "act": "read", "absent": true, "named": "it leaves the list" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "ComboBox#ReliefDepthModel", "act": "read", "absent": true, "named": "and the Relief card no longer offers a choice" }
       ]
     },
 

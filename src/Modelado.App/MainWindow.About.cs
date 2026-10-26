@@ -68,6 +68,7 @@ public partial class MainWindow
 
         string source = ModelDownloads.Embedded is null ? options.Manifest ?? ModelDownloads.LatestManifestUrl : "built into this version";
         AboutManifest.Text = $"Models are downloaded from huggingface.co/alegauss/modelado-models; model list: {source}.";
+        FillSources();
 
         List<InstalledModel> downloads = [.. installed.Where(m => IsUnder(m.Root, library.DownloadRoot))];
         long downloaded = downloads.Sum(Bytes);

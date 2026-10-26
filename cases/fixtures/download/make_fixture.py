@@ -53,4 +53,24 @@ manifest = {
     ],
 }
 (root / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+# MOD27: a source added in About, listing one depth model of its own beside the built-in ones. Its
+# meta.json names the depth task, so the Relief card offers it; the ONNX file is the same stand-in.
+depth_meta = (json.dumps({**json.loads(meta), "name": "my-depth", "task": "depth"}, indent=2) + "\n").encode("utf-8")
+(root / "standin-depth-meta.json").write_bytes(depth_meta)
+custom = {
+    "schema": 1,
+    "version": "custom",
+    "models": [
+        {
+            "name": "my-depth",
+            "task": "depth",
+            "meta": entry("standin-depth-meta.json", depth_meta),
+            "variants": {"fp32": entry("standin.onnx", standin)},
+            "license": "MIT",
+            "license_url": "https://opensource.org/license/mit",
+        }
+    ],
+}
+(root / "custom-manifest.json").write_text(json.dumps(custom, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(f"wrote {root}")

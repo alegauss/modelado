@@ -284,6 +284,12 @@
             <TextBlock Text="Relief" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
                        Text="Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings." />
+            <!-- MOD27: shown only when an added source lists a depth model of its own. -->
+            <StackPanel x:Name="ReliefDepthModelPanel" Visibility="Collapsed">
+              <TextBlock Text="Depth model" Style="{StaticResource FieldLabel}" />
+              <ComboBox x:Name="ReliefDepthModel" AutomationProperties.AutomationId="ReliefDepthModel" AutomationProperties.Name="Depth model"
+                        DisplayMemberPath="Label" SelectionChanged="OnReliefDepthModelChanged" />
+            </StackPanel>
             <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ReliefResolution" AutomationProperties.AutomationId="ReliefResolution" SelectedIndex="1">
               <ComboBoxItem Content="128" Tag="128" />
@@ -607,6 +613,53 @@
             </ListBox.ItemTemplate>
           </ListBox>
           <TextBlock x:Name="AboutManifest" AutomationProperties.AutomationId="AboutManifest" Style="{StaticResource StatCaption}" Margin="0,6,0,16" />
+
+          <!-- MOD27: repositories read after the built-in one, kept per user. Adding one shows what it
+               lists before it is kept, here and not in a dialog. -->
+          <TextBlock Text="Model sources" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Style="{StaticResource StatCaption}" Margin="0,0,0,6" TextWrapping="Wrap"
+                     Text="The built-in models come first. Add a Hugging Face repository (owner/name) or a manifest URL, and a model it lists for an operation becomes a choice on that operation's card." />
+          <ItemsControl x:Name="AboutSources" AutomationProperties.AutomationId="AboutSources" Margin="0,0,0,6">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="0,2">
+                  <Button DockPanel.Dock="Right" Content="Remove" Padding="10,2" Tag="{Binding Index}" Visibility="{Binding RemoveVisibility}"
+                          AutomationProperties.AutomationId="{Binding RemoveId}" AutomationProperties.Name="{Binding RemoveName}"
+                          Click="OnRemoveSource" />
+                  <TextBlock Text="{Binding Label}" AutomationProperties.AutomationId="{Binding LabelId}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <DockPanel Margin="0,0,0,6">
+            <Button x:Name="AboutAddSource" AutomationProperties.AutomationId="AboutAddSource" DockPanel.Dock="Right" Content="Add"
+                    Padding="12,4" Margin="8,0,0,0" Click="OnAddSource" />
+            <TextBox x:Name="AboutSourceInput" AutomationProperties.AutomationId="AboutSourceInput" AutomationProperties.Name="Repository or manifest URL"
+                     ToolTip="owner/name on Hugging Face, or the https address of a manifest.json" />
+          </DockPanel>
+          <Border x:Name="AboutSourcePreview" AutomationProperties.AutomationId="AboutSourcePreview" Padding="12,10" Margin="0,0,0,6" CornerRadius="6"
+                  Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+            <StackPanel>
+              <TextBlock x:Name="AboutSourcePreviewTitle" AutomationProperties.AutomationId="AboutSourcePreviewTitle" TextWrapping="Wrap" FontWeight="SemiBold" />
+              <ListBox x:Name="AboutSourcePreviewModels" AutomationProperties.AutomationId="AboutSourcePreviewModels" AutomationProperties.Name="What the source lists"
+                       IsHitTestVisible="False" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,0,0">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,2" />
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+              <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <Button x:Name="AboutSourceKeep" AutomationProperties.AutomationId="AboutSourceKeep" Content="Add this source" Padding="12,2"
+                        Click="OnKeepSource" />
+                <Button x:Name="AboutSourceCancel" AutomationProperties.AutomationId="AboutSourceCancel" Content="Cancel" Padding="12,2" Margin="8,0,0,0"
+                        Click="OnCancelSource" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+          <TextBlock x:Name="AboutSourceNote" AutomationProperties.AutomationId="AboutSourceNote" Style="{StaticResource StatCaption}" TextWrapping="Wrap"
+                     Margin="0,0,0,6" Visibility="Collapsed" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+          <Border Height="10" />
 
           <TextBlock Text="Downloads" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutDownloadNote" AutomationProperties.AutomationId="AboutDownloadNote" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />

@@ -62,7 +62,8 @@ public partial class MainWindow
         bool cutOut = ReliefRemoveBackground.IsChecked == true;
         ReliefRunOptions settings = new(
             new ReliefOptions(GridLongSide: TagOf(ReliefResolution), Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value),
-            RemoveBackground: cutOut);
+            RemoveBackground: cutOut,
+            DepthModel: DepthModel);
         await RunAsync(reliefFirstUse!, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 

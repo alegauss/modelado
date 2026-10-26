@@ -1,0 +1,9 @@
+{
+  "provider": "cpu",
+  "modelSources": [
+    {
+      "given": "http://127.0.0.1:47631/files/custom-manifest.json",
+      "manifest": "http://127.0.0.1:47631/files/custom-manifest.json"
+    }
+  ]
+}

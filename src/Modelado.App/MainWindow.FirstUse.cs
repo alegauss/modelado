@@ -40,7 +40,7 @@ public partial class MainWindow
     {
         objectFirstUse = new("3D Object", "Download and generate the 3D object", () => ObjectModels(ObjectEnhancePhoto.IsChecked == true),
             ObjectFirstUse, ObjectFirstUseBadge, ObjectFirstUseDetail, ObjectFirstUseProgress, ObjectFirstUseAction, () => OnGenerateObject(this, new RoutedEventArgs()));
-        reliefFirstUse = new("Relief", "Download and generate the relief", () => ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true),
+        reliefFirstUse = new("Relief", "Download and generate the relief", () => ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true, DepthModel),
             ReliefFirstUse, ReliefFirstUseBadge, ReliefFirstUseDetail, ReliefFirstUseProgress, ReliefFirstUseAction, () => OnGenerateRelief(this, new RoutedEventArgs()));
         textureFirstUse = new("A sharper texture", "Download and sharpen the texture", () => [Upscaling.Model],
             TextureFirstUse, TextureFirstUseBadge, TextureFirstUseDetail, TextureFirstUseProgress, TextureFirstUseAction, () => OnUpscaleTexture(this, new RoutedEventArgs()));
@@ -59,7 +59,9 @@ public partial class MainWindow
     // Each card says what its first use downloads, or how its download is going.
     private async Task RefreshFirstUseAsync()
     {
-        ModelManifest? listed = FirstUseCards.Any(card => runner.Missing(card.Models()).Count > 0) ? await ManifestAsync().ConfigureAwait(true) : manifest;
+        // An added source is read too, so the Relief card can offer its depth model (MOD27).
+        ModelManifest? listed = Sources.Count > 0 || FirstUseCards.Any(card => runner.Missing(card.Models()).Count > 0) ? await ManifestAsync().ConfigureAwait(true) : manifest;
+        FillDepthChoices(listed);
         foreach (FirstUseCard card in FirstUseCards)
         {
             ShowFirstUse(card, listed);

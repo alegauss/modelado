@@ -14,8 +14,6 @@
 
 ## Block E — Publishing custom models to Hugging Face
 
-- ⏳ **MOD27** (deps: MOD23 ✅, MOD24 ✅) **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — About does not list, preview or keep model sources, and the Relief card cannot choose a source's depth model. → §MOD27
-
 ## Block F — Installer, releases and auto update
 
 ## Block G — Public site for 3D modelling
@@ -57,13 +55,6 @@
 - **A drawn candidate becomes a TripoSR model** On the guest with the published models:
   a candidate chosen on the drop zone is generated with 3D Object, and the PNG it was
   saved as still carries its prompt in an iTXt chunk.
-
-## Done when — MOD27
-
-- **A source added in About runs its depth model from the Relief card** A winwright case
-  on the guest adds a source in About, sees its models, task, size and license before
-  saving, chooses its depth model on the Relief card, and reads the last run; the source
-  is still there after a restart.
 
 ## Non-goals
 
