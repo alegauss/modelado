@@ -87,7 +87,9 @@ public static class MeshEdit
             }
         }
 
-        PriorityQueue<(int A, int B, int VersionA, int VersionB, Vector3 Target, float Mix), double> queue = new();
+        // MOD62: equal costs (a flat region's are all zero) go shortest edge first, so a flat part
+        // thins out evenly instead of collapsing into whichever vertex the heap returns again.
+        PriorityQueue<(int A, int B, int VersionA, int VersionB, Vector3 Target, float Mix), (double Cost, float Length)> queue = new(CostThenLength.Instance);
         foreach (((int a, int b), int f) in edgeFace)
         {
             if (f >= 0)
@@ -125,8 +127,11 @@ public static class MeshEdit
             Ring(a, ringA);
             Ring(b, ringB);
             int shared = around[a].Count(f => !removed[f] && Has(f, b));
+            int union = ringA.Count + ringB.Count;
             ringA.IntersectWith(ringB);
-            if (shared == 0 || ringA.Count != shared || Folds(a, b, target) || Folds(b, a, target))
+            // MOD62: the merged vertex's valence, capped. A vertex that keeps absorbing its neighbours
+            // grows a ring every later collapse walks and re-enqueues, which made a relief take minutes.
+            if (shared == 0 || ringA.Count != shared || union - ringA.Count - 2 > MostNeighbours || Folds(a, b, target) || Folds(b, a, target))
             {
                 continue;
             }
@@ -255,7 +260,21 @@ public static class MeshEdit
                 (best, mix, cost) = (middle, 0.5f, cm);
             }
 
-            queue.Enqueue((a, b, version[a], version[b], best, mix), cost);
+            queue.Enqueue((a, b, version[a], version[b], best, mix), (cost, Vector3.DistanceSquared(position[a], position[b])));
+        }
+    }
+
+    /// <summary>The most neighbours a vertex Simplify keeps may have (MOD62).</summary>
+    private const int MostNeighbours = 20;
+
+    private sealed class CostThenLength : IComparer<(double Cost, float Length)>
+    {
+        public static readonly CostThenLength Instance = new();
+
+        public int Compare((double Cost, float Length) x, (double Cost, float Length) y)
+        {
+            int byCost = x.Cost.CompareTo(y.Cost);
+            return byCost != 0 ? byCost : x.Length.CompareTo(y.Length);
         }
     }
 

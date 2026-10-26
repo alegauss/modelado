@@ -6,29 +6,6 @@
 
 ## Block C — Existing code wired into the window
 
-### §MOD62 Simplify on a relief with a base
-
-Seen making the site's Studio (MOD34) on the guest's CPU: `modelado-cli edit --simplify
-0.35` on a relief made with `--grid 256 --base 0.03` took 260 s (196,604 to 68,810
-triangles, the bust), 102 s (the cathedral) and 75 s (the canyon), where the same edit
-on TripoSR's chair took 0.9 s for 150,000 to 45,000. The window's Simplify card runs the
-same MeshEdit.Simplify, so a person simplifying a relief waits minutes with nothing to
-say why.
-
-The lead, from reading MeshEdit.Simplify: every collapse walks the ring of the vertex it
-keeps (`Ring`, `around[a].RemoveAll`) and enqueues an edge to each neighbour, so its
-cost grows with that vertex's valence. A relief with a base is a closed solid; if the
-base or the walls are triangulated as a fan from a few vertices, those vertices carry
-thousands of neighbours, and each collapse next to them costs thousands. Measure before
-changing anything: the valence histogram of a relief with and without `--base`, and the
-time with and without it.
-
-Build: whatever the measurement names, for example triangulate the base as a
-grid-aligned strip instead of a fan in Relief.Build, or skip re-enqueueing a neighbour
-whose edge is already queued at the current version. Done when simplifying a 256-grid
-relief with a base to a third takes seconds, the same order as a TripoSR mesh of its
-size, with a test in Modelado.Geometry.Tests that bounds it.
-
 ### §MOD63 JPEG textures in GLB
 
 Seen making the site's Studio (MOD34): reliefs from 768 px photos, at `--grid 192`,

@@ -8,7 +8,6 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD62** (deps: —) **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying the Studio's 196,604-triangle bust relief to a third took 260 s on the guest's CPU; the chair's 150,000 took 0.9 s. → §MOD62
 - 📋 **MOD63** (deps: —) **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — The Studio's canyon relief is 4.1 MB as GLB, nearly all of it the 768 px photo, which as JPEG would be about 200 kB. → §MOD63
 
 ## Block D — Model downloads
