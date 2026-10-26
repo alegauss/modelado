@@ -72,12 +72,18 @@ def export_object(obj, path: str, apply_modifiers: bool) -> None:
         obj.matrix_world = placed
 
 
+# The JSON on stdout is ASCII (non-ASCII is escaped), but the lines for a person on stderr come in
+# the console's code page when redirected ("800 × 800" is byte 0x9E in cp850), so a byte that is
+# not UTF-8 is replaced rather than raised in the reader thread.
+TEXT = {"text": True, "encoding": "utf-8", "errors": "replace"}
+
+
 def start_cli(cli: str, source: str, target: str, args: list) -> subprocess.Popen:
     """modelado-cli edit, its result as JSON on stdout and nothing on screen."""
     flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     return subprocess.Popen(
         [cli, "edit", source, "-o", target, *args, "--json", "--provider", "cpu"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", creationflags=flags)
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=flags, **TEXT)
 
 
 def read_report(process: subprocess.Popen) -> dict:
@@ -135,13 +141,20 @@ def run_cli(cli: str, args: list) -> dict:
     flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     process = subprocess.Popen(
         [cli, *args, "--json", "--provider", "cpu"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", creationflags=flags)
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=flags, **TEXT)
     return read_report(process)
 
 
-def pending_download(cli: str, kind: str, models: str = None) -> dict:
-    """What generating would download first: download --dry-run's report (pending bytes, models, licenses, from)."""
-    return run_cli(cli, ["download", GENERATE[kind][1], "--dry-run", *(["--models", models] if models else [])])
+def pending_download(cli: str, what: str, models: str = None) -> dict:
+    """What a first use of `what` (object, relief, upscale) would download: download --dry-run's report."""
+    return run_cli(cli, ["download", what, "--dry-run", *(["--models", models] if models else [])])
+
+
+def consent_text(title: str, pending: dict) -> str:
+    """The window's consent, in a sentence: what, how large, from where, and that the photo stays here."""
+    return (f"{title} needs a one-time download of {pending['pending'] / 1e6:,.0f} MB "
+            f"from {pending.get('from') or 'Hugging Face'}: {', '.join(pending.get('licenses', []))}. "
+            "Your photo and your model stay on this computer.")
 
 
 def start_generate(cli: str, kind: str, photo: str, target: str, settings) -> subprocess.Popen:
@@ -149,7 +162,7 @@ def start_generate(cli: str, kind: str, photo: str, target: str, settings) -> su
     flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     return subprocess.Popen(
         [cli, GENERATE[kind][1], photo, "-o", target, *generate_args(kind, settings), "--json", "--provider", "cpu"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8", creationflags=flags)
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=flags, **TEXT)
 
 
 def photo_path(settings, folder: str) -> str:
@@ -221,6 +234,68 @@ def run_generate(cli: str, kind: str, photo: str, settings, location) -> tuple:
         return import_generated(target, name, settings.size, location), report
 
 
+TEXTURE_ACTIONS = {
+    "UPSCALE": ("Upscale texture 4×", lambda s: ["--upscale-texture"]),
+    "MATERIAL": ("New texture from an image", lambda s: ["--texture", bpy.path.abspath(s.material_image), "--tiles", str(s.material_tiles)]),
+}
+
+
+def base_colour_image(obj):
+    """The image node feeding the first material's Principled BSDF Base Color, and that material; or (None, None)."""
+    for slot in obj.material_slots:
+        material = slot.material
+        if material is None or not material.use_nodes:
+            continue
+        for node in material.node_tree.nodes:
+            if node.type == "BSDF_PRINCIPLED":
+                for link in node.inputs["Base Color"].links:
+                    if link.from_node.type == "TEX_IMAGE" and link.from_node.image is not None:
+                        return link.from_node, material
+    return None, None
+
+
+def export_textured(obj, path: str) -> None:
+    """Writes the object alone to a GLB with its material, so its texture and UVs travel too."""
+    for other in bpy.context.view_layer.objects:
+        other.select_set(False)
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.export_scene.gltf(
+        filepath=path, export_format="GLB", use_selection=True, export_apply=False,
+        export_materials="EXPORT", export_image_format="AUTO", export_animations=False, export_skins=False, export_morph=False)
+
+
+def read_texture(path: str, name: str):
+    """The texture of the GLB modelado-cli wrote, packed into the .blend under `name`; nothing else is kept."""
+    before_objects, before_images = set(bpy.data.objects), set(bpy.data.images)
+    bpy.ops.import_scene.gltf(filepath=path)
+    images = [i for i in bpy.data.images if i not in before_images]
+    for obj in [o for o in bpy.data.objects if o not in before_objects]:
+        mesh = obj.data if obj.type == "MESH" else None
+        bpy.data.objects.remove(obj, do_unlink=True)
+        if mesh is not None and mesh.users == 0:
+            bpy.data.meshes.remove(mesh)
+    if not images:
+        raise RuntimeError("modelado-cli wrote no texture")
+    image = images[0]
+    image.pack()
+    image.name = name
+    return image
+
+
+def run_texture(obj, action: str, cli: str, settings) -> dict:
+    """One texture action on the object: its Base Color image is replaced, the rest of its material kept."""
+    node, _ = base_colour_image(obj)
+    if node is None:
+        raise RuntimeError(f"{obj.name} has no image texture on its Base Color")
+    with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
+        source, target = os.path.join(folder, "in.glb"), os.path.join(folder, "out.glb")
+        export_textured(obj, source)
+        report = read_report(start_cli(cli, source, target, TEXTURE_ACTIONS[action][1](settings)))
+        node.image = read_texture(target, f"{node.image.name} ({TEXTURE_ACTIONS[action][0]})")
+        return report
+
+
 def run_edit(obj, args: list, cli: str, apply_modifiers: bool = False) -> dict:
     """One edit, start to end, on the window's thread; the panel's operator runs the CLI off it."""
     with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
@@ -246,6 +321,9 @@ class ModeladoSettings(bpy.types.PropertyGroup):
     relief_depth: FloatProperty(name="Height", description="How far the nearest point stands out, as a share of the width", default=0.25, min=0.05, max=0.6, subtype="FACTOR")
     relief_base: FloatProperty(name="Base", description="A solid base under the relief, as a share of the width; 0 leaves the surface open", default=0.0, min=0.0, max=0.2, subtype="FACTOR")
     size: FloatProperty(name="Size", description="The new object's longest side", default=0.2, min=0.001, subtype="DISTANCE", unit="LENGTH")
+    # MOD45: the AI group's texture actions.
+    material_image: StringProperty(name="Material", description="A material image (wood, stone, metal), made to tile and put on the surface", subtype="FILE_PATH", default="")
+    material_tiles: IntProperty(name="Tiles", description="How many times the material repeats across the texture", default=2, min=1, max=16)
 
 
 class ModeladoPreferences(bpy.types.AddonPreferences):
@@ -362,7 +440,7 @@ class MODELADO_OT_generate(bpy.types.Operator):
             return {"CANCELLED"}
 
         try:
-            pending = pending_download(cli, self.kind)
+            pending = pending_download(cli, GENERATE[self.kind][1])
         except RuntimeError as error:
             self._folder.cleanup()
             self.report({"ERROR"}, f"{GENERATE[self.kind][0]}: {error}")
@@ -370,9 +448,7 @@ class MODELADO_OT_generate(bpy.types.Operator):
 
         if pending.get("pending", 0) > 0:
             # As the window's consent panel: what, how large, from where, and that the photo stays here.
-            self._consent = (f"{GENERATE[self.kind][0]} needs a one-time download of {pending['pending'] / 1e6:,.0f} MB "
-                             f"from {pending.get('from') or 'Hugging Face'}: {', '.join(pending.get('licenses', []))}. "
-                             "Your photo stays on this computer.")
+            self._consent = consent_text(GENERATE[self.kind][0], pending)
             try:
                 return context.window_manager.invoke_props_dialog(self, width=480, title="Download the models?", confirm_text="Download and generate")
             except TypeError:  # Blender before 4.1 names neither
@@ -432,6 +508,59 @@ class MODELADO_OT_generate(bpy.types.Operator):
         self._folder.cleanup()
 
 
+class MODELADO_OT_texture(bpy.types.Operator):
+    """Replace the selected object's Base Color texture, keeping the rest of its material"""
+
+    bl_idname = "modelado.texture"
+    bl_label = "Modelado texture"
+    bl_options = {"REGISTER", "UNDO"}
+
+    action: EnumProperty(items=[(key, label, "") for key, (label, _) in TEXTURE_ACTIONS.items()])
+
+    _consent = ""
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        return obj is not None and obj.type == "MESH" and context.mode == "OBJECT" and base_colour_image(obj)[0] is not None
+
+    def invoke(self, context, event):
+        cli = cli_path(context)
+        if not os.path.isfile(cli):
+            self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
+            return {"CANCELLED"}
+        if self.action == "MATERIAL" and not os.path.isfile(bpy.path.abspath(context.scene.modelado.material_image)):
+            self.report({"ERROR"}, "Choose a material image first")
+            return {"CANCELLED"}
+        if self.action == "UPSCALE":
+            try:
+                pending = pending_download(cli, "upscale")
+            except RuntimeError as error:
+                self.report({"ERROR"}, f"{TEXTURE_ACTIONS[self.action][0]}: {error}")
+                return {"CANCELLED"}
+            if pending.get("pending", 0) > 0:
+                self._consent = consent_text(TEXTURE_ACTIONS[self.action][0], pending)
+                return context.window_manager.invoke_props_dialog(self, width=480)
+        return self.execute(context)
+
+    def draw(self, context):
+        for line in _wrap(self._consent, 70):
+            self.layout.label(text=line)
+
+    def execute(self, context):
+        # Real-ESRGAN on a 1024 px texture is seconds on the CPU; the status bar says so meanwhile.
+        context.workspace.status_text_set(f"Modelado: {TEXTURE_ACTIONS[self.action][0]}…")
+        try:
+            report = run_texture(context.active_object, self.action, cli_path(context), context.scene.modelado)
+        except RuntimeError as error:
+            self.report({"ERROR"}, f"{TEXTURE_ACTIONS[self.action][0]}: {error}")
+            return {"CANCELLED"}
+        finally:
+            context.workspace.status_text_set(None)
+        self.report({"INFO"}, f"{TEXTURE_ACTIONS[self.action][0]} in {report.get('seconds', 0):.1f} s")
+        return {"FINISHED"}
+
+
 def _wrap(text: str, width: int) -> list:
     lines, line = [], ""
     for word in text.split():
@@ -483,8 +612,20 @@ class MODELADO_PT_panel(bpy.types.Panel):
                 row.prop(settings, amount)
         layout.prop(settings, "apply_modifiers")
 
+        # MOD45: the texture on the Base Color, replaced; the rest of the material stays.
+        box = layout.box()
+        box.label(text="AI")
+        if base_colour_image(obj)[0] is None:
+            box.label(text="No image texture on its Base Color")
+            return
+        box.operator(MODELADO_OT_texture.bl_idname, text=TEXTURE_ACTIONS["UPSCALE"][0]).action = "UPSCALE"
+        box.prop(settings, "material_image")
+        row = box.row(align=True)
+        row.operator(MODELADO_OT_texture.bl_idname, text=TEXTURE_ACTIONS["MATERIAL"][0]).action = "MATERIAL"
+        row.prop(settings, "material_tiles")
 
-CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_PT_panel)
+
+CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_OT_texture, MODELADO_PT_panel)
 
 
 def register():

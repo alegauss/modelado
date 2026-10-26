@@ -84,3 +84,4 @@
 
 - ✅ **MOD43** **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — A Blender 4.2+ extension in blender/modelado runs Modelado's six edits on the selected object through modelado-cli --json, off the main thread with Esc to cancel, as one undo step.
 - ✅ **MOD44** **A photo cannot be turned into a 3D object or relief from inside Blender** — Blender's Generate from photo makes a 3D Object or a Relief at the 3D cursor at the size set, its colours shown, after consent when models are missing (design superseded: Meshy moved to MOD65).
+- ✅ **MOD45 (the local texture actions)** **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — Blender's AI group upscales a Base Color texture 4x or puts a material image on it, keeping the rest of the material, each one undo step.

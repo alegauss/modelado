@@ -26,7 +26,7 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
+- ⏳ **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅, MOD65) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — From Blender, a texture cannot be drawn by Ideogram nor a model sent to Meshy: the CLI has no cloud door yet. → §MOD45
 - 📋 **MOD65** (deps: —) **Blender's Generate from photo offers only the local operations, not Meshy AI's image to 3D** — Left from MOD44: the add-on drives only modelado-cli, which has no cloud command, key store access or price before sending. → §MOD65
 
 ## Done when — Block H
@@ -47,6 +47,13 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
+
+## Done when — MOD45
+
+- **Blender's cloud actions ask before sending, and a decline sends nothing** On the
+  guest with Ideogram and Meshy stood in by the fixture server: a textured model in
+  Blender gets an Ideogram texture and a Meshy retexture, each priced before it is sent
+  and undoable, and a declined action makes no request to the stand-in.
 
 ## Non-goals
 

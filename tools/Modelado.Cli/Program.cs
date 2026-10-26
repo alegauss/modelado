@@ -37,7 +37,7 @@ const string Usage = """
         --texture IMAGE      puts a material image on the surface, made to tile first
         --tiles N            how many times it repeats across the longest side; default 2
         --upscale-texture    upscales the texture 4× with Real-ESRGAN
-    modelado-cli download [object|relief|all]   downloads the missing models
+    modelado-cli download [object|relief|upscale|all]   downloads the missing models
         --dry-run            says what would be downloaded, and fetches nothing
         --remove-background  relief: U-2-Net too, which a relief of the object alone needs
     modelado-cli models                         lists the installed models
@@ -116,8 +116,9 @@ try
                 "object" => ObjectReconstruction.Models,
                 // What `relief` itself fetches: U-2-Net only with --remove-background, as there (MOD44).
                 "relief" => ReliefReconstruction.Models(options.ContainsKey("--remove-background")),
+                "upscale" => new[] { Upscaling.Model },
                 "all" => ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct(),
-                _ => throw new ArgumentException($"download {which}: use object, relief or all."),
+                _ => throw new ArgumentException($"download {which}: use object, relief, upscale or all."),
             };
             return Done(await Download(runner, names.ToList()).ConfigureAwait(false));
 

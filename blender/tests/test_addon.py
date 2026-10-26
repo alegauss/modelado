@@ -81,7 +81,7 @@ check("undo puts the original mesh back", restored is not None and modelado.tria
 import tempfile  # noqa: E402
 
 with tempfile.TemporaryDirectory(prefix="modelado-empty-") as empty:
-    pending = modelado.pending_download(cli, "RELIEF", models=empty)
+    pending = modelado.pending_download(cli, "relief", models=empty)
 check("with no models, a relief's first use names what it downloads", pending.get("pending", 0) > 50_000_000 and pending.get("models") == ["depth-anything-v2-small"])
 check("and its licence and source", pending.get("licenses") == ["depth-anything-v2-small: Apache-2.0"] and pending.get("from") == "huggingface.co")
 
@@ -97,7 +97,7 @@ def longest(obj):
 
 
 for kind in ("RELIEF", "OBJECT"):
-    if modelado.pending_download(cli, kind).get("pending", 0) > 0:
+    if modelado.pending_download(cli, modelado.GENERATE[kind][1]).get("pending", 0) > 0:
         # The real models are needed, as for every test that runs them: none are downloaded here.
         print(f"skipped {kind}: its models are not in this machine's models folder")
         continue
@@ -111,6 +111,48 @@ for kind in ("RELIEF", "OBJECT"):
     check(f"{kind}: standing on the 3D cursor", abs(low.z - 0.5) < 0.002 and abs((low.x + high.x) / 2 - 3) < 0.002 and abs((low.y + high.y) / 2 + 1) < 0.002)
     shows = [s.material for s in made.material_slots if s.material]
     check(f"{kind}: a material that shows its colours", any(modelado.shows_texture(m) or any(n.type == "VERTEX_COLOR" for n in m.node_tree.nodes) for m in shows))
+
+# MOD45: the AI group's texture actions on a textured plane. Only the Base Color's image changes;
+# the rest of the material stays, and undo puts the old image back.
+bpy.ops.mesh.primitive_plane_add(location=(-3, 0, 0))
+plane = bpy.context.active_object
+plane.name = "Panel"
+pixels = bpy.data.images.new("Panel colours", 64, 64)
+pixels.pixels = [v for y in range(64) for x in range(64) for v in (x / 63, y / 63, 0.5, 1.0)]
+pixels.pack()
+paint = bpy.data.materials.new("Paint")
+paint.use_nodes = True
+shader = paint.node_tree.nodes["Principled BSDF"]
+shader.inputs["Roughness"].default_value = 0.33
+texture = paint.node_tree.nodes.new("ShaderNodeTexImage")
+texture.image = pixels
+paint.node_tree.links.new(texture.outputs["Color"], shader.inputs["Base Color"])
+plane.data.materials.append(paint)
+check("the plane's Base Color image is found", modelado.base_colour_image(plane)[0] == texture)
+
+material_image = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "cases", "fixtures", "photo.png")
+settings.material_image = material_image
+settings.material_tiles = 2
+bpy.ops.ed.undo_push(message="before New texture")
+meshes_before = len([o for o in bpy.data.objects if o.type == "MESH"])
+modelado.run_texture(plane, "MATERIAL", cli, settings)
+bpy.ops.ed.undo_push(message="New texture")
+node, material = modelado.base_colour_image(bpy.data.objects["Panel"])
+check("MATERIAL: the Base Color takes a new image, two tiles of the 64 px material across", node.image != pixels and node.image.size[0] == 128)
+check("MATERIAL: the rest of the material is kept", material.name == "Paint" and abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
+check("MATERIAL: the image is packed into the .blend", node.image.packed_file is not None)
+check("MATERIAL: nothing imported is left over", len([o for o in bpy.data.objects if o.type == "MESH"]) == meshes_before)
+bpy.ops.ed.undo()
+check("MATERIAL: undo puts the old image back", modelado.base_colour_image(bpy.data.objects["Panel"])[0].image.name == "Panel colours")
+
+if modelado.pending_download(cli, "upscale").get("pending", 0) > 0:
+    print("skipped UPSCALE: Real-ESRGAN is not in this machine's models folder")
+else:
+    plane = bpy.data.objects["Panel"]
+    modelado.run_texture(plane, "UPSCALE", cli, settings)
+    node, material = modelado.base_colour_image(plane)
+    check("UPSCALE: the Base Color image is four times as wide", node.image.size[0] == 256)
+    check("UPSCALE: the rest of the material is kept", abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
 
 print(f"{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)
