@@ -23,12 +23,12 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json",
     };
 
-    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--size", "--preview", "--json"];
+    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--remove-background"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--upscale-texture"),
         ["download"] = Takes(),
         ["models"] = Takes(),

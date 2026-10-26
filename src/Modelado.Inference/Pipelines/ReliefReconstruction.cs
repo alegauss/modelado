@@ -9,7 +9,8 @@ namespace Modelado.Inference.Pipelines;
 /// <param name="Relief">The mesh's shape: grid, depth, base.</param>
 /// <param name="RemoveBackground">Keep only the object U-2-Net finds, instead of the whole picture.</param>
 /// <param name="TextureSide">The longest side of the texture the mesh carries.</param>
-public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048);
+/// <param name="DepthModel">The depth model to run: the built-in one, or one an added source lists (MOD27).</param>
+public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048, string DepthModel = ReliefReconstruction.Depth);
 
 /// <summary>
 /// A relief from one photo with Depth Anything V2 Small (Apache-2.0): the depth of every pixel,
@@ -18,27 +19,38 @@ public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackgroun
 /// </summary>
 public static class ReliefReconstruction
 {
-    /// <summary>The depth model.</summary>
+    /// <summary>The built-in depth model.</summary>
     public const string Depth = "depth-anything-v2-small";
+
+    /// <summary>The task a depth model's meta.json names.</summary>
+    public const string DepthTask = "depth";
 
     /// <summary>The models the operation needs; U-2-Net only to cut the object out.</summary>
     /// <param name="removeBackground">Whether the background is removed.</param>
+    /// <param name="depth">The depth model, the built-in one unless another is chosen.</param>
     /// <returns>The models' folder names.</returns>
-    public static IReadOnlyList<string> Models(bool removeBackground) => removeBackground ? [Depth, BackgroundRemoval.Model] : [Depth];
+    public static IReadOnlyList<string> Models(bool removeBackground, string depth = Depth) => removeBackground ? [depth, BackgroundRemoval.Model] : [depth];
 
     /// <summary>The relative inverse depth of a photo (larger is nearer), at the model's resolution.</summary>
     /// <param name="runner">The sessions.</param>
     /// <param name="photo">The photo, stretched to the model's square; the relief stretches the depth back.</param>
+    /// <param name="model">The depth model, the built-in one unless another is chosen.</param>
     /// <returns>The depth and its size.</returns>
-    public static (float[] Depth, int Width, int Height) EstimateDepth(ModelRunner runner, RgbaImage photo)
+    /// <exception cref="InvalidDataException">The model's meta.json names another task than depth.</exception>
+    public static (float[] Depth, int Width, int Height) EstimateDepth(ModelRunner runner, RgbaImage photo, string model = Depth)
     {
         ArgumentNullException.ThrowIfNull(runner);
         ArgumentNullException.ThrowIfNull(photo);
-        ModelMeta meta = runner.Library.Meta(Depth);
+        ModelMeta meta = runner.Library.Meta(model);
+        if (meta.Task != DepthTask)
+        {
+            throw new InvalidDataException($"{model}'s task is {meta.Task}, not {DepthTask}, so it cannot make a relief.");
+        }
+
         int side = meta.Preprocess.Size ?? 518;
         RgbaImage input = ImageOps.Resize(photo, side, side);
         using OrtValue tensor = OrtValue.CreateTensorValueFromMemory(ImageOps.ToPlanarRgb(input), [1, 3, side, side]);
-        using IDisposableReadOnlyCollection<OrtValue> results = runner.Run(Depth, new Dictionary<string, OrtValue> { [meta.Inputs[0].Name] = tensor }, [meta.Outputs[0].Name]);
+        using IDisposableReadOnlyCollection<OrtValue> results = runner.Run(model, new Dictionary<string, OrtValue> { [meta.Inputs[0].Name] = tensor }, [meta.Outputs[0].Name]);
         return (results[0].GetTensorDataAsSpan<float>()[..(side * side)].ToArray(), side, side);
     }
 
@@ -60,7 +72,7 @@ public static class ReliefReconstruction
 
         float[]? mask = null;
         progress?.Report(new(ReconstructionStage.EstimatingDepth, 0));
-        (float[] depth, int width, int height) = EstimateDepth(runner, photo);
+        (float[] depth, int width, int height) = EstimateDepth(runner, photo, options.DepthModel);
         Mark(ReconstructionStage.EstimatingDepth);
         cancellation.ThrowIfCancellationRequested();
 

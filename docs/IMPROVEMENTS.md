@@ -41,10 +41,13 @@ A model whose task the built-in already covers appears as a choice on that opera
 card, for example "Upscaler: Real-ESRGAN x4plus (built-in) / <custom>". Sources persist
 per user beside the provider choice. --manifest still overrides them for one run.
 
-Each pipeline takes its model by a constant name today (ReliefReconstruction.Depth,
-Upscaling.Model, ...), so the card's choice has to reach the pipeline as a name. Done
-when a test repository published with MOD24's model (publish_models.py --model) is added
-by its id, its model is chosen on the Relief card, and Relief runs with it.
+Landed in part one: ModelSources (Modelado.Inference) resolves, merges and keeps the
+sources in settings.json, Relief takes ReliefRunOptions.DepthModel, and modelado-cli has
+--source and --depth-model; the window has none of it yet. The other pipelines still
+take their model by a constant name (as Relief did, Upscaling.Model, ...), so the card's
+choice has to reach the pipeline as a name. Done when a test repository published with
+MOD24's model (publish_models.py --model) is added by its id, its model is chosen on the
+Relief card, and Relief runs with it.
 
 ## Block F — Installer, releases and auto update
 

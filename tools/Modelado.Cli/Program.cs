@@ -24,6 +24,7 @@ const string Usage = """
         --depth F            relief height, as a share of the width; default 0.25
         --base F             solid base thickness, as a share of the width; 0 = open surface
         --remove-background  the object only, without the background
+        --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
         --rotate x:90        turns about x, y or z (degrees)
         --mirror             mirrors left to right
@@ -39,6 +40,7 @@ const string Usage = """
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
             --manifest <url>          --size <units> (longest side when saving)
+            --source <owner/name|url> a model repository read after the built-in one
             --preview <image.png>     saves a rendered view, on a transparent background
             --json                    prints the result as one JSON object on stdout, the rest on stderr
     """;
@@ -118,9 +120,10 @@ try
             string photoPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which photo? " + Usage);
             string output = Get("--out", null) ?? throw new ArgumentException("-o <output.glb> is required.");
             MeshExport.FormatOf(output);
+            string depthModel = Get("--depth-model", ReliefReconstruction.Depth)!;
             IReadOnlyList<string> needed = args[0] == "object"
                 ? [.. ObjectReconstruction.Models, .. options.ContainsKey("--enhance") ? [Upscaling.Model] : Array.Empty<string>()]
-                : ReliefReconstruction.Models(options.ContainsKey("--remove-background"));
+                : ReliefReconstruction.Models(options.ContainsKey("--remove-background"), depthModel);
             if (runner.Missing(needed).Count > 0 && await Download(runner, needed).ConfigureAwait(false) != 0)
             {
                 return 1;
@@ -140,7 +143,8 @@ try
                     ProjectPhoto: !options.ContainsKey("--no-project")), progress)
                 : ReliefReconstruction.Run(runner, photo, new ReliefRunOptions(
                     new ReliefOptions(GridLongSide: Int("--grid", 256), Depth: (float)Number("--depth", 0.25), BaseThickness: (float)Number("--base", 0)),
-                    RemoveBackground: options.ContainsKey("--remove-background")), progress);
+                    RemoveBackground: options.ContainsKey("--remove-background"),
+                    DepthModel: depthModel), progress);
             Console.WriteLine();
             foreach ((ReconstructionStage stage, TimeSpan took) in result.Timings)
             {
@@ -261,6 +265,13 @@ async Task<int> Download(ModelRunner runner, IReadOnlyCollection<string> models)
     using HttpClient http = new() { Timeout = Timeout.InfiniteTimeSpan };
     http.DefaultRequestHeaders.UserAgent.ParseAdd("Modelado/0.1");
     ModelManifest manifest = await ModelDownloads.LoadManifestAsync(http, Get("--manifest", null), CancellationToken.None).ConfigureAwait(false);
+    if (Get("--source", null) is { } given)
+    {
+        // MOD27: the repository is read after the built-in models, as the window reads an added source.
+        ModelSource source = await ModelSources.ResolveAsync(http, given, CancellationToken.None).ConfigureAwait(false);
+        manifest = await ModelSources.WithSourcesAsync(http, manifest, [source], CancellationToken.None).ConfigureAwait(false);
+    }
+
     string variant = ExecutionProviders.VariantFor(runner.Provider, runner.HighQuality);
     ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
     long pending = ModelDownloads.PendingBytes(manifest, runner.Library.DownloadRoot, requests, runner.Library.Roots);
