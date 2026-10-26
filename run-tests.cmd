@@ -13,8 +13,9 @@ rem Usage:  run-tests.cmd [Configuration]        default Debug
 set "CONFIG=%~1"
 if "%CONFIG%"=="" set "CONFIG=Debug"
 
-rem How long one test may run before it is taken as hung, ended and named.
-if "%MODELADO_HANG%"=="" set "MODELADO_HANG=10m"
+rem How long one test may run before it is taken as hung, ended and named. The UI cases are one
+rem test that runs every case, past ten minutes on the guest (MOD58).
+if "%MODELADO_HANG%"=="" set "MODELADO_HANG=20m"
 
 pushd "%~dp0"
 

@@ -23,6 +23,7 @@
 - ✅ **MOD13** **Export is only a Save dialog that guesses the format from the extension, with no card for format and options** — An Export card picks the format first, shows only its options and what the model loses in it, and writes files that read back.
 - ✅ **MOD14** **The suite runs on the developer's own desktop: no VMware guest run, so UI cases would take over the operator's desk** — run-tests-vm.cmd carries the tree to the VMware guest and runs every suite there with a hang bound; README and skill name it the gate.
 - ✅ **MOD56** **Cases on an --open fixture act before the file is shown, so a slow guest turns the gate red at random** — Every case that acts on an --open window first waits for its file in the source chip, and the gate passed three runs in a row on the guest (design recorded in `winwright.json`).
+- ✅ **MOD58** **The UI cases run as one test that now takes over ten minutes, so the 10m hang bound ends a green run as hung** — run-tests.cmd gives each test 20 minutes before it is dumped as hung, and the guest gate's UI cases pass at 10m16s instead of being ended at 10m.
 
 ## Block C — Existing code wired into the window
 
