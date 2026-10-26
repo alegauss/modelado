@@ -91,6 +91,137 @@ section {
   gap: 12px;
 }
 
+/* MOD33: the photo, an arrow, and the model the reader turns. */
+.hero-stage {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.25fr);
+  align-items: center;
+  gap: 20px;
+}
+@media (max-width: 800px) {
+  .hero-stage {
+    grid-template-columns: 1fr;
+  }
+  .hero-arrow {
+    justify-self: center;
+  }
+  .hero-arrow::after {
+    content: " ↓";
+  }
+}
+.hero-card {
+  border-radius: 18px;
+  background: var(--vg-card);
+  border: 1px solid var(--vg-border);
+  padding: 14px;
+}
+.hero-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.hero-card figcaption {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.hero-facts {
+  display: block;
+  font-weight: 400;
+  color: var(--vg-muted-foreground);
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+.hero-arrow {
+  color: var(--vg-muted-foreground);
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.hero-arrow::after {
+  content: " →";
+}
+.hero-view {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--vg-muted);
+}
+.hero-view.is-ready {
+  cursor: grab;
+}
+.hero-view.is-ready:active {
+  cursor: grabbing;
+}
+.hero-view:focus-visible {
+  outline: 3px solid var(--vg-brand);
+  outline-offset: 3px;
+}
+.hero-view canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.hero-turn,
+.hero-status {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--vg-card);
+  color: var(--vg-foreground);
+  border: 1px solid var(--vg-border);
+  white-space: nowrap;
+}
+.hero-turn {
+  cursor: pointer;
+}
+.hero-styles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.hero-styles button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--vg-border);
+  background: transparent;
+  color: var(--vg-foreground);
+  cursor: pointer;
+}
+.hero-styles button.is-on {
+  background: var(--vg-brand);
+  border-color: var(--vg-brand);
+  color: var(--vg-brand-foreground, #fff);
+}
+.hero-hint,
+.hero-credit {
+  color: var(--vg-muted-foreground);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+.hero-credit {
+  grid-column: 1 / -1;
+  text-align: right;
+}
+.hero-credit a {
+  color: inherit;
+}
+
 .what {
   background: var(--vg-muted);
 }

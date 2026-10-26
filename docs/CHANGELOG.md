@@ -65,6 +65,7 @@
 
 - ✅ **MOD32** **Modelado has no public site: nowhere to see what it makes, try a result or download it** — site\ builds a prerendered English page at /modelado/ with the design system's nav, footer and theme toggle; Lighthouse accessibility scores 100 (design recorded in `site/README.md`).
 - ✅ **MOD35** **Nothing builds and deploys the site when it changes** — A push changing content.ts was built by site.yml and is live at alegauss.github.io/modelado/; a template missing an anchor fails the same build.
+- ✅ **MOD33** **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — The hero shows TripoSR's robot photo beside the model Modelado made of it, turned by mouse, touch or keys; reduced motion keeps the poster (design recorded in `site/README.md`).
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 

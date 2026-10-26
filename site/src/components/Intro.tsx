@@ -1,8 +1,9 @@
 import { SiteButton } from "@viglet/viglet-design-system/site";
 import { releasesUrl, repoUrl, words } from "../content";
+import { Hero } from "./Hero";
 
-// The first word: what Modelado is and where to get it. MOD33's hero, a model the reader turns,
-// replaces the plain heading here.
+// The first word: what Modelado is and where to get it, then the hero: a photo and the model made
+// from it, which the reader turns (MOD33).
 export function Intro() {
   const w = words.intro;
   return (
@@ -15,6 +16,7 @@ export function Intro() {
           <SiteButton href={releasesUrl} rel="noopener">{w.download}</SiteButton>
           <SiteButton variant="ghost" href={repoUrl} rel="noopener">{w.source}</SiteButton>
         </div>
+        <Hero />
       </div>
     </section>
   );

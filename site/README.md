@@ -29,6 +29,8 @@ og:url by replace-or-throw, so a template that lost an anchor fails the build.
 | `src/routes.ts` | The route and its metadata, read by the prerender |
 | `src/components/Chrome.tsx` | The design system's nav and footer, with Modelado's brand |
 | `src/components/` | The page's own sections |
+| `src/components/Hero.tsx`, `viewer.ts` | The hero: the photo beside the model the reader turns. `viewer.ts` is three.js, imported only after the poster has painted, drawn on demand and never spinning by itself; reduced motion keeps the poster until asked |
+| `public/demo/` | The hero's real result: TripoSR's example photo (MIT), the model `modelado-cli object` made from it with the published models then `edit --simplify 0.3`, and that model's `--preview` render as the poster. Remake them with the CLI, not by hand |
 | `public/icon.svg` | The mark: the app icon tools/Modelado.Icon draws, on the same grid and in Brand.cs's colours |
 | `public/favicon.svg` | The mark at tab size, without the triangle grid, as the app icon leaves it out below 48 px |
 | `scripts/prerender.mjs` | The prerender, `og.png` and `apple-touch-icon.png` |

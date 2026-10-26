@@ -31,5 +31,8 @@ export default defineConfig({
   build: {
     outDir: "dist",
     emptyOutDir: true,
+    // The hero's viewer chunk is three.js, about 630 kB, imported only after the poster has
+    // painted (MOD33); the page's own bundle stays far below this.
+    chunkSizeWarningLimit: 700,
   },
 });

@@ -32,6 +32,36 @@ export const words = {
     download: "Download for Windows 10 and 11",
     source: "See the source",
   },
+  // MOD33: one real result, made by modelado-cli object with the published models and simplified
+  // with edit --simplify 0.3; the poster is the same model's --preview render.
+  hero: {
+    photo: {
+      src: "demo/robot.png",
+      alt: "The photo: a small white robot with blue eyes, on a white background.",
+      label: "The photo",
+    },
+    model: {
+      src: "demo/robot.glb",
+      poster: "demo/robot-poster.png",
+      posterAlt: "The 3D model Modelado made from the photo, seen from the front and a little to the side.",
+      label: "The model Modelado made from it",
+      facts: "45,330 triangles · 1.4 MB GLB · 3D Object on the CPU",
+    },
+    arrow: "becomes",
+    viewerLabel: "The 3D model. Drag or use the arrow keys to turn it, and the wheel, a pinch or + and − to zoom.",
+    hint: "Drag to turn it round, including the back TripoSR inferred.",
+    turn: "Turn the model",
+    loading: "Loading the model…",
+    failed: "The model could not be loaded here; the picture shows it from the front.",
+    styles: [
+      { id: "colours", label: "Colours" },
+      { id: "clay", label: "Clay" },
+      { id: "wireframe", label: "Wireframe" },
+    ],
+    stylesLabel: "How the model is drawn",
+    credit: "Photo: the robot from TripoSR's examples, MIT licence.",
+    creditUrl: "https://github.com/VAST-AI-Research/TripoSR/tree/107cefdc244c39106fa830359024f6a2f1c78871/examples",
+  },
   what: {
     eyebrow: "What it makes",
     title: "Two ways from a photo to a model",

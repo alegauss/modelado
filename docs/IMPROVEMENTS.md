@@ -32,24 +32,6 @@ window case.
 
 ## Block G — Public site for 3D modelling
 
-### §MOD33 Hero: photo to a model you can orbit
-
-Model: PhotoBoost's Hero.tsx and Compare.tsx (drag anywhere, or the keyboard through a
-hidden range input). Modelado's hero shows the input photo beside a GLB viewer of the
-model Modelado made from it, which the reader drags to orbit and wheels to zoom. A
-toggle switches colours, clay and wireframe, the app's three view styles.
-
-The viewer is <model-viewer> or three.js, loaded lazily so the first paint is the poster
-(a --preview render from the CLI, MOD19's function). It is keyboard operable and
-labelled, and respects prefers-reduced-motion with no auto-rotate.
-
-Every example in public\demo is a real Modelado result made with the published models,
-with the photo's source and license credited. Each GLB is simplified to keep the page
-light (under 2 MB each), and the triangle count is shown beside it.
-
-Done when the hero orbits on desktop and touch, and a reduced-motion reader gets the
-poster with no spin.
-
 ### §MOD34 Studio, journey, details and download
 
 Model: PhotoBoost's Studio.tsx, Journey.tsx and Sections.tsx. The Studio is a dark stage

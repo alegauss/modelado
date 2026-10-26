@@ -18,8 +18,7 @@
 
 ## Block G — Public site for 3D modelling
 
-- 📋 **MOD33** (deps: MOD20 ✅, MOD32 ✅) **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — A 3D result is judged by turning it around, and a still image of a mesh hides the back, which is exactly what TripoSR invents. → §MOD33
-- 📋 **MOD34** (deps: MOD29 ✅, MOD33) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
+- 📋 **MOD34** (deps: MOD29 ✅, MOD33 ✅) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
