@@ -67,6 +67,22 @@ public sealed class CliJsonTests : IDisposable
     }
 
     [Fact]
+    public void A_material_image_colours_a_model_without_texture_coordinates()
+    {
+        // MOD40: the cube has none, so the photo fixture is projected into its vertex colours.
+        string cube = Path.Combine(Repository.Root, "cases", "fixtures", "cube.obj");
+        string photo = Path.Combine(Repository.Root, "cases", "fixtures", "photo.png");
+        string written = Path.Combine(folder, "stone.ply");
+
+        (int code, string output, _) = Run("edit", cube, "-o", written, "--subdivide", "--texture", photo, "--tiles", "3", "--json", "--provider", "cpu");
+
+        Assert.Equal(0, code);
+        JsonObject report = Assert.IsType<JsonObject>(JsonNode.Parse(output));
+        Assert.Equal(["--subdivide", "--texture"], report["edits"]!.AsArray().Select(e => e!["edit"]!.GetValue<string>()));
+        Assert.Contains("property uchar red", File.ReadAllText(written), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_failure_is_an_error_in_the_json_and_exit_one()
     {
         (int code, string output, _) = Run("edit", Path.Combine(folder, "missing.obj"), "-o", Path.Combine(folder, "out.stl"), "--json", "--provider", "cpu");

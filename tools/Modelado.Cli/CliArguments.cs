@@ -29,7 +29,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
         ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--remove-background", "--depth-model"),
-        ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--upscale-texture"),
+        ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes(),
         ["models"] = Takes(),
     };

@@ -106,8 +106,10 @@ Modelado.Geometry, which a test checks for seams. For tiling, Ideogram's result 
 seamless locally (offset and blend at the edges) when the service's own output tiles
 badly.
 
-Done when a relief gets a stone texture from a prompt, the seam test passes, and Undo
-restores the photo texture.
+Landed in part one: Modelado.Geometry's MaterialTexture (Seamless, and Apply: repeated
+on UVs, triplanar into vertex colours for a model without them, held by a seam test) and
+modelado-cli edit --texture --tiles. Left: the Edit card's button, the Ideogram call
+through MOD39's generate flow with a texture template, and the version in the history.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

@@ -34,6 +34,8 @@ const string Usage = """
         --subdivide          4× the triangles, rounded off
         --smooth N           smoothing passes (Taubin)
         --flatten F          flat base at F of the height (e.g. 0.03)
+        --texture IMAGE      puts a material image on the surface, made to tile first
+        --tiles N            how many times it repeats across the longest side; default 2
         --upscale-texture    upscales the texture 4× with Real-ESRGAN
     modelado-cli download [object|relief|all]   downloads the missing models
     modelado-cli models                         lists the installed models
@@ -189,6 +191,8 @@ try
             model = Edit(model, "--subdivide", _ => MeshEdit.Subdivide(model));
             model = Edit(model, "--smooth", value => MeshCleanup.Smooth(model, int.Parse(value, CultureInfo.InvariantCulture)));
             model = Edit(model, "--flatten", value => MeshEdit.FlattenBase(model, float.Parse(value, CultureInfo.InvariantCulture)));
+            // MOD40: before --upscale-texture, so a new texture can be sharpened in the same run.
+            model = Edit(model, "--texture", value => MaterialTexture.Apply(model, MaterialTexture.Seamless(ImageCodec.Load(value)), (float)Number("--tiles", 2)));
             model = Edit(model, "--upscale-texture", _ => Upscaling.UpscaleTexture(runner, model));
             Save(model, edited, clock);
             return Done(0);
