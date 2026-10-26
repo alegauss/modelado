@@ -16,13 +16,19 @@ namespace Modelado.Cases;
 ///
 /// <para><b>A desk that cannot be observed is a skip with its reason</b>, never a pass that
 /// checked nothing. These run on the VMware guest, through winwright's run-tests-vm.cmd.</para>
+///
+/// <para><b>MODELADO_LIVE=1 runs cases-live instead</b> (MOD61): the cases on the real models,
+/// under winwright.live.json's longer waits. The gate never sets it, since the guest tree carries
+/// no models; run-live-vm.cmd does, after downloading them on the guest.</para>
 /// </summary>
 public sealed class CasesRun
 {
+    private static bool Live => Environment.GetEnvironmentVariable("MODELADO_LIVE") == "1";
+
     [Fact]
     public void EveryUiCaseInThisRepositoryRuns()
     {
-        IReadOnlyList<CaseDeclaration> declared = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, "cases")));
+        IReadOnlyList<CaseDeclaration> declared = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, Live ? "cases-live" : "cases")));
         Assert.NotEmpty(declared);
 
         Desk desk = Desk.Read();
@@ -31,7 +37,7 @@ public sealed class CasesRun
             Assert.Skip($"no UI case ran: this desk lacks {desk.FirstAbsent!.Name}");
         }
 
-        ProjectDeclaration project = ForThisBuild(Repository.Root);
+        ProjectDeclaration project = ForThisBuild(Repository.Root, Live ? "winwright.live.json" : "winwright.json");
 
         // MOD11: what the download cases fetch, through --manifest, from this machine.
         using FixtureServer downloads = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));
@@ -53,7 +59,7 @@ public sealed class CasesRun
     }
 
     /// <summary>The declaration with {configuration} filled with the one this assembly was built in.</summary>
-    private static ProjectDeclaration ForThisBuild(string repository)
+    private static ProjectDeclaration ForThisBuild(string repository, string declaration)
     {
         string configuration = typeof(CasesRun).Assembly
             .GetCustomAttributes(typeof(System.Reflection.AssemblyConfigurationAttribute), false)
@@ -61,7 +67,7 @@ public sealed class CasesRun
             .Select(one => one.Configuration)
             .FirstOrDefault() ?? "Debug";
 
-        return ProjectDeclaration.Load(Path.Combine(repository, "winwright.json"), configuration);
+        return ProjectDeclaration.Load(Path.Combine(repository, declaration), configuration);
     }
 
     /// <summary>The whole reading: failures, what could not be asked, what broke, and the trace.</summary>

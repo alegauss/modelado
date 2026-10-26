@@ -2,13 +2,9 @@
 
 ## Priority
 
-- Block B
-
 ## Block A — English everywhere
 
 ## Block B — Windows interface built like PhotoBoost
-
-- 📋 **MOD61** (deps: —) **The UI cases on the real models are rebuilt by hand for each task and deleted, so nothing re-checks them** — MOD37 and MOD53 each patched CasesRun and winwright.json for one guest run; the gate carries no models and its waits are ten seconds. → §MOD61
 
 ## Block C — Existing code wired into the window
 

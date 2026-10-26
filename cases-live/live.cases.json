@@ -1,0 +1,46 @@
+{
+  // MOD61: the cases on the real models, run by run-live-vm.cmd and never by the gate. run-live.cmd
+  // has downloaded every model into the default models folder before these start, so no consent
+  // panel opens. Windows answers that folder from the real profile, whatever LOCALAPPDATA says, so
+  // a fixture can stage LOCALAPPDATA empty for settings of its own and still find the models.
+
+  "fixtures": [
+    {
+      "name": "a window on the robot photo with the real models and no saved settings",
+      "files": [{ "from": "docs/robot.png", "to": "robot.png" }],
+      "arguments": ["--open", "{files}/robot.png", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    }
+  ],
+
+  "cases": [
+    {
+      "name": "a 3D Object and a Relief on the real models show their job chip, then a last run on the CPU chosen in About",
+      "catches": "a reconstruction the status bar never shows, a last-run chip naming another provider, or a window that samples differently from modelado-cli",
+      "filed": "MOD53",
+      "tags": ["status-bar", "object", "relief", "provider"],
+      "fixture": "a window on the robot photo with the real models and no saved settings",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^robot\\.png · ", "named": "the photo is open first" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "RadioButton#ProviderCpu", "act": "select", "reads": "selected", "expect": "selected", "named": "the CPU is chosen (MOD18)" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "Group#ObjectAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "Advanced opens" },
+        { "locator": "CheckBox#ObjectEveryPoint", "act": "toggle", "reads": "toggle", "expect": "On", "named": "step 1 (MOD17)" },
+        { "locator": "Slider#ObjectSmoothing", "act": "set range", "with": "0", "reads": "range", "expect": "0", "named": "no smoothing (MOD17)" },
+        { "locator": "Button#ObjectButton", "act": "invoke", "named": "Generate 3D object is pressed" },
+        { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^3D Object: ", "named": "the job chip shows the 3D Object running" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^3D Object · \\d+\\.\\d s · CPU$", "named": "then the last run, on the CPU (MOD18)" },
+        { "locator": "Text#JobChip", "act": "read", "absent": true, "named": "and the job chip is gone" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "43,264 vertices · 86,524 triangles", "named": "the counts modelado-cli object --step 1 --smooth 0 gives on the same photo (MOD17)" },
+        { "locator": "ComboBox#ReliefResolution", "act": "expand", "named": "the relief resolutions are opened" },
+        { "locator": "ComboBox#ReliefResolution > ListItem[nameStarts=\"512\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "512, so the run lasts long enough to be read" },
+        { "locator": "CheckBox#ReliefRemoveBackground", "act": "toggle", "reads": "toggle", "expect": "On", "named": "and the background removed first" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^Relief: ", "named": "the job chip shows the Relief running" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "then its last run, on the CPU" }
+      ]
+    }
+  ]
+}

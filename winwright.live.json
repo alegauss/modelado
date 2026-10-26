@@ -1,0 +1,19 @@
+{
+  // MOD61: winwright.json for the cases on the real models (cases-live), which CasesRun loads when
+  // MODELADO_LIVE=1. The same application; only the waits differ. A 3D Object on the guest's CPU
+  // takes about 50 s, and a read gives up after resolve when its element is missing and after act
+  // when its value has not arrived, so both outlast it. Once WW577 lets a step name its own wait,
+  // this file goes and those steps say so.
+  "executable": "src/Modelado.App/bin/{configuration}/net10.0-windows/win-x64/Modelado.exe",
+  "configuration": "Debug",
+
+  "sourceRoot": "src",
+
+  "timeouts": {
+    "launch": 10000,
+    "resolve": 120000,
+    "act": 120000,
+    "poll": 25,
+    "stop": 5000
+  }
+}

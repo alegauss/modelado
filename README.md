@@ -246,6 +246,16 @@ real models (the chair becomes a closed mesh facing forward; a photo becomes a s
 when `.cache\models` exists and say they skipped when it does not. On Linux or macOS,
 `./run-tests.sh` runs everything but the WPF app and its cases, which are only built there.
 
+```
+run-live-vm.cmd
+```
+
+The UI cases on the real models live in `cases-live\*.cases.json` and are not part of that gate,
+since the tree carries no models. `run-live-vm.cmd` runs `run-live.cmd` on the guest instead,
+which downloads every model there with `modelado-cli download all` and runs those cases under
+`winwright.live.json`, whose waits outlast a reconstruction on the CPU. Run it when a change
+touches a reconstruction, where inference runs, or what the window shares with the CLI.
+
 ## How it works
 
 ```

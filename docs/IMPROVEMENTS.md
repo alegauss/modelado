@@ -4,32 +4,6 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-### §MOD61 A committed run of the cases on the real models
-
-MOD37 and MOD53 each proved a screen on the real models by hand: a temporary
-`cases-live\` folder, a one-line patch to CasesRun reading `MODELADO_CASES`, a copy of
-winwright.json with `resolve` and `act` raised to 120 s, and a .cmd run through
-winwright's run-tests-vm.cmd with `-Run`. All of it was deleted before the commit, so
-MOD39 (a chosen candidate through TripoSR) will build it a third time, and nothing
-re-checks MOD53's or MOD17's claims when the pipeline changes.
-
-The gate cannot hold these cases: `.cache\models` is gitignored, so the guest tree has
-no models, and a raised resolve makes every `absent` step in the gate wait it out
-(WW577).
-
-Build it as a second, opt-in run beside the gate:
-
-- `cases-live\*.cases.json`, committed, starting with MOD53's case (3D Object at step 1
-  and 0 smoothing reads the JobChip, then `3D Object · <s> s · CPU` after the CPU is
-  chosen in About, and the CLI's 43,264 vertices · 86,524 triangles; a Relief at 512 with
-  the background removed reads its JobChip, then `Relief · <s> s · CPU`).
-- `run-live-vm.cmd`: on the guest, `modelado-cli download all` into the default models
-  folder (it verifies what is there), then the live cases with their own project timeouts.
-- CasesRun takes the folder from an environment variable, defaulting to `cases`.
-
-Once WW577 ships, the timeouts move into the steps that wait and the winwright.json copy
-goes.
-
 ## Block C — Existing code wired into the window
 
 ### §MOD59 Material colours on import
