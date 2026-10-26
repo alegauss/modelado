@@ -24,7 +24,7 @@
     <!-- The WPF app builds on Linux too (compile check only; it runs on Windows). -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <NeutralLanguage>pt-BR</NeutralLanguage>
   </PropertyGroup>
