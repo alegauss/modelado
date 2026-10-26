@@ -24,12 +24,10 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- ⏳ **MOD40** (deps: MOD39 ✅) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — The Edit card has no New texture with Ideogram: no prompt, no consent, no version to undo. → §MOD40
-
 ## Block I — Blender integration: AI tools for existing Blender models
 
 - 📋 **MOD44** (deps: MOD20 ✅, MOD43 ✅) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
-- 📋 **MOD45** (deps: MOD38 ✅, MOD40 ⏳, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
+- 📋 **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
 
 ## Done when — Block H
 
@@ -49,13 +47,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD40
-
-- **A relief takes a stone texture from a prompt, and Undo brings back its photo** A
-  winwright case with Ideogram stood in by the fixture server: the Edit card's New
-  texture with Ideogram takes a prompt, asks consent with its price, puts the drawn
-  image on a relief as a new version in the history, and Undo returns the photo texture.
 
 ## Non-goals
 

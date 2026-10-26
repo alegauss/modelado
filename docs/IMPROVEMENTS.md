@@ -92,25 +92,6 @@ Done when the speed table names a GPU and its timings come from those runs.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD40 Ideogram: textures from a prompt
-
-The Edit and refine card's "With AI" group gains "New texture with Ideogram…", shown
-only with a key and only for a model with UVs (reliefs, OBJ and GLB opened with
-textures). It takes a prompt wrapped in a template for a flat, evenly lit, seamless
-square texture with no perspective. The result replaces the model's texture as a new
-version, so Undo returns to the old one, and Real-ESRGAN can then be applied to it as
-today.
-
-A model with no UVs (TripoSR's vertex colours) gets a box or triplanar projection in
-Modelado.Geometry, which a test checks for seams. For tiling, Ideogram's result is made
-seamless locally (offset and blend at the edges) when the service's own output tiles
-badly.
-
-Landed in part one: Modelado.Geometry's MaterialTexture (Seamless, and Apply: repeated
-on UVs, triplanar into vertex colours for a model without them, held by a seam test) and
-modelado-cli edit --texture --tiles. Left: the Edit card's button, the Ideogram call
-through MOD39's generate flow with a texture template, and the version in the history.
-
 ## Block I — Blender integration: AI tools for existing Blender models
 
 ### §MOD44 Generate from a photo into Blender

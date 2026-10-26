@@ -78,7 +78,7 @@
 - ✅ **MOD39** **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A candidate drawn from a description through the stand-in Ideogram opens and becomes a TripoSR model on the real models, held by a live case on the guest.
 - ✅ **MOD55** **The window shows no cloud usage panel or budget chip, so a service's spend and limit are never seen** — About sets each service's monthly budget and shows its spend, balance and estimate drift; the chip counts it down and warns; a job it cannot cover is held (design superseded: no rate-limit row yet).
 - ✅ **MOD60** **The app crashes on start when a cloud key is already stored, so a key saved in About ends every later launch** — A window started with a cloud key already stored opens with the Cloud 3D card priced instead of crashing; a case starts one with meshy.key in place.
-- ✅ **MOD40 (tiling and projection, and the CLI)** **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — MaterialTexture makes an image tile and puts it on a model, on its UVs or triplanar into colours with no seam; modelado-cli edit --texture applies it.
+- ✅ **MOD40** **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — The Edit card draws a material with Ideogram after consent and puts the chosen one on the model as a version; a relief took stone and Undo restored its photo.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

@@ -128,6 +128,15 @@
       "shareable": false
     },
     {
+      // MOD40: the cube open, Ideogram stood in by the fixture server, LOCALAPPDATA of its own.
+      "name": "a window on the cube with Ideogram stood in by the fixture server",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--open", "cases/fixtures/cube.obj", "--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD37: the settings.json a run left with a Meshy job in flight, and no key beside it.
       "name": "a window started with a cloud job kept from the last run but no key to follow it",
       "files": [{ "from": "cases/fixtures/settings-cloud-job.json", "to": "Modelado/settings.json" }],
@@ -850,6 +859,37 @@
         { "locator": "Button#Candidate-2", "act": "invoke", "named": "the second is chosen" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-2\\.png · 64 × 48$", "named": "it opens as a photo, saved with its seed in the name" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the operations take it" }
+      ]
+    },
+
+    {
+      "name": "with an Ideogram key the Edit card draws a material, and the texture chosen is a version Undo leaves",
+      "catches": "a texture offered with no key, a description sent without consent, a chosen texture that does not reach the model, or one Undo cannot take back",
+      "filed": "MOD40",
+      "tags": ["cloud", "edit", "history"],
+      "fixture": "a window on the cube with Ideogram stood in by the fixture server",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "Button#NewTextureButton", "act": "read", "absent": true, "named": "with no texture to draw before a key" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "the Ideogram key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once the stand-in accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#NewTextureButton", "act": "read", "reads": "name", "expect": "New texture with Ideogram…", "named": "the Edit card offers a new texture" },
+        { "locator": "Button#NewTextureButton", "act": "invoke", "named": "which is pressed" },
+        { "locator": "Text#NewTextureAsked", "act": "read", "reads": "name", "matches": "^Asked as: \\{material\\}, a flat seamless tileable texture", "named": "it says how the material is asked for" },
+        { "locator": "Edit#NewTexturePrompt", "act": "set value", "with": "grey stone", "reads": "value", "expect": "grey stone", "named": "the material is described" },
+        { "locator": "Button#NewTextureRun", "act": "read", "reads": "name", "expect": "Draw 4 with Ideogram · ~$0.12", "named": "four, priced" },
+        { "locator": "Button#NewTextureRun", "act": "invoke", "named": "Draw is pressed" },
+        { "locator": "Text#NewTextureConsentText", "act": "read", "reads": "name", "expect": "This description goes to Ideogram for about $0.12; the model stays here.", "named": "it says what goes where before sending" },
+        { "locator": "Button#NewTextureSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Text#NewTextureStatus", "act": "read", "reads": "name", "expect": "4 textures: press one to put it on the model.", "named": "the textures come back" },
+        { "locator": "Button#TextureCandidate-2", "act": "invoke", "named": "the second is chosen" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. New texture: grey stone", "named": "it is the model's next version" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^New texture: grey stone · 12 → 12 triangles", "named": "with the shape untouched" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Undone: back to \"Opened\"", "named": "and the cube's own surface is back" }
       ]
     },
 

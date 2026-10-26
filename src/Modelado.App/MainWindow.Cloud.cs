@@ -124,6 +124,7 @@ public partial class MainWindow
 
         UpdateCloudEdit();
         UpdateGenerate();
+        UpdateNewTexture();
         UpdateCloudChip();
 
         List<ICloudProvider> ready = [.. CloudProviders.For(CloudCapability.ImageTo3D, CloudServices).Concat(CloudProviders.For(CloudCapability.TextTo3D, CloudServices))
@@ -236,6 +237,7 @@ public partial class MainWindow
                 history.Push(made, title);
                 Display(made);
             }),
+            CloudCapability.TextToImage when drawingTexture => ShowTextureCandidatesAsync,
             CloudCapability.TextToImage => ShowCandidatesAsync,
             _ => AsMesh(made => ShowMesh(made, input, null, title)),
         };

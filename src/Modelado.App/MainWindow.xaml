@@ -433,6 +433,31 @@
                         Visibility="Collapsed" Click="OnFirstUseAction" />
               </StackPanel>
             </Border>
+            <!-- MOD40: a material drawn from a description by the image service holding a key, made
+                 to tile and put on the model as a new version, so Undo returns to the old surface. -->
+            <Button x:Name="NewTextureButton" AutomationProperties.AutomationId="NewTextureButton" Margin="0,0,0,4" Click="OnNewTexture" Visibility="Collapsed"
+                    ToolTip="Draws a seamless material (wood, stone, painted metal) and puts it on the model's surface." />
+            <Border x:Name="NewTexturePanel" AutomationProperties.AutomationId="NewTexturePanel" Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
+                    Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock Text="Material" Style="{StaticResource FieldLabel}" Margin="0,0,0,4" />
+                <TextBox x:Name="NewTexturePrompt" AutomationProperties.AutomationId="NewTexturePrompt" AutomationProperties.Name="Material"
+                         TextChanged="OnNewTextureChanged" ToolTip="For example: weathered grey stone, oak planks, red painted metal." />
+                <TextBlock x:Name="NewTextureAsked" AutomationProperties.AutomationId="NewTextureAsked" Style="{StaticResource StatCaption}" Margin="0,4,0,6" TextWrapping="Wrap" />
+                <Button x:Name="NewTextureRun" AutomationProperties.AutomationId="NewTextureRun" Click="OnNewTextureRun" IsEnabled="False" />
+                <Border x:Name="NewTextureConsent" AutomationProperties.AutomationId="NewTextureConsent" Margin="0,8,0,0" Visibility="Collapsed">
+                  <StackPanel>
+                    <TextBlock x:Name="NewTextureConsentText" AutomationProperties.AutomationId="NewTextureConsentText" TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                      <Button x:Name="NewTextureSend" AutomationProperties.AutomationId="NewTextureSend" Content="Send it" Padding="12,2" Click="OnNewTextureSend" />
+                      <Button x:Name="NewTextureNotNow" AutomationProperties.AutomationId="NewTextureNotNow" Content="Not now" Padding="12,2" Margin="8,0,0,0" Click="OnNewTextureNotNow" />
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+                <TextBlock x:Name="NewTextureStatus" AutomationProperties.AutomationId="NewTextureStatus" Style="{StaticResource StatCaption}" Margin="0,6,0,4" TextWrapping="Wrap" />
+                <WrapPanel x:Name="NewTextureCandidates" AutomationProperties.AutomationId="NewTextureCandidates" />
+              </StackPanel>
+            </Border>
             <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
                     ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
             <!-- MOD38: the open model remeshed or retextured by a cloud service holding a key, as a

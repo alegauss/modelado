@@ -13,6 +13,15 @@
       "shareable": false
     },
     {
+      // MOD40: the robot photo with Ideogram stood in, so a relief made on the real models can take a texture.
+      "name": "a window on the robot photo with Ideogram stood in and the real models",
+      "files": [{ "from": "docs/robot.png", "to": "robot.png" }],
+      "arguments": ["--open", "{files}/robot.png", "--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD39: Ideogram stood in by the fixture server (FixtureServer.Ideogram), the real models for TripoSR.
       "name": "an empty window with Ideogram stood in and the real models",
       "files": ["cases/fixtures/notes.txt"],
@@ -49,6 +58,33 @@
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^Relief: ", "named": "the job chip shows the Relief running" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "then its last run, on the CPU" }
+      ]
+    },
+
+    {
+      "name": "a relief takes a stone texture drawn from a description, and Undo brings back its photo",
+      "catches": "a drawn texture that a textured relief does not take, or an Undo that loses the photo it was made from",
+      "filed": "MOD40",
+      "tags": ["cloud", "relief", "edit", "history"],
+      "fixture": "a window on the robot photo with Ideogram stood in and the real models",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^robot\\.png · ", "named": "the photo is open first" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "the relief is made, textured with the photo" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "the Ideogram key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once the stand-in accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#NewTextureButton", "act": "invoke", "named": "New texture with Ideogram is pressed" },
+        { "locator": "Edit#NewTexturePrompt", "act": "set value", "with": "weathered grey stone", "reads": "value", "expect": "weathered grey stone", "named": "the material is described" },
+        { "locator": "Button#NewTextureRun", "act": "invoke", "named": "Draw is pressed" },
+        { "locator": "Button#NewTextureSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Button#TextureCandidate-1", "act": "invoke", "named": "the first texture is chosen" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. New texture: weathered grey stone", "named": "the relief takes it as its next version" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "texture \\d+ × \\d+", "named": "still textured" },
+        { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Undone: back to \"Relief\"", "named": "and the relief with its photo is back" }
       ]
     },
 
