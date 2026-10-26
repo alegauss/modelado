@@ -32,20 +32,21 @@ export const words = {
     download: "Download for Windows 10 and 11",
     source: "See the source",
   },
-  // MOD33: one real result, made by modelado-cli object with the published models and simplified
-  // with edit --simplify 0.3; the poster is the same model's --preview render.
+  // MOD33: one real result, made by modelado-cli object --resolution 320 with the published models
+  // and simplified with edit --simplify 0.35; the poster is the same model's --preview render. Of six
+  // TripoSR examples made that way, the chair came out closest to its photo.
   hero: {
     photo: {
-      src: "demo/robot.png",
-      alt: "The photo: a small white robot with blue eyes, on a white background.",
+      src: "demo/chair.png",
+      alt: "The photo: a wooden dining chair with a cream upholstered seat and a tufted back, from the front.",
       label: "The photo",
     },
     model: {
-      src: "demo/robot.glb",
-      poster: "demo/robot-poster.png",
-      posterAlt: "The 3D model Modelado made from the photo, seen from the front and a little to the side.",
+      src: "demo/chair.glb",
+      poster: "demo/chair-poster.png",
+      posterAlt: "The 3D model Modelado made from the photo, seen from the front and a little to the side, its back legs included.",
       label: "The model Modelado made from it",
-      facts: "45,330 triangles · 1.4 MB GLB · 3D Object on the CPU",
+      facts: "46,526 triangles · 1.4 MB GLB · 3D Object on the CPU",
     },
     arrow: "becomes",
     viewerLabel: "The 3D model. Drag or use the arrow keys to turn it, and the wheel, a pinch or + and − to zoom.",
@@ -59,7 +60,7 @@ export const words = {
       { id: "wireframe", label: "Wireframe" },
     ],
     stylesLabel: "How the model is drawn",
-    credit: "Photo: the robot from TripoSR's examples, MIT licence.",
+    credit: "Photo: the chair from TripoSR's examples, MIT licence.",
     creditUrl: "https://github.com/VAST-AI-Research/TripoSR/tree/107cefdc244c39106fa830359024f6a2f1c78871/examples",
   },
   what: {
