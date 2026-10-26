@@ -12,23 +12,24 @@ Measured shipping MOD66 on the guest: the site's canyon relief
 (site/public/demo/studio/relief-landscape.glb, 55,296 vertices, 110,588 triangles) is
 2,629,484 bytes as a standard GLB and 1,744,996 compact (KHR_mesh_quantization).
 Compact, positions take 8 bytes a vertex (16-bit, padded to 4), normals 4, UVs 4, the
-16-bit indices 663 kB and the JPEG texture 195 kB. MOD66's design hoped for under 1.5 MB
-and named this step for a relief still above about 1 MB.
+16-bit indices 663 kB and the JPEG texture 195 kB.
 
-Build: EXT_meshopt_compression on the compact writer's buffer views (meshoptimizer's
-vertex and index codecs, ported or bound), with the uncompressed data kept as the
-fallback buffer only if a reader without the extension must still open the file;
-otherwise declared required, behind the Export card's Compact choice as
-KHR_mesh_quantization is. The site's viewer needs three.js's MeshoptDecoder set on its
-GLTFLoader (three/addons/libs/meshopt_decoder.module.js), and MeshImport needs the
-decoder too, so a compact GLB opens again in the window.
+Checked when MOD68 was first claimed (2026-10-26): Blender 4.5's glTF importer has no
+EXT_meshopt_compression decoder (its add-on carries a Draco extension and nothing for
+meshopt), so a compact GLB that required meshopt would stop opening in Blender, which
+the Export card's Compact choice promises. Nor can the guest's gate read meshopt output:
+it has no Node or browser for three.js's MeshoptDecoder. A codec port checked only
+against itself could break every site model with the tests green.
 
-Expected from meshoptimizer's own figures on grids like this one: the index stream to
-about a fifth and the vertex streams to about half, which puts the canyon near 1 MB.
+Build, once a reader is in the gate: either meshopt for the site alone, packed at the
+site's build (gltfpack -cc in site.yml, which has Node) with three.js's MeshoptDecoder
+set on the viewer's GLTFLoader and a browser check of the Studio; or the app's writer
+with meshopt kept optional (EXT_meshopt_compression with the fallback buffer, so Blender
+still reads the quantized data). Expected: the canyon near 1 MB, the Studio's 5.6 MB
+near 3.5.
 
-Done when the canyon relief saves under 1.2 MB with --compact, opens again in the window
-and in Blender (whose importer reads EXT_meshopt_compression), and the site's GLBs are
-re-saved with it.
+Done when a browser loads every Studio model from the packed files in a check that runs
+on the guest or in CI, and the Studio's download is under 4 MB.
 
 ## Block D — Model downloads
 
