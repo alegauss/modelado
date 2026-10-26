@@ -1,6 +1,7 @@
 import { Footer, Nav } from "./components/Chrome";
 import { Intro, What } from "./components/Intro";
 import { Download, Journey, Models, Privacy, Speed } from "./components/Sections";
+import { Studio } from "./components/Studio";
 
 // The page between the design system's nav and footer is Modelado's own: the first word and the
 // hero a reader turns (MOD33), what it makes, then the moves, privacy, speed, the models and the
@@ -12,6 +13,7 @@ export function App() {
       <main>
         <Intro />
         <What />
+        <Studio />
         <Journey />
         <Privacy />
         <Speed />

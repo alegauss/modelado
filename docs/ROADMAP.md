@@ -9,6 +9,8 @@
 ## Block C — Existing code wired into the window
 
 - 📋 **MOD59** (deps: —) **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — Seen by the user on an import; MeshImport keeps only vertex colours and the first base-colour texture, so plain coloured or multi-material models lose them. → §MOD59
+- 📋 **MOD62** (deps: —) **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying the Studio's 196,604-triangle bust relief to a third took 260 s on the guest's CPU; the chair's 150,000 took 0.9 s. → §MOD62
+- 📋 **MOD63** (deps: —) **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — The Studio's canyon relief is 4.1 MB as GLB, nearly all of it the 768 px photo, which as JPEG would be about 200 kB. → §MOD63
 
 ## Block D — Model downloads
 
@@ -18,7 +20,7 @@
 
 ## Block G — Public site for 3D modelling
 
-- ⏳ **MOD34** (deps: MOD29 ✅, MOD33 ✅) **The site has no sections on each operation, privacy, formats or the download** — No Studio shows a real result per operation (object, relief, edit, AI texture), and the speed section has no GPU timing. → §MOD34
+- 📋 **MOD64** (deps: —) **The site's speed table has no GPU timing, only the CPU's** — Left from MOD34: the VMware guest that measured the CPU has no GPU to run DirectML on, and the page names none. → §MOD64
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
@@ -54,14 +56,6 @@
 - **A drawn candidate becomes a TripoSR model** On the guest with the published models:
   a candidate chosen on the drop zone is generated with 3D Object, and the PNG it was
   saved as still carries its prompt in an iTXt chunk.
-
-## Done when — MOD34
-
-- **Every Studio tab shows a real result, and speed names a GPU timing** The Studio has
-  a tab each for 3D Object, Relief (a face, a building, a landscape, photos credited
-  with their licences), Edit and refine, and AI texture, every result made by
-  modelado-cli with the published models; the speed table adds one run on a named GPU
-  with DirectML.
 
 ## Non-goals
 
