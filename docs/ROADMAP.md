@@ -17,7 +17,6 @@
 ## Block D — Model downloads
 
 - 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
-- 📋 **MOD57** (deps: —) **CI on Linux fails since MOD23: removing a downloaded model accepts a name with a backslash there** — A red CI on every push hides a real failure, and on Linux the guard lets a name through that Windows refuses. → §MOD57
 
 ## Block E — Publishing custom models to Hugging Face
 

@@ -139,7 +139,9 @@ public sealed class ModelLibrary
     public bool RemoveDownload(string model)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model);
-        if (Path.GetFileName(model) != model || model is "." or "..")
+        // Both separators on every system: on Linux a backslash is a file name's character, and a
+        // model's name never holds one.
+        if (Path.GetFileName(model) != model || model is "." or ".." || model.IndexOfAny(['/', '\\']) >= 0)
         {
             throw new ArgumentException($"{model} is not a model's folder name.", nameof(model));
         }

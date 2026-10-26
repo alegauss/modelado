@@ -41,6 +41,7 @@
 - ✅ **MOD21** **A first-use download is offered in a MessageBox listing text, not a panel with each file, size, source and license** — A first-use download is offered in an in-window panel listing each model's size, source and license; Not now changes nothing else.
 - ✅ **MOD22** **An operation card does not say before it is pressed that it needs a one-time download, or how large it is** — Each operation card badges its one-time download and size; the download runs beside the app, pauses, resumes, and starts its operation.
 - ✅ **MOD23** **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — About lists each download with its size and its own Remove; Remove all asks in the panel; a model in use is not removed.
+- ✅ **MOD57** **CI on Linux fails since MOD23: removing a downloaded model accepts a name with a backslash there** — Removing a downloaded model refuses a name with either separator on every system, so the ModelLibrary test holds on Linux CI as on Windows.
 
 ## Block E — Publishing custom models to Hugging Face
 

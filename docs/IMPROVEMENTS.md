@@ -46,18 +46,6 @@ Done when a clean build with no .cache downloads every model from the window on 
 use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
 each run on the robot photo.
 
-### §MOD57 Model names refuse both separators
-
-The tests workflow (ubuntu-latest, run-tests.sh) has failed on every push since MOD23:
-ModelLibraryTests.A_name_that_is_not_a_bare_folder_is_refused("a\\b") finds no
-exception. ModelLibrary.RemoveDownload refuses a name whose Path.GetFileName differs
-from it, and on Linux a backslash is an ordinary file-name character, so "a\b" passes as
-a bare name there and the removal it guards would act on a folder of that literal name.
-
-Refuse both separators on every system in RemoveDownload, beside the GetFileName check:
-a model's folder name never holds either. The test then holds on Windows and on CI
-alike.
-
 ## Block E — Publishing custom models to Hugging Face
 
 ### §MOD24 Add a custom model to the publish stage
