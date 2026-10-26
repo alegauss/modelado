@@ -137,6 +137,16 @@
       "shareable": false
     },
     {
+      // MOD60: a Meshy key already stored when the window starts. CloudKeys.Has asks only whether
+      // the file exists, so a placeholder stands in for the encrypted key.
+      "name": "a window on the photo started with a Meshy key already stored",
+      "files": [{ "from": "cases/fixtures/photo.png", "to": "photo.png" }, { "from": "cases/fixtures/notes.txt", "to": "Modelado/keys/meshy.key" }],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD10: not lent, since files are dropped on it.
       "name": "an empty window to drop files on",
       "arguments": ["--provider", "cpu", "--releases", "off"],
@@ -656,6 +666,18 @@
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model is shown" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Meshy AI: image to 3D$", "named": "as a version labelled with the service" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D · 30 credits", "named": "and the status bar says what it cost" }
+      ]
+    },
+
+    {
+      "name": "a window started with a Meshy key already stored opens with the Cloud 3D card priced",
+      "catches": "a window that crashes while it is built because a cloud option's event ran before the card's other controls existed",
+      "filed": "MOD60",
+      "tags": ["cloud", "operations"],
+      "fixture": "a window on the photo started with a Meshy key already stored",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the window opened the photo" },
+        { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~30 credits", "named": "and offers Meshy from the stored key, priced" }
       ]
     },
 

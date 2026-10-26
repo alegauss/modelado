@@ -25,6 +25,24 @@ CPU.
 
 ## Block C — Existing code wired into the window
 
+### §MOD59 Material colours on import
+
+The user opened a model file and it showed without its colours. MeshImport reads three
+sources of colour: COLOR_0 or PLY's red/green/blue as vertex colours, glTF's
+baseColorTexture, and OBJ's map_Kd. It ignores the rest.
+
+- GLB: a material's baseColorFactor, the flat colour Blender, SketchUp and most CAD exporters write for an untextured material, is never read. The factor that multiplies a texture is dropped too. Only the first primitive's texture is kept (`texture ??=`), so a model with several textured materials maps every primitive's UVs onto that one image.
+- OBJ: the .mtl's Kd is never read, and usemtl is ignored, so only the first map_Kd applies to every face.
+- PLY: diffuse_red, diffuse_green and diffuse_blue are not recognised.
+
+The fix bakes what a single Mesh cannot hold into what it can. A primitive or usemtl
+group with a flat colour gets that colour as its vertex colours, times COLOR_0 where
+present. Where several textures exist, they are packed into one atlas with each group's
+UVs remapped into its tile; at most four textures, else they are baked to vertex colours
+with a notice. Done when a GLB with three plain-coloured materials, a two-texture GLB
+and an OBJ with Kd colours each open coloured, read through MeshImport tests and one
+window case.
+
 ## Block D — Model downloads
 
 ## Block E — Publishing custom models to Hugging Face

@@ -115,7 +115,9 @@ public partial class MainWindow
     // The card's half: shown once a 3D service holds a key, its button priced as the options stand.
     private void UpdateCloudCard()
     {
-        if (CloudCard is null)
+        // MOD60: a cloud option checked in XAML raises its event inside InitializeComponent, before
+        // the elements after it exist; Loaded fills the card once they all do.
+        if (!IsInitialized)
         {
             return;
         }

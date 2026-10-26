@@ -13,6 +13,8 @@
 
 ## Block C — Existing code wired into the window
 
+- 📋 **MOD59** (deps: —) **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — Seen by the user on an import; MeshImport keeps only vertex colours and the first base-colour texture, so plain coloured or multi-material models lose them. → §MOD59
+
 ## Block D — Model downloads
 
 ## Block E — Publishing custom models to Hugging Face
