@@ -29,7 +29,7 @@ export const words = {
     title: "A photo becomes a 3D model you can turn, print and share.",
     lead:
       "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, on the GPU when it has one.",
-    download: "Download for Windows",
+    download: "Download for Windows 10 and 11",
     source: "See the source",
   },
   what: {
