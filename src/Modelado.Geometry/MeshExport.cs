@@ -127,13 +127,25 @@ public static class MeshExport
             attributes["COLOR_0"] = Accessor(Floats(linear), 5126, mesh.VertexCount, "VEC3", 34962);
         }
 
-        byte[] indices = new byte[mesh.Triangles.Length * 4];
+        // MOD66: 16-bit indices wherever every vertex fits in them (65,535 is glTF's primitive
+        // restart value, so it is never an index), half the bytes of 32-bit ones; core glTF, which
+        // every reader takes.
+        bool shortIndices = mesh.VertexCount < ushort.MaxValue;
+        int indexSize = shortIndices ? 2 : 4;
+        byte[] indices = new byte[mesh.Triangles.Length * indexSize];
         for (int i = 0; i < mesh.Triangles.Length; i++)
         {
-            BinaryPrimitives.WriteInt32LittleEndian(indices.AsSpan(i * 4), mesh.Triangles[i]);
+            if (shortIndices)
+            {
+                BinaryPrimitives.WriteUInt16LittleEndian(indices.AsSpan(i * 2), (ushort)mesh.Triangles[i]);
+            }
+            else
+            {
+                BinaryPrimitives.WriteInt32LittleEndian(indices.AsSpan(i * 4), mesh.Triangles[i]);
+            }
         }
 
-        int indexAccessor = Accessor(indices, 5125, mesh.Triangles.Length, "SCALAR", 34963);
+        int indexAccessor = Accessor(indices, shortIndices ? 5123 : 5125, mesh.Triangles.Length, "SCALAR", 34963);
 
         JsonObject pbr = new() { ["metallicFactor"] = 0.0, ["roughnessFactor"] = 0.9 };
         JsonObject root = new()

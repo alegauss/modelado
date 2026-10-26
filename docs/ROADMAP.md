@@ -8,7 +8,7 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD66** (deps: —) **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — The canyon relief is still 3.3 MB as GLB after its texture became a 195 kB JPEG, 3.1 MB of it geometry the site and every share download. → §MOD66
+- ⏳ **MOD66** (deps: —) **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — Quantized positions, normals and UVs (KHR_mesh_quantization, Windows 3D Viewer checked) to bring the canyon under 1.5 MB, and the site's Studio GLBs re-saved. → §MOD66
 
 ## Block D — Model downloads
 

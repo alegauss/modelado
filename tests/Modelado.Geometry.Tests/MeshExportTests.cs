@@ -71,6 +71,24 @@ public sealed class MeshExportTests : IDisposable
         return (image.GetProperty("mimeType").GetString()!, bin.AsSpan(view.GetProperty("byteOffset").GetInt32(), 8).ToArray());
     }
 
+    [Theory]
+    [InlineData(1_000, 5123)]
+    [InlineData(70_000, 5125)]
+    public void Indices_are_16_bit_while_every_vertex_fits_and_read_back_the_same(int vertices, int componentType)
+    {
+        // MOD66: a fan over the vertices, its last triangle reaching the highest index.
+        Vector3[] positions = [.. Enumerable.Range(0, vertices).Select(i => new Vector3(MathF.Cos(i), MathF.Sin(i), i * 1e-4f))];
+        int[] triangles = [.. Enumerable.Range(1, vertices - 2).SelectMany(i => new[] { 0, i, i + 1 })];
+        Mesh mesh = new(positions, triangles);
+        string path = Path.Combine(folder, $"fan{vertices}.glb");
+        MeshExport.Save(mesh, path);
+        (JsonDocument json, _) = ReadGlb(path);
+
+        JsonElement primitive = json.RootElement.GetProperty("meshes")[0].GetProperty("primitives")[0];
+        Assert.Equal(componentType, json.RootElement.GetProperty("accessors")[primitive.GetProperty("indices").GetInt32()].GetProperty("componentType").GetInt32());
+        Assert.Equal(triangles, MeshImport.Load(path).Triangles);
+    }
+
     [Fact]
     public void A_textured_glb_embeds_an_opaque_texture_as_jpeg_and_leaves_out_vertex_colours()
     {
@@ -107,7 +125,7 @@ public sealed class MeshExportTests : IDisposable
     public void The_canyon_relief_sheds_its_png_weight_and_opens_with_the_same_look()
     {
         // The site's landscape relief, written with its 768 px texture as PNG before MOD63: 4.1 MB,
-        // of which the PNG is 1.0 MB and the geometry the rest (MOD66).
+        // of which the PNG is 1.0 MB and the geometry the rest, 0.66 MB less with 16-bit indices (MOD66).
         string original = Path.Combine(Repository.Root, "site", "public", "demo", "studio", "relief-landscape.glb");
         Mesh relief = MeshImport.Load(original);
         Assert.False(relief.Texture!.HasTransparency);
