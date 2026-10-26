@@ -1,6 +1,112 @@
 {
   "schema": 1,
-  "version": "0",
-  "base_url": "",
-  "models": []
+  "version": "1",
+  "base_url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a",
+  "models": [
+    {
+      "name": "triposr-encoder",
+      "task": "image-to-triplane",
+      "meta": {
+        "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/triposr-encoder-meta.json",
+        "bytes": 1422,
+        "sha256": "a62e90cd2bc2f78ab0e87956ecb12a87d86185582156e33bbc25d7d71bd6dcd4"
+      },
+      "variants": {
+        "fp32": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/triposr-encoder-fp32.onnx",
+          "bytes": 1675325386,
+          "sha256": "363bcb6cbe44a144ab478a17f29b01af6378e25d81cdc0e04141b69fdb684008"
+        },
+        "fp16": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/triposr-encoder-fp16.onnx",
+          "bytes": 838912052,
+          "sha256": "7bb475e29ca6f4c936f60cc7e870b7a88350d109c17eb849cc118bcb98051d52"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://huggingface.co/stabilityai/TripoSR/blob/5b521936b01fbe1890f6f9baed0254ab6351c04a/README.md"
+    },
+    {
+      "name": "triposr-decoder",
+      "task": "triplane-decoder",
+      "meta": {
+        "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/triposr-decoder-meta.json",
+        "bytes": 1243,
+        "sha256": "4a318ad9c4ae0ca3b7b4c35f405c34ae3ac2e683191812de538ceadcb9261158"
+      },
+      "variants": {
+        "fp32": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/triposr-decoder-fp32.onnx",
+          "bytes": 173374,
+          "sha256": "1604a0dc1903eee485d5a388dd2b4bcac8fad484a96010a797d7c1f40583d985"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://huggingface.co/stabilityai/TripoSR/blob/5b521936b01fbe1890f6f9baed0254ab6351c04a/README.md"
+    },
+    {
+      "name": "depth-anything-v2-small",
+      "task": "depth",
+      "meta": {
+        "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/depth-anything-v2-small-meta.json",
+        "bytes": 1280,
+        "sha256": "e4bb98e3d743a2269736899855c058ced7c1b1aa9128f7ec9c7512710457bdda"
+      },
+      "variants": {
+        "fp32": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/depth-anything-v2-small-fp32.onnx",
+          "bytes": 99084949,
+          "sha256": "6b3c0e2b2d5f9f70eb747fa2b08734f975221a83a8292052c694dff187f54945"
+        },
+        "fp16": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/depth-anything-v2-small-fp16.onnx",
+          "bytes": 49585022,
+          "sha256": "9afc606a816dfd188f618e0a35cf38368e5b141d4d4519d7e3297a358f2d6a65"
+        }
+      },
+      "license": "Apache-2.0",
+      "license_url": "https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf/blob/5426e4f0f36572d16453bbda7a8389317b1bef99/README.md"
+    },
+    {
+      "name": "u2net",
+      "task": "background-removal",
+      "meta": {
+        "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/u2net-meta.json",
+        "bytes": 1089,
+        "sha256": "8e4fa34d6746383fa362b529e91314c7afe91b4f4550273ce228b704c7c9b055"
+      },
+      "variants": {
+        "fp32": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/u2net-fp32.onnx",
+          "bytes": 175997641,
+          "sha256": "8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491"
+        }
+      },
+      "license": "Apache-2.0 (U-2-Net weights), MIT (rembg export)",
+      "license_url": "https://github.com/xuebinqin/U-2-Net/blob/master/LICENSE"
+    },
+    {
+      "name": "realesrgan-x4plus",
+      "task": "upscale",
+      "meta": {
+        "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/realesrgan-x4plus-meta.json",
+        "bytes": 1224,
+        "sha256": "a613c361553b7a88181ae93bb492e6d434848c8dcdbd4c076b78404e0bcc5813"
+      },
+      "variants": {
+        "fp32": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/realesrgan-x4plus-fp32.onnx",
+          "bytes": 67051646,
+          "sha256": "33bad6284772e779db17c7ebb216f25f18be584ba13eb7bc0c0ee16d117ccc0c"
+        },
+        "fp16": {
+          "url": "https://huggingface.co/alegauss/modelado-models/resolve/92e725905d8a58941f701a082af8775cfe05356a/realesrgan-x4plus-fp16.onnx",
+          "bytes": 33651545,
+          "sha256": "3a2e2f7e3c57ebbe881e0e79f65625298916fe6f0f02265873b2e0ae4e770f81"
+        }
+      },
+      "license": "BSD-3-Clause",
+      "license_url": "https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE"
+    }
+  ]
 }

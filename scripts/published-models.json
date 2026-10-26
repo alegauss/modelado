@@ -1,0 +1,14 @@
+{
+  "repo": "alegauss/modelado-models",
+  "version": "1",
+  "files_commit": "92e725905d8a58941f701a082af8775cfe05356a",
+  "manifest_commit": "4faae170814766b06b4d4b7eafa3cef466f7efad",
+  "manifest_url": "https://huggingface.co/alegauss/modelado-models/resolve/4faae170814766b06b4d4b7eafa3cef466f7efad/manifest.json",
+  "models": [
+    "triposr-encoder",
+    "triposr-decoder",
+    "depth-anything-v2-small",
+    "u2net",
+    "realesrgan-x4plus"
+  ]
+}

@@ -2,7 +2,6 @@
 
 ## Priority
 
-- MOD20
 - Block B
 - Block D
 
@@ -10,19 +9,17 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD53** (deps: MOD20) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
+- 📋 **MOD53** (deps: MOD20 ✅) **A reconstruction and a model download have never been seen in the status bar's chips** — MOD9 could only watch an edit there: with no models published nothing can be reconstructed or downloaded on the guest. → §MOD53
 
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
 
-- 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
-
 ## Block E — Publishing custom models to Hugging Face
 
-- 📋 **MOD24** (deps: MOD20) **Only the models export_models.py builds can be published; a custom ONNX with its own meta.json has no way in** — A fine-tuned TripoSR, a different upscaler or a model someone converted themselves is what a custom repository is for, and today the pipeline has no door for it. → §MOD24
+- 📋 **MOD24** (deps: MOD20 ✅) **Only the models export_models.py builds can be published; a custom ONNX with its own meta.json has no way in** — A fine-tuned TripoSR, a different upscaler or a model someone converted themselves is what a custom repository is for, and today the pipeline has no door for it. → §MOD24
 - 📋 **MOD25** (deps: MOD24) **Publishing never checks that a model's license allows redistribution before uploading it to a public repository** — The built-in models are all MIT or Apache-2.0 by choice, but a custom model could be CC BY-NC or unlicensed, and a public upload of it cannot be taken back. → §MOD25
-- 📋 **MOD26** (deps: MOD20) **publish_models.py never reads back what it uploaded, so a broken or truncated file is found only by the app** — The app refuses any file whose SHA-256 differs from the manifest, so a bad upload breaks every install until someone republishes. → §MOD26
+- 📋 **MOD26** (deps: MOD20 ✅) **publish_models.py never reads back what it uploaded, so a broken or truncated file is found only by the app** — The app refuses any file whose SHA-256 differs from the manifest, so a bad upload breaks every install until someone republishes. → §MOD26
 - 📋 **MOD27** (deps: MOD23 ✅, MOD24) **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — A custom model published to someone's own Hugging Face repository is useless to them until the window can be pointed at it and say what it holds. → §MOD27
 
 ## Block F — Installer, releases and auto update
@@ -31,17 +28,17 @@
 
 ## Block G — Public site for 3D modelling
 
-- 📋 **MOD33** (deps: MOD20, MOD32 ✅) **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — A 3D result is judged by turning it around, and a still image of a mesh hides the back, which is exactly what TripoSR invents. → §MOD33
+- 📋 **MOD33** (deps: MOD20 ✅, MOD32 ✅) **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — A 3D result is judged by turning it around, and a still image of a mesh hides the back, which is exactly what TripoSR invents. → §MOD33
 - 📋 **MOD34** (deps: MOD29 🛠, MOD33) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- ⏳ **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅, MOD20) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A chosen candidate has not been through TripoSR, which needs the models MOD20 publishes. → §MOD39
+- ⏳ **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅, MOD20 ✅) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A chosen candidate has not been through TripoSR, which needs the models MOD20 publishes. → §MOD39
 - 📋 **MOD40** (deps: MOD39 ⏳) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD44** (deps: MOD20, MOD43 ✅) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
+- 📋 **MOD44** (deps: MOD20 ✅, MOD43 ✅) **A photo cannot be turned into a 3D object or relief from inside Blender** — Making a prop from a reference photo is a common Blender task, and today it means leaving Blender, generating in Modelado and importing by hand. → §MOD44
 - 📋 **MOD45** (deps: MOD38 ✅, MOD40, MOD43 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — The AI tools are what Blender lacks natively, so they are the reason to reach for Modelado from inside it. → §MOD45
 
 ## Done when — Block H

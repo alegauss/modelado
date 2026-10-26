@@ -27,25 +27,6 @@ CPU.
 
 ## Block D — Model downloads
 
-### §MOD20 Export, publish and embed the first manifest
-
-src\Modelado.Inference\models-manifest.json is schema 1, version "0", base_url "",
-models []. The pipeline exists: prepare-models.cmd downloads the upstream weights
-(download_models.py, about 2 GB, each file checked by SHA-256), converts them to ONNX
-and checks each against PyTorch (export_models.py), and with --publish uploads to
-alegauss/modelado-models (publish_models.py). Publishing pins every URL to the upload's
-commit and copies the manifest into the app.
-
-This task runs that end to end once. It needs a Hugging Face write token, from a file
-the user names, which is never printed or committed. Run --dry-run first and read the
-staged model card and manifest before uploading. scripts\published-models.json and the
-new embedded manifest are committed. The weights and ONNX files are not: they live in
-.cache.
-
-Done when a clean build with no .cache downloads every model from the window on first
-use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
-each run on the robot photo.
-
 ## Block E — Publishing custom models to Hugging Face
 
 ### §MOD24 Add a custom model to the publish stage
