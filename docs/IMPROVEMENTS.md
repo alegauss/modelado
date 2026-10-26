@@ -96,27 +96,6 @@ is chosen on the Relief card, and Relief runs with it.
 
 ## Block F — Installer, releases and auto update
 
-### §MOD29 Release pipeline on GitHub
-
-Model: D:\Git\alegauss\freewilly\.github\workflows\release.yml and PhotoBoost's
-build\update-release.cmd and guard-publish.ps1. A local build\update-release.cmd <x.y.z>
-sets the version in Directory.Build.props, runs the whole suite on the VMware guest
-(MOD14), builds the installer, and tags v<x.y.z>.
-
-The tag triggers release.yml on alegauss/modelado. It builds on windows-latest, refuses
-a tag whose version disagrees with the props or the installer's file name, and publishes
-a GitHub release holding Modelado-Setup-<x.y.z>.exe and SHA256SUMS. The release notes
-are the commit titles since the previous tag, each naming its MOD id, written by
-build\release-files.ps1; that script, the workflow and update-release.cmd are built and
-checked locally. What is left is a pushed test tag: its release's SHA256SUMS must match
-the installer, and a tag that disagrees with the props must fail the workflow.
-
-No code signing for now. The release notes say SmartScreen will warn, and the sums file
-is what the updater checks.
-
-Done when tagging a test version produces a release whose sums file matches the
-installer it holds, and a mismatched tag fails the workflow.
-
 ## Block G — Public site for 3D modelling
 
 ### §MOD33 Hero: photo to a model you can orbit

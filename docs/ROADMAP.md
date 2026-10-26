@@ -24,12 +24,10 @@
 
 ## Block F — Installer, releases and auto update
 
-- 🛠 **MOD29** (deps: MOD14 ✅, MOD28 ✅) **Nothing publishes a release: no tag-driven build, no GitHub release with the installer and a SHA256SUMS file** — No tag has been pushed yet, so no GitHub release has proved the sums match and a mismatched tag fails the workflow. → §MOD29
-
 ## Block G — Public site for 3D modelling
 
 - 📋 **MOD33** (deps: MOD20 ✅, MOD32 ✅) **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — A 3D result is judged by turning it around, and a still image of a mesh hides the back, which is exactly what TripoSR invents. → §MOD33
-- 📋 **MOD34** (deps: MOD29 🛠, MOD33) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
+- 📋 **MOD34** (deps: MOD29 ✅, MOD33) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
@@ -59,14 +57,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD29
-
-- **A pushed v-tag yields a release whose SHA256SUMS matches its installer** Checked on
-  GitHub after build\update-release <x.y.z> push: the release holds
-  Modelado-Setup-<x.y.z>.exe and SHA256SUMS, sha256sum -c passes on the downloaded pair,
-  and a tag that disagrees with Directory.Build.props fails the workflow at
-  release-files.ps1.
 
 ## Done when — MOD37
 
