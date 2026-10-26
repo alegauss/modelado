@@ -64,21 +64,72 @@ public sealed class MeshExportTests : IDisposable
         }
     }
 
+    private static (string MimeType, byte[] Head) EmbeddedImage(JsonDocument json, byte[] bin)
+    {
+        JsonElement image = json.RootElement.GetProperty("images")[0];
+        JsonElement view = json.RootElement.GetProperty("bufferViews")[image.GetProperty("bufferView").GetInt32()];
+        return (image.GetProperty("mimeType").GetString()!, bin.AsSpan(view.GetProperty("byteOffset").GetInt32(), 8).ToArray());
+    }
+
     [Fact]
-    public void A_textured_glb_embeds_the_png_and_leaves_out_vertex_colours()
+    public void A_textured_glb_embeds_an_opaque_texture_as_jpeg_and_leaves_out_vertex_colours()
     {
         string path = Path.Combine(folder, "t.glb");
         MeshExport.Save(Textured(), path);
         (JsonDocument json, byte[] bin) = ReadGlb(path);
 
-        JsonElement image = json.RootElement.GetProperty("images")[0];
-        JsonElement view = json.RootElement.GetProperty("bufferViews")[image.GetProperty("bufferView").GetInt32()];
-        byte[] png = bin.AsSpan(view.GetProperty("byteOffset").GetInt32(), 8).ToArray();
-        Assert.Equal(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, png);
+        (string mimeType, byte[] head) = EmbeddedImage(json, bin);
+        Assert.Equal("image/jpeg", mimeType);
+        Assert.Equal(new byte[] { 0xFF, 0xD8, 0xFF }, head[..3]);
+        Assert.Equal("JPEG", MeshExport.GlbTextureFormat(Textured()));
         JsonElement attributes = json.RootElement.GetProperty("meshes")[0].GetProperty("primitives")[0].GetProperty("attributes");
         Assert.False(attributes.TryGetProperty("COLOR_0", out _));
         Assert.True(attributes.TryGetProperty("TEXCOORD_0", out _));
         Assert.True(json.RootElement.GetProperty("materials")[0].GetProperty("doubleSided").GetBoolean());
+    }
+
+    [Fact]
+    public void A_cut_out_texture_stays_png_and_keeps_its_transparency()
+    {
+        Mesh mesh = Textured();
+        mesh.Texture!.Pixels[3] = 0; // one transparent texel, as a removed background leaves
+        string path = Path.Combine(folder, "cut.glb");
+        MeshExport.Save(mesh, path);
+        (JsonDocument json, byte[] bin) = ReadGlb(path);
+
+        (string mimeType, byte[] head) = EmbeddedImage(json, bin);
+        Assert.Equal("image/png", mimeType);
+        Assert.Equal(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, head);
+        Assert.Equal(0, MeshImport.Load(path).Texture!.Pixels[3]);
+    }
+
+    [Fact]
+    public void The_canyon_relief_sheds_its_png_weight_and_opens_with_the_same_look()
+    {
+        // The site's landscape relief, written with its 768 px texture as PNG before MOD63: 4.1 MB,
+        // of which the PNG is 1.0 MB and the geometry the rest (MOD66).
+        string original = Path.Combine(Repository.Root, "site", "public", "demo", "studio", "relief-landscape.glb");
+        Mesh relief = MeshImport.Load(original);
+        Assert.False(relief.Texture!.HasTransparency);
+        string path = Path.Combine(folder, "canyon.glb");
+        MeshExport.Save(relief, path);
+
+        long before = new FileInfo(original).Length, size = new FileInfo(path).Length;
+        int jpeg = ImageCodec.EncodeJpeg(relief.Texture).Length;
+        TestContext.Current.TestOutputHelper?.WriteLine($"canyon: {before:N0} -> {size:N0} bytes; the texture as JPEG {jpeg:N0}");
+        Assert.True(jpeg < 250_000, $"the texture is {jpeg:N0} bytes as JPEG");
+        Assert.True(size < before - 750_000, $"the canyon relief went from {before:N0} to {size:N0} bytes");
+
+        RgbaImage texture = relief.Texture, after = MeshImport.Load(path).Texture!;
+        Assert.Equal((texture.Width, texture.Height), (after.Width, after.Height));
+        double difference = 0;
+        for (int i = 0; i < texture.Pixels.Length; i++)
+        {
+            difference += Math.Abs(texture.Pixels[i] - after.Pixels[i]);
+        }
+
+        // JPEG at quality 90: a couple of levels out of 255 on average, not a visible change.
+        Assert.True(difference / texture.Pixels.Length < 3, $"mean difference {difference / texture.Pixels.Length:0.00}");
     }
 
     [Fact]

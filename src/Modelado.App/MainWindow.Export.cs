@@ -161,7 +161,8 @@ public partial class MainWindow
             // same bytes; the history keeps the model as it was.
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(size), path, choices);
             string names = string.Join(", ", written.Select(Path.GetFileName));
-            ExportStatus.Text = $"Saved {names}";
+            string? texture = format == "glb" ? MeshExport.GlbTextureFormat(mesh) : null;
+            ExportStatus.Text = texture is null ? $"Saved {names}" : $"Saved {names} · texture as {texture}";
             savedVersion = shownVersion;
             LastRunSaid(string.Create(CultureInfo.CurrentCulture, $"Saved {names} · {size:0.##} {(format == "stl" ? "mm" : "units")} on the longest side"));
         }

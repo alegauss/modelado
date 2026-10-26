@@ -39,6 +39,7 @@
 - ✅ **MOD52** **The provider chip says DirectML but not which GPU it runs on or how much video memory it has** — The provider chip and the CLI name DirectML's GPU and video memory, e.g. DirectML · NVIDIA GeForce RTX 4060, 8 GB, read from DXGI adapter 0 (design superseded: the guest's VMware GPU is named).
 - ✅ **MOD59** **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — A model's several textures open packed into one atlas, plain parts in a palette tile and factors tinting their textures; past four they are baked to colours with a notice.
 - ✅ **MOD62** **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying a 256-grid relief with a base to a third takes 1 to 2 s on the guest's CPU instead of 10 to 51 s, with no vertex left above 20 neighbours (design superseded: no fan; ties grew stars).
+- ✅ **MOD63** **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — A GLB carries an opaque texture as JPEG and a cut-out one as PNG, the Export card says which; the canyon's photo is 195 kB, not 1 MB (design superseded: geometry is 3.1 MB (MOD66)).
 
 ## Block D — Model downloads
 

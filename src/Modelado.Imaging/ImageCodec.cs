@@ -2,7 +2,7 @@ using SkiaSharp;
 
 namespace Modelado.Imaging;
 
-/// <summary>Reads photos into <see cref="RgbaImage"/> and writes PNG, through SkiaSharp.</summary>
+/// <summary>Reads photos into <see cref="RgbaImage"/> and writes PNG and JPEG, through SkiaSharp.</summary>
 public static class ImageCodec
 {
     /// <summary>The extensions the open dialog offers.</summary>
@@ -41,6 +41,18 @@ public static class ImageCodec
 
         using SKBitmap upright = Orient(decoded, codec.EncodedOrigin);
         return FromBitmap(upright);
+    }
+
+    /// <summary>Encodes an image as JPEG, dropping any alpha (MOD63: a GLB's opaque texture).</summary>
+    /// <param name="image">The image.</param>
+    /// <param name="quality">0 to 100.</param>
+    /// <returns>The JPEG file's bytes.</returns>
+    public static byte[] EncodeJpeg(RgbaImage image, int quality = 90)
+    {
+        ArgumentNullException.ThrowIfNull(image);
+        using SKBitmap bitmap = ToBitmap(image);
+        using SKData data = bitmap.Encode(SKEncodedImageFormat.Jpeg, quality);
+        return data.ToArray();
     }
 
     /// <summary>Encodes an image as PNG.</summary>

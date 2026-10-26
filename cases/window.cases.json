@@ -56,6 +56,13 @@
       "shareable": false
     },
     {
+      // MOD63: a textured model in a folder of its own, to save as GLB.
+      "name": "a window on a staged textured model, to save through the Export card",
+      "files": ["cases/fixtures/two-textures.glb"],
+      "arguments": ["--open", "{files}/two-textures.glb", "--provider", "cpu", "--releases", "off"],
+      "shareable": false
+    },
+    {
       // MOD21: a photo open, its models folder staged empty, the fixture server's manifest.
       "name": "a window with a photo open, downloading from the fixture server",
       "files": ["cases/fixtures/photo.png"],
@@ -562,6 +569,25 @@
         { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/text.ply", "named": "text.ply is dropped back in" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "text.ply", "named": "it opens" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with the same counts" }
+      ]
+    },
+
+    {
+      "name": "the Export card writes an opaque texture into GLB as JPEG, and the GLB opens again with it",
+      "catches": "a GLB that carries a photo as a lossless PNG several times its JPEG weight, or a JPEG texture the window cannot read back",
+      "filed": "MOD63",
+      "tags": ["export", "dialog", "drop"],
+      "fixture": "a window on a staged textured model, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "two-textures.glb", "named": "the textured model is open first" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"GLB\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "GLB is chosen" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/shared", "named": "the dialog is told to save shared in the staged folder" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved shared.glb · texture as JPEG", "named": "the card says it wrote the texture as JPEG" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/shared.glb", "named": "shared.glb is dropped back in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "shared.glb", "named": "it opens" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "^6 vertices · 2 triangles · texture 16 × 8", "named": "with its texture back" }
       ]
     },
 

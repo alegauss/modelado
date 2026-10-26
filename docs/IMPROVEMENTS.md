@@ -6,23 +6,29 @@
 
 ## Block C — Existing code wired into the window
 
-### §MOD63 JPEG textures in GLB
+### §MOD66 Lighter GLB geometry
 
-Seen making the site's Studio (MOD34): reliefs from 768 px photos, at `--grid 192`,
-saved as GLB weigh 2.1 MB (the bust), 3.4 MB (the cathedral) and 4.1 MB (the canyon).
-Their geometry is a few hundred kilobytes; the rest is the photo, embedded in the GLB as
-a lossless PNG. A 768 px JPEG of the same photo is 90 to 200 kB. The web, game engines
-and the site's own viewer all read JPEG textures in glTF (image/jpeg is one of the two
-types the spec allows), so a relief or a TripoSR result with a projected photo is
-several times heavier than it needs to be wherever it is shared.
+Measured shipping MOD63: the site's canyon relief
+(`site/public/demo/studio/relief-landscape.glb`, 768 px photo, `--grid 192`) went from
+4.1 MB to 3.3 MB once its texture became a 195 kB JPEG. MOD63's design had guessed the
+geometry at a few hundred kilobytes; it is 3.1 MB. The relief has 55,296 vertices and
+110,588 triangles, and MeshExport.WriteGlb writes them at full width: float positions
+and normals (663 kB each), float UVs (442 kB) and 32-bit indices (1.33 MB).
 
-Build: MeshExport's GLB writer chooses the texture's encoding: JPEG (quality about 90)
-for a texture with no transparency, PNG where the alpha is used (a cut-out relief keeps
-its transparent background). The Export card can say which it wrote. OBJ keeps its .png,
-which slicers and MeshLab read everywhere.
+Build, in the order of what each saves for what it risks:
 
-Done when the canyon relief above saves under 1 MB as GLB, opens again in the window
-with the same look, and a cut-out relief keeps its transparency.
+1. Indices as UNSIGNED_SHORT (5123) when the mesh has fewer than 65,536 vertices. Core glTF,
+   every reader takes it; the canyon's indices halve, about 660 kB.
+2. KHR_mesh_quantization: positions as normalized int16 with the node's scale and offset
+   restoring the bounds, normals as int8, UVs as uint16. three.js (the site), Blender's
+   importer and glTF validators read it; check Windows 3D Viewer before making it the default,
+   and keep a float writer behind an Export card choice if it does not.
+3. EXT_meshopt_compression only if 1 and 2 leave a relief above about 1 MB.
+
+MeshImport must read whatever MeshExport writes (16-bit indices, the quantized
+accessors), so a saved GLB opens again in the window. Done when the canyon relief saves
+under 1.5 MB as GLB with its look unchanged in the window and on the site, and the
+site's Studio GLBs are re-saved.
 
 ## Block D — Model downloads
 

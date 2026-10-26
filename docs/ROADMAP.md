@@ -8,7 +8,7 @@
 
 ## Block C — Existing code wired into the window
 
-- 📋 **MOD63** (deps: —) **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — The Studio's canyon relief is 4.1 MB as GLB, nearly all of it the 768 px photo, which as JPEG would be about 200 kB. → §MOD63
+- 📋 **MOD66** (deps: —) **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — The canyon relief is still 3.3 MB as GLB after its texture became a 195 kB JPEG, 3.1 MB of it geometry the site and every share download. → §MOD66
 
 ## Block D — Model downloads
 

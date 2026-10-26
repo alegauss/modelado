@@ -85,6 +85,23 @@ public static class MeshExport
         return [path];
     }
 
+    /// <summary>
+    /// How a GLB carries the mesh's texture (MOD63): JPEG, a tenth of the PNG's weight for a photo,
+    /// unless the alpha is used, where PNG keeps a cut-out relief's transparent background.
+    /// </summary>
+    /// <param name="mesh">The mesh.</param>
+    /// <returns>"JPEG" or "PNG"; null for a mesh with no texture.</returns>
+    public static string? GlbTextureFormat(Mesh mesh)
+    {
+        ArgumentNullException.ThrowIfNull(mesh);
+        if (mesh.Texture is null)
+        {
+            return null;
+        }
+
+        return mesh.Texture.HasTransparency ? "PNG" : "JPEG";
+    }
+
     /// <summary>Writes binary glTF 2.0.</summary>
     /// <param name="mesh">The mesh.</param>
     /// <param name="stream">Where.</param>
@@ -134,9 +151,10 @@ public static class MeshExport
 
         if (mesh.Texture is not null)
         {
-            byte[] png = ImageCodec.EncodePng(mesh.Texture);
-            int view = View(png, null);
-            root["images"] = new JsonArray(new JsonObject { ["bufferView"] = view, ["mimeType"] = "image/png" });
+            bool jpeg = GlbTextureFormat(mesh) == "JPEG";
+            byte[] image = jpeg ? ImageCodec.EncodeJpeg(mesh.Texture) : ImageCodec.EncodePng(mesh.Texture);
+            int view = View(image, null);
+            root["images"] = new JsonArray(new JsonObject { ["bufferView"] = view, ["mimeType"] = jpeg ? "image/jpeg" : "image/png" });
             root["samplers"] = new JsonArray(new JsonObject { ["magFilter"] = 9729, ["minFilter"] = 9987, ["wrapS"] = 33071, ["wrapT"] = 33071 });
             root["textures"] = new JsonArray(new JsonObject { ["source"] = 0, ["sampler"] = 0 });
             pbr["baseColorTexture"] = new JsonObject { ["index"] = 0 };
