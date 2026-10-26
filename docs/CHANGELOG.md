@@ -69,4 +69,4 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- ✅ **MOD43 (modelado-cli --json)** **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — modelado-cli --json prints one JSON object on stdout (files written, counts, each edit and its time, warnings or the error) for the add-on to read.
+- ✅ **MOD43** **A model already in Blender cannot use Modelado's tools without exporting it, opening the app and importing back by hand** — A Blender 4.2+ extension in blender/modelado runs Modelado's six edits on the selected object through modelado-cli --json, off the main thread with Esc to cancel, as one undo step.

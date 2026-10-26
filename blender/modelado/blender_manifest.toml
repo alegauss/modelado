@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+
+# MOD43: Modelado's mesh edits on the selected object, through modelado-cli.
+id = "modelado"
+version = "0.1.0"
+name = "Modelado"
+tagline = "Simplify, subdivide, smooth, fill holes and more with Modelado"
+maintainer = "Alexandre Oliveira"
+type = "add-on"
+website = "https://github.com/alegauss/modelado"
+tags = ["Mesh", "Modeling"]
+blender_version_min = "4.2.0"
+
+# Code that imports bpy is bound by Blender's own licence.
+license = ["SPDX:GPL-3.0-or-later"]
+
+[permissions]
+files = "Writes the object to a temporary GLB for modelado-cli and reads the edited one back"

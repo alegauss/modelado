@@ -68,6 +68,12 @@ set /a RAN+=1
 :python_done
 
 echo.
+echo === blender\tests (Blender add-on, MOD43) ===
+call blender\tests\run-blender-tests.cmd %CONFIG%
+if errorlevel 1 set /a FAILED+=1
+set /a RAN+=1
+
+echo.
 if %FAILED%==0 (echo All %RAN% suites passed. & popd & exit /b 0)
 echo %FAILED% of %RAN% suites failed.
 popd

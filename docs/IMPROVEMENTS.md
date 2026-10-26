@@ -237,27 +237,6 @@ restores the photo texture.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-### §MOD43 Blender add-on with Modelado's edits
-
-A Blender extension (Blender 4.2+ format, blender_manifest.toml) lives in
-blender\modelado and puts a "Modelado" panel in the 3D Viewport's sidebar. It finds
-modelado-cli from a preference, defaulting to the installed path (MOD28 bundles the
-extension zip). For the selected mesh object it offers the edit tools with their
-amounts: Simplify, Subdivide, Smooth, Fill holes, Remove loose pieces, Flat base.
-
-Each runs as: export the object to a temp GLB (applying modifiers if the user asks),
-modelado-cli edit, then import the result. The result replaces the mesh data of the same
-object, keeping its name, transform, parent, collections and material slots, so
-Blender's own Ctrl+Z undoes it. The CLI gains --json, printing a machine-readable result
-(counts, timings, warnings) that the add-on reads instead of parsing text.
-
-The CLI runs in a background thread with a progress bar and Cancel, so Blender never
-freezes. Tests run Blender headless (blender --background --python) on the VMware guest
-with a fixture .blend.
-
-Done when Simplify to 25% on Suzanne subdivided twice keeps its transform and material,
-and Ctrl+Z restores it.
-
 ### §MOD44 Generate from a photo into Blender
 
 The add-on's panel gains "Generate from photo". It picks an image file, or an image
