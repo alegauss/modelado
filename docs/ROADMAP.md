@@ -24,8 +24,7 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- ⏳ **MOD39** (deps: MOD10 ✅, MOD36 ✅, MOD42 ✅, MOD20 ✅) **Without a photo there is nothing to reconstruct: the app cannot make the input image from a prompt** — A chosen candidate has not been through TripoSR, which needs the models MOD20 publishes. → §MOD39
-- 📋 **MOD40** (deps: MOD39 ⏳) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
+- 📋 **MOD40** (deps: MOD39 ✅) **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — A relief or an imported model often needs a different surface (wood, stone, painted metal), and Ideogram can draw a seamless texture for it. → §MOD40
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
@@ -50,12 +49,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD39
-
-- **A drawn candidate becomes a TripoSR model** On the guest with the published models:
-  a candidate chosen on the drop zone is generated with 3D Object, and the PNG it was
-  saved as still carries its prompt in an iTXt chunk.
 
 ## Non-goals
 

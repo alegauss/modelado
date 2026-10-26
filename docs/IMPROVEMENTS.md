@@ -92,23 +92,6 @@ Done when the speed table names a GPU and its timings come from those runs.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD39 Ideogram: a reference image from a prompt
-
-IdeogramProvider is the second ICloudProvider, with the TextToImage capability, over
-Ideogram's REST API and the user's key (check its current API docs when built). The drop
-zone gains "Generate a photo with Ideogram…", shown only with a key. It takes a prompt
-and wraps it in a template that asks for what reconstruction needs: one whole object,
-centred, three-quarter view, even light, plain light background, no text. The user sees
-the template and can edit it.
-
-It offers Ideogram's aspect ratio, style and seed, and up to four candidates side by
-side. The chosen one opens as if it had been dropped, so 3D Object, Relief and Meshy all
-take it unchanged. The image is saved beside the session with its prompt and seed in the
-PNG's text chunk, so the result can be traced and redone.
-
-Done when a prompt gives four candidates, one becomes a TripoSR model, and its PNG
-carries the prompt.
-
 ### §MOD40 Ideogram: textures from a prompt
 
 The Edit and refine card's "With AI" group gains "New texture with Ideogram…", shown

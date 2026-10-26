@@ -11,6 +11,15 @@
       "arguments": ["--open", "{files}/robot.png", "--releases", "off"],
       "variables": { "LOCALAPPDATA": "{files}" },
       "shareable": false
+    },
+    {
+      // MOD39: Ideogram stood in by the fixture server (FixtureServer.Ideogram), the real models for TripoSR.
+      "name": "an empty window with Ideogram stood in and the real models",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
     }
   ],
 
@@ -40,6 +49,32 @@
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^Relief: ", "named": "the job chip shows the Relief running" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "then its last run, on the CPU" }
+      ]
+    },
+
+    {
+      "name": "a candidate drawn from a description becomes a TripoSR model on the real models",
+      "catches": "a drawn photo that opens but that the 3D Object cannot take, or a reconstruction that drops it",
+      "filed": "MOD39",
+      "tags": ["cloud", "object"],
+      "fixture": "an empty window with Ideogram stood in and the real models",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "the Ideogram key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once the stand-in accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#DropGenerate", "act": "invoke", "named": "Generate a photo with Ideogram is pressed" },
+        { "locator": "Edit#GeneratePrompt", "act": "set value", "with": "a red ball", "reads": "value", "expect": "a red ball", "named": "the object is described" },
+        { "locator": "Button#GenerateRun", "act": "invoke", "named": "Generate is pressed" },
+        { "locator": "Button#GenerateSend", "act": "invoke", "named": "Send it is pressed" },
+        { "locator": "Button#Candidate-1", "act": "invoke", "named": "the first candidate is chosen" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-1\\.png · ", "named": "it opens as a photo" },
+        { "locator": "Button#ObjectButton", "act": "invoke", "named": "Generate 3D object is pressed" },
+        { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^3D Object: ", "named": "TripoSR runs on it" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^3D Object · \\d+\\.\\d s · CPU$", "named": "and finishes" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "^[\\d,]+ vertices · [\\d,]+ triangles", "named": "with a mesh made from the drawn photo" },
+        { "locator": "List#History > ListItem[order=top]", "act": "read", "reads": "name", "matches": "^1\\. ", "named": "as the first version" }
       ]
     }
   ]
