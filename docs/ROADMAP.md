@@ -17,6 +17,7 @@
 ## Block D — Model downloads
 
 - 📋 **MOD20** (deps: —) (requires: hf-token) **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Nothing was ever exported and published: there is no .cache\models and no published-models.json, so a fresh install has nothing to fetch. → §MOD20
+- 📋 **MOD57** (deps: —) **CI on Linux fails since MOD23: removing a downloaded model accepts a name with a backslash there** — A red CI on every push hides a real failure, and on Linux the guard lets a name through that Windows refuses. → §MOD57
 
 ## Block E — Publishing custom models to Hugging Face
 
@@ -33,7 +34,6 @@
 
 - 📋 **MOD33** (deps: MOD20, MOD32 ✅) **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — A 3D result is judged by turning it around, and a still image of a mesh hides the back, which is exactly what TripoSR invents. → §MOD33
 - 📋 **MOD34** (deps: MOD29 🛠, MOD33) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
-- 🛠 **MOD35** (deps: MOD32 ✅) **Nothing builds and deploys the site when it changes** — Pages is not switched to GitHub Actions and nothing is pushed, so no deploy has proved a content.ts change goes live. → §MOD35
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
@@ -71,13 +71,6 @@
   Modelado-Setup-<x.y.z>.exe and SHA256SUMS, sha256sum -c passes on the downloaded pair,
   and a tag that disagrees with Directory.Build.props fails the workflow at
   release-files.ps1.
-
-## Done when — MOD35
-
-- **A push changing content.ts is live at alegauss.github.io/modelado/** Checked after
-  Settings > Pages > Source is set to GitHub Actions and main is pushed: the changed
-  word is on the live page, and a pull request whose index.html lost an anchor fails the
-  site check.
 
 ## Done when — MOD37
 

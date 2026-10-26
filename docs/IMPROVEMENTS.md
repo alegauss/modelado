@@ -46,6 +46,18 @@ Done when a clean build with no .cache downloads every model from the window on 
 use, each verified by SHA-256, and the 3D Object, Relief and texture upscale operations
 each run on the robot photo.
 
+### §MOD57 Model names refuse both separators
+
+The tests workflow (ubuntu-latest, run-tests.sh) has failed on every push since MOD23:
+ModelLibraryTests.A_name_that_is_not_a_bare_folder_is_refused("a\\b") finds no
+exception. ModelLibrary.RemoveDownload refuses a name whose Path.GetFileName differs
+from it, and on Linux a backslash is an ordinary file-name character, so "a\b" passes as
+a bare name there and the removal it guards would act on a folder of that literal name.
+
+Refuse both separators on every system in RemoveDownload, beside the GetFileName check:
+a model's folder name never holds either. The test then holds on Windows and on CI
+alike.
+
 ## Block E — Publishing custom models to Hugging Face
 
 ### §MOD24 Add a custom model to the publish stage
@@ -175,18 +187,6 @@ run, written once in content.ts.
 
 Done when every tab shows a real result, and the download link resolves to the current
 release.
-
-### §MOD35 Site deploy workflow
-
-Model: D:\Git\alegauss\freewilly\.github\workflows\site.yml. On a push to main that
-touches site\**, and on demand, it runs npm ci and npm run build in site\ and publishes
-dist\ to GitHub Pages at alegauss.github.io/modelado/, matching Vite's base. A pull
-request builds without deploying, so a broken prerender fails the check before merge.
-
-The workflow pins its action versions and Node version, as freewilly's does.
-
-Done when a push changing a word in content.ts is live on Pages, and a pull request with
-a template missing an anchor fails its check.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 

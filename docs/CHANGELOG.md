@@ -54,7 +54,7 @@
 ## Block G — Public site for 3D modelling
 
 - ✅ **MOD32** **Modelado has no public site: nowhere to see what it makes, try a result or download it** — site\ builds a prerendered English page at /modelado/ with the design system's nav, footer and theme toggle; Lighthouse accessibility scores 100 (design recorded in `site/README.md`).
-- ✅ **MOD35 (the workflow)** **Nothing builds and deploys the site when it changes** — site.yml builds site\ on every pull request touching it and deploys dist\ to Pages on a push to main; the build and the anchor refusal pass locally.
+- ✅ **MOD35** **Nothing builds and deploys the site when it changes** — A push changing content.ts was built by site.yml and is live at alegauss.github.io/modelado/; a template missing an anchor fails the same build.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
