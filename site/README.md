@@ -30,6 +30,8 @@ og:url by replace-or-throw, so a template that lost an anchor fails the build.
 | `src/components/Chrome.tsx` | The design system's nav and footer, with Modelado's brand |
 | `src/components/` | The page's own sections |
 | `src/components/Hero.tsx`, `viewer.ts` | The hero: the photo beside the model the reader turns. `viewer.ts` is three.js, imported only after the poster has painted, drawn on demand and never spinning by itself; reduced motion keeps the poster until asked |
+| `src/components/Sections.tsx` | The four moves, privacy, speed, the models and the download. The speed rows are timings measured on the VMware guest's CPU, written in `content.ts` |
+| `vite.config.ts` `__RELEASE__`, `__MODELS__` | Read at build time: the latest GitHub release's installer (name, size, link; offline, the button falls back to the releases page) and the models from `src/Modelado.Inference/models-manifest.json`. `site.yml` builds again after a release and when that manifest changes |
 | `public/demo/` | The hero's real result: TripoSR's example chair (MIT), the model `modelado-cli object --resolution 320` made from it with the published models then `edit --simplify 0.35`, and that model's `--preview` render as the poster. The chair was the closest of six examples tried; remake them with the CLI, not by hand |
 | `public/icon.svg` | The mark: the app icon tools/Modelado.Icon draws, on the same grid and in Brand.cs's colours |
 | `public/favicon.svg` | The mark at tab size, without the triangle grid, as the app icon leaves it out below 48 px |

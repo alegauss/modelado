@@ -259,6 +259,90 @@ section {
   line-height: 1.6;
 }
 
+/* MOD34: the moves, privacy, speed, the models and the download. */
+.wrap.narrow {
+  max-width: 820px;
+}
+.sec-lead {
+  color: var(--vg-muted-foreground);
+  line-height: 1.6;
+  margin: -24px 0 24px;
+  text-align: center;
+}
+.sec-note {
+  color: var(--vg-muted-foreground);
+  font-size: 0.9rem;
+  margin-top: 16px;
+  text-align: center;
+}
+.journey-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .journey-steps {
+    grid-template-columns: 1fr;
+  }
+}
+.journey-step h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 10px 0 6px;
+}
+.journey-step p {
+  color: var(--vg-muted-foreground);
+  line-height: 1.6;
+}
+.journey-n {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--vg-brand);
+  color: #fff;
+  font-weight: 800;
+}
+.facts {
+  width: 100%;
+  border-collapse: collapse;
+}
+.facts th,
+.facts td {
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--vg-border);
+  vertical-align: top;
+}
+.facts td {
+  white-space: nowrap;
+  color: var(--vg-muted-foreground);
+}
+.facts td:last-child {
+  text-align: right;
+}
+.facts a {
+  color: inherit;
+}
+.facts-sub {
+  display: block;
+  font-weight: 400;
+  color: var(--vg-muted-foreground);
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+@media (max-width: 560px) {
+  .facts td {
+    white-space: normal;
+  }
+}
+.download-actions {
+  display: flex;
+  justify-content: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

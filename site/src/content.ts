@@ -19,6 +19,8 @@ export const words = {
   nav: {
     links: [
       { href: "#what", label: "What it makes" },
+      { href: "#privacy", label: "Privacy" },
+      { href: "#models", label: "Models" },
       { href: repoUrl, label: "Source" },
     ],
     cta: "Download",
@@ -80,6 +82,79 @@ export const words = {
         body: "Turn, mirror, smooth, simplify, subdivide, fill holes and flatten a base, every step undoable, then save it sized for a slicer or a game engine.",
       },
     ],
+  },
+  // MOD34: the moves from a photo to a file, privacy, speed, the models and the download.
+  journey: {
+    eyebrow: "From photo to file",
+    title: "Four moves",
+    steps: [
+      {
+        title: "Open a photo",
+        body: "PNG, JPEG, WEBP, BMP or GIF, dropped on the window or opened. A model to edit opens the same way: GLB, OBJ, PLY or STL.",
+      },
+      {
+        title: "Generate",
+        body: "A whole object with TripoSR, or a relief from the photo's depth. The first time, the window says what that operation downloads and how large it is, and waits for your yes.",
+      },
+      {
+        title: "Refine",
+        body: "Simplify, subdivide, smooth, fill holes, remove loose pieces, mirror, turn and flatten a base. Every step is a version in the history, and Undo goes back through them.",
+      },
+      {
+        title: "Export",
+        body: "GLB for Windows, Blender and the web, OBJ with its texture, PLY with colours, or STL sized in millimetres for a slicer.",
+      },
+    ],
+  },
+  privacy: {
+    eyebrow: "Privacy",
+    title: "Your photo stays on your PC",
+    items: [
+      {
+        title: "Inference runs here",
+        body: "TripoSR, Depth Anything V2, U²-Net and Real-ESRGAN run in ONNX Runtime on this computer, on the GPU with DirectML or on the CPU.",
+      },
+      {
+        title: "Only the models are downloaded",
+        body: "Each model is fetched once from Hugging Face and checked against its SHA-256 before it is used. Nothing about your photos goes with it.",
+      },
+      {
+        title: "The cloud is opt-in",
+        body: "Meshy AI and Ideogram can be added in About with your own key. Nothing is sent to them until you agree to that one job, with what it costs.",
+      },
+    ],
+  },
+  speed: {
+    eyebrow: "Speed",
+    title: "Measured, not promised",
+    lead: "On the CPU alone, 8 cores of an Intel Core i7-14700 with 8 GB of memory, the published models, a 512 px photo:",
+    rows: [
+      { what: "3D Object, default grid (256)", time: "about 20 s" },
+      { what: "3D Object, finer grid (320)", time: "25 to 32 s" },
+      { what: "Relief, default grid (256)", time: "about 1 s" },
+      { what: "Simplify 150,000 triangles to 45,000", time: "under 1 s" },
+    ],
+    note: "A GPU with DirectML takes the inference off the CPU; the status bar names the one in use.",
+  },
+  models: {
+    eyebrow: "The models",
+    title: "Open models, each under its own licence",
+    lead: "What the app downloads, from the list this version carries. Each one is fetched the first time an operation needs it.",
+    tasks: {
+      "image-to-triplane": "3D Object: reads the photo",
+      "triplane-decoder": "3D Object: shapes the mesh",
+      depth: "Relief: the depth of each pixel",
+      "background-removal": "Cuts the object out of the photo",
+      upscale: "Sharpens a photo or a texture",
+    } as Record<string, string>,
+  },
+  download: {
+    eyebrow: "Download",
+    title: "Modelado for Windows 10 and 11",
+    lead: "Free and open source, with no account. Once a day the app asks GitHub whether a newer release exists, sending only its name and version; About turns that off.",
+    button: (version: string, size: string) => `Download Modelado ${version} · ${size}`,
+    fallback: "Download the latest release",
+    sums: "Each release lists its installer's SHA-256 in SHA256SUMS.",
   },
   footer: {
     links: [

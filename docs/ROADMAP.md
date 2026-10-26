@@ -18,7 +18,7 @@
 
 ## Block G — Public site for 3D modelling
 
-- 🛠 **MOD34** (deps: MOD29 ✅, MOD33 ✅) **The site has no sections on each operation, privacy, formats or the download** — After the hero, PhotoBoost's page walks a studio of each operation, the moves from input to result, privacy and speed, and ends on the download. → §MOD34
+- ⏳ **MOD34** (deps: MOD29 ✅, MOD33 ✅) **The site has no sections on each operation, privacy, formats or the download** — No Studio shows a real result per operation (object, relief, edit, AI texture), and the speed section has no GPU timing. → §MOD34
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
@@ -54,6 +54,14 @@
 - **A drawn candidate becomes a TripoSR model** On the guest with the published models:
   a candidate chosen on the drop zone is generated with 3D Object, and the PNG it was
   saved as still carries its prompt in an iTXt chunk.
+
+## Done when — MOD34
+
+- **Every Studio tab shows a real result, and speed names a GPU timing** The Studio has
+  a tab each for 3D Object, Relief (a face, a building, a landscape, photos credited
+  with their licences), Edit and refine, and AI texture, every result made by
+  modelado-cli with the published models; the speed table adds one run on a named GPU
+  with DirectML.
 
 ## Non-goals
 

@@ -49,8 +49,9 @@ The download button points at the latest GitHub release's installer (MOD29), rea
 build time, with its size and version. Every number the page quotes comes from a real
 run, written once in content.ts.
 
-Done when every tab shows a real result, and the download link resolves to the current
-release.
+Landed in part one (site/src/components/Sections.tsx): the moves, privacy, CPU speed
+measured on the guest, the models from the embedded manifest and the download, both read
+at build time in vite.config.ts. Left: the Studio and a GPU timing.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 

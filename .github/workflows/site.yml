@@ -12,12 +12,18 @@
 
 name: site
 
+# MOD34: the page reads the latest release and the embedded models manifest at build time, so it
+# is built again when either changes. release.yml publishes with GITHUB_TOKEN, whose release event
+# starts no other workflow; its completion does.
 on:
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/site.yml"]
+    paths: ["site/**", ".github/workflows/site.yml", "src/Modelado.Inference/models-manifest.json"]
   pull_request:
-    paths: ["site/**", ".github/workflows/site.yml"]
+    paths: ["site/**", ".github/workflows/site.yml", "src/Modelado.Inference/models-manifest.json"]
+  workflow_run:
+    workflows: [release]
+    types: [completed]
   workflow_dispatch:
 
 # Least privilege by default; the Pages grants live on the job that publishes.
@@ -32,6 +38,8 @@ concurrency:
 jobs:
   build:
     name: build (the gate)
+    # After a release, only one that succeeded has an installer to link to.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
