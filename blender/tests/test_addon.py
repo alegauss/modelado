@@ -154,5 +154,95 @@ else:
     check("UPSCALE: the Base Color image is four times as wide", node.image.size[0] == 256)
     check("UPSCALE: the rest of the material is kept", abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
 
+# MOD65: Meshy AI's image to 3D through modelado-cli cloud, against a stand-in of Meshy's API that
+# answers as the UI cases' fixture server does (tests/Modelado.Cases/FixtureServer.cs): the key
+# msy_case_key, and every job the cube for 30 credits. LOCALAPPDATA is this run's own, so the key
+# store, settings.json and the ledger the window's About reads are too.
+import http.server  # noqa: E402
+import json  # noqa: E402
+import subprocess  # noqa: E402
+import threading  # noqa: E402
+
+CUBE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "cases", "fixtures", "download", "cube.glb")
+
+
+class Meshy(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+    def answer(self, status, body, kind="application/json"):
+        data = body if isinstance(body, bytes) else json.dumps(body).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", kind)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        root = f"http://127.0.0.1:{self.server.server_port}"
+        if self.path == "/files/cube.glb":
+            with open(CUBE, "rb") as glb:
+                return self.answer(200, glb.read(), "model/gltf-binary")
+        if self.headers.get("Authorization") != "Bearer msy_case_key":
+            return self.answer(401, {"message": "Invalid API key"})
+        if self.path == "/meshy/openapi/v1/balance":
+            return self.answer(200, {"balance": 470})
+        if self.path == "/meshy/openapi/v1/image-to-3d/case-image":
+            sent.append("polled")
+            return self.answer(200, {"id": "case-image", "status": "SUCCEEDED", "progress": 100, "consumed_credits": 30, "model_urls": {"glb": f"{root}/files/cube.glb"}})
+        return self.answer(404, {"message": "Not found"})
+
+    def do_POST(self):
+        # The whole body is read before answering, or closing on it resets the upload: .NET sends
+        # a JSON body chunked, with no Content-Length.
+        if self.headers.get("Transfer-Encoding", "").lower() == "chunked":
+            while True:
+                size = int(self.rfile.readline().split(b";")[0].strip() or b"0", 16)
+                self.rfile.read(size + 2)
+                if size == 0:
+                    break
+        else:
+            self.rfile.read(int(self.headers.get("Content-Length", 0)))
+        if self.headers.get("Authorization") != "Bearer msy_case_key":
+            return self.answer(401, {"message": "Invalid API key"})
+        sent.append(self.path)
+        return self.answer(200, {"result": "case-image"} if self.path == "/meshy/openapi/v1/image-to-3d" else {"message": "Not found"})
+
+
+sent = []
+server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Meshy)
+threading.Thread(target=server.serve_forever, daemon=True).start()
+stand_in = ("--cloud-api", f"meshy=http://127.0.0.1:{server.server_port}/meshy/")
+kept_local = os.environ.get("LOCALAPPDATA")
+with tempfile.TemporaryDirectory(prefix="modelado-local-") as local:
+    os.environ["LOCALAPPDATA"] = local
+    try:
+        check("MESHY: not offered before a key is stored", not modelado.meshy_key_stored())
+        stored = subprocess.run([cli, "cloud", "key", "meshy", *stand_in, "--json"], input="msy_case_key\n", capture_output=True, **modelado.TEXT)
+        check("MESHY: offered once a key is stored", stored.returncode == 0 and modelado.meshy_key_stored())
+
+        estimate = modelado.cloud_estimate(cli, robot, settings, stand_in)
+        print(f"MESHY: {estimate.get('consent')}")
+        check("MESHY: the price shown before anything is sent", "goes to Meshy AI for about 30 credits." in estimate.get("consent", "") and not sent)
+
+        bpy.context.scene.cursor.location = (-2, 3, 0.25)
+        made, report = modelado.run_generate(cli, "MESHY", robot, settings, bpy.context.scene.cursor.location.copy(), stand_in)
+        bpy.context.view_layer.update()
+        low, high = bounds(made)
+        check("MESHY: the photo was sent once, then followed", sent[:1] == ["/meshy/openapi/v1/image-to-3d"] and "polled" in sent)
+        check("MESHY: a new object named after the photo", made.name.startswith("robot") and made.type == "MESH")
+        check("MESHY: its longest side the size asked for", abs(longest(made) - 0.2) < 0.002)
+        check("MESHY: standing on the 3D cursor", abs(low.z - 0.25) < 0.002 and abs((low.x + high.x) / 2 + 2) < 0.002 and abs((low.y + high.y) / 2 - 3) < 0.002)
+        check("MESHY: what it cost, as reported", report.get("spent") == "30 credits")
+        with open(os.path.join(local, "Modelado", "cloud-ledger.jsonl"), encoding="utf-8") as ledger:
+            entries = [json.loads(line) for line in ledger if line.strip()]
+        check("MESHY: the spend in the ledger the window's About reads", [(e["Provider"], e["Action"], e["Amount"], e["Estimated"]) for e in entries] == [("meshy", "ImageTo3D", 30, 30)])
+    finally:
+        server.shutdown()
+        if kept_local is None:
+            del os.environ["LOCALAPPDATA"]
+        else:
+            os.environ["LOCALAPPDATA"] = kept_local
+
 print(f"{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)

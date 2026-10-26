@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Modelado.Cloud;
@@ -105,6 +107,26 @@ public sealed class CloudLedger
 /// <param name="WarnAt">The share of it that warns; 80% unless set.</param>
 public sealed record CloudBudget(double Monthly, double WarnAt = 0.8)
 {
+    /// <summary>The key settings.json keeps the budgets under, which the window and modelado-cli both read (MOD65).</summary>
+    public const string SettingsKey = "cloudBudgets";
+
+    /// <summary>The budgets as settings.json keeps them: { "meshy": { "monthly": 35, "warnAt": 0.8 } }.</summary>
+    /// <param name="kept">The object under <see cref="SettingsKey"/>, or null where none is set.</param>
+    /// <returns>The budgets by provider id; one of 0 or less is none.</returns>
+    public static Dictionary<string, CloudBudget> FromSettings(JsonObject? kept)
+    {
+        Dictionary<string, CloudBudget> budgets = new(StringComparer.Ordinal);
+        foreach ((string id, JsonNode? value) in kept ?? [])
+        {
+            if (value?["monthly"]?.GetValue<double>() is double monthly and > 0)
+            {
+                budgets[id] = new CloudBudget(monthly, value["warnAt"]?.GetValue<double>() ?? 0.8);
+            }
+        }
+
+        return budgets;
+    }
+
     /// <summary>Where this month's spend stands against the limit.</summary>
     /// <param name="spent">This month's spend.</param>
     /// <returns>Ok, Warning past <see cref="WarnAt"/>, Exceeded at the limit.</returns>
@@ -201,5 +223,29 @@ public sealed record CloudSpending(CloudLedger Ledger, IReadOnlyDictionary<strin
         return estimate is not null && spent + estimate.Amount > budget.Monthly
             ? $"too small for it: ~{estimate.Amount:0.##} with {budget.Monthly - spent:0.##} of {budget.Monthly:0.##} left"
             : null;
+    }
+
+    /// <summary>
+    /// What the budget leaves for an action, as every consent line ends (MOD55; shared with
+    /// modelado-cli's --estimate by MOD65): " 35 of 35 left this month.", or why it is refused.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The action.</param>
+    /// <returns>The note, empty where no budget is set, and whether sending is held.</returns>
+    public (string Note, bool Blocked) Note(ICloudProvider service, CloudJobRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(service);
+        if (Refusal(service.Id, service.EstimateCost(request)) is { } why)
+        {
+            return ($" {service.DisplayName}'s budget for this month is {why}; raise it in About to send this.", true);
+        }
+
+        if (!Budgets.TryGetValue(service.Id, out CloudBudget? budget))
+        {
+            return ("", false);
+        }
+
+        double left = budget.Monthly - StateOf(service.Id).Spent;
+        return (string.Create(CultureInfo.InvariantCulture, $" {left:0.##} of {budget.Monthly:0.##} left this month."), false);
     }
 }

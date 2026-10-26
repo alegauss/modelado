@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modelado.Inference\Modelado.Inference.csproj" />
+    <!-- MOD65: cloud image-to-3d, over the window's key store, budgets and ledger. -->
+    <ProjectReference Include="..\..\src\Modelado.Cloud\Modelado.Cloud.csproj" />
   </ItemGroup>
 
 </Project>

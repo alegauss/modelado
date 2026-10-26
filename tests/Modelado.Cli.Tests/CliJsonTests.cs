@@ -15,20 +15,84 @@ public sealed class CliJsonTests : IDisposable
 
     public void Dispose() => Directory.Delete(folder, recursive: true);
 
-    private static (int Code, string Out, string Err) Run(params string[] args)
+    private static (int Code, string Out, string Err) Run(params string[] args) => RunIn(null, null, args);
+
+    // localAppData: where the key store, settings.json and the ledger are, as the window finds them.
+    private static (int Code, string Out, string Err) RunIn(string? localAppData, string? input, params string[] args)
     {
-        ProcessStartInfo start = new("dotnet") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+        ProcessStartInfo start = new("dotnet") { RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = input is not null, UseShellExecute = false };
         start.ArgumentList.Add(typeof(CliArguments).Assembly.Location);
         foreach (string arg in args)
         {
             start.ArgumentList.Add(arg);
         }
 
+        if (localAppData is not null)
+        {
+            start.Environment["LOCALAPPDATA"] = localAppData;
+        }
+
         using Process cli = Process.Start(start)!;
+        if (input is not null)
+        {
+            cli.StandardInput.WriteLine(input);
+            cli.StandardInput.Close();
+        }
+
         Task<string> err = cli.StandardError.ReadToEndAsync();
         string output = cli.StandardOutput.ReadToEnd();
         cli.WaitForExit();
         return (cli.ExitCode, output, err.Result);
+    }
+
+    [Fact]
+    public void A_photo_becomes_a_meshy_model_priced_first_and_recorded_where_the_window_reads_it()
+    {
+        // MOD65, over the UI cases' Meshy stand-in: every image-to-3D job is the cube, for 30 credits.
+        string local = Path.Combine(folder, "local");
+        string photo = Path.Combine(Repository.Root, "cases", "fixtures", "photo.png");
+        string model = Path.Combine(folder, "meshy.glb");
+        string api = $"meshy=http://127.0.0.1:{Modelado.Cases.FixtureServer.Port}/meshy/";
+        using Modelado.Cases.FixtureServer meshy = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));
+        JsonObject Report(string output) => Assert.IsType<JsonObject>(JsonNode.Parse(output));
+        string[] Estimate() => ["cloud", "image-to-3d", photo, "--estimate", "--cloud-api", api, "--json"];
+        string[] Send() => ["cloud", "image-to-3d", photo, "-o", model, "--cloud-api", api, "--json"];
+        string ledger = Path.Combine(local, "Modelado", "cloud-ledger.jsonl");
+
+        // Priced before anything is sent, in the window's consent words, with no key yet.
+        (int code, string output, _) = RunIn(local, null, Estimate());
+        JsonObject estimate = Report(output);
+        Assert.Equal((0, false, false), (code, estimate["keyStored"]!.GetValue<bool>(), estimate["blocked"]!.GetValue<bool>()));
+        Assert.Matches(@"^This photo, \d+ MB, goes to Meshy AI for about 30 credits\.$", estimate["consent"]!.GetValue<string>());
+        Assert.Equal(30, estimate["estimate"]!["amount"]!.GetValue<double>());
+        (code, output, _) = RunIn(local, null, Send());
+        Assert.Equal(1, code);
+        Assert.Contains("No Meshy AI key is stored", Report(output)["error"]!.GetValue<string>(), StringComparison.Ordinal);
+
+        // The key goes in on standard input, kept only once the service accepts it.
+        Assert.Equal(1, RunIn(local, "msy_wrong", "cloud", "key", "meshy", "--cloud-api", api, "--json").Code);
+        Assert.False(File.Exists(Path.Combine(local, "Modelado", "keys", "meshy.key")));
+        Assert.Equal(0, RunIn(local, Modelado.Cases.FixtureServer.MeshyKey, "cloud", "key", "meshy", "--cloud-api", api, "--json").Code);
+
+        // The window's budget, set in settings.json, ends the consent line as it does there.
+        Modelado.Inference.SettingsFile.Write(Path.Combine(local, "Modelado", "settings.json"), "cloudBudgets", new JsonObject { ["meshy"] = new JsonObject { ["monthly"] = 50, ["warnAt"] = 0.8 } });
+        Assert.EndsWith("for about 30 credits. 50 of 50 left this month.", Report(RunIn(local, null, Estimate()).Out)["consent"]!.GetValue<string>(), StringComparison.Ordinal);
+
+        (code, output, string error) = RunIn(local, null, Send());
+        JsonObject sent = Report(output);
+        Assert.True(code == 0, error);
+        Assert.Equal((12, "30 credits"), (sent["triangles"]!.GetValue<int>(), sent["spent"]!.GetValue<string>()));
+        Assert.Equal(12, Modelado.Geometry.MeshImport.Load(model).TriangleCount);
+
+        // What About reads for its "1 job(s), estimated 30, charged 30" line.
+        Assert.Equal([(Modelado.Cloud.CloudCapability.ImageTo3D, 1, 30.0, 30.0)], new Modelado.Cloud.CloudLedger(ledger).Drift("meshy"));
+
+        // 20 left is too little for another: held before anything is sent, and nothing recorded.
+        JsonObject held = Report(RunIn(local, null, Estimate()).Out);
+        Assert.True(held["blocked"]!.GetValue<bool>());
+        Assert.Contains("too small for it: ~30 with 20 of 50 left", held["consent"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Equal(1, RunIn(local, null, Send()).Code);
+        Assert.Single(new Modelado.Cloud.CloudLedger(ledger).Entries);
     }
 
     [Fact]

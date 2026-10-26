@@ -13,6 +13,10 @@ object or relief in the same background thread. The result lands at the 3D curso
 the photo, its longest side the size the panel sets, in a material that shows its colours or its
 texture. When the models are not downloaded yet, a dialog first says what the first use fetches,
 how large and from where, as the window's consent panel does, and nothing starts without a yes.
+
+With a Meshy AI key stored in the window's About, "3D Object with Meshy AI" sends the photo
+through modelado-cli cloud image-to-3d (MOD65): the dialog first shows the window's consent line,
+the price and what the month's budget leaves, and the spend lands in the same ledger About reads.
 """
 
 import json
@@ -126,6 +130,8 @@ def replace_mesh(obj, path: str) -> None:
 GENERATE = {
     "OBJECT": ("3D Object", "object"),
     "RELIEF": ("Relief", "relief"),
+    # MOD65: Meshy AI's image to 3D, through modelado-cli cloud and the key stored in the window's About.
+    "MESHY": ("3D Object with Meshy AI", "cloud"),
 }
 
 
@@ -133,7 +139,26 @@ def generate_args(kind: str, settings) -> list:
     """modelado-cli's options for one generation, at the values the panel holds."""
     if kind == "OBJECT":
         return ["--resolution", settings.object_resolution]
+    if kind == "MESHY":
+        return [] if settings.meshy_texture else ["--no-texture"]
     return ["--grid", str(settings.relief_grid), "--depth", f"{settings.relief_depth:.4f}", "--base", f"{settings.relief_base:.4f}"]
+
+
+def command_for(kind: str, photo: str) -> list:
+    """modelado-cli's command and photo: `object <photo>`, or `cloud image-to-3d <photo>` for Meshy."""
+    return ["cloud", "image-to-3d", photo] if kind == "MESHY" else [GENERATE[kind][1], photo]
+
+
+def meshy_key_stored() -> bool:
+    """Whether the window's About holds a Meshy AI key, which is when the panel offers Meshy."""
+    return os.path.isfile(os.path.join(os.environ.get("LOCALAPPDATA", ""), "Modelado", "keys", "meshy.key"))
+
+
+def cloud_estimate(cli: str, photo: str, settings, extra: tuple = ()) -> dict:
+    """What sending the photo to Meshy would cost and what the budget leaves, sending nothing.
+
+    `extra` is more arguments for modelado-cli, e.g. --cloud-api for a stand-in service."""
+    return run_cli(cli, [*command_for("MESHY", photo), *generate_args("MESHY", settings), "--estimate", *extra])
 
 
 def run_cli(cli: str, args: list) -> dict:
@@ -157,11 +182,11 @@ def consent_text(title: str, pending: dict) -> str:
             "Your photo and your model stay on this computer.")
 
 
-def start_generate(cli: str, kind: str, photo: str, target: str, settings) -> subprocess.Popen:
-    """modelado-cli object or relief on the photo, its result as JSON on stdout."""
+def start_generate(cli: str, kind: str, photo: str, target: str, settings, extra: tuple = ()) -> subprocess.Popen:
+    """modelado-cli object, relief or cloud image-to-3d on the photo, its result as JSON on stdout."""
     flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     return subprocess.Popen(
-        [cli, GENERATE[kind][1], photo, "-o", target, *generate_args(kind, settings), "--json", "--provider", "cpu"],
+        [cli, *command_for(kind, photo), "-o", target, *generate_args(kind, settings), *extra, "--json", "--provider", "cpu"],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=flags, **TEXT)
 
 
@@ -225,11 +250,11 @@ def import_generated(path: str, name: str, size: float, location) -> object:
     return obj
 
 
-def run_generate(cli: str, kind: str, photo: str, settings, location) -> tuple:
+def run_generate(cli: str, kind: str, photo: str, settings, location, extra: tuple = ()) -> tuple:
     """One generation, start to end, on the window's thread; the panel's operator runs the CLI off it."""
     with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
         target = os.path.join(folder, "out.glb")
-        report = read_report(start_generate(cli, kind, photo, target, settings))
+        report = read_report(start_generate(cli, kind, photo, target, settings, extra))
         name = os.path.splitext(os.path.basename(photo))[0]
         return import_generated(target, name, settings.size, location), report
 
@@ -321,6 +346,7 @@ class ModeladoSettings(bpy.types.PropertyGroup):
     relief_depth: FloatProperty(name="Height", description="How far the nearest point stands out, as a share of the width", default=0.25, min=0.05, max=0.6, subtype="FACTOR")
     relief_base: FloatProperty(name="Base", description="A solid base under the relief, as a share of the width; 0 leaves the surface open", default=0.0, min=0.0, max=0.2, subtype="FACTOR")
     size: FloatProperty(name="Size", description="The new object's longest side", default=0.2, min=0.001, subtype="DISTANCE", unit="LENGTH")
+    meshy_texture: BoolProperty(name="Textured", description="Meshy AI paints a texture too; the bare shape costs less", default=True)
     # MOD45: the AI group's texture actions.
     material_image: StringProperty(name="Material", description="A material image (wood, stone, metal), made to tile and put on the surface", subtype="FILE_PATH", default="")
     material_tiles: IntProperty(name="Tiles", description="How many times the material repeats across the texture", default=2, min=1, max=16)
@@ -439,6 +465,25 @@ class MODELADO_OT_generate(bpy.types.Operator):
             self.report({"ERROR"}, "Choose a photo, or an image in this file, first")
             return {"CANCELLED"}
 
+        if self.kind == "MESHY":
+            # As the window's consent line: what goes, to whom, for how much, what the budget leaves.
+            try:
+                estimate = cloud_estimate(cli, self._photo, settings)
+            except RuntimeError as error:
+                self._folder.cleanup()
+                self.report({"ERROR"}, f"{GENERATE[self.kind][0]}: {error}")
+                return {"CANCELLED"}
+            if not estimate.get("keyStored") or estimate.get("blocked"):
+                self._folder.cleanup()
+                why = estimate["consent"] if estimate.get("blocked") else "no Meshy AI key is stored; add one in Modelado's About"
+                self.report({"ERROR"}, f"{GENERATE[self.kind][0]}: {why}")
+                return {"CANCELLED"}
+            self._consent = estimate["consent"]
+            try:
+                return context.window_manager.invoke_props_dialog(self, width=480, title="Send the photo to Meshy AI?", confirm_text="Send it")
+            except TypeError:  # Blender before 4.1 names neither
+                return context.window_manager.invoke_props_dialog(self, width=480)
+
         try:
             pending = pending_download(cli, GENERATE[self.kind][1])
         except RuntimeError as error:
@@ -498,7 +543,8 @@ class MODELADO_OT_generate(bpy.types.Operator):
         obj.select_set(True)
         context.view_layer.objects.active = obj
         self._finish(context)
-        self.report({"INFO"}, f"{GENERATE[self.kind][0]}: {obj.name}, {report.get('triangles', 0):,} triangles in {report.get('seconds', 0):.1f} s")
+        spent = f" · {report['spent']}" if report.get("spent") else ""
+        self.report({"INFO"}, f"{GENERATE[self.kind][0]}: {obj.name}, {report.get('triangles', 0):,} triangles in {report.get('seconds', 0):.1f} s{spent}")
         return {"FINISHED"}
 
     def _finish(self, context):
@@ -596,6 +642,10 @@ class MODELADO_PT_panel(bpy.types.Panel):
         row = box.row(align=True)
         row.prop(settings, "relief_depth")
         row.prop(settings, "relief_base")
+        if meshy_key_stored():
+            row = box.row(align=True)
+            row.operator(MODELADO_OT_generate.bl_idname, text=GENERATE["MESHY"][0]).kind = "MESHY"
+            row.prop(settings, "meshy_texture")
         box.prop(settings, "size")
 
         obj = context.active_object

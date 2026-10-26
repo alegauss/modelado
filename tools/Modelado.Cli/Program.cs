@@ -41,6 +41,14 @@ const string Usage = """
         --dry-run            says what would be downloaded, and fetches nothing
         --remove-background  relief: U-2-Net too, which a relief of the object alone needs
     modelado-cli models                         lists the installed models
+    modelado-cli cloud image-to-3d <photo> -o <output.glb> [options]   with the key stored in About
+        --service ID         meshy (the default)
+        --estimate           says what would be sent, to whom, for how much, and sends nothing
+        --no-texture         the bare shape, cheaper
+        --pbr                PBR maps with the texture
+        --quads              quad topology
+        --cloud-api ID=URL   another API root, e.g. a stand-in
+    modelado-cli cloud key <service>            stores the key given on standard input
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
             --manifest <url>          --size <units> (longest side when saving)
@@ -83,6 +91,12 @@ if (json)
 
 try
 {
+    // MOD65: nothing runs here, so no execution provider is chosen or named.
+    if (args[0] == "cloud")
+    {
+        return Done(await CloudCommand.RunAsync(positional, options, report, Save).ConfigureAwait(false));
+    }
+
     ModelLibrary library = options.TryGetValue("--models", out string? folder) && folder is not null
         ? new ModelLibrary([folder])
         : ModelLibrary.Default();
@@ -206,7 +220,7 @@ try
             return 2;
     }
 }
-catch (Exception error) when (error is ArgumentException or InvalidDataException or InvalidOperationException or FileNotFoundException or HttpRequestException)
+catch (Exception error) when (error is ArgumentException or InvalidDataException or InvalidOperationException or FileNotFoundException or HttpRequestException or OperationCanceledException)
 {
     await Console.Error.WriteLineAsync($"ERROR {error.Message}").ConfigureAwait(false);
     report["error"] = error.Message;

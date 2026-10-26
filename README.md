@@ -50,7 +50,15 @@ From the command line:
 modelado-cli edit robot.glb -o robot.stl --simplify 0.15 --fill-holes --flatten 0.03 --size 100
 modelado-cli edit relief.glb -o relief-sharp.glb --upscale-texture
 modelado-cli object photo.jpg -o object.glb --enhance
+modelado-cli cloud image-to-3d photo.jpg --estimate
+modelado-cli cloud image-to-3d photo.jpg -o meshy.glb
 ```
+
+`cloud` uses the Meshy AI key stored in the window's About, or one stored with
+`modelado-cli cloud key meshy`, which reads it from standard input. `--estimate` prints the
+window's consent line (what is sent, to whom, for how much, and what the month's budget leaves)
+and sends nothing. A job sent this way is checked against the same budgets and recorded in the
+same ledger, so it shows in About. The Blender add-on's "3D Object with Meshy AI" uses this command.
 
 ## Requirements
 

@@ -8,4 +8,9 @@
     <ProjectReference Include="..\..\tools\Modelado.Cli\Modelado.Cli.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- MOD65: the UI cases' Meshy stand-in, for modelado-cli cloud. -->
+    <Compile Include="..\Modelado.Cases\FixtureServer.cs" Link="FixtureServer.cs" />
+  </ItemGroup>
+
 </Project>

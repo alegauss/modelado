@@ -22,8 +22,8 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- ⏳ **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅, MOD65) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — From Blender, a texture cannot be drawn by Ideogram nor a model sent to Meshy: the CLI has no cloud door yet. → §MOD45
-- 📋 **MOD65** (deps: —) **Blender's Generate from photo offers only the local operations, not Meshy AI's image to 3D** — Left from MOD44: the add-on drives only modelado-cli, which has no cloud command, key store access or price before sending. → §MOD65
+- ⏳ **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅, MOD65 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — From Blender, a texture cannot be drawn by Ideogram nor a model sent to Meshy: the CLI has no cloud door yet. → §MOD45
+- 📋 **MOD67** (deps: winwright WW582) **No UI case shows a job sent from modelado-cli cloud in the window's About** — MOD65's evidence stops at the ledger file the CLI writes; the window never opens on it, since a fixture cannot run the CLI first. → §MOD67
 
 ## Done when — Block H
 

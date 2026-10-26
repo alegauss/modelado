@@ -20,24 +20,9 @@ namespace Modelado.App;
 /// </summary>
 public partial class MainWindow
 {
-    private const string BudgetsKey = "cloudBudgets";
+    private const string BudgetsKey = CloudBudget.SettingsKey;
 
-    private static Dictionary<string, CloudBudget> LoadBudgets()
-    {
-        Dictionary<string, CloudBudget> budgets = new(StringComparer.Ordinal);
-        if (SettingsFile.ReadObject(SettingsFile.DefaultPath, BudgetsKey) is { } kept)
-        {
-            foreach ((string id, JsonNode? value) in kept)
-            {
-                if (value?["monthly"]?.GetValue<double>() is double monthly and > 0)
-                {
-                    budgets[id] = new CloudBudget(monthly, value["warnAt"]?.GetValue<double>() ?? 0.8);
-                }
-            }
-        }
-
-        return budgets;
-    }
+    private static Dictionary<string, CloudBudget> LoadBudgets() => CloudBudget.FromSettings(SettingsFile.ReadObject(SettingsFile.DefaultPath, BudgetsKey));
 
     private static void SaveBudget(string id, double? monthly)
     {
@@ -57,23 +42,7 @@ public partial class MainWindow
     private static CloudSpending Spending() => new(new CloudLedger(CloudLedger.DefaultPath), LoadBudgets());
 
     // What the budget leaves for an action, said on its consent line; null to send is held.
-    private static (string Note, bool Blocked) BudgetNote(ICloudProvider service, CloudJobRequest request)
-    {
-        CloudSpending spending = Spending();
-        CloudCost? estimate = service.EstimateCost(request);
-        if (spending.Refusal(service.Id, estimate) is { } why)
-        {
-            return ($" {service.DisplayName}'s budget for this month is {why}; raise it in About to send this.", true);
-        }
-
-        if (!spending.Budgets.TryGetValue(service.Id, out CloudBudget? budget))
-        {
-            return ("", false);
-        }
-
-        double left = budget.Monthly - spending.StateOf(service.Id).Spent;
-        return (string.Create(CultureInfo.InvariantCulture, $" {left:0.##} of {budget.Monthly:0.##} left this month."), false);
-    }
+    private static (string Note, bool Blocked) BudgetNote(ICloudProvider service, CloudJobRequest request) => Spending().Note(service, request);
 
     // The chip: the keyed service closest to its budget, or this month's spend where none is set.
     private void UpdateCloudChip()

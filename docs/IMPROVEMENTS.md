@@ -96,26 +96,20 @@ importing the model.
 Done when an object goes to the window, gets three edits, is sent back twice, and both
 sends undo in Blender in order.
 
-### §MOD65 Meshy AI from Blender, through the CLI
+### §MOD67 A CLI job in About
 
-MOD44 gave the Blender add-on "Generate from photo" with the two local operations, 3D
-Object (TripoSR) and Relief (Depth Anything V2), through modelado-cli object and relief.
-Its design also named Meshy AI's image to 3D, with a key, and that was left out: the
-add-on drives only modelado-cli, and the CLI has no cloud command. The key lives in the
-window's DPAPI store (MOD36), the price table and the budget in Modelado.Cloud (MOD42,
-MOD55), and the consent line in the window.
+MOD65 gave modelado-cli `cloud image-to-3d`, which records each job in the ledger the
+window's About reads (%LOCALAPPDATA%\Modelado\cloud-ledger.jsonl). Its evidence stops at
+that file: tests/Modelado.Cli.Tests/CliJsonTests.cs and the Blender add-on test assert
+CloudLedger.Drift on what the CLI wrote, the call About's "1 job(s), estimated 30,
+charged 30" line is built from, but no UI case opens the window on a ledger the CLI
+wrote. A winwright fixture cannot run a command before the window launches (WW582).
 
-Build: a `modelado-cli cloud image-to-3d <photo> -o <out.glb> --service meshy` command
-over Modelado.Cloud's CloudJobs, reading the same key store and ledger as the window,
-with `--estimate --json` answering the price and the budget left before anything is
-sent, and the job followed to the end (or left at the service and said, as the window
-does on close). The add-on then offers "3D Object with Meshy AI" when that estimate
-answers, shows the price and what is sent in the same dialog MOD44's consent uses, and
-imports the result as it imports TripoSR's.
+Build, once WW582 ships: a fixture with LOCALAPPDATA staged empty and --cloud-api
+pointing Meshy at the fixture server, whose before-launch commands store the case key
+with `modelado-cli cloud key meshy` and send cases/fixtures/photo.png with `cloud
+image-to-3d`. The case opens About and reads Text#CloudUsage-meshy for "Meshy AI: image
+to 3D: 1 job(s), estimated 30, charged 30." and Button#CloudChip for the month's 30
+credits.
 
-MOD45 (texture and Meshy remesh or retexture from Blender) wants the same CLI door, so
-building this one first gives both.
-
-Done when the robot photo becomes a Meshy model at the 3D cursor from Blender with a
-stand-in service (the fixture server's Meshy), the price shown before anything is sent,
-and the spend appearing in the window's About.
+Done when that case passes in cases/window.cases.json.
