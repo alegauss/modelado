@@ -60,13 +60,6 @@
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
 
-## Done when — MOD37
-
-- **One photo goes through TripoSR and through Meshy, and both export** On the guest
-  with a real Meshy key: the Meshy card runs Image to 3D on the open photo after its
-  consent line, the GLB lands as a version labelled Meshy AI: image to 3D, and it and
-  TripoSR's model are refined and saved.
-
 ## Done when — MOD39
 
 - **A drawn candidate becomes a TripoSR model** On the guest with the published models:

@@ -156,29 +156,6 @@ release.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD37 Meshy AI: image and text to 3D
-
-The first ICloudProvider is MeshyProvider, over Meshy's REST API with the user's Bearer
-key. Check the current API docs when this is built: the endpoints, model versions and
-options move. A "Meshy AI" card appears only once a key is stored. It has two modes:
-Image to 3D (the open photo, sent as is or after Modelado's own background removal) and
-Text to 3D (a prompt). It offers the options Meshy takes (topology, target polycount,
-PBR textures on or off, art style), each defaulted to Meshy's own.
-
-Before the upload, the consent line names what is sent ("This photo, 2.1 MB, goes to
-Meshy AI") and the projected cost (MOD42). The job runs in the JobPanel with Meshy's own
-progress, can be cancelled, and survives a restart by its task id. The GLB it returns is
-downloaded, imported through MeshImport with its textures, and pushed as a version in
-the history.
-
-It also brings About's "Cloud services", which MOD36 left for the first provider: each
-of CloudProviders.All with a key field, Test (ValidateKeyAsync), Remove and a link to
-its KeyPage, storing through CloudKeys. Run jobs with CloudJobs.RunAsync, and label the
-version with CloudJobs.Label.
-
-Done when the same photo goes through TripoSR and through Meshy (with a real key, on the
-guest), and both results can be refined and exported.
-
 ### §MOD39 Ideogram: a reference image from a prompt
 
 IdeogramProvider is the second ICloudProvider, with the TextToImage capability, over
