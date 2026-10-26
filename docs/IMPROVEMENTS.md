@@ -59,26 +59,6 @@ Done when the speed table names a GPU and its timings come from those runs.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-### §MOD45 AI actions in the Blender add-on
-
-The add-on's panel gains an "AI" group for the selected object. It has Upscale texture
-4× (Real-ESRGAN, local); New texture from prompt (Ideogram); and Remesh and Retexture
-(Meshy). The cloud actions show only when the app has the key: the CLI reads the same
-DPAPI store as the window, so the add-on never handles a key itself.
-
-Each cloud action shows the same consent line and cost estimate as the window (MOD42's
-estimate, via modelado-cli estimate --json), and asks before anything is sent. Its spend
-goes into the same ledger, so the usage monitor counts it.
-
-The CLI gains the subcommands these need (upscale-texture already exists; texture
---prompt, meshy remesh, meshy retexture). Textures come back as images packed into the
-.blend and wired into the object's existing Principled BSDF Base Color, replacing only
-that input, so the rest of the material is kept.
-
-Done when, on the guest, a textured model in Blender gets an upscaled texture and an
-Ideogram texture, each undoable, and the cloud action is refused when declined, with no
-request made.
-
 ### §MOD46 Round trip between Blender and the window
 
 "Edit in Modelado" in the add-on exports the object to a session folder and launches

@@ -21,7 +21,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
         "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json", "--dry-run",
-        "--estimate", "--no-texture", "--pbr", "--quads",
+        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv",
     };
 
     private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json"];
@@ -33,7 +33,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
-        ["cloud"] = Takes("--out", "--service", "--estimate", "--no-texture", "--pbr", "--quads", "--cloud-api"),
+        ["cloud"] = Takes("--out", "--service", "--estimate", "--no-texture", "--pbr", "--quads", "--cloud-api", "--polycount", "--prompt", "--keep-uv"),
     };
 
     /// <summary>The commands modelado-cli knows.</summary>

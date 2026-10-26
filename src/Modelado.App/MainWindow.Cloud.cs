@@ -281,15 +281,8 @@ public partial class MainWindow
         service.EstimateCost(new CloudJobRequest(action)) is { } cost ? $" · ~{cost}" : "";
 
     private CloudJobRequest CloudEditRequest(CloudCapability action, byte[] model) => action == CloudCapability.Remesh
-        ? new CloudJobRequest(action, Model: model, Options: new Dictionary<string, string>(StringComparer.Ordinal)
-        {
-            ["polycount"] = RemeshPolycount!.Value.ToString(CultureInfo.InvariantCulture),
-            ["topology"] = CloudRemeshQuads.IsChecked == true ? "quad" : "triangle",
-        })
-        : new CloudJobRequest(action, Prompt: CloudRetexturePrompt.Text.Trim(), Model: model, Options: new Dictionary<string, string>(StringComparer.Ordinal)
-        {
-            ["keepuv"] = CloudKeepUv.IsEnabled && CloudKeepUv.IsChecked == true ? "true" : "false",
-        });
+        ? CloudRequests.Remesh(model, RemeshPolycount!.Value, CloudRemeshQuads.IsChecked == true)
+        : CloudRequests.Retexture(model, CloudRetexturePrompt.Text, CloudKeepUv.IsEnabled && CloudKeepUv.IsChecked == true);
 
     private void OnCloudEditChanged(object sender, TextChangedEventArgs e) => UpdateCloudEdit();
 

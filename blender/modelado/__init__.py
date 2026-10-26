@@ -17,6 +17,9 @@ how large and from where, as the window's consent panel does, and nothing starts
 With a Meshy AI key stored in the window's About, "3D Object with Meshy AI" sends the photo
 through modelado-cli cloud image-to-3d (MOD65): the dialog first shows the window's consent line,
 the price and what the month's budget leaves, and the spend lands in the same ledger About reads.
+The AI group does the same for the selected object (MOD45): a new texture drawn by Ideogram from
+a material's name, and Meshy AI's remesh and retexture, each shown only where About holds the
+service's key, each asking first and one step of Blender's undo.
 """
 
 import json
@@ -149,9 +152,20 @@ def command_for(kind: str, photo: str) -> list:
     return ["cloud", "image-to-3d", photo] if kind == "MESHY" else [GENERATE[kind][1], photo]
 
 
+def cloud_api() -> tuple:
+    """--cloud-api for modelado-cli when MODELADO_CLOUD_API names another API root (id=url, e.g. a stand-in)."""
+    named = os.environ.get("MODELADO_CLOUD_API")
+    return ("--cloud-api", named) if named else ()
+
+
+def key_stored(service: str) -> bool:
+    """Whether the window's About holds a key for the service, which is when the panel offers it."""
+    return os.path.isfile(os.path.join(os.environ.get("LOCALAPPDATA", ""), "Modelado", "keys", f"{service}.key"))
+
+
 def meshy_key_stored() -> bool:
-    """Whether the window's About holds a Meshy AI key, which is when the panel offers Meshy."""
-    return os.path.isfile(os.path.join(os.environ.get("LOCALAPPDATA", ""), "Modelado", "keys", "meshy.key"))
+    """Whether the window's About holds a Meshy AI key."""
+    return key_stored("meshy")
 
 
 def cloud_estimate(cli: str, photo: str, settings, extra: tuple = ()) -> dict:
@@ -308,7 +322,7 @@ def read_texture(path: str, name: str):
     return image
 
 
-def run_texture(obj, action: str, cli: str, settings) -> dict:
+def run_texture(obj, action: str, cli: str, settings, args: list = None, label: str = None) -> dict:
     """One texture action on the object: its Base Color image is replaced, the rest of its material kept."""
     node, _ = base_colour_image(obj)
     if node is None:
@@ -316,8 +330,65 @@ def run_texture(obj, action: str, cli: str, settings) -> dict:
     with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
         source, target = os.path.join(folder, "in.glb"), os.path.join(folder, "out.glb")
         export_textured(obj, source)
-        report = read_report(start_cli(cli, source, target, TEXTURE_ACTIONS[action][1](settings)))
-        node.image = read_texture(target, f"{node.image.name} ({TEXTURE_ACTIONS[action][0]})")
+        report = read_report(start_cli(cli, source, target, args or TEXTURE_ACTIONS[action][1](settings)))
+        node.image = read_texture(target, f"{node.image.name} ({label or TEXTURE_ACTIONS[action][0]})")
+        return report
+
+
+# MOD45: the cloud half of the AI group, each through modelado-cli cloud with the key the window's
+# About stored: what it is called, the service whose key offers it, and whether it needs the
+# object's Base Color image.
+CLOUD_ACTIONS = {
+    "TEXTURE": ("New texture from a prompt", "ideogram", True),
+    "REMESH": ("Remesh with Meshy AI", "meshy", False),
+    "RETEXTURE": ("Retexture with Meshy AI", "meshy", True),
+}
+
+
+def cloud_args(action: str, source: str, settings) -> list:
+    """modelado-cli cloud's command for an action; `source` is the object as a GLB (unused for TEXTURE)."""
+    if action == "TEXTURE":
+        return ["cloud", "texture", settings.texture_prompt]
+    if action == "REMESH":
+        return ["cloud", "remesh", source, "--polycount", str(settings.remesh_polycount)]
+    # The model's own UVs are kept, so the new image fits the mesh Blender already has.
+    return ["cloud", "retexture", source, "--prompt", settings.retexture_prompt, "--keep-uv"]
+
+
+def export_for(obj, action: str, path: str, settings) -> None:
+    if action == "RETEXTURE":
+        export_textured(obj, path)
+    elif action == "REMESH":
+        export_object(obj, path, settings.apply_modifiers)
+
+
+def estimate_cloud(obj, action: str, cli: str, settings, extra: tuple = ()) -> dict:
+    """The window's consent line for the action, its price and what the budget leaves; nothing is sent."""
+    with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
+        source = os.path.join(folder, "in.glb")
+        export_for(obj, action, source, settings)
+        return run_cli(cli, [*cloud_args(action, source, settings), "--estimate", *extra])
+
+
+def run_cloud(obj, action: str, cli: str, settings, extra: tuple = ()) -> dict:
+    """One cloud action on the object, after its consent; the result replaces what the action changes."""
+    title = CLOUD_ACTIONS[action][0]
+    with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
+        source = os.path.join(folder, "in.glb")
+        if action == "TEXTURE":
+            # Ideogram draws the tile; the local material path makes it seamless and lays it on.
+            tile = os.path.join(folder, "tile.png")
+            report = run_cli(cli, [*cloud_args(action, source, settings), "-o", tile, *extra])
+            run_texture(obj, "MATERIAL", cli, settings, ["--texture", tile, "--tiles", str(settings.material_tiles)], f"{title}: {settings.texture_prompt}")
+            return report
+        target = os.path.join(folder, "out.glb")
+        export_for(obj, action, source, settings)
+        report = run_cli(cli, [*cloud_args(action, source, settings), "-o", target, *extra])
+        if action == "REMESH":
+            replace_mesh(obj, target)
+        else:
+            node, _ = base_colour_image(obj)
+            node.image = read_texture(target, f"{node.image.name} ({title})")
         return report
 
 
@@ -346,6 +417,9 @@ class ModeladoSettings(bpy.types.PropertyGroup):
     relief_depth: FloatProperty(name="Height", description="How far the nearest point stands out, as a share of the width", default=0.25, min=0.05, max=0.6, subtype="FACTOR")
     relief_base: FloatProperty(name="Base", description="A solid base under the relief, as a share of the width; 0 leaves the surface open", default=0.0, min=0.0, max=0.2, subtype="FACTOR")
     size: FloatProperty(name="Size", description="The new object's longest side", default=0.2, min=0.001, subtype="DISTANCE", unit="LENGTH")
+    texture_prompt: StringProperty(name="Material", description="The material Ideogram draws as a seamless texture, e.g. weathered oak planks", default="")
+    remesh_polycount: IntProperty(name="Triangles", description="The clean mesh's triangle count", default=30000, min=100, max=300000)
+    retexture_prompt: StringProperty(name="Look", description="What Meshy AI paints the surface as, e.g. rusted iron", default="")
     meshy_texture: BoolProperty(name="Textured", description="Meshy AI paints a texture too; the bare shape costs less", default=True)
     # MOD45: the AI group's texture actions.
     material_image: StringProperty(name="Material", description="A material image (wood, stone, metal), made to tile and put on the surface", subtype="FILE_PATH", default="")
@@ -468,7 +542,7 @@ class MODELADO_OT_generate(bpy.types.Operator):
         if self.kind == "MESHY":
             # As the window's consent line: what goes, to whom, for how much, what the budget leaves.
             try:
-                estimate = cloud_estimate(cli, self._photo, settings)
+                estimate = cloud_estimate(cli, self._photo, settings, cloud_api())
             except RuntimeError as error:
                 self._folder.cleanup()
                 self.report({"ERROR"}, f"{GENERATE[self.kind][0]}: {error}")
@@ -511,7 +585,7 @@ class MODELADO_OT_generate(bpy.types.Operator):
         settings = context.scene.modelado
         self._location = context.scene.cursor.location.copy()
         self._target = os.path.join(self._folder.name, "out.glb")
-        self._process = start_generate(cli_path(context), self.kind, self._photo, self._target, settings)
+        self._process = start_generate(cli_path(context), self.kind, self._photo, self._target, settings, cloud_api() if self.kind == "MESHY" else ())
         self._done = threading.Event()
         threading.Thread(target=lambda: (self._process.wait(), self._done.set()), daemon=True).start()
         context.window_manager.progress_begin(0, 1)
@@ -607,6 +681,70 @@ class MODELADO_OT_texture(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class MODELADO_OT_cloud(bpy.types.Operator):
+    """Send the selected object to a cloud service, after saying what goes where and for how much"""
+
+    bl_idname = "modelado.cloud"
+    bl_label = "Modelado cloud"
+    bl_options = {"REGISTER", "UNDO"}
+
+    action: EnumProperty(items=[(key, label, "") for key, (label, _, _) in CLOUD_ACTIONS.items()])
+
+    _consent = ""
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+        return obj is not None and obj.type == "MESH" and context.mode == "OBJECT"
+
+    def invoke(self, context, event):
+        cli = cli_path(context)
+        title, _, needs_texture = CLOUD_ACTIONS[self.action]
+        settings = context.scene.modelado
+        if not os.path.isfile(cli):
+            self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
+            return {"CANCELLED"}
+        if needs_texture and base_colour_image(context.active_object)[0] is None:
+            self.report({"ERROR"}, f"{title}: the object has no image texture on its Base Color")
+            return {"CANCELLED"}
+        if (self.action == "TEXTURE" and not settings.texture_prompt.strip()) or (self.action == "RETEXTURE" and not settings.retexture_prompt.strip()):
+            self.report({"ERROR"}, f"{title}: say what it should look like first")
+            return {"CANCELLED"}
+        try:
+            estimate = estimate_cloud(context.active_object, self.action, cli, settings, cloud_api())
+        except RuntimeError as error:
+            self.report({"ERROR"}, f"{title}: {error}")
+            return {"CANCELLED"}
+        if not estimate.get("keyStored") or estimate.get("blocked"):
+            why = estimate["consent"] if estimate.get("blocked") else f"no {estimate.get('serviceName', 'service')} key is stored; add one in Modelado's About"
+            self.report({"ERROR"}, f"{title}: {why}")
+            return {"CANCELLED"}
+        # Nothing is sent until the dialog's button: closing it sends nothing.
+        self._consent = estimate["consent"]
+        try:
+            return context.window_manager.invoke_props_dialog(self, width=480, title=f"{title}?", confirm_text="Send it")
+        except TypeError:  # Blender before 4.1 names neither
+            return context.window_manager.invoke_props_dialog(self, width=480)
+
+    def draw(self, context):
+        for line in _wrap(self._consent, 70):
+            self.layout.label(text=line)
+
+    def execute(self, context):
+        title = CLOUD_ACTIONS[self.action][0]
+        context.workspace.status_text_set(f"Modelado: {title}…")
+        try:
+            report = run_cloud(context.active_object, self.action, cli_path(context), context.scene.modelado, cloud_api())
+        except RuntimeError as error:
+            self.report({"ERROR"}, f"{title}: {error}")
+            return {"CANCELLED"}
+        finally:
+            context.workspace.status_text_set(None)
+        spent = f" · {report['spent']}" if report.get("spent") else ""
+        self.report({"INFO"}, f"{title}{spent}")
+        return {"FINISHED"}
+
+
 def _wrap(text: str, width: int) -> list:
     lines, line = [], ""
     for word in text.split():
@@ -662,9 +800,14 @@ class MODELADO_PT_panel(bpy.types.Panel):
                 row.prop(settings, amount)
         layout.prop(settings, "apply_modifiers")
 
-        # MOD45: the texture on the Base Color, replaced; the rest of the material stays.
+        # MOD45: the texture on the Base Color, replaced; the rest of the material stays. The cloud
+        # actions show only where the window's About holds the service's key.
         box = layout.box()
         box.label(text="AI")
+        if key_stored("meshy"):
+            row = box.row(align=True)
+            row.operator(MODELADO_OT_cloud.bl_idname, text=CLOUD_ACTIONS["REMESH"][0]).action = "REMESH"
+            row.prop(settings, "remesh_polycount")
         if base_colour_image(obj)[0] is None:
             box.label(text="No image texture on its Base Color")
             return
@@ -673,9 +816,15 @@ class MODELADO_PT_panel(bpy.types.Panel):
         row = box.row(align=True)
         row.operator(MODELADO_OT_texture.bl_idname, text=TEXTURE_ACTIONS["MATERIAL"][0]).action = "MATERIAL"
         row.prop(settings, "material_tiles")
+        if key_stored("ideogram"):
+            box.prop(settings, "texture_prompt")
+            box.operator(MODELADO_OT_cloud.bl_idname, text=CLOUD_ACTIONS["TEXTURE"][0]).action = "TEXTURE"
+        if key_stored("meshy"):
+            box.prop(settings, "retexture_prompt")
+            box.operator(MODELADO_OT_cloud.bl_idname, text=CLOUD_ACTIONS["RETEXTURE"][0]).action = "RETEXTURE"
 
 
-CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_OT_texture, MODELADO_PT_panel)
+CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_OT_texture, MODELADO_OT_cloud, MODELADO_PT_panel)
 
 
 def register():

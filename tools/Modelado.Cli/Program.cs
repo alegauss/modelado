@@ -48,6 +48,12 @@ const string Usage = """
         --pbr                PBR maps with the texture
         --quads              quad topology
         --cloud-api ID=URL   another API root, e.g. a stand-in
+    modelado-cli cloud texture "<material>" -o <tile.png>   a seamless texture drawn by Ideogram
+    modelado-cli cloud remesh <model> -o <output.glb>       Meshy AI's clean topology
+        --polycount N        100 to 300000 triangles; default 30000
+    modelado-cli cloud retexture <model> --prompt "<text>" -o <output.glb>   Meshy AI's new texture
+        --keep-uv            keeps the model's own UVs
+    (each cloud command takes --service, --estimate and --cloud-api as image-to-3d does)
     modelado-cli cloud key <service>            stores the key given on standard input
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>

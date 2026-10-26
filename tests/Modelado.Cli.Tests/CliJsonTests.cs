@@ -96,6 +96,47 @@ public sealed class CliJsonTests : IDisposable
     }
 
     [Fact]
+    public void A_texture_is_drawn_and_a_model_remeshed_and_retextured_each_priced_first()
+    {
+        // MOD45, over the UI cases' stand-ins: Ideogram draws candidate.png, Meshy's remesh gives
+        // the cube subdivided (5 credits) and its retexture the cube (10 credits).
+        string local = Path.Combine(folder, "local");
+        string cube = Path.Combine(Repository.Root, "cases", "fixtures", "cube.obj");
+        string root = $"http://127.0.0.1:{Modelado.Cases.FixtureServer.Port}";
+        string[] meshy = ["--cloud-api", $"meshy={root}/meshy/"], ideogram = ["--cloud-api", $"ideogram={root}/ideogram/"];
+        using Modelado.Cases.FixtureServer server = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));
+        JsonObject Report(string output) => Assert.IsType<JsonObject>(JsonNode.Parse(output));
+        Assert.Equal(0, RunIn(local, Modelado.Cases.FixtureServer.MeshyKey, ["cloud", "key", "meshy", .. meshy]).Code);
+        Assert.Equal(0, RunIn(local, Modelado.Cases.FixtureServer.IdeogramKey, ["cloud", "key", "ideogram", .. ideogram]).Code);
+
+        JsonObject estimate = Report(RunIn(local, null, ["cloud", "texture", "weathered oak planks", "--estimate", "--json", .. ideogram]).Out);
+        Assert.Equal("This description goes to Ideogram for about $0.03.", estimate["consent"]!.GetValue<string>());
+        string tile = Path.Combine(folder, "oak.png");
+        (int code, string output, string error) = RunIn(local, null, ["cloud", "texture", "weathered oak planks", "-o", tile, "--json", .. ideogram]);
+        Assert.True(code == 0, error);
+        Assert.Equal(Path.GetFullPath(tile), Report(output)["written"]![0]!.GetValue<string>());
+        Assert.True(Modelado.Imaging.ImageCodec.Load(tile).Width > 0);
+
+        estimate = Report(RunIn(local, null, ["cloud", "remesh", cube, "--polycount", "5000", "--estimate", "--json", .. meshy]).Out);
+        Assert.Matches(@"^This model, 12 triangles, \d+ MB as a GLB, goes to Meshy AI for about 5 credits\.$", estimate["consent"]!.GetValue<string>());
+        string remeshed = Path.Combine(folder, "remeshed.glb");
+        (code, output, error) = RunIn(local, null, ["cloud", "remesh", cube, "--polycount", "5000", "-o", remeshed, "--json", .. meshy]);
+        Assert.True(code == 0, error);
+        Assert.Equal("5 credits", Report(output)["spent"]!.GetValue<string>());
+        Assert.True(Modelado.Geometry.MeshImport.Load(remeshed).TriangleCount > 12);
+
+        Assert.Equal(1, RunIn(local, null, ["cloud", "retexture", cube, "-o", Path.Combine(folder, "no.glb"), "--json", .. meshy]).Code);
+        (code, output, error) = RunIn(local, null, ["cloud", "retexture", cube, "--prompt", "rusted iron", "-o", Path.Combine(folder, "rust.glb"), "--json", .. meshy]);
+        Assert.True(code == 0, error);
+        Assert.Equal("10 credits", Report(output)["spent"]!.GetValue<string>());
+
+        // Every job in the ledger About reads, by service and action.
+        Assert.Equal(
+            [("ideogram", Modelado.Cloud.CloudCapability.TextToImage), ("meshy", Modelado.Cloud.CloudCapability.Remesh), ("meshy", Modelado.Cloud.CloudCapability.Retexture)],
+            new Modelado.Cloud.CloudLedger(Path.Combine(local, "Modelado", "cloud-ledger.jsonl")).Entries.Select(e => (e.Provider, e.Action)));
+    }
+
+    [Fact]
     public void An_edit_answers_one_json_object_with_its_outputs_counts_and_each_edit()
     {
         string cube = Path.Combine(Repository.Root, "cases", "fixtures", "cube.obj");

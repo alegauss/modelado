@@ -52,13 +52,19 @@ modelado-cli edit relief.glb -o relief-sharp.glb --upscale-texture
 modelado-cli object photo.jpg -o object.glb --enhance
 modelado-cli cloud image-to-3d photo.jpg --estimate
 modelado-cli cloud image-to-3d photo.jpg -o meshy.glb
+modelado-cli cloud texture "weathered oak planks" -o oak.png
+modelado-cli cloud remesh model.glb -o clean.glb --polycount 20000
+modelado-cli cloud retexture model.glb --prompt "rusted iron" -o rust.glb --keep-uv
 ```
 
 `cloud` uses the Meshy AI key stored in the window's About, or one stored with
 `modelado-cli cloud key meshy`, which reads it from standard input. `--estimate` prints the
 window's consent line (what is sent, to whom, for how much, and what the month's budget leaves)
 and sends nothing. A job sent this way is checked against the same budgets and recorded in the
-same ledger, so it shows in About. The Blender add-on's "3D Object with Meshy AI" uses this command.
+same ledger, so it shows in About. `texture` draws a seamless tile with Ideogram (an Ideogram
+key); `remesh` and `retexture` send a model to Meshy AI. The Blender add-on uses these commands
+for "3D Object with Meshy AI" and, in its AI group, for a new texture from a prompt, Remesh and
+Retexture, each shown only when About holds that service's key.
 
 ## Requirements
 

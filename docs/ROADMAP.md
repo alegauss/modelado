@@ -22,7 +22,6 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- ⏳ **MOD45** (deps: MOD38 ✅, MOD40 ✅, MOD43 ✅, MOD65 ✅) **From Blender, a texture cannot be sharpened with AI or remade from a prompt, nor sent to Meshy to remesh or retexture** — From Blender, a texture cannot be drawn by Ideogram nor a model sent to Meshy: the CLI has no cloud door yet. → §MOD45
 - 📋 **MOD67** (deps: winwright WW582) **No UI case shows a job sent from modelado-cli cloud in the window's About** — MOD65's evidence stops at the ledger file the CLI writes; the window never opens on it, since a fixture cannot run the CLI first. → §MOD67
 
 ## Done when — Block H
@@ -43,13 +42,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD45
-
-- **Blender's cloud actions ask before sending, and a decline sends nothing** On the
-  guest with Ideogram and Meshy stood in by the fixture server: a textured model in
-  Blender gets an Ideogram texture and a Meshy retexture, each priced before it is sent
-  and undoable, and a declined action makes no request to the stand-in.
 
 ## Non-goals
 

@@ -163,10 +163,26 @@ import json  # noqa: E402
 import subprocess  # noqa: E402
 import threading  # noqa: E402
 
-CUBE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "cases", "fixtures", "download", "cube.glb")
+FIXTURES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "cases", "fixtures")
+# What /files/ serves: the cube for image to 3D, the subdivided cube for a remesh, a model with
+# textures for a retexture, and the photo fixture for an Ideogram drawing.
+FILES = {
+    "cube.glb": os.path.join(FIXTURES, "download", "cube.glb"),
+    "remeshed.glb": os.path.join(FIXTURES, "download", "remeshed.glb"),
+    "two-textures.glb": os.path.join(FIXTURES, "two-textures.glb"),
+    "candidate.png": os.path.join(FIXTURES, "download", "candidate.png"),
+}
+# MOD45: Meshy's remesh and retexture, as MESHY_JOBS[path] = (job id, credits, file).
+MESHY_JOBS = {
+    "/meshy/openapi/v1/image-to-3d": ("case-image", 30, "cube.glb"),
+    "/meshy/openapi/v1/remesh": ("case-remesh", 5, "remeshed.glb"),
+    "/meshy/openapi/v1/retexture": ("case-retexture", 10, "two-textures.glb"),
+}
 
 
 class Meshy(http.server.BaseHTTPRequestHandler):
+    """Meshy AI under /meshy/ (key msy_case_key) and, for MOD45, Ideogram under /ideogram/ (key case-ideogram-key)."""
+
     def log_message(self, *args):
         pass
 
@@ -180,16 +196,24 @@ class Meshy(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         root = f"http://127.0.0.1:{self.server.server_port}"
-        if self.path == "/files/cube.glb":
-            with open(CUBE, "rb") as glb:
-                return self.answer(200, glb.read(), "model/gltf-binary")
+        if self.path.startswith("/files/") and self.path[7:] in FILES:
+            with open(FILES[self.path[7:]], "rb") as served:
+                return self.answer(200, served.read(), "application/octet-stream")
+        if self.path.startswith("/ideogram/"):
+            if self.headers.get("Api-Key") != "case-ideogram-key":
+                return self.answer(401, {"message": "Access denied."})
+            if self.path == "/ideogram/v2/generations/case-generation":
+                return self.answer(200, {"generation_id": "case-generation", "status": "completed", "usage_cost_usd_micros": 30000,
+                                         "data": [{"prompt": "oak", "seed": 7, "url": f"{root}/files/candidate.png", "is_image_safe": True}]})
+            return self.answer(404, {"message": "Not found"})
         if self.headers.get("Authorization") != "Bearer msy_case_key":
             return self.answer(401, {"message": "Invalid API key"})
         if self.path == "/meshy/openapi/v1/balance":
             return self.answer(200, {"balance": 470})
-        if self.path == "/meshy/openapi/v1/image-to-3d/case-image":
-            sent.append("polled")
-            return self.answer(200, {"id": "case-image", "status": "SUCCEEDED", "progress": 100, "consumed_credits": 30, "model_urls": {"glb": f"{root}/files/cube.glb"}})
+        for path, (job, credits, file) in MESHY_JOBS.items():
+            if self.path == f"{path}/{job}":
+                sent.append("polled")
+                return self.answer(200, {"id": job, "status": "SUCCEEDED", "progress": 100, "consumed_credits": credits, "model_urls": {"glb": f"{root}/files/{file}"}})
         return self.answer(404, {"message": "Not found"})
 
     def do_POST(self):
@@ -203,10 +227,18 @@ class Meshy(http.server.BaseHTTPRequestHandler):
                     break
         else:
             self.rfile.read(int(self.headers.get("Content-Length", 0)))
+        if self.path.startswith("/ideogram/"):
+            if self.headers.get("Api-Key") != "case-ideogram-key":
+                return self.answer(401, {"message": "Access denied."})
+            if self.path.endswith("?dry_run=true"):
+                return self.answer(200, {"object": "price_quote", "usd_micros": 30000, "qualifier": "exact"})
+            sent.append(self.path)
+            return self.answer(200, {"generation_id": "case-generation", "seed": 7})
         if self.headers.get("Authorization") != "Bearer msy_case_key":
             return self.answer(401, {"message": "Invalid API key"})
         sent.append(self.path)
-        return self.answer(200, {"result": "case-image"} if self.path == "/meshy/openapi/v1/image-to-3d" else {"message": "Not found"})
+        job = MESHY_JOBS.get(self.path)
+        return self.answer(200, {"result": job[0]}) if job else self.answer(404, {"message": "Not found"})
 
 
 sent = []
@@ -237,6 +269,56 @@ with tempfile.TemporaryDirectory(prefix="modelado-local-") as local:
         with open(os.path.join(local, "Modelado", "cloud-ledger.jsonl"), encoding="utf-8") as ledger:
             entries = [json.loads(line) for line in ledger if line.strip()]
         check("MESHY: the spend in the ledger the window's About reads", [(e["Provider"], e["Action"], e["Amount"], e["Estimated"]) for e in entries] == [("meshy", "ImageTo3D", 30, 30)])
+
+        # MOD45: the AI group's cloud actions on the textured plane, Ideogram's then Meshy's.
+        root = f"http://127.0.0.1:{server.server_port}"
+        ideogram = ("--cloud-api", f"ideogram={root}/ideogram/")
+        check("TEXTURE: not offered before an Ideogram key is stored", not modelado.key_stored("ideogram"))
+        stored = subprocess.run([cli, "cloud", "key", "ideogram", *ideogram, "--json"], input="case-ideogram-key\n", capture_output=True, **modelado.TEXT)
+        check("TEXTURE: offered once one is", stored.returncode == 0 and modelado.key_stored("ideogram"))
+
+        plane = bpy.data.objects["Panel"]
+        for other in bpy.context.view_layer.objects:
+            other.select_set(False)
+        plane.select_set(True)
+        bpy.context.view_layer.objects.active = plane
+        settings.texture_prompt = "weathered oak planks"
+        before_image = modelado.base_colour_image(plane)[0].image.name
+
+        # What the operator's invoke does before its dialog: priced from the local table, nothing
+        # sent. Only its execute, the dialog's Send it, runs the job. (Headless Blender has no
+        # dialog to decline: invoke_props_dialog runs execute at once there.)
+        posted = len(sent)
+        estimate = modelado.estimate_cloud(plane, "TEXTURE", cli, settings, ideogram)
+        check("TEXTURE: the price shown first, with nothing sent", estimate.get("consent") == "This description goes to Ideogram for about $0.03." and len(sent) == posted)
+        check("TEXTURE: the image untouched until it is sent", modelado.base_colour_image(plane)[0].image.name == before_image)
+        bpy.ops.ed.undo_push(message="before Ideogram")
+        modelado.run_cloud(plane, "TEXTURE", cli, settings, ideogram)
+        bpy.ops.ed.undo_push(message="Ideogram texture")
+        node, material = modelado.base_colour_image(bpy.data.objects["Panel"])
+        check("TEXTURE: the Base Color takes Ideogram's tile, laid on", "New texture from a prompt" in node.image.name and node.image.packed_file is not None)
+        check("TEXTURE: the rest of the material is kept", material.name == "Paint" and abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
+        bpy.ops.ed.undo()
+        check("TEXTURE: undo puts the old image back", modelado.base_colour_image(bpy.data.objects["Panel"])[0].image.name == before_image)
+
+        # Undo reloads the scene: a reference taken before it no longer reaches the settings.
+        plane = bpy.data.objects["Panel"]
+        settings = bpy.context.scene.modelado
+        settings.remesh_polycount = 5000
+        estimate = modelado.estimate_cloud(plane, "REMESH", cli, settings, stand_in)
+        check("REMESH: the price shown first", estimate.get("consent", "").endswith("goes to Meshy AI for about 5 credits."))
+        report = modelado.run_cloud(plane, "REMESH", cli, settings, stand_in)
+        plane = bpy.data.objects["Panel"]
+        check("REMESH: the mesh is Meshy's, the object and material kept", modelado.triangles(plane.data) == report.get("triangles") and [s.material.name for s in plane.material_slots] == ["Paint"])
+
+        settings.retexture_prompt = "rusted iron"
+        report = modelado.run_cloud(plane, "RETEXTURE", cli, settings, stand_in)
+        node, material = modelado.base_colour_image(bpy.data.objects["Panel"])
+        check("RETEXTURE: the Base Color takes Meshy's texture, the material kept", "Retexture with Meshy AI" in node.image.name and material.name == "Paint")
+
+        with open(os.path.join(local, "Modelado", "cloud-ledger.jsonl"), encoding="utf-8") as ledger:
+            entries = [(e["Provider"], e["Action"]) for e in map(json.loads, filter(str.strip, ledger))]
+        check("AI: every job in the ledger About reads", entries == [("meshy", "ImageTo3D"), ("ideogram", "TextToImage"), ("meshy", "Remesh"), ("meshy", "Retexture")])
     finally:
         server.shutdown()
         if kept_local is None:

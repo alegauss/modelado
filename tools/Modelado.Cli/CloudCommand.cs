@@ -16,6 +16,9 @@ namespace Modelado.Cli;
 /// <list type="bullet">
 /// <item>cloud image-to-3d &lt;photo&gt; -o &lt;out.glb&gt; [--service meshy] [--no-texture] [--pbr] [--quads]:
 /// sends the photo and follows the job to the end; Ctrl+C asks the service to stop it.</item>
+/// <item>MOD45: cloud texture "&lt;material&gt;" -o &lt;tile.png&gt; draws a seamless texture with Ideogram, as
+/// the window's New texture asks; cloud remesh &lt;model&gt; -o &lt;out.glb&gt; [--polycount N] [--quads] and
+/// cloud retexture &lt;model&gt; --prompt "…" -o &lt;out.glb&gt; [--keep-uv] send the model to Meshy AI.</item>
 /// <item>with --estimate: says what would be sent, to whom, for how much and what the budget
 /// leaves, the window's consent line word for word, and sends nothing.</item>
 /// <item>cloud key &lt;service&gt;: stores the key read from standard input, once the service accepts it,
@@ -40,45 +43,54 @@ internal static class CloudCommand
         IReadOnlyList<ICloudProvider> services = CloudProviders.Build(Apis(options));
         CloudKeys keys = new(CloudKeys.DefaultFolder);
         string? At(int index) => index < positional.Count ? positional[index] : null;
-        switch (At(0))
+        string action = At(0) ?? "";
+        if (action == "key")
         {
-            case "key":
-                return await StoreKeyAsync(Service(services, At(1) ?? throw new ArgumentException("cloud key <service>: which service?")), keys, report).ConfigureAwait(false);
-            case "image-to-3d":
-                break;
-            default:
-                throw new ArgumentException("cloud: use image-to-3d or key.");
+            return await StoreKeyAsync(Service(services, At(1) ?? throw new ArgumentException("cloud key <service>: which service?")), keys, report).ConfigureAwait(false);
         }
 
-        ICloudProvider service = Service(services, options.GetValueOrDefault("--service") ?? "meshy");
-        string photoPath = At(1) ?? throw new ArgumentException("cloud image-to-3d: which photo?");
+        string subject = At(1) ?? throw new ArgumentException(action switch
+        {
+            "image-to-3d" => "cloud image-to-3d: which photo?",
+            "texture" => "cloud texture: which material, e.g. \"weathered oak planks\"?",
+            "remesh" or "retexture" => $"cloud {action}: which model?",
+            _ => "cloud: use image-to-3d, texture, remesh, retexture or key.",
+        });
         bool estimateOnly = options.ContainsKey("--estimate");
         string? output = options.GetValueOrDefault("--out");
-        if (!estimateOnly)
+        if (!estimateOnly && output is null)
         {
-            MeshExport.FormatOf(output ?? throw new ArgumentException("-o <output.glb> is required."));
+            throw new ArgumentException($"-o <output{(action == "texture" ? ".png" : ".glb")}> is required.");
         }
 
-        RgbaImage photo = ImageCodec.Load(photoPath);
-        CloudJobRequest request = new(
-            CloudCapability.ImageTo3D,
-            Image: ImageCodec.EncodePng(photo),
-            Options: new Dictionary<string, string>(StringComparer.Ordinal)
-            {
-                ["texture"] = options.ContainsKey("--no-texture") ? "false" : "true",
-                ["pbr"] = options.ContainsKey("--pbr") && !options.ContainsKey("--no-texture") ? "true" : "false",
-                ["topology"] = options.ContainsKey("--quads") ? "quad" : "triangle",
-            });
+        // What is sent, and the words the window's consent line begins with for it.
+        (CloudJobRequest request, string what) = action switch
+        {
+            "image-to-3d" => Photo(subject, options),
+            "texture" => (CloudRequests.Texture(subject, 1), "This description"),
+            "remesh" or "retexture" => Model(action, subject, options),
+            _ => throw new ArgumentException("cloud: use image-to-3d, texture, remesh, retexture or key."),
+        };
+        if (!estimateOnly && action == "texture" && !string.Equals(Path.GetExtension(output), ".png", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException($"{Path.GetFileName(output)}: a texture is saved as .png.");
+        }
+        else if (!estimateOnly && action != "texture")
+        {
+            MeshExport.FormatOf(output!);
+        }
+
+        ICloudProvider service = Service(services, options.GetValueOrDefault("--service") ?? (action == "texture" ? "ideogram" : "meshy"));
         if ((service.Capabilities & request.Action) != request.Action)
         {
-            throw new ArgumentException($"{service.DisplayName} cannot turn a photo into a 3D model.");
+            throw new ArgumentException($"--service {service.Id}: {service.DisplayName} cannot {action}.");
         }
 
         // The window's consent line, from the same price table, budgets and ledger.
         CloudSpending spending = new(new CloudLedger(CloudLedger.DefaultPath), CloudBudget.FromSettings(SettingsFile.ReadObject(SettingsFile.DefaultPath, CloudBudget.SettingsKey)));
         CloudCost? estimate = service.EstimateCost(request);
         (string note, bool blocked) = spending.Note(service, request);
-        string consent = $"This photo, {Megabytes(request.Image!.Length)}, goes to {service.DisplayName}{(estimate is null ? "" : $" for about {estimate}")}.{note}";
+        string consent = $"{what} goes to {service.DisplayName}{(estimate is null ? "" : $" for about {estimate}")}.{note}";
         report["service"] = service.Id;
         report["serviceName"] = service.DisplayName;
         report["keyStored"] = keys.Has(service.Id);
@@ -123,12 +135,24 @@ internal static class CloudCommand
                 {
                     CloudJobState.Queued => $"  waiting at {service.DisplayName}",
                     CloudJobState.Running => string.Create(CultureInfo.InvariantCulture, $"  {status.Message ?? "working"} {status.Progress,6:P0}"),
-                    _ => "  fetching the model",
+                    _ => "  fetching the result",
                 });
             }
         }), cancel.Token, spending: spending).ConfigureAwait(false);
 
-        save(CloudJobs.ToMesh(result), output!, clock);
+        if (result.IsModel)
+        {
+            save(CloudJobs.ToMesh(result), output!, clock);
+        }
+        else
+        {
+            RgbaImage image = CloudJobs.ToImage(result);
+            ImageCodec.SavePng(image, output!);
+            Console.WriteLine($"{image.Width} × {image.Height} -> {output}");
+            report["written"] = new JsonArray(JsonValue.Create(Path.GetFullPath(output!)));
+            report["seconds"] = Math.Round(clock.Elapsed.TotalSeconds, 3);
+        }
+
         CloudCost? spent = result.Actual ?? estimate;
         report["spent"] = spent?.ToString();
         Console.WriteLine($"{CloudJobs.Label(service, request.Action)}{(spent is null ? "" : $" · {spent}")}");
@@ -155,6 +179,44 @@ internal static class CloudCommand
 
         keys.Save(service.Id, key);
         return 0;
+    }
+
+    private static (CloudJobRequest, string) Photo(string path, IReadOnlyDictionary<string, string?> options)
+    {
+        byte[] png = ImageCodec.EncodePng(ImageCodec.Load(path));
+        bool textured = !options.ContainsKey("--no-texture");
+        return (new CloudJobRequest(
+            CloudCapability.ImageTo3D,
+            Image: png,
+            Options: new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["texture"] = textured ? "true" : "false",
+                ["pbr"] = options.ContainsKey("--pbr") && textured ? "true" : "false",
+                ["topology"] = options.ContainsKey("--quads") ? "quad" : "triangle",
+            }), $"This photo, {Megabytes(png.Length)},");
+    }
+
+    // The model as the window sends it (MOD38): a GLB, said with its triangles and size.
+    private static (CloudJobRequest, string) Model(string action, string path, IReadOnlyDictionary<string, string?> options)
+    {
+        Mesh mesh = MeshImport.Load(path);
+        using MemoryStream glb = new();
+        MeshExport.WriteGlb(mesh, glb);
+        CloudJobRequest request;
+        if (action == "remesh")
+        {
+            string given = options.GetValueOrDefault("--polycount") ?? "30000";
+            request = int.TryParse(given, NumberStyles.None, CultureInfo.InvariantCulture, out int polycount) && polycount is >= 100 and <= 300_000
+                ? CloudRequests.Remesh(glb.ToArray(), polycount, options.ContainsKey("--quads"))
+                : throw new ArgumentException($"--polycount {given}: use 100 to 300000.");
+        }
+        else
+        {
+            string prompt = options.GetValueOrDefault("--prompt") ?? throw new ArgumentException("cloud retexture: --prompt \"what the surface looks like\" is required.");
+            request = CloudRequests.Retexture(glb.ToArray(), prompt, options.ContainsKey("--keep-uv") && mesh.TexCoords is not null);
+        }
+
+        return (request, string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Megabytes(glb.Length)} as a GLB,"));
     }
 
     private static ICloudProvider Service(IReadOnlyList<ICloudProvider> services, string id) =>

@@ -70,7 +70,10 @@ public sealed class CliArgumentsTests
         string[] reliefRun = ["relief", "p.png", "-o", "r.glb", "--grid", "256", "--depth", "0.25", "--base", "0.1", "--remove-background"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
-        foreach (string[] run in new[] { objectRun, reliefRun, editRun, ["download", "all"], ["models"] })
+        string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
+        string[] retextureRun = ["cloud", "retexture", "m.glb", "-o", "c.glb", "--prompt", "rust", "--keep-uv", "--no-texture", "--pbr"];
+
+        foreach (string[] run in new[] { objectRun, reliefRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
         {
             Assert.Null(CliArguments.Parse(run).Error);
         }

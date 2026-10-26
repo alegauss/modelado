@@ -17,7 +17,7 @@ namespace Modelado.App;
 /// </summary>
 public partial class MainWindow
 {
-    private const string TextureTemplate = "{material}, a flat seamless tileable texture seen straight on, evenly lit, no shadows, no perspective, no objects, no text";
+    private const string TextureTemplate = CloudRequests.TextureTemplate;
     private const int TextureCandidates = 4;
     private bool drawingTexture;
     private string textureMaterial = "";
@@ -45,15 +45,9 @@ public partial class MainWindow
         NewTextureAsked.Text = $"Asked as: {TextureTemplate}";
     }
 
-    private CloudJobRequest NewTextureRequest() => new(
-        CloudCapability.TextToImage,
-        Prompt: TextureTemplate.Replace("{material}", NewTexturePrompt.Text.Trim(), StringComparison.Ordinal),
-        Options: new Dictionary<string, string>(StringComparer.Ordinal)
-        {
-            ["count"] = $"{TextureCandidates}",
-            ["speed"] = "turbo",
-            ["aspect"] = "1x1",
-        });
+    // Before anything is typed it is priced on a placeholder, as the estimate does not read the words.
+    private CloudJobRequest NewTextureRequest() =>
+        CloudRequests.Texture(NewTexturePrompt.Text.Trim() is { Length: > 0 } material ? material : "material", TextureCandidates);
 
     private void OnNewTexture(object sender, RoutedEventArgs e)
     {
