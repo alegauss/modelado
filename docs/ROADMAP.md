@@ -43,6 +43,18 @@
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
 
+## Done when — MOD66
+
+- **The canyon relief saves under 1.5 MB as GLB** MeshExportTests' canyon test, on
+  site/public/demo/studio/relief-landscape.glb, asserts the saved file under 1.5 MB and
+  its texture and shape unchanged on reading back.
+- **Quantized GLBs open in Windows 3D Viewer, Blender and the site** A quantized GLB is
+  opened in each on the guest before it becomes the default; where one fails, the float
+  writer stays the default behind an Export card choice.
+- **The site's Studio GLBs are re-saved with the lighter writer** Each file under
+  site/public/demo/studio is written again by modelado-cli and the site's build serves
+  the smaller files.
+
 ## Non-goals
 
 - **A Portuguese or multilingual interface** All code, UI text, CLI output, comments,
