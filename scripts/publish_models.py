@@ -18,6 +18,12 @@ app embeds: rebuild the app afterwards and it knows every size and hash without 
 
 The token (a Hugging Face write token) is read from the file, or from the HF_TOKEN variable,
 and never printed. The result goes to scripts/published-models.json.
+
+--model publishes the named models instead of the five built-ins, for a repository of one's
+own: a model scripts/add_model.py added, say (MOD24). That manifest is printed for the app's
+--manifest and touches neither the embedded copy nor the record, which belong to the built-ins.
+
+    .venv\\Scripts\\python scripts\\publish_models.py --repo me/my-models --model my-depth --token-file hf.txt
 Requirements: huggingface_hub (scripts/requirements.txt).
 """
 
@@ -83,11 +89,11 @@ def model_card(manifest: dict) -> str:
     return "\n".join(lines)
 
 
-def stage(models: Path, stage_dir: Path, base_url: str) -> dict:
+def stage(models: Path, stage_dir: Path, base_url: str, only: list[str] = HOSTED) -> dict:
     """The files to upload, with manifest.json and README.md, for the given base URL."""
     if stage_dir.exists():
         shutil.rmtree(stage_dir)
-    manifest = bm.build(models, stage_dir, base_url, VERSION, only=HOSTED)
+    manifest = bm.build(models, stage_dir, base_url, VERSION, only=only)
     (stage_dir / "README.md").write_text(model_card(manifest), encoding="utf-8", newline="\n")
     return manifest
 
@@ -96,7 +102,7 @@ def resolve_base(repo_id: str, commit: str) -> str:
     return f"https://huggingface.co/{repo_id}/resolve/{commit}"
 
 
-def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: bool) -> dict:
+def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: bool, only: list[str] = HOSTED) -> dict:
     """The two commits; returns what scripts/published-models.json records."""
     from huggingface_hub import HfApi
 
@@ -105,20 +111,21 @@ def upload(token: str, models: Path, stage_dir: Path, repo_id: str, private: boo
 
     # Commit 1: the files and the card. The manifest staged beside them names a placeholder base,
     # so it is left out here and rebuilt against this commit below.
-    stage(models, stage_dir, resolve_base(repo_id, "pending"))
+    stage(models, stage_dir, resolve_base(repo_id, "pending"), only)
     (stage_dir / "manifest.json").unlink()
     files = api.upload_folder(repo_id=repo_id, folder_path=str(stage_dir), commit_message=f"Modelado models, manifest version {VERSION}")
     files_commit = files.oid
 
     # Commit 2: manifest.json with every URL pinned to commit 1.
-    manifest = stage(models, stage_dir, resolve_base(repo_id, files_commit))
+    manifest = stage(models, stage_dir, resolve_base(repo_id, files_commit), only)
     pinned = api.upload_file(
         path_or_fileobj=str(stage_dir / "manifest.json"),
         path_in_repo="manifest.json",
         repo_id=repo_id,
         commit_message=f"manifest.json pinned to {files_commit[:12]}",
     )
-    shutil.copyfile(stage_dir / "manifest.json", EMBEDDED)
+    if only == HOSTED:
+        shutil.copyfile(stage_dir / "manifest.json", EMBEDDED)
     return {
         "repo": repo_id,
         "version": VERSION,
@@ -143,20 +150,28 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--models", type=Path, default=MODELS, help="export output (default: .cache/models)")
     parser.add_argument("--stage", type=Path, default=STAGE, help="folder to stage into (default: .cache/publish)")
     parser.add_argument("--dry-run", action="store_true", help="stage and write the card and manifest, upload nothing")
+    parser.add_argument("--model", action="append", default=[], metavar="NAME", help="publish this model instead of the built-ins; repeatable")
     args = parser.parse_args(argv)
+    only = args.model or HOSTED
+    if only != HOSTED and args.repo == REPO_ID:
+        print(f"ERROR --model publishes to a repository of your own; {REPO_ID} holds the built-ins: pass --repo", file=sys.stderr)
+        return 2
     try:
         if args.dry_run:
-            manifest = stage(args.models, args.stage, resolve_base(args.repo, "DRY-RUN"))
+            manifest = stage(args.models, args.stage, resolve_base(args.repo, "DRY-RUN"), only)
             print(f"staged {len(manifest['models'])} models in {args.stage}; nothing uploaded")
             return 0
         token = read_token(args.token_file)
         if token is None:
             print("ERROR a write token is required: --token-file or HF_TOKEN", file=sys.stderr)
             return 2
-        record = upload(token, args.models, args.stage, args.repo, args.private)
+        record = upload(token, args.models, args.stage, args.repo, args.private, only)
     except bm.ManifestError as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
+    if only != HOSTED:
+        print(f"published {len(record['models'])} models; give the app --manifest {record['manifest_url']}")
+        return 0
     RECORD.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"published {len(record['models'])} models; the app pins {record['manifest_url']}")
     print(f"rebuild the app: {EMBEDDED.relative_to(REPO)} now carries this manifest")

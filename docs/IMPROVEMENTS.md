@@ -28,23 +28,6 @@ window case.
 
 ## Block E — Publishing custom models to Hugging Face
 
-### §MOD24 Add a custom model to the publish stage
-
-build_manifest.py reads every <models>/<name>/meta.json that export_models.py wrote, and
-publish_models.py uploads the stage. A custom model needs the same folder shape without
-the export step. A new scripts\add_model.py takes --name, --task (one the app knows:
-object-encoder, object-decoder, depth, saliency, upscale), --onnx fp32.onnx [--fp16
-fp16.onnx], --license and --license-url, and --source (where the weights came from).
-
-It validates what the app will rely on: onnx.checker, the input and output names and
-shapes the pipeline for that task expects (taken from the pipeline's own constants, not
-retyped), and an ONNX Runtime run on that task's test image. Then it writes meta.json
-beside the files in .cache\models\<name>, so build_manifest and publish_models take it
-with no change.
-
-Done when a re-exported copy of Depth Anything added this way, under a new name,
-publishes to a test repository and the app's Relief runs with it.
-
 ### §MOD25 License gate on publish
 
 publish_models.py's docstring says every model is under a license that allows
@@ -90,8 +73,10 @@ A model whose task the built-in already covers appears as a choice on that opera
 card, for example "Upscaler: Real-ESRGAN x4plus (built-in) / <custom>". Sources persist
 per user beside the provider choice. --manifest still overrides them for one run.
 
-Done when a test repository published with MOD24's model is added by its id, its model
-is chosen on the Relief card, and Relief runs with it.
+Each pipeline takes its model by a constant name today (ReliefReconstruction.Depth,
+Upscaling.Model, ...), so the card's choice has to reach the pipeline as a name. Done
+when a test repository published with MOD24's model (publish_models.py --model) is added
+by its id, its model is chosen on the Relief card, and Relief runs with it.
 
 ## Block F — Installer, releases and auto update
 

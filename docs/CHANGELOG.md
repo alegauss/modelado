@@ -49,6 +49,8 @@
 
 ## Block E — Publishing custom models to Hugging Face
 
+- ✅ **MOD24** **Only the models export_models.py builds can be published; a custom ONNX with its own meta.json has no way in** — add_model.py admits an ONNX model held to its task's built-in meta.json, and the guest's app ran Relief on one it added (design superseded: pipelines take models by fixed name).
+
 ## Block F — Installer, releases and auto update
 
 - ✅ **MOD28** **There is no installer: Modelado runs only from a build tree, with no Start menu entry, file association or uninstall** — build-installer.cmd builds a per-user Inno Setup installer with Open with; a guest check installs, upgrades, opens a model, uninstalls (design recorded in `build/installer.iss`).

@@ -65,7 +65,7 @@ class PublishModelsTests(unittest.TestCase):
         self.assertEqual("hf_secret_value", pm.read_token(secret))
         calls = {}
 
-        def fake_upload(token, models, stage_dir, repo_id, private):
+        def fake_upload(token, models, stage_dir, repo_id, private, only):
             calls["token"] = token
             return {"repo": repo_id, "version": pm.VERSION, "files_commit": "a", "manifest_commit": "b", "manifest_url": "u", "models": []}
 
@@ -76,6 +76,61 @@ class PublishModelsTests(unittest.TestCase):
         self.assertEqual("hf_secret_value", calls["token"])
         self.assertNotIn("hf_secret_value", out.getvalue() + err.getvalue())
         self.assertEqual("me/models", json.loads((self.root / "record.json").read_text(encoding="utf-8"))["repo"])
+
+    def test_model_stages_only_the_named_models_and_card(self):
+        write_model(self.models, "my-depth", {"fp32": b"custom"})
+        with redirect_stdout(io.StringIO()):
+            code = pm.main(["--dry-run", "--models", str(self.models), "--stage", str(self.stage), "--repo", "me/models", "--model", "my-depth"])
+        self.assertEqual(0, code)
+        self.assertEqual(["my-depth-fp32.onnx"], sorted(p.name for p in self.stage.glob("*.onnx")))
+        self.assertIn("| my-depth |", (self.stage / "README.md").read_text(encoding="utf-8"))
+
+    def test_model_is_refused_on_the_built_ins_repository(self):
+        with redirect_stderr(io.StringIO()) as err:
+            code = pm.main(["--dry-run", "--models", str(self.models), "--stage", str(self.stage), "--model", "u2net"])
+        self.assertEqual(2, code)
+        self.assertIn("--repo", err.getvalue())
+
+    def test_upload_copies_the_manifest_into_the_app_only_for_the_built_ins(self):
+        write_model(self.models, "my-depth", {"fp32": b"custom"})
+
+        class Api:
+            def __init__(self, token):
+                pass
+
+            def create_repo(self, *args, **kwargs):
+                pass
+
+            def upload_folder(self, **kwargs):
+                return mock.Mock(oid="files0000commit")
+
+            def upload_file(self, **kwargs):
+                return mock.Mock(oid="manifest000commit")
+
+        embedded = self.root / "embedded.json"
+        hub = mock.Mock(HfApi=Api)
+        with mock.patch.dict(sys.modules, {"huggingface_hub": hub}), mock.patch.object(pm, "EMBEDDED", embedded):
+            pm.upload("t", self.models, self.stage, "me/models", False, ["my-depth"])
+            self.assertFalse(embedded.exists())
+            pm.upload("t", self.models, self.stage, "me/models", False)
+            self.assertEqual(sorted(pm.HOSTED), sorted(m["name"] for m in json.loads(embedded.read_text(encoding="utf-8"))["models"]))
+
+    def test_a_custom_publish_leaves_the_record_alone_and_names_its_manifest(self):
+        write_model(self.models, "my-depth", {"fp32": b"custom"})
+        seen = {}
+
+        def fake_upload(token, models, stage_dir, repo_id, private, only):
+            seen["only"] = only
+            return {"repo": repo_id, "version": pm.VERSION, "files_commit": "a", "manifest_commit": "b", "manifest_url": "https://u/manifest.json", "models": only}
+
+        record = self.root / "record.json"
+        out = io.StringIO()
+        with mock.patch.object(pm, "upload", fake_upload), mock.patch.object(pm, "RECORD", record), mock.patch.dict(os.environ, {"HF_TOKEN": "t"}), redirect_stdout(out):
+            code = pm.main(["--models", str(self.models), "--stage", str(self.stage), "--repo", "me/models", "--model", "my-depth"])
+        self.assertEqual(0, code)
+        self.assertEqual(["my-depth"], seen["only"])
+        self.assertFalse(record.exists())
+        self.assertIn("--manifest https://u/manifest.json", out.getvalue())
 
 
 if __name__ == "__main__":

@@ -14,10 +14,9 @@
 
 ## Block E — Publishing custom models to Hugging Face
 
-- 📋 **MOD24** (deps: MOD20 ✅) **Only the models export_models.py builds can be published; a custom ONNX with its own meta.json has no way in** — A fine-tuned TripoSR, a different upscaler or a model someone converted themselves is what a custom repository is for, and today the pipeline has no door for it. → §MOD24
-- 📋 **MOD25** (deps: MOD24) **Publishing never checks that a model's license allows redistribution before uploading it to a public repository** — The built-in models are all MIT or Apache-2.0 by choice, but a custom model could be CC BY-NC or unlicensed, and a public upload of it cannot be taken back. → §MOD25
+- 📋 **MOD25** (deps: MOD24 ✅) **Publishing never checks that a model's license allows redistribution before uploading it to a public repository** — The built-in models are all MIT or Apache-2.0 by choice, but a custom model could be CC BY-NC or unlicensed, and a public upload of it cannot be taken back. → §MOD25
 - 📋 **MOD26** (deps: MOD20 ✅) **publish_models.py never reads back what it uploaded, so a broken or truncated file is found only by the app** — The app refuses any file whose SHA-256 differs from the manifest, so a bad upload breaks every install until someone republishes. → §MOD26
-- 📋 **MOD27** (deps: MOD23 ✅, MOD24) **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — A custom model published to someone's own Hugging Face repository is useless to them until the window can be pointed at it and say what it holds. → §MOD27
+- 📋 **MOD27** (deps: MOD23 ✅, MOD24 ✅) **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — A custom model published to someone's own Hugging Face repository is useless to them until the window can be pointed at it and say what it holds. → §MOD27
 
 ## Block F — Installer, releases and auto update
 

@@ -202,6 +202,22 @@ What it does, step by step (each step can be run on its own):
    | u2net | FP32 (rembg's export) | IoU 0.979 with the original chair cut-out |
    | realesrgan-x4plus | FP32 / FP16 | 120 dB / 75.9 dB PSNR, on a rectangular input (dynamic height and width) |
 
+   **A model of your own** (a fine-tune, another upscaler, something you converted) goes in
+   beside them with `add_model.py`, which `build_manifest.py` and `publish_models.py` then take
+   like any other:
+
+   ```
+   .venv\Scripts\python scripts\add_model.py --name my-depth --task depth --onnx depth.onnx ^
+       --license MIT --license-url https://example.org/LICENSE --source https://example.org/weights
+   ```
+
+   The task's contract is the built-in model's own `meta.json` for that task: its preprocessing
+   and params are copied, and the ONNX inputs and outputs must match it in count, rank and
+   fixed sizes. Each file passes `onnx.checker` and one ONNX Runtime run before anything is
+   written. The app takes each model by the name its operation ships, so today a custom model is
+   used under that name (`depth-anything-v2-small` for Relief), from a repository given with
+   `--manifest`.
+
 4. **Publish** to [alegauss/modelado-models](https://huggingface.co/alegauss/modelado-models)
    with a Hugging Face write token (huggingface.co/settings/tokens), read from a file or from
    `HF_TOKEN` and never printed:
@@ -218,6 +234,10 @@ What it does, step by step (each step can be run on its own):
    pinned manifest is copied to `src\Modelado.Inference\models-manifest.json`: rebuild the app
    and it knows each file's size and hash without the network. While that file is empty, the app
    reads the repository's latest manifest.
+
+   `--model <name>` (repeatable, with `--repo` of your own) publishes those models instead of
+   the built-ins, and prints the manifest URL to give the app with `--manifest`; it leaves the
+   embedded manifest and `scripts\published-models.json` alone.
 
 ## The site
 
