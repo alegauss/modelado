@@ -14,6 +14,8 @@
 
 ## Block G — Public site for 3D modelling
 
+- ⏸ **MOD64** (deps: —) **The site's speed table has no GPU timing, only the CPU's** — set aside (Needs runs on a machine with a DirectML GPU; the VMware guest has none.): Left from MOD34: the VMware guest that measured the CPU has no GPU to run DirectML on, and the page names none. → §MOD64
+
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models
