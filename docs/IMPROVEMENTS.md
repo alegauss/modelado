@@ -6,29 +6,29 @@
 
 ## Block C — Existing code wired into the window
 
-### §MOD66 Lighter GLB geometry
+### §MOD68 Meshopt compression for compact GLBs
 
-Measured shipping MOD63: the site's canyon relief
-(`site/public/demo/studio/relief-landscape.glb`, 768 px photo, `--grid 192`) went from
-4.1 MB to 3.3 MB once its texture became a 195 kB JPEG. MOD63's design had guessed the
-geometry at a few hundred kilobytes; it is 3.1 MB. The relief has 55,296 vertices and
-110,588 triangles, and MeshExport.WriteGlb writes them at full width: float positions
-and normals (663 kB each), float UVs (442 kB) and 32-bit indices (1.33 MB).
+Measured shipping MOD66 on the guest: the site's canyon relief
+(site/public/demo/studio/relief-landscape.glb, 55,296 vertices, 110,588 triangles) is
+2,629,484 bytes as a standard GLB and 1,744,996 compact (KHR_mesh_quantization).
+Compact, positions take 8 bytes a vertex (16-bit, padded to 4), normals 4, UVs 4, the
+16-bit indices 663 kB and the JPEG texture 195 kB. MOD66's design hoped for under 1.5 MB
+and named this step for a relief still above about 1 MB.
 
-Build, in the order of what each saves for what it risks:
+Build: EXT_meshopt_compression on the compact writer's buffer views (meshoptimizer's
+vertex and index codecs, ported or bound), with the uncompressed data kept as the
+fallback buffer only if a reader without the extension must still open the file;
+otherwise declared required, behind the Export card's Compact choice as
+KHR_mesh_quantization is. The site's viewer needs three.js's MeshoptDecoder set on its
+GLTFLoader (three/addons/libs/meshopt_decoder.module.js), and MeshImport needs the
+decoder too, so a compact GLB opens again in the window.
 
-1. Indices as UNSIGNED_SHORT (5123) when the mesh has fewer than 65,536 vertices. Core glTF,
-   every reader takes it; the canyon's indices halve, about 660 kB.
-2. KHR_mesh_quantization: positions as normalized int16 with the node's scale and offset
-   restoring the bounds, normals as int8, UVs as uint16. three.js (the site), Blender's
-   importer and glTF validators read it; check Windows 3D Viewer before making it the default,
-   and keep a float writer behind an Export card choice if it does not.
-3. EXT_meshopt_compression only if 1 and 2 leave a relief above about 1 MB.
+Expected from meshoptimizer's own figures on grids like this one: the index stream to
+about a fifth and the vertex streams to about half, which puts the canyon near 1 MB.
 
-MeshImport must read whatever MeshExport writes (16-bit indices, the quantized
-accessors), so a saved GLB opens again in the window. Done when the canyon relief saves
-under 1.5 MB as GLB with its look unchanged in the window and on the site, and the
-site's Studio GLBs are re-saved.
+Done when the canyon relief saves under 1.2 MB with --compact, opens again in the window
+and in Blender (whose importer reads EXT_meshopt_compression), and the site's GLBs are
+re-saved with it.
 
 ## Block D — Model downloads
 

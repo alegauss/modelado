@@ -27,7 +27,8 @@ public enum MeshFormat
 /// <summary>The choices a format has beyond the format itself (MOD13, the Export card's options).</summary>
 /// <param name="ObjVertexColours">OBJ: the colours per vertex (sampled from the texture) rather than an .mtl and a .png.</param>
 /// <param name="PlyAscii">PLY: text rather than binary, for tools and eyes that read it.</param>
-public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii = false)
+/// <param name="GlbCompact">GLB: the geometry quantized (MOD66), about half its bytes, for readers that support KHR_mesh_quantization.</param>
+public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii = false, bool GlbCompact = false)
 {
     /// <summary>What a format is written as when nothing is chosen.</summary>
     public static ExportOptions Default { get; } = new();
@@ -71,7 +72,7 @@ public static class MeshExport
             switch (format)
             {
                 case MeshFormat.Glb:
-                    WriteGlb(mesh, stream);
+                    WriteGlb(mesh, stream, options.GlbCompact);
                     break;
                 case MeshFormat.Ply:
                     WritePly(mesh, stream, options.PlyAscii);
@@ -105,26 +106,55 @@ public static class MeshExport
     /// <summary>Writes binary glTF 2.0.</summary>
     /// <param name="mesh">The mesh.</param>
     /// <param name="stream">Where.</param>
-    public static void WriteGlb(Mesh mesh, Stream stream)
+    /// <param name="compact">
+    /// MOD66: the geometry quantized (KHR_mesh_quantization, which a reader must support to open the
+    /// file): positions as 16-bit integers that the node's translation and scale return to the
+    /// bounds, normals as 8-bit, texture coordinates as 16-bit where they stay within 0 to 1, colours
+    /// as 8-bit. About half the geometry's bytes; three.js and Blender read it, older viewers refuse it.
+    /// </param>
+    public static void WriteGlb(Mesh mesh, Stream stream, bool compact = false)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         ArgumentNullException.ThrowIfNull(stream);
         using MemoryStream bin = new();
         JsonArray views = [], accessors = [];
         JsonObject attributes = [];
+        JsonObject node = new() { ["mesh"] = 0, ["name"] = "Modelado" };
 
         (Vector3 min, Vector3 max) = mesh.Bounds();
-        attributes["POSITION"] = Accessor(Floats(mesh.Positions), 5126, mesh.VertexCount, "VEC3", 34962, new JsonArray(min.X, min.Y, min.Z), new JsonArray(max.X, max.Y, max.Z));
-        attributes["NORMAL"] = Accessor(Floats(mesh.ComputeNormals()), 5126, mesh.VertexCount, "VEC3", 34962);
+        Vector3[] normals = mesh.ComputeNormals();
+        if (compact)
+        {
+            // Each axis to -1..1 about the box's centre; the node puts it back.
+            Vector3 centre = (min + max) / 2, half = Vector3.Max((max - min) / 2, new Vector3(1e-6f));
+            node["translation"] = new JsonArray(centre.X, centre.Y, centre.Z);
+            node["scale"] = new JsonArray(half.X, half.Y, half.Z);
+            attributes["POSITION"] = Accessor(Packed(mesh.Positions.Select(p => (p - centre) / half), 3, 2, 8), 5122, mesh.VertexCount, "VEC3", 34962, new JsonArray(-32767, -32767, -32767), new JsonArray(32767, 32767, 32767), normalized: true, stride: 8);
+
+            // A normal under the node's scale is drawn with its inverse transpose, so it is stored
+            // scaled by the scale itself and comes out as it was.
+            attributes["NORMAL"] = Accessor(Packed(normals.Select(n => Vector3.Normalize(n * half)), 3, 1, 4), 5120, mesh.VertexCount, "VEC3", 34962, normalized: true, stride: 4);
+        }
+        else
+        {
+            attributes["POSITION"] = Accessor(Floats(mesh.Positions), 5126, mesh.VertexCount, "VEC3", 34962, new JsonArray(min.X, min.Y, min.Z), new JsonArray(max.X, max.Y, max.Z));
+            attributes["NORMAL"] = Accessor(Floats(normals), 5126, mesh.VertexCount, "VEC3", 34962);
+        }
+
         if (mesh.TexCoords is not null)
         {
-            attributes["TEXCOORD_0"] = Accessor(Floats(mesh.TexCoords), 5126, mesh.VertexCount, "VEC2", 34962);
+            // A tiled material's coordinates run past 1 and stay floats.
+            attributes["TEXCOORD_0"] = compact && mesh.TexCoords.All(t => t.X is >= 0 and <= 1 && t.Y is >= 0 and <= 1)
+                ? Accessor(Packed(mesh.TexCoords.Select(t => new Vector3(t, 0)), 2, 2, 4, unsigned: true), 5123, mesh.VertexCount, "VEC2", 34962, normalized: true, stride: 4)
+                : Accessor(Floats(mesh.TexCoords), 5126, mesh.VertexCount, "VEC2", 34962);
         }
         else if (mesh.Colors is not null)
         {
             // glTF's vertex colours are linear, and multiply the texture: only an untextured mesh carries them.
             Vector3[] linear = [.. mesh.Colors.Select(c => new Vector3(ToLinear(c.X), ToLinear(c.Y), ToLinear(c.Z)))];
-            attributes["COLOR_0"] = Accessor(Floats(linear), 5126, mesh.VertexCount, "VEC3", 34962);
+            attributes["COLOR_0"] = compact
+                ? Accessor(Packed(linear, 3, 1, 4, unsigned: true), 5121, mesh.VertexCount, "VEC3", 34962, normalized: true, stride: 4)
+                : Accessor(Floats(linear), 5126, mesh.VertexCount, "VEC3", 34962);
         }
 
         // MOD66: 16-bit indices wherever every vertex fits in them (65,535 is glTF's primitive
@@ -153,13 +183,18 @@ public static class MeshExport
             ["asset"] = new JsonObject { ["version"] = "2.0", ["generator"] = "Modelado" },
             ["scene"] = 0,
             ["scenes"] = new JsonArray(new JsonObject { ["nodes"] = new JsonArray(0) }),
-            ["nodes"] = new JsonArray(new JsonObject { ["mesh"] = 0, ["name"] = "Modelado" }),
+            ["nodes"] = new JsonArray(node),
             ["meshes"] = new JsonArray(new JsonObject
             {
                 ["primitives"] = new JsonArray(new JsonObject { ["attributes"] = attributes, ["indices"] = indexAccessor, ["material"] = 0 }),
             }),
             ["materials"] = new JsonArray(new JsonObject { ["pbrMetallicRoughness"] = pbr, ["doubleSided"] = mesh.DoubleSided }),
         };
+        if (compact)
+        {
+            root["extensionsUsed"] = new JsonArray("KHR_mesh_quantization");
+            root["extensionsRequired"] = new JsonArray("KHR_mesh_quantization");
+        }
 
         if (mesh.Texture is not null)
         {
@@ -186,7 +221,7 @@ public static class MeshExport
         WriteChunk(stream, json, jsonLength, 0x4E4F534A, (byte)' '); // "JSON"
         WriteChunk(stream, bin.ToArray(), binLength, 0x004E4942, 0); // "BIN"
 
-        int View(byte[] data, int? target)
+        int View(byte[] data, int? target, int? stride = null)
         {
             while (bin.Length % 4 != 0)
             {
@@ -199,14 +234,24 @@ public static class MeshExport
                 view["target"] = t;
             }
 
+            if (stride is int s)
+            {
+                view["byteStride"] = s;
+            }
+
             bin.Write(data);
             views.Add(view);
             return views.Count - 1;
         }
 
-        int Accessor(byte[] data, int componentType, int count, string type, int target, JsonArray? lower = null, JsonArray? upper = null)
+        int Accessor(byte[] data, int componentType, int count, string type, int target, JsonArray? lower = null, JsonArray? upper = null, bool normalized = false, int? stride = null)
         {
-            JsonObject accessor = new() { ["bufferView"] = View(data, target), ["componentType"] = componentType, ["count"] = count, ["type"] = type };
+            JsonObject accessor = new() { ["bufferView"] = View(data, target, stride), ["componentType"] = componentType, ["count"] = count, ["type"] = type };
+            if (normalized)
+            {
+                accessor["normalized"] = true;
+            }
+
             if (lower is not null && upper is not null)
             {
                 accessor["min"] = lower;
@@ -448,6 +493,39 @@ public static class MeshExport
         {
             BinaryPrimitives.WriteSingleLittleEndian(data.AsSpan(i * 8), values[i].X);
             BinaryPrimitives.WriteSingleLittleEndian(data.AsSpan((i * 8) + 4), values[i].Y);
+        }
+
+        return data;
+    }
+
+    // MOD66: the first `components` of each vector as normalized integers of `size` bytes (1 or 2),
+    // signed for -1..1 or unsigned for 0..1, each vertex padded to `stride` bytes as glTF aligns them.
+    private static byte[] Packed(IEnumerable<Vector3> values, int components, int size, int stride, bool unsigned = false)
+    {
+        Vector3[] all = [.. values];
+        byte[] data = new byte[all.Length * stride];
+        float scale = size == 1 ? byte.MaxValue : ushort.MaxValue;
+        if (!unsigned)
+        {
+            scale = size == 1 ? sbyte.MaxValue : short.MaxValue;
+        }
+
+        for (int i = 0; i < all.Length; i++)
+        {
+            for (int c = 0; c < components; c++)
+            {
+                float v = Math.Clamp(all[i][c], unsigned ? 0 : -1, 1);
+                int q = (int)MathF.Round(v * scale);
+                Span<byte> at = data.AsSpan((i * stride) + (c * size));
+                if (size == 1)
+                {
+                    at[0] = unchecked((byte)q);
+                }
+                else
+                {
+                    BinaryPrimitives.WriteUInt16LittleEndian(at, unchecked((ushort)q));
+                }
+            }
         }
 
         return data;

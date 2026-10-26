@@ -40,7 +40,7 @@
 - ✅ **MOD59** **An imported GLB or OBJ whose colour is a material's own (baseColorFactor, Kd) or one of several textures opens grey** — A model's several textures open packed into one atlas, plain parts in a palette tile and factors tinting their textures; past four they are baked to colours with a notice.
 - ✅ **MOD62** **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying a 256-grid relief with a base to a third takes 1 to 2 s on the guest's CPU instead of 10 to 51 s, with no vertex left above 20 neighbours (design superseded: no fan; ties grew stars).
 - ✅ **MOD63** **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — A GLB carries an opaque texture as JPEG and a cut-out one as PNG, the Export card says which; the canyon's photo is 195 kB, not 1 MB (design superseded: geometry is 3.1 MB (MOD66)).
-- ✅ **MOD66 (16-bit indices)** **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — A GLB under 65,535 vertices carries 16-bit indices: the canyon relief saves at 2.6 MB, from 3.3.
+- ✅ **MOD66** **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — A GLB can be saved compact (KHR_mesh_quantization) from the Export card or --compact: the canyon is 1.7 MB, from 2.6, and the site's GLBs are re-saved, 5.6 MB from 13.
 
 ## Block D — Model downloads
 

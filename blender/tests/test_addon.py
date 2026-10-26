@@ -154,6 +154,29 @@ else:
     check("UPSCALE: the Base Color image is four times as wide", node.image.size[0] == 256)
     check("UPSCALE: the rest of the material is kept", abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
 
+# MOD66: a compact GLB (KHR_mesh_quantization) opens in Blender as the standard one does: the same
+# vertices, where the node's scale and offset put them.
+import subprocess  # noqa: E402
+
+canyon = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "site", "public", "demo", "studio", "relief-landscape.glb")
+with tempfile.TemporaryDirectory(prefix="modelado-compact-") as folder:
+    opened = {}
+    for kind in ("standard", "compact"):
+        path = os.path.join(folder, f"{kind}.glb")
+        written = subprocess.run([cli, "edit", canyon, "-o", path, "--json", "--provider", "cpu", *(["--compact"] if kind == "compact" else [])], capture_output=True, **modelado.TEXT)
+        before = set(bpy.data.objects)
+        bpy.ops.import_scene.gltf(filepath=path)
+        made = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+        bpy.context.view_layer.update()
+        opened[kind] = (len(made[0].data.vertices), *bounds(made[0])) if written.returncode == 0 and made else None
+        for obj in [o for o in bpy.data.objects if o not in before]:
+            bpy.data.objects.remove(obj, do_unlink=True)
+    print(f"COMPACT: standard {opened['standard']}, compact {opened['compact']}, {os.path.getsize(os.path.join(folder, 'compact.glb')):,} bytes")
+    check("COMPACT: Blender opens it with the standard file's vertices",
+          opened["standard"] is not None and opened["compact"] is not None and opened["compact"][0] == opened["standard"][0])
+    check("COMPACT: in the same place, within a quantization step",
+          opened["compact"] is not None and all((opened["compact"][k] - opened["standard"][k]).length < 1e-3 for k in (1, 2)))
+
 # MOD65: Meshy AI's image to 3D through modelado-cli cloud, against a stand-in of Meshy's API that
 # answers as the UI cases' fixture server does (tests/Modelado.Cases/FixtureServer.cs): the key
 # msy_case_key, and every job the cube for 30 credits. LOCALAPPDATA is this run's own, so the key

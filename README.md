@@ -17,6 +17,11 @@ colour, clay or edges) and is saved as **GLB** (binary glTF: Windows 3D Viewer, 
 web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres)
 or **PLY** (with colours: MeshLab, CloudCompare).
 
+A GLB carries a photo texture as JPEG (PNG where it has transparency) and, under 65,535 vertices,
+16-bit indices. The Export card's **Compact** choice (`--compact` on the command line) also
+quantizes the geometry (KHR_mesh_quantization), about half the size: the web and Blender read it,
+while older viewers that lack the extension refuse the file, so **Standard** stays the default.
+
 ![The robot from TripoSR's examples, reconstructed by Modelado](docs/robot.png)
 
 ## Edit and improve

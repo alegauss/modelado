@@ -21,10 +21,10 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
         "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json", "--dry-run",
-        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv",
+        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv", "--compact",
     };
 
-    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json"];
+    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {

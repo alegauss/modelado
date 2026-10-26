@@ -90,6 +90,43 @@ public sealed class MeshExportTests : IDisposable
     }
 
     [Fact]
+    public void A_compact_glb_quantizes_the_canyon_and_reads_back_within_a_step()
+    {
+        // MOD66: KHR_mesh_quantization, declared required, the node returning the bounds.
+        Mesh relief = MeshImport.Load(Path.Combine(Repository.Root, "site", "public", "demo", "studio", "relief-landscape.glb"));
+        string full = Path.Combine(folder, "full.glb"), compact = Path.Combine(folder, "compact.glb");
+        MeshExport.Save(relief, full);
+        MeshExport.Save(relief, compact, new ExportOptions(GlbCompact: true));
+        long fullSize = new FileInfo(full).Length, compactSize = new FileInfo(compact).Length;
+        TestContext.Current.TestOutputHelper?.WriteLine($"canyon: {fullSize:N0} bytes full, {compactSize:N0} compact");
+
+        (JsonDocument json, _) = ReadGlb(compact);
+        Assert.Equal("KHR_mesh_quantization", json.RootElement.GetProperty("extensionsRequired")[0].GetString());
+        // Measured on the guest: 2,629,484 bytes standard, 1,744,996 compact.
+        Assert.True(compactSize < fullSize * 0.7, $"compact {compactSize:N0} against {fullSize:N0}");
+
+        Mesh back = MeshImport.Load(compact);
+        Assert.Equal(relief.Triangles, back.Triangles);
+        (Vector3 low, Vector3 high) = relief.Bounds();
+        float step = (high - low).Length() / 32767f;
+        float worst = relief.Positions.Zip(back.Positions, (a, b) => (a - b).Length()).Max();
+        Assert.True(worst < step * 2, $"a vertex moved {worst} against a step of {step}");
+        Assert.True(relief.TexCoords!.Zip(back.TexCoords!, (a, b) => (a - b).Length()).Max() < 2f / 65535);
+    }
+
+    [Fact]
+    public void A_compact_glb_keeps_vertex_colours_within_an_eight_bit_step()
+    {
+        Mesh coloured = Coloured();
+        string path = Path.Combine(folder, "coloured.glb");
+        MeshExport.Save(coloured, path, new ExportOptions(GlbCompact: true));
+
+        Mesh back = MeshImport.Load(path);
+        Assert.Equal(coloured.Triangles, back.Triangles);
+        Assert.True(coloured.Colors!.Zip(back.Colors!, (a, b) => (a - b).Length()).Max() < 0.02f);
+    }
+
+    [Fact]
     public void A_textured_glb_embeds_an_opaque_texture_as_jpeg_and_leaves_out_vertex_colours()
     {
         string path = Path.Combine(folder, "t.glb");
@@ -124,19 +161,18 @@ public sealed class MeshExportTests : IDisposable
     [Fact]
     public void The_canyon_relief_sheds_its_png_weight_and_opens_with_the_same_look()
     {
-        // The site's landscape relief, written with its 768 px texture as PNG before MOD63: 4.1 MB,
-        // of which the PNG is 1.0 MB and the geometry the rest, 0.66 MB less with 16-bit indices (MOD66).
-        string original = Path.Combine(Repository.Root, "site", "public", "demo", "studio", "relief-landscape.glb");
-        Mesh relief = MeshImport.Load(original);
+        // The site's landscape relief and its 768 px photo, which before MOD63 went in as a 1.0 MB PNG
+        // of a 4.1 MB file. Its texture is weighed as the GLB carries it against that PNG.
+        Mesh relief = MeshImport.Load(Path.Combine(Repository.Root, "site", "public", "demo", "studio", "relief-landscape.glb"));
         Assert.False(relief.Texture!.HasTransparency);
         string path = Path.Combine(folder, "canyon.glb");
         MeshExport.Save(relief, path);
 
-        long before = new FileInfo(original).Length, size = new FileInfo(path).Length;
-        int jpeg = ImageCodec.EncodeJpeg(relief.Texture).Length;
-        TestContext.Current.TestOutputHelper?.WriteLine($"canyon: {before:N0} -> {size:N0} bytes; the texture as JPEG {jpeg:N0}");
-        Assert.True(jpeg < 250_000, $"the texture is {jpeg:N0} bytes as JPEG");
-        Assert.True(size < before - 750_000, $"the canyon relief went from {before:N0} to {size:N0} bytes");
+        (JsonDocument json, _) = ReadGlb(path);
+        int carried = json.RootElement.GetProperty("bufferViews")[json.RootElement.GetProperty("images")[0].GetProperty("bufferView").GetInt32()].GetProperty("byteLength").GetInt32();
+        int png = ImageCodec.EncodePng(relief.Texture).Length;
+        TestContext.Current.TestOutputHelper?.WriteLine($"canyon: {new FileInfo(path).Length:N0} bytes; its texture {carried:N0} as carried, {png:N0} as PNG");
+        Assert.True(carried < 250_000 && carried < png / 4, $"the texture is {carried:N0} bytes as carried, {png:N0} as PNG");
 
         RgbaImage texture = relief.Texture, after = MeshImport.Load(path).Texture!;
         Assert.Equal((texture.Width, texture.Height), (after.Width, after.Height));

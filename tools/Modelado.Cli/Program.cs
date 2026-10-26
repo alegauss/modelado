@@ -60,6 +60,7 @@ const string Usage = """
             --manifest <url>          --size <units> (longest side when saving)
             --source <owner/name|url> a model repository read after the built-in one
             --preview <image.png>     saves a rendered view, on a transparent background
+            --compact                 a GLB's geometry quantized, about half the size (the web, Blender)
             --json                    prints the result as one JSON object on stdout, the rest on stderr
     """;
 
@@ -249,7 +250,7 @@ int Done(int code)
 void Save(Mesh mesh, string output, Stopwatch total)
 {
     mesh = options.ContainsKey("--size") ? mesh.Placed((float)Number("--size", 1)) : mesh;
-    IReadOnlyList<string> written = MeshExport.Save(mesh, output);
+    IReadOnlyList<string> written = MeshExport.Save(mesh, output, new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
     Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
     report["written"] = new JsonArray([.. written.Select(path => JsonValue.Create(Path.GetFullPath(path)))]);
     report["vertices"] = mesh.VertexCount;

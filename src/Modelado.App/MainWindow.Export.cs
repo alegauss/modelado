@@ -95,6 +95,7 @@ public partial class MainWindow
         string format = ExportExtension;
         ExportObjOptions.Visibility = format == "obj" && mesh?.Texture is not null ? Visibility.Visible : Visibility.Collapsed;
         ExportPlyOptions.Visibility = format == "ply" ? Visibility.Visible : Visibility.Collapsed;
+        ExportGlbOptions.Visibility = format == "glb" ? Visibility.Visible : Visibility.Collapsed;
 
         ShowExportDimensions(format == "stl" ? "mm" : "units");
         List<string> notes = [];
@@ -154,7 +155,7 @@ public partial class MainWindow
 
         // The card's format, whatever extension was typed.
         string path = Path.ChangeExtension(dialog.FileName, "." + format);
-        ExportOptions choices = new(ObjVertexColours: ExportObjVertexColours.IsChecked == true, PlyAscii: ExportPlyAscii.IsChecked == true);
+        ExportOptions choices = new(ObjVertexColours: ExportObjVertexColours.IsChecked == true, PlyAscii: ExportPlyAscii.IsChecked == true, GlbCompact: ExportGlbCompact.IsChecked == true);
         try
         {
             // Scaled at export only, through Mesh.Placed as the CLI's --size is, so the two write the
@@ -162,7 +163,8 @@ public partial class MainWindow
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(size), path, choices);
             string names = string.Join(", ", written.Select(Path.GetFileName));
             string? texture = format == "glb" ? MeshExport.GlbTextureFormat(mesh) : null;
-            ExportStatus.Text = texture is null ? $"Saved {names}" : $"Saved {names} · texture as {texture}";
+            string compact = format == "glb" && choices.GlbCompact ? " · compact" : "";
+            ExportStatus.Text = texture is null ? $"Saved {names}{compact}" : $"Saved {names}{compact} · texture as {texture}";
             savedVersion = shownVersion;
             LastRunSaid(string.Create(CultureInfo.CurrentCulture, $"Saved {names} · {size:0.##} {(format == "stl" ? "mm" : "units")} on the longest side"));
         }

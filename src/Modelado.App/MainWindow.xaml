@@ -511,6 +511,13 @@
               <RadioButton x:Name="ExportObjVertexColours" AutomationProperties.AutomationId="ExportObjVertexColours" GroupName="ObjColours"
                            Content="Colours per vertex, in the .obj alone" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
             </StackPanel>
+            <!-- MOD66: quantized geometry, about half the bytes, for viewers that read KHR_mesh_quantization. -->
+            <StackPanel x:Name="ExportGlbOptions" Visibility="Collapsed" Margin="0,8,0,0">
+              <RadioButton x:Name="ExportGlbStandard" AutomationProperties.AutomationId="ExportGlbStandard" GroupName="GlbGeometry"
+                           Content="Standard, opens in every viewer" IsChecked="True" />
+              <RadioButton x:Name="ExportGlbCompact" AutomationProperties.AutomationId="ExportGlbCompact" GroupName="GlbGeometry"
+                           Content="Compact, about half the size: the web, Blender" Margin="0,4,0,0" />
+            </StackPanel>
             <StackPanel x:Name="ExportPlyOptions" Visibility="Collapsed" Margin="0,8,0,0">
               <RadioButton x:Name="ExportPlyBinary" AutomationProperties.AutomationId="ExportPlyBinary" GroupName="PlyEncoding"
                            Content="Binary, smaller and faster" IsChecked="True" />

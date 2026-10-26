@@ -8,7 +8,7 @@
 
 ## Block C — Existing code wired into the window
 
-- ⏳ **MOD66** (deps: —) **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — Quantized positions, normals and UVs (KHR_mesh_quantization, Windows 3D Viewer checked) to bring the canyon under 1.5 MB, and the site's Studio GLBs re-saved. → §MOD66
+- 📋 **MOD68** (deps: —) **A compact GLB still stores its quantized geometry uncompressed, so the canyon relief stays at 1.7 MB** — Quantization halved the geometry, but the indices and vertex streams are written raw; the site's Studio still downloads 5.6 MB of models. → §MOD68
 
 ## Block D — Model downloads
 
@@ -42,18 +42,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD66
-
-- **The canyon relief saves under 1.5 MB as GLB** MeshExportTests' canyon test, on
-  site/public/demo/studio/relief-landscape.glb, asserts the saved file under 1.5 MB and
-  its texture and shape unchanged on reading back.
-- **Quantized GLBs open in Windows 3D Viewer, Blender and the site** A quantized GLB is
-  opened in each on the guest before it becomes the default; where one fails, the float
-  writer stays the default behind an Export card choice.
-- **The site's Studio GLBs are re-saved with the lighter writer** Each file under
-  site/public/demo/studio is written again by modelado-cli and the site's build serves
-  the smaller files.
 
 ## Non-goals
 
