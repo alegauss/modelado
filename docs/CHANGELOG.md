@@ -41,6 +41,7 @@
 - ✅ **MOD62** **Simplify takes minutes on a relief with a base, where a TripoSR mesh of the same size takes a second** — Simplifying a 256-grid relief with a base to a third takes 1 to 2 s on the guest's CPU instead of 10 to 51 s, with no vertex left above 20 neighbours (design superseded: no fan; ties grew stars).
 - ✅ **MOD63** **A GLB with a photo texture weighs megabytes: the texture is always embedded as a lossless PNG** — A GLB carries an opaque texture as JPEG and a cut-out one as PNG, the Export card says which; the canyon's photo is 195 kB, not 1 MB (design superseded: geometry is 3.1 MB (MOD66)).
 - ✅ **MOD66** **A relief's GLB carries its geometry at full width: float positions, normals and UVs and 32-bit indices** — A GLB can be saved compact (KHR_mesh_quantization) from the Export card or --compact: the canyon is 1.7 MB, from 2.6, and the site's GLBs are re-saved, 5.6 MB from 13.
+- ✅ **MOD68** **A compact GLB still stores its quantized geometry uncompressed, so the canyon relief stays at 1.7 MB** — The site build packs its models with meshopt and the viewer decodes them: 5.6 MB served as 2.1, each checked in Chromium against its source in site.yml.
 
 ## Block D — Model downloads
 

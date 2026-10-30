@@ -1,8 +1,9 @@
 # MOD35: the site (site\), built on every change to it and published to GitHub Pages at
 # https://alegauss.github.io/modelado/, the base vite.config.ts names. After freewilly's site.yml.
 #
-# The gate is the build: `npm run build` runs tsc, the client and SSR builds, the social card
-# and the prerender, whose replace-or-throw head patch fails on a template that lost an anchor.
+# The gate is the build: `npm run build` runs tsc, the client build, the models' packing, the
+# SSR build, the social card and the prerender, whose replace-or-throw head patch fails on a
+# template that lost an anchor; then `npm run check:models` opens every packed model in Chromium.
 # A pull request touching site\ runs it and deploys nothing, so a broken prerender fails the
 # check before it is merged; a push to main touching site\, or a run by hand, publishes the bytes
 # that build made rather than building twice.
@@ -59,6 +60,14 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      # MOD68: the build packs the demo models with meshopt; each must open in a browser as the
+      # model it was packed from does, and the Studio's download stay under 4 MB.
+      - name: Open every served model in a browser
+        working-directory: site
+        run: |
+          npx playwright install --with-deps chromium
+          npm run check:models
 
       - name: Keep the built site for the deploy
         if: github.event_name != 'pull_request'

@@ -17,6 +17,8 @@ import {
 } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+// MOD68: the served models are packed with EXT_meshopt_compression (scripts/pack-models.mjs).
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 export type ViewStyle = "colours" | "clay" | "wireframe";
 
@@ -40,7 +42,7 @@ export async function mountView(host: HTMLElement, url: string, wireColour: stri
   key.position.set(2, 3, 4);
   scene.add(key);
 
-  const gltf = await new GLTFLoader().loadAsync(url);
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(url);
   const model = gltf.scene;
   const box = new Box3().setFromObject(model);
   const centre = box.getCenter(new Vector3());

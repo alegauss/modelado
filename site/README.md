@@ -14,12 +14,21 @@ footer is Modelado's own.
 ```
 npm install        # once
 npm run dev        # dev server at /modelado/
-npm run build      # tsc, client, SSR, then the prerender: the page, og.png, the touch icon
+npm run build      # tsc, client, the models packed, SSR, then the prerender: the page, og.png, the touch icon
+npm run check:models  # after a build: every served model opened in Chromium against its source
 npm run preview    # serve the built dist/
 ```
 
-`npm run build` is the gate. The prerender writes the page's title, description, canonical and
-og:url by replace-or-throw, so a template that lost an anchor fails the build.
+`npm run build` is the gate, with `npm run check:models` after it in `site.yml`. The prerender
+writes the page's title, description, canonical and og:url by replace-or-throw, so a template
+that lost an anchor fails the build.
+
+`public/demo` keeps the models as the app writes them (compact GLB, KHR_mesh_quantization), which
+the window and Blender open. The build packs only the copies in `dist/demo` with `gltfpack -cc`
+(EXT_meshopt_compression), and the viewer sets three.js's `MeshoptDecoder` to read them: 5.6 MB
+of models served as 2.1 MB. `check:models` loads each packed model and its source in headless
+Chromium with the site's own three.js and fails on a different triangle count, texture or bounds,
+or on a download of 4 MB or more. It needs Playwright's Chromium (`npx playwright install chromium`).
 
 ## Where things live
 
