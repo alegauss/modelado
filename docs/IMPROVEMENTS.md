@@ -32,5 +32,9 @@ session. In the other direction, the standalone window's Export card gains "Open
 Blender", which finds Blender (registry, then the user's path preference) and starts it
 importing the model.
 
+Its UI case points the Blender path preference at a stub, so no GUI Blender needs the
+desk, and reads through winwright WW586 that the stub started on the model; winwright
+stops it with the case.
+
 Done when an object goes to the window, gets three edits, is sent back twice, and both
 sends undo in Blender in order.
