@@ -10,7 +10,7 @@ import os
 import sys
 
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import modelado  # noqa: E402  (the add-on's folder, loaded as a module beside Blender's own)
@@ -153,6 +153,58 @@ else:
     node, material = modelado.base_colour_image(plane)
     check("UPSCALE: the Base Color image is four times as wide", node.image.size[0] == 256)
     check("UPSCALE: the rest of the material is kept", abs(material.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value - 0.33) < 1e-6)
+
+# MOD46: the round trip's Blender half. The window's half (Modelado.Geometry.BlenderSession) is
+# played here by modelado-cli and the same sent.json it writes: the object goes to the session
+# folder, gets three edits (Subdivide; then Mirror and a turn about X), is sent back twice, and
+# both sends undo in order. A tall box, so the turn shows in its bounds.
+import json  # noqa: E402
+import subprocess  # noqa: E402
+
+bpy.ops.mesh.primitive_cube_add(location=(0, 6, 0))
+box = bpy.context.active_object
+box.name = "Box"
+box.data.transform(Matrix.Diagonal((1, 1, 3, 1)))
+box.data.materials.append(bpy.data.materials.new("Box paint"))
+bpy.context.view_layer.update()
+
+
+def extents(obj):
+    low, high = bounds(obj)
+    return tuple(round(v, 3) for v in (high - low))
+
+
+with tempfile.TemporaryDirectory(prefix="modelado-session-") as session:
+    modelado.start_session(box, session, False)
+    with open(os.path.join(session, "session.json"), encoding="utf-8") as described:
+        check("ROUND TRIP: the session names the object and its mesh", json.load(described) == {"object": "Box", "model": "model.glb"} and os.path.isfile(os.path.join(session, "model.glb")))
+
+    def window_sends(sequence, source, edits, label):
+        subprocess.run([cli, "edit", os.path.join(session, source), "-o", os.path.join(session, f"sent-{sequence}.glb"), *edits, "--provider", "cpu"], check=True, capture_output=True)
+        with open(os.path.join(session, "sent.json"), "w", encoding="utf-8") as sent:
+            json.dump({"sequence": sequence, "model": f"sent-{sequence}.glb", "label": label}, sent)
+
+    original = (modelado.triangles(box.data), extents(box))
+    bpy.ops.ed.undo_push(message="before Modelado")
+    window_sends(1, "model.glb", ["--subdivide"], "Subdivide")
+    modelado.apply_send(bpy.data.objects["Box"], session, modelado.read_sent(session))
+    bpy.ops.ed.undo_push(message="Modelado: Subdivide")
+    first = (modelado.triangles(bpy.data.objects["Box"].data), extents(bpy.data.objects["Box"]))
+    window_sends(2, "sent-1.glb", ["--mirror", "--rotate", "x:90"], "Turn 90° about X")
+    modelado.apply_send(bpy.data.objects["Box"], session, modelado.read_sent(session))
+    bpy.ops.ed.undo_push(message="Modelado: Turn 90° about X")
+    second = (modelado.triangles(bpy.data.objects["Box"].data), extents(bpy.data.objects["Box"]))
+    print(f"ROUND TRIP: original {original}, first send {first}, second send {second}")
+    check("ROUND TRIP: the first send is the subdivided box, still tall", first[0] == original[0] * 4 and first[1][2] > first[1][1])
+    check("ROUND TRIP: the second send is turned about X", second[0] == first[0] and second[1] == (first[1][0], first[1][2], first[1][1]))
+    check("ROUND TRIP: the object, its place and material kept", bpy.data.objects["Box"].location.y == 6 and [s.material.name for s in bpy.data.objects["Box"].material_slots] == ["Box paint"])
+    bpy.ops.ed.undo()
+    check("ROUND TRIP: undo goes back to the first send", (modelado.triangles(bpy.data.objects["Box"].data), extents(bpy.data.objects["Box"])) == first)
+    bpy.ops.ed.undo()
+    check("ROUND TRIP: and again to the box before Modelado", (modelado.triangles(bpy.data.objects["Box"].data), extents(bpy.data.objects["Box"])) == original)
+
+# Undo reloads the scene: a reference taken before it no longer reaches the settings.
+settings = bpy.context.scene.modelado
 
 # MOD66: a compact GLB (KHR_mesh_quantization) opens in Blender as the standard one does: the same
 # vertices, where the node's scale and offset put them.

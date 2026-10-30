@@ -62,6 +62,15 @@
                   Command="SaveAs" ToolTip="Save the model as GLB, OBJ, PLY or STL (Ctrl+S)">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE792;" />
           </Button>
+          <!-- MOD46: shown only when the Blender add-on opened this window on one of its objects. -->
+          <Button x:Name="SendToBlenderButton" AutomationProperties.AutomationId="SendToBlenderButton" AutomationProperties.Name="Send to Blender"
+                  Visibility="Collapsed" Click="OnSendToBlender"
+                  ToolTip="Send to Blender: put the version shown on the object it came from, as one step of Blender's undo">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE72A;" Margin="4,2,2,2" />
+              <TextBlock Text="Send to Blender" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
+            </StackPanel>
+          </Button>
           <Separator />
           <Button x:Name="UndoButton" AutomationProperties.AutomationId="UndoButton" AutomationProperties.Name="Undo"
                   Command="Undo" ToolTip="Undo: back to the previous version of the model (Ctrl+Z)">

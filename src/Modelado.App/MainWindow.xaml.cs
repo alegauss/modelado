@@ -76,7 +76,11 @@ public partial class MainWindow : Window, IDisposable
         Loaded += async (_, _) =>
         {
             await RefreshModelStatusAsync().ConfigureAwait(true);
-            if (options.Open is { } open)
+            if (options.BlenderSession is { } session)
+            {
+                await OpenBlenderSessionAsync(session).ConfigureAwait(true);
+            }
+            else if (options.Open is { } open)
             {
                 await OpenAsync(open).ConfigureAwait(true);
             }

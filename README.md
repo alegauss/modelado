@@ -71,6 +71,11 @@ key); `remesh` and `retexture` send a model to Meshy AI. The Blender add-on uses
 for "3D Object with Meshy AI" and, in its AI group, for a new texture from a prompt, Remesh and
 Retexture, each shown only when About holds that service's key.
 
+The add-on's **Edit in Modelado** opens the selected mesh in the Modelado window (its path is in
+the add-on's preferences), with the object's name in the caption. There, **Send to Blender** on
+the toolbar puts the version shown back on the same object, keeping its transform and materials,
+as one step of Blender's undo; send as often as you like, until the window is closed.
+
 ## Requirements
 
 - **Windows 10 (1903+) or 11, x64.**

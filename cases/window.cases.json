@@ -169,6 +169,13 @@
       "shareable": false
     },
     {
+      // MOD46: the folder the Blender add-on's "Edit in Modelado" prepares, with the cube as its object.
+      "name": "a window the Blender add-on opened on its object Cube",
+      "files": [{ "from": "cases/fixtures/cube.obj", "to": "session/cube.obj" }, { "from": "cases/fixtures/blender-session.json", "to": "session/session.json" }],
+      "arguments": ["--blender-session", "{files}/session", "--provider", "cpu", "--releases", "off"],
+      "shareable": false
+    },
+    {
       // MOD67: before the window starts, modelado-cli stores the case's Meshy key and sends the
       // photo to the stand-in, into the same LOCALAPPDATA, so the window opens on what the CLI wrote.
       // The CLI is the Debug build's: a before command does not take {configuration} yet (WW585).
@@ -870,6 +877,31 @@
         { "locator": "Button#CloudConsentSend", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and holds Send" },
         { "locator": "Button#CloudChip", "act": "invoke", "named": "the chip is pressed" },
         { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI: image to 3D: 1 job\\(s\\), estimated 30, charged 30\\.", "named": "About shows the estimate against the charge" }
+      ]
+    },
+
+    {
+      "name": "a model opened from Blender gets three edits and is sent back twice, each send its own file",
+      "catches": "a session that opens without the object's name, a Send to Blender that is missing or writes nothing, or a send that is not the version shown",
+      "filed": "MOD46",
+      "tags": ["blender", "edit", "drop"],
+      "fixture": "a window the Blender add-on opened on its object Cube",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "Cube from Blender", "named": "the window names the Blender object" },
+        { "locator": "Button#SendToBlenderButton", "act": "read", "reads": "name", "expect": "Send to Blender", "named": "and offers to send it back" },
+        { "locator": "Button#SubdivideButton", "act": "invoke", "named": "Subdivide is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Subdivide", "named": "the first edit" },
+        { "locator": "Button#SendToBlenderButton", "act": "invoke", "named": "Send to Blender is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Sent to Blender: Cube, version 1", "named": "the first send" },
+        { "locator": "Button#MirrorButton", "act": "invoke", "named": "Mirror is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "3. Mirror", "named": "the second edit" },
+        { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "4. Turn 90° about X", "named": "the third edit" },
+        { "locator": "Button#SendToBlenderButton", "act": "invoke", "named": "Send to Blender is pressed again" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Sent to Blender: Cube, version 2", "named": "the second send" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/session/sent-2.glb", "named": "what the second send wrote is dropped in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "sent-2.glb", "named": "it opens" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "· 48 triangles", "named": "as the subdivided cube the window showed" }
       ]
     },
 

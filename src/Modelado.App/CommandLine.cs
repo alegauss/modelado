@@ -13,11 +13,12 @@ namespace Modelado.App;
 /// null for the API.
 /// </param>
 /// <param name="CloudApis">MOD37: cloud services' API roots by provider id, standing in for their own.</param>
-public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest, string? Releases = null, IReadOnlyDictionary<string, Uri>? CloudApis = null);
+/// <param name="BlenderSession">MOD46: the folder the Blender add-on shares with this window, or null.</param>
+public sealed record AppOptions(string? Open, string? Models, ProviderChoice? Provider, bool HighQuality, string? Manifest, string? Releases = null, IReadOnlyDictionary<string, Uri>? CloudApis = null, string? BlenderSession = null);
 
 /// <summary>
 /// Parses Modelado.exe's arguments:
-/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url  --releases url|off  --cloud-api id=url</c>.
+/// <c>[--open] photo.jpg  --models folder  --provider auto|dml|cpu  --quality standard|high  --manifest url  --releases url|off  --cloud-api id=url  --blender-session folder</c>.
 /// A bare path opens that photo, so "Open with" and drag-onto-the-exe work.
 /// </summary>
 public static class CommandLine
@@ -28,7 +29,7 @@ public static class CommandLine
     public static (AppOptions? Options, string? Error) Parse(IReadOnlyList<string> args)
     {
         ArgumentNullException.ThrowIfNull(args);
-        string? open = null, models = null, manifest = null, releases = null;
+        string? open = null, models = null, manifest = null, releases = null, blender = null;
         Dictionary<string, Uri> cloudApis = new(StringComparer.Ordinal);
         ProviderChoice? provider = null;
         bool high = false;
@@ -61,6 +62,9 @@ public static class CommandLine
                 case "--releases":
                     releases = value;
                     break;
+                case "--blender-session":
+                    blender = value;
+                    break;
                 case "--cloud-api":
                     if (value.Split('=', 2) is not [{ Length: > 0 } id, var url] || !Uri.TryCreate(url.EndsWith('/') ? url : url + "/", UriKind.Absolute, out Uri? api))
                     {
@@ -90,6 +94,6 @@ public static class CommandLine
             }
         }
 
-        return (new AppOptions(open, models, provider, high, manifest, releases, cloudApis), null);
+        return (new AppOptions(open, models, provider, high, manifest, releases, cloudApis, blender), null);
     }
 }

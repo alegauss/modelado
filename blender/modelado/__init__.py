@@ -20,6 +20,9 @@ the price and what the month's budget leaves, and the spend lands in the same le
 The AI group does the same for the selected object (MOD45): a new texture drawn by Ideogram from
 a material's name, and Meshy AI's remesh and retexture, each shown only where About holds the
 service's key, each asking first and one step of Blender's undo.
+
+"Edit in Modelado" (MOD46) opens the selected mesh in the Modelado window. There, each "Send to
+Blender" puts the version shown on the same object, as one undo step, until the window closes.
 """
 
 import json
@@ -49,6 +52,14 @@ def default_cli() -> str:
     if named:
         return named
     return os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Modelado", "modelado-cli.exe")
+
+
+def default_app() -> str:
+    """Where the installer puts the Modelado window (MOD28), unless MODELADO_APP names another."""
+    named = os.environ.get("MODELADO_APP")
+    if named:
+        return named
+    return os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Modelado", "Modelado.exe")
 
 
 def edit_args(kind: str, settings) -> list:
@@ -392,6 +403,30 @@ def run_cloud(obj, action: str, cli: str, settings, extra: tuple = ()) -> dict:
         return report
 
 
+# MOD46: the round trip with the window, over a folder both share (Modelado.Geometry.BlenderSession
+# is the window's half). The add-on writes session.json and the object's mesh; each "Send to
+# Blender" in the window writes sent-N.glb, then sent.json naming it with its sequence.
+def start_session(obj, folder: str, apply_modifiers: bool) -> None:
+    """The object written to the session folder, with session.json naming it for the window."""
+    export_object(obj, os.path.join(folder, "model.glb"), apply_modifiers)
+    with open(os.path.join(folder, "session.json"), "w", encoding="utf-8") as described:
+        json.dump({"object": obj.name, "model": "model.glb"}, described)
+
+
+def read_sent(folder: str):
+    """The window's latest send, {"sequence", "model", "label"}, or None before the first."""
+    try:
+        with open(os.path.join(folder, "sent.json"), encoding="utf-8") as sent:
+            return json.load(sent)
+    except (OSError, ValueError):
+        return None
+
+
+def apply_send(obj, folder: str, sent: dict) -> None:
+    """A send put on the object as MOD43's edits are: its mesh replaced, everything else kept."""
+    replace_mesh(obj, os.path.join(folder, os.path.basename(sent["model"])))
+
+
 def run_edit(obj, args: list, cli: str, apply_modifiers: bool = False) -> dict:
     """One edit, start to end, on the window's thread; the panel's operator runs the CLI off it."""
     with tempfile.TemporaryDirectory(prefix="modelado-") as folder:
@@ -430,14 +465,21 @@ class ModeladoPreferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
     cli: StringProperty(name="modelado-cli", description="modelado-cli.exe, installed with Modelado", subtype="FILE_PATH", default=default_cli())
+    app: StringProperty(name="Modelado", description="Modelado.exe, the window Edit in Modelado opens", subtype="FILE_PATH", default=default_app())
 
     def draw(self, context):
         self.layout.prop(self, "cli")
+        self.layout.prop(self, "app")
 
 
 def cli_path(context) -> str:
     addon = context.preferences.addons.get(__package__)
     return addon.preferences.cli if addon else default_cli()
+
+
+def app_path(context) -> str:
+    addon = context.preferences.addons.get(__package__)
+    return addon.preferences.app if addon else default_app()
 
 
 class MODELADO_OT_edit(bpy.types.Operator):
@@ -681,6 +723,63 @@ class MODELADO_OT_texture(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class MODELADO_OT_round_trip(bpy.types.Operator):
+    """Open the selected mesh in the Modelado window; each Send to Blender there replaces it here"""
+
+    bl_idname = "modelado.round_trip"
+    bl_label = "Edit in Modelado"
+
+    _process = None
+    _timer = None
+    _folder = None
+    _applied = 0
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None and context.active_object.type == "MESH" and context.mode == "OBJECT"
+
+    def invoke(self, context, event):
+        app = app_path(context)
+        if not os.path.isfile(app):
+            self.report({"ERROR"}, f"Modelado was not found at {app}; set it in the add-on's preferences")
+            return {"CANCELLED"}
+
+        self._name = context.active_object.name
+        self._folder = tempfile.TemporaryDirectory(prefix="modelado-session-")
+        start_session(context.active_object, self._folder.name, context.scene.modelado.apply_modifiers)
+        self._process = subprocess.Popen([app, "--blender-session", self._folder.name])
+        self._applied = 0
+        self._timer = context.window_manager.event_timer_add(0.5, window=context.window)
+        context.window_manager.modal_handler_add(self)
+        self.report({"INFO"}, f"{self._name} is open in Modelado; Send to Blender there puts each version here")
+        return {"RUNNING_MODAL"}
+
+    def modal(self, context, event):
+        # Blender stays usable meanwhile: only the timer is this operator's.
+        if event.type != "TIMER":
+            return {"PASS_THROUGH"}
+
+        sent = read_sent(self._folder.name)
+        obj = bpy.data.objects.get(self._name)
+        if sent and sent.get("sequence", 0) > self._applied and obj is not None:
+            try:
+                apply_send(obj, self._folder.name, sent)
+            except RuntimeError as error:
+                self.report({"ERROR"}, f"Edit in Modelado: {error}")
+            else:
+                self._applied = sent["sequence"]
+                bpy.ops.ed.undo_push(message=f"Modelado: {sent.get('label', 'edit')}")
+                self.report({"INFO"}, f"{obj.name}: version {self._applied} from Modelado ({sent.get('label', 'edit')})")
+
+        if self._process.poll() is None:
+            return {"PASS_THROUGH"}
+
+        # The window closed: the session ends, each send already its own undo step.
+        context.window_manager.event_timer_remove(self._timer)
+        self._folder.cleanup()
+        return {"CANCELLED"}
+
+
 class MODELADO_OT_cloud(bpy.types.Operator):
     """Send the selected object to a cloud service, after saying what goes where and for how much"""
 
@@ -792,6 +891,7 @@ class MODELADO_PT_panel(bpy.types.Panel):
             return
 
         layout.label(text=f"{obj.name}: {triangles(obj.data):,} triangles")
+        layout.operator(MODELADO_OT_round_trip.bl_idname, text="Edit in Modelado")
         for kind, amount in (("SIMPLIFY", "simplify_share"), ("SUBDIVIDE", None), ("SMOOTH", "smooth_passes"),
                              ("FILL_HOLES", None), ("PIECES", "pieces_percent"), ("FLATTEN", "flatten_percent")):
             row = layout.row(align=True)
@@ -824,7 +924,7 @@ class MODELADO_PT_panel(bpy.types.Panel):
             box.operator(MODELADO_OT_cloud.bl_idname, text=CLOUD_ACTIONS["RETEXTURE"][0]).action = "RETEXTURE"
 
 
-CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_OT_texture, MODELADO_OT_cloud, MODELADO_PT_panel)
+CLASSES = (ModeladoSettings, ModeladoPreferences, MODELADO_OT_edit, MODELADO_OT_generate, MODELADO_OT_texture, MODELADO_OT_cloud, MODELADO_OT_round_trip, MODELADO_PT_panel)
 
 
 def register():
