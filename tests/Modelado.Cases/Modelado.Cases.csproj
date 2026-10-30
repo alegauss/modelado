@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Winwright" Version="1.1.5" />
+    <PackageReference Include="Winwright" Version="1.1.6" />
   </ItemGroup>
 
 </Project>

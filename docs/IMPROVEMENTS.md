@@ -76,21 +76,3 @@ importing the model.
 
 Done when an object goes to the window, gets three edits, is sent back twice, and both
 sends undo in Blender in order.
-
-### §MOD67 A CLI job in About
-
-MOD65 gave modelado-cli `cloud image-to-3d`, which records each job in the ledger the
-window's About reads (%LOCALAPPDATA%\Modelado\cloud-ledger.jsonl). Its evidence stops at
-that file: tests/Modelado.Cli.Tests/CliJsonTests.cs and the Blender add-on test assert
-CloudLedger.Drift on what the CLI wrote, the call About's "1 job(s), estimated 30,
-charged 30" line is built from, but no UI case opens the window on a ledger the CLI
-wrote. A winwright fixture cannot run a command before the window launches (WW582).
-
-Build, once WW582 ships: a fixture with LOCALAPPDATA staged empty and --cloud-api
-pointing Meshy at the fixture server, whose before-launch commands store the case key
-with `modelado-cli cloud key meshy` and send cases/fixtures/photo.png with `cloud
-image-to-3d`. The case opens About and reads Text#CloudUsage-meshy for "Meshy AI: image
-to 3D: 1 job(s), estimated 30, charged 30." and Button#CloudChip for the month's 30
-credits.
-
-Done when that case passes in cases/window.cases.json.

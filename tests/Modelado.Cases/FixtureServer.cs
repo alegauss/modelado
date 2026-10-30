@@ -200,6 +200,7 @@ public sealed class FixtureServer : IDisposable
         string path = request is [_, var target, ..] ? target : "/";
         long? from = null;
         long body = 0;
+        bool chunked = false;
         string? authorization = null, apiKey = null;
         foreach (string line in lines)
         {
@@ -213,6 +214,10 @@ public sealed class FixtureServer : IDisposable
             {
                 _ = long.TryParse(line[Length.Length..].Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out body);
             }
+            else if (line.StartsWith("transfer-encoding:", StringComparison.OrdinalIgnoreCase) && line.Contains("chunked", StringComparison.OrdinalIgnoreCase))
+            {
+                chunked = true;
+            }
             else if (line.StartsWith(Auth, StringComparison.OrdinalIgnoreCase))
             {
                 authorization = line[Auth.Length..].Trim();
@@ -223,20 +228,58 @@ public sealed class FixtureServer : IDisposable
             }
         }
 
-        // A posted body is read to its end, so the answer never races the upload it answers.
+        // A posted body is read to its end, so the answer never races the upload it answers: closing
+        // on an unread body resets the connection under the client. .NET sends a JSON body chunked,
+        // with no Content-Length (MOD67, where a CLI's upload of the photo failed that way).
+        if (chunked)
+        {
+            while (await ReadLineAsync(stream, stop).ConfigureAwait(false) is { } size
+                && long.TryParse(size.Split(';')[0].Trim(), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long length) && length > 0)
+            {
+                await DrainAsync(stream, length + 2, stop).ConfigureAwait(false);
+            }
+
+            await ReadLineAsync(stream, stop).ConfigureAwait(false); // the blank line after the last chunk
+        }
+        else
+        {
+            await DrainAsync(stream, body, stop).ConfigureAwait(false);
+        }
+
+        return (method, path, from, authorization, apiKey);
+    }
+
+    private static async Task DrainAsync(NetworkStream stream, long count, CancellationToken stop)
+    {
         byte[] drain = new byte[16 * 1024];
-        for (long left = body; left > 0;)
+        for (long left = count; left > 0;)
         {
             int read = await stream.ReadAsync(drain.AsMemory(0, (int)Math.Min(drain.Length, left)), stop).ConfigureAwait(false);
             if (read == 0)
             {
-                break;
+                return;
             }
 
             left -= read;
         }
+    }
 
-        return (method, path, from, authorization, apiKey);
+    // One CRLF-ended line, without its end; null at the end of the stream.
+    private static async Task<string?> ReadLineAsync(NetworkStream stream, CancellationToken stop)
+    {
+        StringBuilder line = new();
+        byte[] one = new byte[1];
+        while (await stream.ReadAsync(one, stop).ConfigureAwait(false) == 1)
+        {
+            if (one[0] == '\n')
+            {
+                return line.ToString().TrimEnd('\r');
+            }
+
+            line.Append((char)one[0]);
+        }
+
+        return line.Length > 0 ? line.ToString() : null;
     }
 
     private static Task WriteAsync(NetworkStream stream, string text, CancellationToken stop) =>

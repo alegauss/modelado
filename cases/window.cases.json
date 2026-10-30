@@ -169,6 +169,20 @@
       "shareable": false
     },
     {
+      // MOD67: before the window starts, modelado-cli stores the case's Meshy key and sends the
+      // photo to the stand-in, into the same LOCALAPPDATA, so the window opens on what the CLI wrote.
+      // The CLI is the Debug build's: a before command does not take {configuration} yet (WW585).
+      "name": "a window started after modelado-cli sent a photo to Meshy AI",
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "before": [
+        { "run": "tools/Modelado.Cli/bin/Debug/net10.0/modelado-cli.exe", "arguments": ["cloud", "key", "meshy", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"], "input": "msy_case_key" },
+        { "run": "tools/Modelado.Cli/bin/Debug/net10.0/modelado-cli.exe", "arguments": ["cloud", "image-to-3d", "{root}/cases/fixtures/photo.png", "-o", "{files}/meshy.glb", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"] }
+      ],
+      "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD27: no --manifest, so the built-in list is the embedded one and nothing of it is fetched;
       // LOCALAPPDATA staged empty for sources of this run's own, and a models folder of its own.
       "name": "a window with a photo open and no model sources added",
@@ -856,6 +870,19 @@
         { "locator": "Button#CloudConsentSend", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and holds Send" },
         { "locator": "Button#CloudChip", "act": "invoke", "named": "the chip is pressed" },
         { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI: image to 3D: 1 job\\(s\\), estimated 30, charged 30\\.", "named": "About shows the estimate against the charge" }
+      ]
+    },
+
+    {
+      "name": "a Meshy job sent from modelado-cli is counted in the window, on the status bar and in About",
+      "catches": "a CLI that records its jobs somewhere the window does not read, or in a form About does not count",
+      "filed": "MOD67",
+      "tags": ["cloud", "about", "status-bar", "cli"],
+      "fixture": "a window started after modelado-cli sent a photo to Meshy AI",
+      "steps": [
+        { "locator": "Button#CloudChip", "act": "read", "reads": "name", "expect": "Meshy AI · 30 credits this month", "named": "the status bar counts the CLI's job" },
+        { "locator": "Button#CloudChip", "act": "invoke", "named": "the chip is pressed" },
+        { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI: image to 3D: 1 job\\(s\\), estimated 30, charged 30\\.", "named": "About shows the CLI's job, estimated against charged" }
       ]
     },
 

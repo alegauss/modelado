@@ -20,8 +20,6 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD67** (deps: winwright WW582) **No UI case shows a job sent from modelado-cli cloud in the window's About** — MOD65's evidence stops at the ledger file the CLI writes; the window never opens on it, since a fixture cannot run the CLI first. → §MOD67
-
 ## Done when — Block H
 
 - **Nothing leaves the PC without the user's explicit consent to that action** Cloud
