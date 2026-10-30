@@ -214,14 +214,16 @@ export const words = {
   speed: {
     eyebrow: "Speed",
     title: "Measured, not promised",
-    lead: "On the CPU alone, 8 cores of an Intel Core i7-14700 with 8 GB of memory, the published models, a 512 px photo:",
+    // MOD64: the GPU column from three runs each of modelado-cli --provider dml on the same photos.
+    lead: "Each a fresh run of modelado-cli with the published models on a 512 px photo: on the CPU alone, 8 cores of an Intel Core i7-14700 with 8 GB of memory, and on an NVIDIA GeForce RTX 4060 (8 GB) through DirectML.",
+    columns: { what: "Operation", cpu: "CPU", gpu: "GPU" },
     rows: [
-      { what: "3D Object, default grid (256)", time: "about 20 s" },
-      { what: "3D Object, finer grid (320)", time: "25 to 32 s" },
-      { what: "Relief, default grid (256)", time: "about 1 s" },
-      { what: "Simplify 150,000 triangles to 45,000", time: "under 1 s" },
+      { what: "3D Object, default grid (256)", cpu: "about 20 s", gpu: "about 4 s" },
+      { what: "3D Object, finer grid (320)", cpu: "25 to 32 s", gpu: "about 4 s" },
+      { what: "Relief, default grid (256)", cpu: "about 1 s", gpu: "about 1 s" },
+      { what: "Simplify 150,000 triangles to 45,000", cpu: "under 1 s", gpu: "runs on the CPU" },
     ],
-    note: "A GPU with DirectML takes the inference off the CPU; the status bar names the one in use.",
+    note: "Most of a GPU run is loading the model onto it. The first run on a new GPU takes several seconds longer while DirectML prepares the models. The status bar names the GPU in use.",
   },
   models: {
     eyebrow: "The models",

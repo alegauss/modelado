@@ -65,12 +65,20 @@ export function Speed() {
           <h2>{w.title}</h2>
         </div>
         <p className="sec-lead">{w.lead}</p>
-        <table className="facts">
+        <table className="facts facts-times">
+          <thead>
+            <tr>
+              <th scope="col">{w.columns.what}</th>
+              <th scope="col">{w.columns.cpu}</th>
+              <th scope="col">{w.columns.gpu}</th>
+            </tr>
+          </thead>
           <tbody>
             {w.rows.map((row) => (
               <tr key={row.what}>
                 <th scope="row">{row.what}</th>
-                <td>{row.time}</td>
+                <td>{row.cpu}</td>
+                <td>{row.gpu}</td>
               </tr>
             ))}
           </tbody>

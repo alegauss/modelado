@@ -404,6 +404,16 @@ section {
 .facts a {
   color: inherit;
 }
+/* MOD64: the speed table's CPU and GPU columns, read down as numbers. */
+.facts-times thead th {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--vg-muted-foreground);
+}
+.facts-times td,
+.facts-times thead th:not(:first-child) {
+  text-align: right;
+}
 .facts-sub {
   display: block;
   font-weight: 400;
