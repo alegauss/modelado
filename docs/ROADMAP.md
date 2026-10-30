@@ -20,8 +20,6 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- ⏳ **MOD46** (deps: MOD12 ✅, MOD43 ✅, winwright WW586) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — The standalone window's Export card has no Open in Blender, which would find Blender and start it importing the model. → §MOD46
-
 ## Done when — Block H
 
 - **Nothing leaves the PC without the user's explicit consent to that action** Cloud
@@ -40,12 +38,6 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
-
-## Done when — MOD46
-
-- **Open in Blender starts Blender importing the shown model** On the guest with Blender
-  installed, a UI case presses Open in Blender on the Export card and a Blender process
-  starts with the model's GLB; with no Blender found, the button is absent.
 
 ## Non-goals
 

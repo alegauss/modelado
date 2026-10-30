@@ -169,6 +169,23 @@
       "shareable": false
     },
     {
+      // MOD46: Open in Blender with a stub for Blender, so no Blender window needs the desk: a
+      // program that exits at once, staged under Blender's name and named by MODELADO_BLENDER.
+      "name": "a window on the cube, with a stub standing in for Blender",
+      "files": ["cases/fixtures/cube.obj", { "from": "%SystemRoot%\\System32\\whoami.exe", "to": "stub/blender.exe" }],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off"],
+      "variables": { "MODELADO_BLENDER": "{files}/stub/blender.exe" },
+      "shareable": false
+    },
+    {
+      // MOD46: MODELADO_BLENDER naming nothing, so this window finds no Blender.
+      "name": "a window on the cube where no Blender is found",
+      "files": ["cases/fixtures/cube.obj"],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off"],
+      "variables": { "MODELADO_BLENDER": "{files}/no-blender/blender.exe" },
+      "shareable": false
+    },
+    {
       // MOD46: the folder the Blender add-on's "Edit in Modelado" prepares, with the cube as its object.
       "name": "a window the Blender add-on opened on its object Cube",
       "files": [{ "from": "cases/fixtures/cube.obj", "to": "session/cube.obj" }, { "from": "cases/fixtures/blender-session.json", "to": "session/session.json" }],
@@ -178,12 +195,12 @@
     {
       // MOD67: before the window starts, modelado-cli stores the case's Meshy key and sends the
       // photo to the stand-in, into the same LOCALAPPDATA, so the window opens on what the CLI wrote.
-      // The CLI is the Debug build's: a before command does not take {configuration} yet (WW585).
+      // The CLI is the build under test's, as the window is (WW585).
       "name": "a window started after modelado-cli sent a photo to Meshy AI",
       "variables": { "LOCALAPPDATA": "{files}" },
       "before": [
-        { "run": "tools/Modelado.Cli/bin/Debug/net10.0/modelado-cli.exe", "arguments": ["cloud", "key", "meshy", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"], "input": "msy_case_key" },
-        { "run": "tools/Modelado.Cli/bin/Debug/net10.0/modelado-cli.exe", "arguments": ["cloud", "image-to-3d", "{root}/cases/fixtures/photo.png", "-o", "{files}/meshy.glb", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"] }
+        { "run": "tools/Modelado.Cli/bin/{configuration}/net10.0/modelado-cli.exe", "arguments": ["cloud", "key", "meshy", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"], "input": "msy_case_key" },
+        { "run": "tools/Modelado.Cli/bin/{configuration}/net10.0/modelado-cli.exe", "arguments": ["cloud", "image-to-3d", "{root}/cases/fixtures/photo.png", "-o", "{files}/meshy.glb", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"] }
       ],
       "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
       "reaches": ["127.0.0.1:47631"],
@@ -902,6 +919,33 @@
         { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/session/sent-2.glb", "named": "what the second send wrote is dropped in" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "sent-2.glb", "named": "it opens" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "· 48 triangles", "named": "as the subdivided cube the window showed" }
+      ]
+    },
+
+    {
+      "name": "the Export card's Open in Blender starts Blender importing the model shown",
+      "catches": "a button that starts nothing, starts Blender without the model, or names another file",
+      "filed": "MOD46",
+      "tags": ["blender", "export", "process"],
+      "fixture": "a window on the cube, with a stub standing in for Blender",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "Button#OpenInBlender", "act": "invoke", "named": "Open in Blender is pressed" },
+        { "process": "starts", "act": "read", "matches": "^blender\\.exe --python-expr .*import_scene\\.gltf.*cube\\.glb", "named": "Blender is started importing the cube" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Opened in Blender: cube.glb", "named": "and the card says so" }
+      ]
+    },
+
+    {
+      "name": "the Export card offers no Open in Blender where no Blender is found",
+      "catches": "a button that would start a Blender the machine does not have",
+      "filed": "MOD46",
+      "tags": ["blender", "export"],
+      "fixture": "a window on the cube where no Blender is found",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "Button#ExportSaveAs", "act": "read", "reads": "name", "expect": "Save as…", "named": "the Export card is there" },
+        { "locator": "Button#OpenInBlender", "act": "read", "absent": true, "named": "without Open in Blender" }
       ]
     },
 

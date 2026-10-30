@@ -306,6 +306,7 @@ public partial class MainWindow : Window, IDisposable
         HistoryCard.Visibility = Visibility.Visible;
         ExportCard.Visibility = Visibility.Visible;
         UpdateExportCard();
+        UpdateOpenInBlender();
         _ = RefreshFirstUseAsync();
         MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
             $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";

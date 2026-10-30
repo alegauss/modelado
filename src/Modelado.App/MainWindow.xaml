@@ -546,6 +546,10 @@
                        Margin="0,8,0,0" Visibility="Collapsed" />
             <Button x:Name="ExportSaveAs" AutomationProperties.AutomationId="ExportSaveAs" Content="Save as…" Command="SaveAs"
                     Margin="0,10,0,0" Padding="0,6" HorizontalAlignment="Stretch" />
+            <!-- MOD46: shown only where Blender is found. -->
+            <Button x:Name="OpenInBlender" AutomationProperties.AutomationId="OpenInBlender" Content="Open in Blender"
+                    Margin="0,6,0,0" Padding="0,6" HorizontalAlignment="Stretch" Visibility="Collapsed" Click="OnOpenInBlender"
+                    ToolTip="Start Blender with this model imported into an empty scene" />
             <TextBlock x:Name="ExportStatus" AutomationProperties.AutomationId="ExportStatus" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
           </StackPanel>

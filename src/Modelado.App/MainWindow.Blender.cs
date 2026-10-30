@@ -39,6 +39,33 @@ public partial class MainWindow
         ShowSource($"{blenderSession.ObjectName} from Blender");
     }
 
+    // Looked for once: Blender does not come and go while the window is open.
+    private readonly Lazy<string?> blender = new(BlenderLauncher.Find);
+
+    private void UpdateOpenInBlender() =>
+        OpenInBlender.Visibility = mesh is not null && blender.Value is not null ? Visibility.Visible : Visibility.Collapsed;
+
+    private void OnOpenInBlender(object sender, RoutedEventArgs e)
+    {
+        if (busy || mesh is null || blender.Value is not { } program)
+        {
+            return;
+        }
+
+        string name = Path.GetFileNameWithoutExtension(blenderSession?.ObjectName ?? photoPath ?? "model");
+        try
+        {
+            string glb = BlenderLauncher.Open(program, mesh, name);
+            ExportStatus.Text = $"Opened in Blender: {Path.GetFileName(glb)}";
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
+        {
+            ExportStatus.Text = $"Blender could not be started: {error.Message}";
+        }
+
+        ExportStatus.Visibility = Visibility.Visible;
+    }
+
     private void OnSendToBlender(object sender, RoutedEventArgs e)
     {
         if (busy || blenderSession is null || mesh is null)

@@ -74,7 +74,10 @@ Retexture, each shown only when About holds that service's key.
 The add-on's **Edit in Modelado** opens the selected mesh in the Modelado window (its path is in
 the add-on's preferences), with the object's name in the caption. There, **Send to Blender** on
 the toolbar puts the version shown back on the same object, keeping its transform and materials,
-as one step of Blender's undo; send as often as you like, until the window is closed.
+as one step of Blender's undo; send as often as you like, until the window is closed. The other
+way, the window's Export card offers **Open in Blender** wherever Blender is found
+(`MODELADO_BLENDER`, then the program .blend files open with, then the usual install folders): it
+starts Blender with the model shown imported into an empty scene.
 
 ## Requirements
 
