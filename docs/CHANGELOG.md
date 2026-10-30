@@ -94,3 +94,6 @@
 - ✅ **MOD65** **Blender's Generate from photo offers only the local operations, not Meshy AI's image to 3D** — modelado-cli cloud image-to-3d prices, sends and records a Meshy job with the window's key, budgets and ledger; Blender's 3D Object with Meshy AI uses it after consent.
 - ✅ **MOD67** **No UI case shows a job sent from modelado-cli cloud in the window's About** — A UI case runs modelado-cli before the window (winwright 1.1.6's before commands) and reads its Meshy job on the status bar and in About; the stand-in now drains chunked uploads.
 - ✅ **MOD46** **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — The Export card's Open in Blender starts Blender importing the model shown, beside the round trip that sends edits back (design superseded: MODELADO_BLENDER, not a path setting).
+
+## Block J — Local model quality: past TripoSR
+

@@ -17,3 +17,6 @@
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models
+
+## Block J — Local model quality: past TripoSR
+
