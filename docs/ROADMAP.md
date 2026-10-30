@@ -20,7 +20,7 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- ⏳ **MOD46** (deps: MOD12 ✅, MOD43 ✅) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — The standalone window's Export card has no Open in Blender, which would find Blender and start it importing the model. → §MOD46
+- ⏳ **MOD46** (deps: MOD12 ✅, MOD43 ✅, winwright WW586) **There is no round trip: a Blender object cannot be opened in the Modelado window and sent back to the same object** — The standalone window's Export card has no Open in Blender, which would find Blender and start it importing the model. → §MOD46
 
 ## Done when — Block H
 
