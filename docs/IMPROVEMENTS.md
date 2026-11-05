@@ -32,6 +32,132 @@ written down instead.
 Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
 reason it cannot be is recorded here and in the product sheet.
 
+### §MOD73 MOD73 — The Store package, built from the publish folder
+
+The name is reserved in Partner Center (05/11/2026): Package/Identity/Name
+`Alegauss.Modelado`, Publisher `CN=1ADDE401-7D09-4729-8E49-C28AEEA80170`,
+PublisherDisplayName `Alegauss`, Package Family Name `Alegauss.Modelado_d7cpypw1jc0bm`,
+Store ID `9PB86WW5NRR2`. The Store signs the package, so the manifest's Identity must
+match these values exactly or the upload is refused.
+
+Follow claude-tray's `build\msix\AppxManifest.xml` and `build\build-msix.ps1` (T409,
+T416): a `build\msix\AppxManifest.xml` whose `{VERSION}` comes from `<Version>` in
+`Directory.Build.props` as X.Y.Z.0 (the Store requires the fourth part to be 0); a
+layout in `artifacts\msix\layout` holding the same self-contained x64 publish folder the
+Inno installer takes (both exes, the licences, no pdb or debug DLLs); Store logos drawn
+by `tools\Modelado.Icon` in every targetsize and altform-unplated variant; `makepri` so
+the taskbar icon is not drawn on an accent plate; `makeappx pack` unsigned; and
+`-Register` to install the layout on the test VM in developer mode. Only `runFullTrust`
+as a capability, with claude-tray's justification reused.
+
+Done when `build\build-msix.cmd` writes `Modelado.msix` and the registered layout starts
+Modelado from the Start menu on the VM.
+
+### §MOD74 MOD74 — The updater stands down inside the package
+
+MOD30 and MOD31 check GitHub for a newer release and, on a click in About, download the
+installer, verify it against SHA256SUMS and run it silently. Inside an MSIX package that
+is both against the Store's policy (an app must not update itself outside the Store) and
+broken: the installer would write a second copy under `%LOCALAPPDATA%\Programs\Modelado`
+beside the package.
+
+Copy claude-tray's `src\Tray\PackageIdentity.cs` (T409): `GetCurrentPackageFullName`
+answering ERROR_INSUFFICIENT_BUFFER means the process runs with package identity. Under
+a package, `ReleaseCheck` never runs, About hides the update row and says updates come
+from the Microsoft Store, and `--releases` is ignored. The unpackaged build is
+unchanged.
+
+Done when a case on the registered layout shows About without the update offer and no
+request reaches the releases URL, and the installed build still offers it.
+
+### §MOD75 MOD75 — File associations declared in the manifest
+
+`build\installer.iss` registers the `Modelado.Model` ProgID, `OpenWithProgids` for
+`.glb`, `.obj`, `.ply` and `.stl`, and `Applications\Modelado.exe\SupportedTypes`. A
+packaged app's registry writes land in the package's own hive, where Explorer never
+looks, so a Store install would never appear in Open with.
+
+Declare one `uap:FileTypeAssociation` (name `modelado.model`, display name "3D model",
+the app's logo) with the four types in the manifest from MOD73. Activation passes the
+file as the first argument, which `CommandLine` already reads as `--open`. The
+installer's registry entries stay for the unpackaged build.
+
+Done when, on the registered layout, Open with on a `.glb` and an `.stl` lists Modelado
+and opening one shows it in the viewer.
+
+### §MOD76 MOD76 — Execution aliases, and the add-on finding them
+
+The Blender add-on's default for Edit in Modelado is
+`%LOCALAPPDATA%\Programs\Modelado\Modelado.exe` (`blender\modelado\__init__.py`,
+`default_app`), the Inno install folder. A Store install has no such file, and its real
+folder under `C:\Program Files\WindowsApps` refuses to be started from outside the
+package.
+
+Declare `uap5:AppExecutionAlias` entries in the manifest from MOD73: `Modelado.exe` for
+the window and `modelado-cli.exe` for the command line, which needs its own
+`Application` element since an alias names an application. The add-on's `default_app`
+then tries the install folder first and falls back to the alias under
+`%LOCALAPPDATA%\Microsoft\WindowsApps`, so both builds work without the person setting
+the path. The add-on stays outside the Store package, as it is today.
+
+Done when, on the registered layout, `modelado-cli --version` runs from a fresh shell
+and the add-on's Edit in Modelado opens the window with the Blender object, without the
+path set by hand.
+
+### §MOD77 MOD77 — Data folders under the package's file system redirection
+
+`ModelLibrary` downloads to `%LOCALAPPDATA%\Modelado\models` unless a folder is chosen,
+and `SettingsFile`, `CloudKeys` and `CloudLedger` sit beside it. In a full trust package
+Windows redirects new files under AppData into the package's private `LocalCache`.
+Inside the process nothing changes, but About's "open folder" starts `explorer.exe`,
+which runs outside the package and sees the real, empty path; the sizes and the
+remove-all question would name a folder the person cannot find; and the files go away on
+uninstall, which the consent text should say.
+
+Under a package (MOD74's PackageIdentity), name and open the redirected path,
+`%LOCALAPPDATA%\Packages\Alegauss.Modelado_d7cpypw1jc0bm\LocalCache\Local\Modelado`, and
+say the downloads are removed with the app. A folder the person chose stays outside the
+redirection and keeps working. Turning redirection off with `unvirtualizedResources` is
+the other way, but it is a second restricted capability to justify, so it is kept only
+if this one fails.
+
+Done when, on the registered layout, a model downloads, About opens the folder holding
+it and reports its size, and the DPAPI keys still decrypt after a restart.
+
+### §MOD78 MOD78 — winwright cases on the registered package
+
+MOD74 to MOD77 each change behaviour only when the process has package identity, and the
+unpackaged cases in `cases\` cannot see that. As with every other app check, these run
+on the VMware guest through winwright's `run-tests-vm.cmd`, never on the host.
+
+A fixture registers `artifacts\msix\layout` with `Add-AppxPackage -Register` (developer
+mode on the guest) and removes the package afterwards. The cases then start Modelado
+through its alias and check: About has no update offer and names the redirected models
+folder; a `.glb` opened through its file association shows in the viewer; `modelado-cli
+--version` answers from a fresh shell; and a downloaded model survives a restart. Where
+winwright cannot spell a step (registering a package, activating a file association),
+file it with the winwright-friction skill instead of scripting around it here.
+
+Done when the packaged cases pass on the VM beside the existing suite, and the
+unpackaged cases still pass.
+
+### §MOD79 MOD79 — Store listing and the first submission
+
+Store ID `9PB86WW5NRR2` (MOD73). Port claude-tray's `build\store-listing-lib.ps1`,
+`store-listing-csv.ps1`, `store-shots.ps1` and `store-submit.ps1`: the listing text in
+English and Portuguese, screenshots taken from the real window with a generated model in
+the viewer, hero and box art drawn by `tools\Modelado.Icon`, and the package sent
+through the submission API.
+
+The answers Modelado needs of its own:
+- privacy policy URL on the site (Block G), covering the local-only photos, the optional Meshy and Ideogram calls with the person's own keys, and the site's consented analytics;
+- certification notes: the ONNX models are data downloaded from Hugging Face with pinned SHA-256 digests after consent, not code; `runFullTrust` is needed for ONNX Runtime with DirectML and for starting Blender;
+- the Store's current rules for apps that generate content with AI, checked against the cloud text-to-texture feature, with whatever reporting path they require;
+- the age rating questionnaire.
+
+Done when the submission passes certification and Modelado is listed, which closes
+MOD72.
+
 ## Block G — Public site for 3D modelling
 
 ### §MOD69 MOD69 — A README that leads to the site and the release
