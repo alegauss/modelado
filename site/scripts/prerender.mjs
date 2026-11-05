@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import { ogCardSvg, prerenderSite, renderOgCard } from "@viglet/viglet-design-system/vite";
 
-import { render, ROUTES, canonicalUrl, outputDir, OG_IMAGE } from "../dist-server/entry-server.js";
+import { render, ROUTES, canonicalUrl, jsonLd, outputDir, OG_IMAGE } from "../dist-server/entry-server.js";
 
 const siteDir = join(dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = join(siteDir, "dist");
@@ -45,5 +45,13 @@ const written = prerenderSite({
   git: { cwd: siteDir },
   log: console.log,
 });
+
+// The JSON-LD that says the page is an app's, which the shared prerender does not write.
+// Replace-or-throw, like the prerender; "<" escaped so no text in it can close the script early.
+const page = join(distDir, "index.html");
+const html = readFileSync(page, "utf8");
+if (!html.includes("</head>")) throw new Error(`${page} lost its </head>`);
+const ld = JSON.stringify(jsonLd()).replace(/</g, "\\u003c");
+writeFileSync(page, html.replace("</head>", () => `<script type="application/ld+json">${ld}</script>\n  </head>`));
 
 console.log(`prerender: ${written.length} route(s), sitemap.xml and robots.txt written to dist/`);

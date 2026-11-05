@@ -1,5 +1,6 @@
 import { SiteButton, SiteFooter, SiteNav, SiteThemeToggle } from "@viglet/viglet-design-system/site";
 import { BASE, THEME_KEY, asset, releasesUrl, words } from "../content";
+import { ConsentSettings } from "./Consent";
 
 // The nav and the footer, drawn by the design system's site layer so Modelado sits in the same
 // family as the other product sites. Everything between them is this product's own.
@@ -22,5 +23,15 @@ export function Nav() {
 }
 
 export function Footer() {
-  return <SiteFooter brand={brand} links={words.footer.links} disclaimer={words.footer.disclaimer} />;
+  return (
+    <SiteFooter
+      brand={brand}
+      links={words.footer.links}
+      disclaimer={
+        <>
+          {words.footer.disclaimer} <ConsentSettings />
+        </>
+      }
+    />
+  );
 }
