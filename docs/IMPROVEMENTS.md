@@ -32,6 +32,40 @@ The rail is keyboard reachable (arrows move, Enter selects). Existing winwright 
 first select the rail icon of the card they drive. A new case checks that pressing each
 icon shows that card alone, and that the choice survives a restart.
 
+### §MOD99 MOD99 — The logos of the services the app drives
+
+Ship the marks of Meshy AI, Ideogram and Blender as app resources (SVG converted to XAML
+DrawingImage, or PNG at 1x, 2x and 4x), in a light and a dark variant where the brand
+provides them. Each logo is taken from the owner's press or brand kit and used under
+that owner's guidelines: unmodified, kept to its clear space, and never implying
+endorsement. The kit's URL and terms are recorded beside each file, and the logos are
+credited under Third-party software. Blender's logo follows the Blender Foundation's
+logo usage page. Before shipping, ask Meshy and Ideogram whether their terms allow use
+in a Store app, and drop any logo whose answer is no. ICloudProvider gains a Logo next
+to DisplayName, so every place that names a service can show its mark: the Ideogram
+button on the drop zone, the Cloud 3D card, the status-bar budget chip, the consent
+lines and the Blender actions. A local model has no product logo, and none is invented
+for one. An architecture test checks that every logo file has its source and terms
+recorded.
+
+### §MOD100 MOD100 — Settings with pages, About on its own
+
+AboutPanel in MainWindow.xaml is one ScrollViewer with eleven sections in sequence.
+Split it in two. The status-bar button "About and models" becomes a gear, Settings, with
+a left navigation as in Windows Settings, and About becomes a small page of its own.
+Services: one card per service, Meshy, Ideogram and Blender, with its logo from MOD99, a
+state chip (Connected, No key, Key rejected), the key's source from MOD96, this month's
+spend as a bar against the budget, and Get a key. The usage detail folds under
+"Details". Models: one tile per model, with a state badge (Downloaded, Not downloaded,
+Downloading %) and size, grouped by the operation that uses it, with Download or Remove
+on each tile and one "Download missing" button (MOD97). Folders and model sources fold
+under Advanced. Processing: where inference runs, the GPU found, the provider choice.
+About: icon, version, update source, licence, third-party software and what is
+downloaded. Text shrinks to one line per item, and the explanations move to tooltips or
+an info icon. Existing AutomationIds are kept where the control survives, so the cases
+only add a navigation step. Cases press each page and find its key control. MOD96 and
+MOD97 land inside these pages, whichever ships first.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
