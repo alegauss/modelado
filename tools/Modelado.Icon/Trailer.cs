@@ -306,7 +306,12 @@ internal static class Trailer
         {
             "-y", "-loglevel", "error",
             "-f", "rawvideo", "-pix_fmt", "rgba", "-s", $"{Width}x{Height}", "-r", $"{Fps}", "-i", "-",
-            "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+            // The Store refuses a trailer with no audio channel ("No audio channels"), so a silent
+            // stereo track runs under the picture.
+            "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
+            "-map", "0:v", "-map", "1:a", "-shortest",
+            "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
             output,
         })
         {

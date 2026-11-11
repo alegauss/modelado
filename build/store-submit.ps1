@@ -110,9 +110,19 @@ if ($CommitOnly) {
 
 if ($pendingId) {
     $sub = Api 'Get' "$base/submissions/$pendingId"
-    if ($sub.status -ne 'PendingCommit') { throw "The pending submission is '$($sub.status)'; only one in PendingCommit can be edited." }
-    Write-Host 'reusing it: a pending submission made on the Partner Center page is refused by the API; delete it there and run again'
-} else {
+    # A commit refused by validation leaves the submission in CommitFailed, which the API will not
+    # update ("delete the submission and create a new one"): it goes, and a fresh clone takes its place.
+    if ($sub.status -eq 'CommitFailed') {
+        Api 'Delete' "$base/submissions/$pendingId" | Out-Null
+        Write-Host "deleted $pendingId, whose commit had failed"
+        $pendingId = $null
+    } elseif ($sub.status -ne 'PendingCommit') {
+        throw "The pending submission is '$($sub.status)'; only one in PendingCommit can be edited."
+    } else {
+        Write-Host 'reusing it: a pending submission made on the Partner Center page is refused by the API; delete it there and run again'
+    }
+}
+if (-not $pendingId) {
     $sub = Api 'Post' "$base/submissions"
     Write-Host "submission created: $($sub.id)"
 }
