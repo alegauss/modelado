@@ -142,8 +142,11 @@ folder; a `.glb` opened through its file association shows in the viewer; `model
 winwright cannot spell a step (registering a package, activating a file association),
 file it with the winwright-friction skill instead of scripting around it here.
 
-Done when the packaged cases pass on the VM beside the existing suite, and the
-unpackaged cases still pass.
+In place (11/11/2026): `build\check-msix-vm.ps1` stages the layout and
+`build\check-msix.ps1` registers it on the guest, which refuses it (0x80073CFF) while
+Developer Mode is off; winwright's WW618 asks the runner to prepare that. Done when the
+packaged cases pass on the VM beside the existing suite, and the unpackaged cases still
+pass.
 
 ### §MOD79 MOD79 — Store listing and the first submission
 
