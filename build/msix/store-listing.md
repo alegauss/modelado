@@ -20,7 +20,12 @@ without the brackets.
 
 1. `powershell -NoProfile -File build\store-shots-vm.ps1` captures the window on the VMware guest once
    and composes it in every language, into `artifacts\store-shots\<language>\screenshot-1..4.png`.
-2. In Partner Center, Store listings > Export listings gives the CSV; `powershell -NoProfile -File
+2. `powershell -NoProfile -File build\store-trailer.ps1` renders the trailers, and
+   `powershell -NoProfile -File build\store-submit.ps1` sends every listing, screenshot, the art and
+   the trailers through the submission API (`-DryRun` reads only; without `-Commit` the submission
+   waits in Partner Center to be read, then `-CommitOnly` sends it). It needs an Entra app with the
+   Manager role, in `STORE_TENANT_ID`, `STORE_CLIENT_ID` and `STORE_CLIENT_SECRET`.
+3. Without the API: in Partner Center, Store listings > Export listings gives the CSV; `powershell -NoProfile -File
    build\store-listing-csv.ps1 -Template <that .csv>` fills every language's text from this file into
    `artifacts\store-listing\`, to import back. The import refuses images named by file, so the
    screenshots go up on each language's page (or through the submission API).
