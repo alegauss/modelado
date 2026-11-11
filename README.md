@@ -125,7 +125,8 @@ release exists, sending only its name and version, and says so in the status bar
 checks by hand and turns the automatic check off; `--releases off` skips it for one run. Its
 **Update and restart** downloads the installer, refuses it unless it matches the release's
 `SHA256SUMS`, runs it silently over the installed copy and starts Modelado again. It never runs
-by itself, and it asks first when the model shown has not been saved.
+by itself, and it asks first when the model shown has not been saved. A copy installed from the
+Microsoft Store never checks: About says its updates come from the Store.
 
 ## Building from source
 

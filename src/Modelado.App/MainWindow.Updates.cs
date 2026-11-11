@@ -26,7 +26,9 @@ public partial class MainWindow
     private bool checkingUpdates;
 
     // --releases off stops the automatic check for this run; a URL stands in for GitHub's API.
-    private bool AutomaticUpdates => options.Releases != "off" && UpdateSetting.Load(SettingsFile.DefaultPath);
+    // MOD74: under an MSIX package the Store owns updates, so nothing here asks GitHub or offers an
+    // installer, whatever --releases says.
+    private bool AutomaticUpdates => !PackageIdentity.IsPackaged && options.Releases != "off" && UpdateSetting.Load(SettingsFile.DefaultPath);
 
     private string? ReleasesUrl => options.Releases is null or "off" ? null : options.Releases;
 
@@ -47,7 +49,7 @@ public partial class MainWindow
 
     private async Task CheckForUpdatesAsync(bool asked)
     {
-        if (checkingUpdates || (!asked && !AutomaticUpdates))
+        if (PackageIdentity.IsPackaged || checkingUpdates || (!asked && !AutomaticUpdates))
         {
             return;
         }
@@ -91,6 +93,18 @@ public partial class MainWindow
 
     private void ShowUpdate()
     {
+        if (PackageIdentity.IsPackaged)
+        {
+            AboutUpdateStatus.Text = "Updates come from the Microsoft Store.";
+            UpdateChip.Visibility = Visibility.Collapsed;
+            AboutCheckUpdates.Visibility = Visibility.Collapsed;
+            AboutReleasePage.Visibility = Visibility.Collapsed;
+            AboutInstallUpdate.Visibility = Visibility.Collapsed;
+            AboutUpdateConfirm.Visibility = Visibility.Collapsed;
+            AboutAutoUpdate.Visibility = Visibility.Collapsed;
+            return;
+        }
+
         UpdateChip.Content = newerRelease is { } newer ? $"Update {newer.Version} available" : "";
         UpdateChip.Visibility = newerRelease is null ? Visibility.Collapsed : Visibility.Visible;
         AboutUpdateStatus.Text = updateSaid;
@@ -109,7 +123,7 @@ public partial class MainWindow
 
     private async void OnInstallUpdate(object sender, RoutedEventArgs e)
     {
-        if (newerRelease is null || installingUpdate)
+        if (PackageIdentity.IsPackaged || newerRelease is null || installingUpdate)
         {
             return;
         }

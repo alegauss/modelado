@@ -66,6 +66,7 @@
 - ✅ **MOD30** **An installed copy has no way to learn that a newer release exists** — The window checks GitHub for a newer release at start and daily, shows it as a status-bar chip, and About checks by hand or turns it off (design recorded in `src/Modelado.Inference/ReleaseCheck.cs`).
 - ✅ **MOD31** **A newer release found cannot be installed from the app; it has to be downloaded and run by hand** — About's Update and restart fetches the installer, refuses it unless SHA256SUMS matches, runs it silently and relaunches; the guest proved both (design superseded: a running operation must end first).
 - ✅ **MOD73 (package built)** **No MSIX package exists for the identity reserved in Partner Center, so nothing can be uploaded to the Store** — build-msix.cmd packs the installer's publish folder with the reserved identity, the logos and an en-us-only index into an unsigned Modelado.msix.
+- ✅ **MOD74 (code)** **A Store install would still offer to download and run the Inno installer over itself from About** — Under package identity the release check never runs, About says updates come from the Store and hides every update control; unpackaged update cases still pass.
 
 ## Block G — Public site for 3D modelling
 
