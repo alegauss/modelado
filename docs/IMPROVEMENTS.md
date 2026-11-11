@@ -20,6 +20,21 @@ and finds both listed in order.
 
 ## Block D — Model downloads
 
+### §MOD97 MOD97 — Every model About knows of, downloaded or not
+
+FillAbout in MainWindow.About.cs builds both the Models list and the Downloads list from
+library.Installed(), so a model that was never fetched, or was removed, is simply
+absent. Meanwhile, OnAboutDownloadAll fetches ObjectReconstruction.Models,
+ReliefReconstruction.Models(true) and Upscaling.Model without saying which ones are
+missing. Build the Downloads list from that same set, together with any model from an
+added source, and give each row its state: "Downloaded · 800 MB" with Remove, or "Not
+downloaded · 800 MB, used by Make 3D" with Download. Rows flip in place while a download
+runs. The Download everything button names what it will fetch and its total size
+("Download 2 missing, 847 MB") and disables itself when nothing is missing. The Models
+list above keeps describing licences, and also shows a missing model as missing. A case
+removes one fixture model, finds its row marked as not downloaded with a Download
+button, downloads it, and finds the row back to downloaded.
+
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update
@@ -154,6 +169,21 @@ that opens the folder in Explorer. A job that fails to save says where it tried 
 write, and the images stay in memory until the user saves or discards them. Cases check
 that all four candidates of a fixture job land on disk before any is pressed, and that
 the strip lists them.
+
+### §MOD96 MOD96 — Where each cloud key comes from
+
+FillCloudServices in MainWindow.Cloud.cs prints "A key is stored." whenever
+CloudKeys.Has is true, then always shows an empty PasswordBox with Save and test. The
+stored key is the DPAPI file under %LOCALAPPDATA%\Modelado, written by About or by the
+CLI. Nothing reads MESHY_API_KEY or IDEOGRAM_API_KEY, although a user with those
+variables set expects them to be used. CloudKeys resolves a key from the environment
+variable first (MESHY_API_KEY, IDEOGRAM_API_KEY), then from the stored file, in the app
+and in the CLI alike, and reports which source answered. About states the source and the
+key's last four characters: "Using IDEOGRAM_API_KEY from the environment (…a1b2)" or
+"Stored by Modelado (…a1b2)". When the key comes from the environment, the box and
+Remove are hidden, and a line says to change the variable instead. When it is stored,
+the box is collapsed behind a "Replace key…" button. Tests cover the order of
+precedence, and a case with an environment key finds the source line and no box.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

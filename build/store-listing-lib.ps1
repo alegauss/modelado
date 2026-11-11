@@ -21,9 +21,12 @@ function Read-StoreListing {
         # Blocks under a bold-only heading, in this order: short description, description, features,
         # screenshot captions.
         $blocks = @([regex]::Matches($body, '(?ms)^\*\*[^*\n:]+\*\*\n\n(.*?)(?=^\*\*|\z)') | ForEach-Object { $_.Groups[1].Value.Trim() })
-        # "**Label:** value" lines, in this order: keywords, copyright, photo label.
+        # "**Label:** value" lines, in this order: keywords, copyright, photo label, and the trailer's
+        # (MOD84) line over the viewer's modes and closing line.
         $inline = @([regex]::Matches($body, '(?m)^\*\*[^*\n]+?:\*\* (.+)$') | ForEach-Object { $_.Groups[1].Value.Trim() })
-        if ($blocks.Count -ne 4 -or $inline.Count -ne 3) { throw "store-listing.md: section $code is out of shape ($($blocks.Count) headed blocks of 4, $($inline.Count) labels of 3)" }
+        if ($blocks.Count -ne 4 -or $inline.Count -ne 5) { throw "store-listing.md: section $code is out of shape ($($blocks.Count) headed blocks of 4, $($inline.Count) labels of 5)" }
+        $views = $inline[3] -split ' \| ', 2
+        if ($views.Count -ne 2) { throw "store-listing.md: $code's trailer views line has no ' | ' before its smaller line" }
 
         $shots = @(($blocks[3] -split "\n") | Where-Object { $_ -match '^\d+\. ' } | ForEach-Object {
                 $line = $_ -replace '^\d+\. ', ''
@@ -48,6 +51,8 @@ function Read-StoreListing {
             Keywords    = @($inline[0] -split ',\s*')
             Copyright   = $inline[1]
             PhotoLabel  = $inline[2]
+            Views       = [pscustomobject]@{ Headline = $views[0].Trim(); Subline = $views[1].Trim() }
+            TrailerEnd  = $inline[4]
         }
     }
     if ($langs.Count -eq 0) { throw 'store-listing.md has no language section' }

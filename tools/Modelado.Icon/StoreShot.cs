@@ -16,11 +16,11 @@ internal static class StoreShot
     private const float Margin = 64;
 
     // The headline's words in [brackets] are drawn in this; the rest in Ink.
-    private static readonly SKColor Accent = new(0x5C, 0xD6, 0xFF);
-    private static readonly SKColor Ink = new(0xF4, 0xF7, 0xFB);
-    private static readonly SKColor Soft = new(0xB4, 0xC2, 0xD6);
+    internal static readonly SKColor Accent = new(0x5C, 0xD6, 0xFF);
+    internal static readonly SKColor Ink = new(0xF4, 0xF7, 0xFB);
+    internal static readonly SKColor Soft = new(0xB4, 0xC2, 0xD6);
     private static readonly SKColor Top = new(0x15, 0x22, 0x40);
-    private static readonly SKColor Bottom = new(0x0A, 0x10, 0x20);
+    internal static readonly SKColor Bottom = new(0x0A, 0x10, 0x20);
 
     /// <summary>Composes the screenshot.</summary>
     /// <param name="capture">The window, as a PNG.</param>
@@ -129,7 +129,7 @@ internal static class StoreShot
         }
     }
 
-    private static void BrandMark(SKCanvas canvas, byte[] iconPng)
+    internal static void BrandMark(SKCanvas canvas, byte[] iconPng)
     {
         using SKImage icon = SKImage.FromEncodedData(iconPng);
         canvas.DrawImage(icon, new SKRect(Margin, 52, Margin + 84, 136), new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
@@ -147,7 +147,7 @@ internal static class StoreShot
         canvas.DrawLine(430, 50, 430, 150, rule);
     }
 
-    private static void Headline(SKCanvas canvas, string headline, string subline, float left)
+    internal static void Headline(SKCanvas canvas, string headline, string subline, float left)
     {
         // "[" and "]" split the headline into runs that alternate plain and stressed.
         List<(string Text, bool Stressed)> runs = [];
@@ -195,7 +195,7 @@ internal static class StoreShot
 
     // Segoe UI has no Chinese, Japanese or Korean, and a fallback chosen glyph by glyph mixes faces in
     // one line: text that holds any of those is set wholly in Microsoft YaHei UI, Windows' own (MOD92).
-    private static SKTypeface Face(string text, SKFontStyleWeight weight)
+    internal static SKTypeface Face(string text, SKFontStyleWeight weight)
     {
         bool cjk = text.Any(c => c is >= '⺀' and <= '鿿' or >= '豈' and <= '﫿' or >= '＀' and <= '￯');
         return SKTypeface.FromFamilyName(cjk ? "Microsoft YaHei UI" : "Segoe UI", weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
@@ -221,7 +221,7 @@ internal static class StoreShot
 
     // The photo the model came from, as a print tilted a little, left of the window, and an arrow from
     // it into the window's viewport: "this photo became this model".
-    private static void PhotoCard(SKCanvas canvas, byte[] photoPng, SKRect frame, string photoLabel)
+    internal static void PhotoCard(SKCanvas canvas, byte[] photoPng, SKRect frame, string photoLabel)
     {
         using SKImage photo = SKImage.FromEncodedData(photoPng);
         float fit = Math.Min(400f / photo.Width, 440f / photo.Height);

@@ -11,8 +11,8 @@ added under Store listings > **Manage additional languages**. Until the interfac
 (Block K), each non-English description ends by saying the interface is in English.
 
 Each section keeps its shape, or the scripts stop and name it: four bold headers (short
-description, description, features, screenshot captions) and three `**Label:**` lines (keywords,
-copyright, the photo label). A caption line is the screenshot's headline, its stressed words in
+description, description, features, screenshot captions) and five `**Label:**` lines (keywords,
+copyright, the photo label, then the trailer's line over the viewer's modes and its closing line). A caption line is the screenshot's headline, its stressed words in
 [brackets], then ` | ` and the smaller line under it; the Store's caption is the headline alone,
 without the brackets.
 
@@ -36,6 +36,7 @@ creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, liste
 | Box art 1:1 | `artifacts\store-art\box-1x1-2160x2160.png` |
 | Poster art 9:16 | `artifacts\store-art\poster-9x16-1440x2160.png` |
 | Super hero art 16:9 | `artifacts\store-art\hero-16x9-3840x2160.png`: the chair Modelado made, drawn by its own renderer, no text since the Store sets the title over it; the listing plays a trailer only when this is there (MOD82) |
+| Trailer, per language | `artifacts\store-trailer\<language>\trailer.mp4` (1920 x 1080, 30 fps, 37.5 s) and its thumbnail `trailer.png`, from `build\store-trailer.ps1` after the screenshots (MOD84); the Store plays it only beside the Super hero art |
 | App tile icons | `artifacts\store-art\tile-300x300.png`, `tile-150x150.png`, `tile-71x71.png` |
 
 The art is drawn by `dotnet run --project tools\Modelado.Icon -c Release -- --store-art artifacts\store-art`.
@@ -152,6 +153,10 @@ can be added with your own key, and nothing is sent to them without your yes.
 
 **Photo label:** Your photo
 
+**Trailer views:** Turn it round, [in colour, clay or wireframe] | The app's own viewer, on your PC
+
+**Trailer end:** Free on the Microsoft Store
+
 **Screenshot captions**
 
 1. One photo becomes [a whole 3D model] | TripoSR infers the sides and the back, on your own PC
@@ -201,6 +206,10 @@ A interface do app está em inglês por enquanto.
 **Direitos autorais e marcas:** © Alegauss. Os modelos de IA têm licenças próprias, listadas em About.
 
 **Rótulo da foto:** Sua foto
+
+**Trailer, visualização:** Gire o modelo, [em cores, argila ou wireframe] | O visualizador do próprio app, no seu PC
+
+**Trailer, final:** Grátis na Microsoft Store
 
 **Legendas das capturas de tela**
 
@@ -253,6 +262,10 @@ Die Oberfläche der App ist vorerst auf Englisch.
 
 **Fotobeschriftung:** Ihr Foto
 
+**Trailer, Ansichten:** Rundum drehen, [in Farbe, Ton oder Drahtgitter] | Der eigene Viewer der App, auf Ihrem PC
+
+**Trailer, Schluss:** Kostenlos im Microsoft Store
+
 **Bildunterschriften**
 
 1. Aus einem Foto wird [ein ganzes 3D-Modell] | TripoSR leitet Seiten und Rückseite ab, auf Ihrem eigenen PC
@@ -303,6 +316,10 @@ L'interface de l'application est pour l'instant en anglais.
 **Droits d'auteur et marques :** © Alegauss. Les modèles d'IA ont leurs propres licences, listées dans About.
 
 **Légende de la photo :** Votre photo
+
+**Bande-annonce, vues :** Faites-le tourner, [en couleurs, argile ou filaire] | La visionneuse de l'application, sur votre PC
+
+**Bande-annonce, fin :** Gratuit sur le Microsoft Store
 
 **Légendes des captures d'écran**
 
@@ -355,6 +372,10 @@ Por ahora, la interfaz de la aplicación está en inglés.
 
 **Rótulo de la foto:** Tu foto
 
+**Tráiler, vistas:** Gíralo, [en color, arcilla o alambre] | El visor de la propia aplicación, en tu PC
+
+**Tráiler, final:** Gratis en Microsoft Store
+
 **Leyendas de las capturas de pantalla**
 
 1. Una foto se convierte en [un modelo 3D completo] | TripoSR deduce los lados y la parte trasera, en tu propio PC
@@ -395,6 +416,10 @@ Modelado 借助在你自己的 Windows 电脑上运行的 AI 把照片变成 3D 
 **版权和商标:** © Alegauss。AI 模型有各自的许可证，列在 About 中。
 
 **照片标签:** 你的照片
+
+**预告片视图:** 旋转查看，[彩色、白模或线框] | 应用自带的查看器，在你的电脑上运行
+
+**预告片结尾:** 在 Microsoft Store 免费获取
 
 **屏幕截图说明**
 

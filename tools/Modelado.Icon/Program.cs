@@ -68,6 +68,14 @@ if (args.Length is 5 or 7 && args[0] == "--store-shot")
     return 0;
 }
 
+// MOD84: the listing's trailer and its thumbnail (Trailer.cs); build\store-trailer.ps1 writes the spec
+// per language. Needs ffmpeg on the PATH.
+//   --trailer <out.mp4> <spec.json>
+if (args.Length == 3 && args[0] == "--trailer")
+{
+    return Trailer.Make(args[1], args[2], Draw(168), Draw(560));
+}
+
 int[] sizes = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256];
 string output = args.Length > 0 ? args[0] : Path.Combine(FindRoot(), "src", "Modelado.App", "Modelado.ico");
 

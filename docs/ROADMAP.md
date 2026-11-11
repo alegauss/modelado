@@ -12,13 +12,15 @@
 
 ## Block D — Model downloads
 
+- 📋 **MOD97** (deps: —) **About lists only the models already downloaded, so a missing or removed model vanishes instead of showing as missing** — Download everything gives no clue what it would fetch, and after a Remove the user cannot see what is gone or get it back alone. → §MOD97
+
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update
 
 - ⏳ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 - ⏳ **MOD82** (deps: —) **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — The hero art waits to be uploaded with the screenshots in the next submission. → §MOD82
-- 📋 **MOD84** (deps: MOD81 ⏳, MOD82 ⏳) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — A trailer at the top of the listing proves the models are 3D in a way a screenshot cannot. → §MOD84
+- ⏳ **MOD84** (deps: MOD81 ⏳, MOD82 ⏳) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — The six trailers and thumbnails wait to be uploaded with the hero art in the next submission. → §MOD84
 - ⏳ **MOD92** (deps: MOD81 ⏳) **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — The five new languages wait to be added in Partner Center, their CSV imported and screenshots uploaded in the next submission. → §MOD92
 
 ## Block G — Public site for 3D modelling
@@ -27,6 +29,7 @@
 
 - 📋 **MOD93** (deps: —) **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — A button that appears dead next to the panel it opened makes the user think the app hung and click again. → §MOD93
 - 📋 **MOD95** (deps: —) **Paid Ideogram images are lost: unchosen candidates are discarded, the chosen one lands in a folder the app hides** — Every candidate is paid for, so a photo used once and never found again is money spent twice when it is redrawn. → §MOD95
+- 📋 **MOD96** (deps: —) **About says a cloud key is stored yet shows an empty key box, without saying which key or where it came from** — An empty box beside "A key is stored" reads as a missing key, and a key set in the environment is not read at all. → §MOD96
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
@@ -78,5 +81,12 @@
 - **The Store page reads in all six listing languages** Checked on
   apps.microsoft.com/detail/9PB86WW5NRR2 with hl=pt-br, de-de, fr-fr, es-es and zh-cn
   after the submission carrying them passes certification.
+
+## Done when — MOD84
+
+- **The trailer plays at the top of the Store page** Checked on
+  apps.microsoft.com/detail/9PB86WW5NRR2 after the submission carrying
+  artifacts\store-trailer\<language>\trailer.mp4, its thumbnail and the hero art passes
+  certification.
 
 ## Non-goals
