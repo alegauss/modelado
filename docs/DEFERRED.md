@@ -29,3 +29,4 @@
 
 ## Block J — Local model quality: past TripoSR
 
+- ⏸ **MOD80** (deps: —) **TripoSG has no ONNX export and has never been measured against TripoSR on the test photos** — set aside (Needs a go-ahead for 7.5 GB and a GPU session): It is the one newer open model that passes the licence rule, and only a measured run says whether it fits 8 GB and beats TripoSR. → §MOD80

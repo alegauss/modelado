@@ -198,22 +198,22 @@ refusing it is recorded.
 
 ### §MOD80 MOD80 — Exporting and measuring TripoSG
 
-MOD71's evaluation (`docs/local-3d-models.md`) found TripoSG (VAST, MIT) to be the one
-newer open image-to-3D model that passes the licence rule and computes nothing outside
-standard ONNX operators: a DINOv2 image encoder, a rectified-flow transformer and an SDF
-VAE decoder. Its card asks for "over 8 GB" of VRAM, so whether it fits the 8 GB the site
-promises is the first thing to learn.
+MOD71's evaluation (`docs/local-3d-models.md`) found TripoSG (VAST, MIT) the one newer
+open image-to-3D model that passes the licence rule with only standard ONNX operators: a
+DINOv2 encoder, a rectified-flow transformer and an SDF VAE decoder.
 
-Export it the way `scripts\export_models.py` exports TripoSR: one ONNX file per part
-(encoder, flow transformer, VAE decoder queried on points), checked against PyTorch on
-the model's own test image, FP32 and FP16. The flow's sampling loop and the marching
-cubes stay in C#, as TripoSR's grid sampling does. Then run it on the host's RTX 4060 (8
-GB) with DirectML and on the CPU, on the test photos TripoSR is measured on, recording
-peak video memory and RAM, time per object, and the mesh beside TripoSR's.
+Sized 11/11/2026 from the repository listing: FP32 weights are 7.5 GB (transformer 5.5,
+DINOv2 1.2, VAE 0.9), about 3.8 GB in FP16, so 8 GB is plausible but unmeasured. The
+transformer is past protobuf's 2 GB limit even in FP16, so its ONNX needs external data
+files, which the manifest, downloader and `meta.json` (one file per variant) do not
+handle yet: that is the first slice to design.
 
-TripoSG makes no colour; the photo projection (Sharp photo colours) colours the front
-and the rest takes a neutral clay, which is part of what to judge.
+Then export the way `scripts\export_models.py` exports TripoSR: one ONNX per part,
+checked against PyTorch on the model's test image, FP32 and FP16. The sampling loop and
+marching cubes stay in C#. Measure on the host's RTX 4060 with DirectML and on the CPU,
+on TripoSR's test photos: peak video memory and RAM, time per object, and the mesh
+beside TripoSR's. TripoSG makes no colour; the photo projection colours the front.
 
-Done when the measurements and the side-by-side are added to `docs/local-3d-models.md`
-with a verdict: offer TripoSG as a "high quality" 3D Object (filed as its own line), or
-record why not and try Step1X-3D's geometry stage next.
+Done when the measurements and side-by-side are in `docs/local-3d-models.md` with a
+verdict: offer TripoSG as a "high quality" 3D Object (its own line), or record why not
+and try Step1X-3D's geometry stage.
