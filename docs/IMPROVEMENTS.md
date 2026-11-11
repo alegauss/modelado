@@ -32,21 +32,6 @@ written down instead.
 Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
 reason it cannot be is recorded here and in the product sheet.
 
-### §MOD75 MOD75 — File associations declared in the manifest
-
-`build\installer.iss` registers the `Modelado.Model` ProgID, `OpenWithProgids` for
-`.glb`, `.obj`, `.ply` and `.stl`, and `Applications\Modelado.exe\SupportedTypes`. A
-packaged app's registry writes land in the package's own hive, where Explorer never
-looks, so a Store install would never appear in Open with.
-
-Declare one `uap:FileTypeAssociation` (name `modelado.model`, display name "3D model",
-the app's logo) with the four types in the manifest from MOD73. Activation passes the
-file as the first argument, which `CommandLine` already reads as `--open`. The
-installer's registry entries stay for the unpackaged build.
-
-Done when, on the registered layout, Open with on a `.glb` and an `.stl` lists Modelado
-and opening one shows it in the viewer.
-
 ### §MOD76 MOD76 — Execution aliases, and the add-on finding them
 
 The Blender add-on's default for Edit in Modelado is
