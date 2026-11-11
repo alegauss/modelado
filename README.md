@@ -1,10 +1,19 @@
 # Modelado
 
-Modelado is a Windows app that turns **photos of objects into 3D models** with AI models running
-on your own computer. It is a sibling of [PhotoBoost](https://github.com/Japode/photo-boost):
-the same architecture (models converted to ONNX by Python scripts, published on Hugging Face
-with pinned SHA-256 digests, downloaded by the app on first use and run with ONNX Runtime on the
-GPU or the CPU), but instead of improving the image it makes geometry. No photo leaves the PC.
+For anyone who wants to work in 3D with AI and save time: Modelado is a Windows app that turns
+**photos of objects into 3D models**, and edits and improves any 3D model, with AI models running
+on your own computer. No photo leaves the PC.
+
+**Download:** the [latest release](https://github.com/alegauss/modelado/releases/latest) holds
+`Modelado-Setup-<version>.exe`. It installs per user, without administrator rights. It is not
+code-signed yet, so Windows SmartScreen warns the first time (**More info**, then **Run
+anyway**); the release's `SHA256SUMS` is what to check the file against. The site,
+[alegauss.github.io/modelado](https://alegauss.github.io/modelado/), shows what it makes.
+
+Modelado is a sibling of [Revelei](https://github.com/alegauss/revelei), which improves photos:
+AI on your PC, nothing leaves it. Both share one architecture (models converted to ONNX by
+Python scripts, published on Hugging Face with pinned SHA-256 digests, downloaded by the app on
+first use and run with ONNX Runtime on the GPU or the CPU); Modelado makes geometry.
 
 | Operation | Models | Result |
 | --- | --- | --- |
@@ -92,13 +101,8 @@ starts Blender with the model shown imported into an empty scene.
 
 ## Using it
 
-```
-dotnet build Modelado.slnx
-.\run.cmd
-.\run.cmd --open photo.jpg --provider cpu
-```
-
-Needs the **.NET 10 SDK** (`global.json`). Open a photo (or drop it on the window) and choose
+Install it from the [latest release](https://github.com/alegauss/modelado/releases/latest) and
+start it from the Start menu. Open a photo (or drop it on the window) and choose
 **Generate 3D object** or **Generate relief**. On first use the app shows how much it will
 download, from where and under which licence; the download can be paused and resumed, and each
 file is checked by SHA-256 before it is used. **About and models** lists what is installed,
@@ -122,6 +126,16 @@ checks by hand and turns the automatic check off; `--releases off` skips it for 
 **Update and restart** downloads the installer, refuses it unless it matches the release's
 `SHA256SUMS`, runs it silently over the installed copy and starts Modelado again. It never runs
 by itself, and it asks first when the model shown has not been saved.
+
+## Building from source
+
+For contributors. Needs the **.NET 10 SDK** (`global.json`):
+
+```
+dotnet build Modelado.slnx
+.\run.cmd
+.\run.cmd --open photo.jpg --provider cpu
+```
 
 ### The installer
 

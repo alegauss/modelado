@@ -73,6 +73,7 @@
 - ✅ **MOD33** **The site has no hero showing a photo becoming a model the reader can turn, the way PhotoBoost opens on a before/after** — The hero shows TripoSR's robot photo beside the model Modelado made of it, turned by mouse, touch or keys; reduced motion keeps the poster (design recorded in `site/README.md`).
 - ✅ **MOD34** **The site has no sections on each operation, privacy, formats or the download** — The Studio shows each operation on a real, credited photo: a burger to turn, three reliefs, a chair before and after refining, a texture before and after AI (design recorded in `site/README.md`).
 - ✅ **MOD64** **The site's speed table has no GPU timing, only the CPU's** — The site's speed table has a GPU column, measured on an RTX 4060 through DirectML: 3D Object about 4 s against the CPU's 20, Relief about 1 s.
+- ✅ **MOD69** **The README teaches compiling before it mentions the release, never links the site, and calls the sibling PhotoBoost** — The README opens on its reader, links the latest release's installer and the site, moves the build steps to a contributors section and names Revelei as the sibling.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 

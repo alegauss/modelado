@@ -160,28 +160,6 @@ MOD72.
 
 ## Block G — Public site for 3D modelling
 
-### §MOD69 MOD69 — A README that leads to the site and the release
-
-From the portfolio review of 30/10/2026 (visibility, `produtos/modelado.md` and
-`estrategia/portfolio.md`). Two releases with installers exist, and a site at
-alegauss.github.io/modelado, but the README reaches neither: after the opening table it
-goes straight to `dotnet build` and `run.cmd`, so a visitor from GitHub concludes the
-app has to be compiled. It has no link to the site, and it calls the sibling app
-PhotoBoost, linking `Japode/photo-boost`, a name and a repository that product left on
-26/10/2026 (it is now Revelei, at `alegauss/revelei`).
-
-The README opens on the person the author confirmed it is for: someone who wants to work
-with 3D using AI and save time, rather than one niche (printing, Blender or games).
-Right below, a download line points to the latest release's
-`Modelado-Setup-<version>.exe` (per user, no admin, the SmartScreen note) and to the
-site. Building from source moves to a section for contributors. The sibling mention
-becomes Revelei, with its link and the shared line "AI on your PC, nothing leaves it",
-matching what Revelei's own pages say about Modelado.
-
-Done when the README's first screen names its reader and links the release and the site,
-the build steps come after, and no text names PhotoBoost or `Japode/photo-boost` as the
-sibling.
-
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models

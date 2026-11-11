@@ -25,8 +25,6 @@
 
 ## Block G — Public site for 3D modelling
 
-- 📋 **MOD69** (deps: —) **The README teaches compiling before it mentions the release, never links the site, and calls the sibling PhotoBoost** — A visitor from GitHub concludes Modelado must be built from source, and the sibling link leads to a name that product dropped. → §MOD69
-
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models
