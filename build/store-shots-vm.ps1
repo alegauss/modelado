@@ -79,7 +79,7 @@ foreach ($code in $langs.Keys) {
         $capture = Join-Path $raw "capture-$($i + 1).png"
         if (-not (Test-Path $capture)) { Write-Host "No $capture"; exit 1 }
         $shot = $l.Shots[$i]
-        $arguments = @('--store-shot', $capture, (Join-Path $dir "screenshot-$($i + 1).png"), $shot.Headline, $shot.Subline)
+        $arguments = @('--store-shot', $capture, (Join-Path $dir "screenshot-$($i + 1).png"), $shot.Headline, $shot.Subline, $l.Badge)
         if ($photos[$i]) { $arguments += @((Join-Path $demo $photos[$i]), $l.PhotoLabel) }
         & $tool.FullName @arguments | Out-Null
         if ($LASTEXITCODE -ne 0) { Write-Host "--store-shot failed for $code $($i + 1)"; exit 1 }

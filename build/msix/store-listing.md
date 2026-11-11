@@ -11,8 +11,10 @@ added under Store listings > **Manage additional languages**. Until the interfac
 (Block K), each non-English description ends by saying the interface is in English.
 
 Each section keeps its shape, or the scripts stop and name it: four bold headers (short
-description, description, features, screenshot captions) and five `**Label:**` lines (keywords,
-copyright, the photo label, then the trailer's line over the viewer's modes and its closing line). A caption line is the screenshot's headline, its stressed words in
+description, description, features, screenshot captions) and seven `**Label:**` lines (keywords,
+copyright, the photo label, the trailer's line over the viewer's modes and its closing line, the badge
+that every screenshot and trailer frame carries saying it all runs on the PC, and the trailer's
+scene saying so). A caption line is the screenshot's headline, its stressed words in
 [brackets], then ` | ` and the smaller line under it; the Store's caption is the headline alone,
 without the brackets.
 
@@ -157,6 +159,10 @@ can be added with your own key, and nothing is sent to them without your yes.
 
 **Trailer end:** Free on the Microsoft Store
 
+**Local badge:** Runs on your PC · Nothing uploaded
+
+**Trailer, local:** Everything runs [on your PC] | No upload, no account: each AI model is downloaded once, then runs on your GPU or CPU
+
 **Screenshot captions**
 
 1. One photo becomes [a whole 3D model] | TripoSR infers the sides and the back, on your own PC
@@ -210,6 +216,10 @@ A interface do app está em inglês por enquanto.
 **Trailer, visualização:** Gire o modelo, [em cores, argila ou wireframe] | O visualizador do próprio app, no seu PC
 
 **Trailer, final:** Grátis na Microsoft Store
+
+**Selo local:** Roda no seu PC · Nada é enviado
+
+**Trailer, local:** Tudo roda [no seu PC] | Sem upload, sem conta: cada modelo de IA é baixado uma vez e roda na sua GPU ou CPU
 
 **Legendas das capturas de tela**
 
@@ -266,6 +276,10 @@ Die Oberfläche der App ist vorerst auf Englisch.
 
 **Trailer, Schluss:** Kostenlos im Microsoft Store
 
+**Lokal-Siegel:** Läuft auf Ihrem PC · Kein Upload
+
+**Trailer, lokal:** Alles läuft [auf Ihrem PC] | Kein Upload, kein Konto: Jedes KI-Modell wird einmal geladen und läuft dann auf Ihrer GPU oder CPU
+
 **Bildunterschriften**
 
 1. Aus einem Foto wird [ein ganzes 3D-Modell] | TripoSR leitet Seiten und Rückseite ab, auf Ihrem eigenen PC
@@ -320,6 +334,10 @@ L'interface de l'application est pour l'instant en anglais.
 **Bande-annonce, vues :** Faites-le tourner, [en couleurs, argile ou filaire] | La visionneuse de l'application, sur votre PC
 
 **Bande-annonce, fin :** Gratuit sur le Microsoft Store
+
+**Badge local :** Fonctionne sur votre PC · Rien n'est envoyé
+
+**Bande-annonce, local :** Tout se passe [sur votre PC] | Ni envoi ni compte : chaque modèle d'IA est téléchargé une fois, puis tourne sur votre GPU ou CPU
 
 **Légendes des captures d'écran**
 
@@ -376,6 +394,10 @@ Por ahora, la interfaz de la aplicación está en inglés.
 
 **Tráiler, final:** Gratis en Microsoft Store
 
+**Sello local:** Funciona en tu PC · No se sube nada
+
+**Tráiler, local:** Todo funciona [en tu PC] | Sin subidas ni cuentas: cada modelo de IA se descarga una vez y funciona en tu GPU o CPU
+
 **Leyendas de las capturas de pantalla**
 
 1. Una foto se convierte en [un modelo 3D completo] | TripoSR deduce los lados y la parte trasera, en tu propio PC
@@ -420,6 +442,10 @@ Modelado 借助在你自己的 Windows 电脑上运行的 AI 把照片变成 3D 
 **预告片视图:** 旋转查看，[彩色、白模或线框] | 应用自带的查看器，在你的电脑上运行
 
 **预告片结尾:** 在 Microsoft Store 免费获取
+
+**本地标识:** 在你的电脑上运行 · 不上传任何内容
+
+**预告片本地:** 一切都[在你的电脑上]完成 | 无需上传，无需账户：每个 AI 模型只下载一次，然后在你的 GPU 或 CPU 上运行
 
 **屏幕截图说明**
 

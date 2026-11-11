@@ -10,7 +10,7 @@ using SkiaSharp;
 //   dotnet run --project tools\Modelado.Icon [out.ico]     default src\Modelado.App\Modelado.ico
 //   dotnet run --project tools\Modelado.Icon -- --msix-assets <dir>
 //   dotnet run --project tools\Modelado.Icon -- --store-art <dir>
-//   dotnet run --project tools\Modelado.Icon -- --store-shot <capture> <out> <headline> <subline> [<photo> <label>]
+//   dotnet run --project tools\Modelado.Icon -- --store-shot <capture> <out> <headline> <subline> <badge> [<photo> <label>]
 //
 // MOD73: --msix-assets writes the logos build\msix\AppxManifest.xml names, after claude-tray's T409 and
 // T416: the three the manifest points at, and the 44 px logo's targetsize variants, each with an
@@ -58,12 +58,12 @@ if (args.Length == 2 && args[0] == "--store-art")
 
 // MOD81: one listing screenshot, a capture of the window composed under its caption (StoreShot.cs);
 // build\store-shots-vm.ps1 runs it for each capture it brings back.
-//   --store-shot <capture.png> <out.png> "<headline, [stressed words]>" "<subline>" [<photo> "<photo label>"]
-if (args.Length is 5 or 7 && args[0] == "--store-shot")
+//   --store-shot <capture.png> <out.png> "<headline, [stressed words]>" "<subline>" "<badge>" [<photo> "<photo label>"]
+if (args.Length is 6 or 8 && args[0] == "--store-shot")
 {
-    byte[]? photo = args.Length == 7 ? File.ReadAllBytes(args[5]) : null;
-    string label = args.Length == 7 ? args[6] : "";
-    File.WriteAllBytes(args[2], StoreShot.Compose(File.ReadAllBytes(args[1]), Draw(168), args[3], args[4], photo, label));
+    byte[]? photo = args.Length == 8 ? File.ReadAllBytes(args[6]) : null;
+    string label = args.Length == 8 ? args[7] : "";
+    File.WriteAllBytes(args[2], StoreShot.Compose(File.ReadAllBytes(args[1]), Draw(168), args[3], args[4], photo, label, args[5]));
     Console.WriteLine($"store shot: {args[2]}");
     return 0;
 }

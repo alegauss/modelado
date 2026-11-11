@@ -43,6 +43,9 @@ foreach ($code in @($langs.Keys | Where-Object { -not $Language -or $_ -eq $Lang
         viewsHeadline = $l.Views.Headline
         viewsSubline  = $l.Views.Subline
         end           = $l.TrailerEnd
+        badge         = $l.Badge
+        localHeadline = $l.Local.Headline
+        localSubline  = $l.Local.Subline
         objectModel   = (Join-Path $demo 'chair.glb')
         objectPhoto   = (Join-Path $demo 'chair.png')
         reliefModel   = (Join-Path $demo 'studio\relief-face.glb')

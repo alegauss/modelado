@@ -32,6 +32,9 @@ internal static class Trailer
         string ViewsHeadline,
         string ViewsSubline,
         string End,
+        string Badge,
+        string LocalHeadline,
+        string LocalSubline,
         string ObjectModel,
         string ObjectPhoto,
         string ReliefModel,
@@ -63,24 +66,27 @@ internal static class Trailer
         List<Scene> scenes =
         [
             // One photo becomes a whole model: a full turn.
-            new(Frames(9.0), Backdrop(icon, spec.Headlines[0], spec.Sublines[0], chairPhoto, spec.PhotoLabel, besidePhoto),
+            new(Frames(9.0), Backdrop(icon, spec.Badge, spec.Headlines[0], spec.Sublines[0], chairPhoto, spec.PhotoLabel, besidePhoto),
                 (c, t) => Model(c, chair, besidePhoto, new OrbitCamera(Yaw: 20 + (360 * t), Pitch: 14), RenderStyle.Color)),
 
             // The viewer's three ways of drawing it, still turning; the wireframe from closer, where its
             // triangles can be told apart.
-            new(Frames(7.5), Backdrop(icon, spec.ViewsHeadline, spec.ViewsSubline, null, "", centred),
+            new(Frames(7.5), Backdrop(icon, spec.Badge, spec.ViewsHeadline, spec.ViewsSubline, null, "", centred),
                 (c, t) => Model(c, chair, centred, new OrbitCamera(Yaw: 20 + (200 * t), Pitch: 16, Zoom: t < 2 / 3f ? 1f : 1.3f),
                     t < 1 / 3f ? RenderStyle.Color : t < 2 / 3f ? RenderStyle.Clay : RenderStyle.Wireframe)),
 
             // A relief has a front only, so it swings rather than turns.
-            new(Frames(7.0), Backdrop(icon, spec.Headlines[1], spec.Sublines[1], reliefPhoto, spec.PhotoLabel, besidePhoto),
+            new(Frames(7.0), Backdrop(icon, spec.Badge, spec.Headlines[1], spec.Sublines[1], reliefPhoto, spec.PhotoLabel, besidePhoto),
                 (c, t) => Model(c, relief, besidePhoto, new OrbitCamera(Yaw: 38 * MathF.Sin(t * 2 * MathF.PI), Pitch: 8), RenderStyle.Color)),
+
+            // The claim the rest stands on: it all happens on this PC, nothing is uploaded.
+            new(Frames(5.0), OnYourPc(icon, bigIcon, spec.Badge, spec.LocalHeadline, spec.LocalSubline), null),
 
             // The interface: Edit and improve, then Export, as the listing's screenshots show them.
             Still(spec.Screenshots[2], 5.0),
             Still(spec.Screenshots[3], 5.0),
 
-            new(Frames(4.0), Closing(bigIcon, spec.End), null),
+            new(Frames(4.0), Closing(bigIcon, spec.Badge, spec.End), null),
         ];
 
         string thumbnail = Path.ChangeExtension(output, ".png");
@@ -138,12 +144,13 @@ internal static class Trailer
     private static int Frames(double seconds) => (int)Math.Round(seconds * Fps);
 
     // The headline, the brand mark, the photo card and the backdrop: everything in a scene that does not move.
-    private static SKImage Backdrop(byte[] icon, string headline, string subline, byte[]? photo, string photoLabel, SKRect model)
+    private static SKImage Backdrop(byte[] icon, string badge, string headline, string subline, byte[]? photo, string photoLabel, SKRect model)
     {
         using SKSurface surface = SKSurface.Create(new SKImageInfo(Width, Height, SKColorType.Rgba8888, SKAlphaType.Premul));
         SKCanvas canvas = surface.Canvas;
         StoreShot.Backdrop(canvas, Width, Height, new SKPoint(model.MidX, model.MidY));
         StoreShot.BrandMark(canvas, icon);
+        StoreShot.Badge(canvas, badge);
         StoreShot.Headline(canvas, headline, subline, 470);
         if (photo is not null)
         {
@@ -179,8 +186,88 @@ internal static class Trailer
         });
     }
 
-    // The closing card: the icon large, the name, the maker and where to get it.
-    private static SKImage Closing(byte[] bigIcon, string end)
+    // "Everything runs on your PC": a monitor with the app inside it, and the claim under it, centred.
+    private static SKImage OnYourPc(byte[] icon, byte[] bigIcon, string badge, string headline, string subline)
+    {
+        using SKSurface surface = SKSurface.Create(new SKImageInfo(Width, Height, SKColorType.Rgba8888, SKAlphaType.Premul));
+        SKCanvas canvas = surface.Canvas;
+        StoreShot.Backdrop(canvas, Width, Height, new SKPoint(Width / 2f, 420));
+        StoreShot.BrandMark(canvas, icon);
+        StoreShot.Badge(canvas, badge);
+
+        // The monitor: a screen, a neck and a foot, in the soft ink; the app's icon lit on the screen.
+        SKRect screen = SKRect.Create((Width / 2f) - 250, 250, 500, 300);
+        using (SKPaint glass = new() { IsAntialias = true, Color = StoreShot.Bottom })
+        {
+            canvas.DrawRoundRect(screen, 20, 20, glass);
+        }
+
+        using (SKPaint glow = new() { IsAntialias = true })
+        {
+            glow.Shader = SKShader.CreateRadialGradient(new SKPoint(screen.MidX, screen.MidY), 240,
+                [StoreShot.Accent.WithAlpha(70), StoreShot.Accent.WithAlpha(0)], SKShaderTileMode.Clamp);
+            canvas.DrawRoundRect(screen, 20, 20, glow);
+        }
+
+        using (SKPaint frame = new() { IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 8, Color = StoreShot.Soft })
+        {
+            canvas.DrawRoundRect(screen, 20, 20, frame);
+        }
+
+        using (SKPaint stand = new() { IsAntialias = true, Color = StoreShot.Soft })
+        {
+            canvas.DrawRect(SKRect.Create(screen.MidX - 18, screen.Bottom + 4, 36, 46), stand);
+            canvas.DrawRoundRect(SKRect.Create(screen.MidX - 110, screen.Bottom + 48, 220, 14), 7, 7, stand);
+        }
+
+        using (SKImage app = SKImage.FromEncodedData(bigIcon))
+        {
+            canvas.DrawImage(app, SKRect.Create(screen.MidX - 85, screen.MidY - 85, 170, 170), new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear));
+        }
+
+        // The headline centred, its stressed words in the accent, shrinking before it overruns.
+        List<(string Text, bool Stressed)> runs = [];
+        bool stressed = false;
+        foreach (string part in headline.Split('[', ']'))
+        {
+            if (part.Length > 0)
+            {
+                runs.Add((part, stressed));
+            }
+
+            stressed = !stressed;
+        }
+
+        using SKTypeface bold = StoreShot.Face(headline, SKFontStyleWeight.Bold);
+        using SKFont font = new(bold, 84);
+        while (font.Size > 48 && runs.Sum(r => font.MeasureText(r.Text)) > Width - 200)
+        {
+            font.Size -= 1;
+        }
+
+        float x = (Width - runs.Sum(r => font.MeasureText(r.Text))) / 2;
+        using SKPaint paint = new() { IsAntialias = true };
+        foreach ((string text, bool accent) in runs)
+        {
+            paint.Color = accent ? StoreShot.Accent : StoreShot.Ink;
+            canvas.DrawText(text, x, 730, SKTextAlign.Left, font, paint);
+            x += font.MeasureText(text);
+        }
+
+        using SKTypeface regular = StoreShot.Face(subline, SKFontStyleWeight.Normal);
+        using SKFont small = new(regular, 34);
+        while (small.Size > 22 && small.MeasureText(subline) > Width - 200)
+        {
+            small.Size -= 1;
+        }
+
+        using SKPaint soft = new() { IsAntialias = true, Color = StoreShot.Soft };
+        canvas.DrawText(subline, Width / 2f, 800, SKTextAlign.Center, small, soft);
+        return surface.Snapshot();
+    }
+
+    // The closing card: the icon large, the name, the maker, the local claim and where to get it.
+    private static SKImage Closing(byte[] bigIcon, string badge, string end)
     {
         using SKSurface surface = SKSurface.Create(new SKImageInfo(Width, Height, SKColorType.Rgba8888, SKAlphaType.Premul));
         SKCanvas canvas = surface.Canvas;
@@ -199,7 +286,10 @@ internal static class Trailer
         using SKFont where = new(endFace, 52);
         canvas.DrawText("Modelado", Width / 2f, 620, SKTextAlign.Center, name, ink);
         canvas.DrawText("by Alegauss", Width / 2f, 680, SKTextAlign.Center, by, soft);
-        canvas.DrawText(end, Width / 2f, 800, SKTextAlign.Center, where, accent);
+        using SKTypeface badgeFace = StoreShot.Face(badge, SKFontStyleWeight.SemiBold);
+        using SKFont local = new(badgeFace, 40);
+        canvas.DrawText(badge, Width / 2f, 790, SKTextAlign.Center, local, ink);
+        canvas.DrawText(end, Width / 2f, 870, SKTextAlign.Center, where, accent);
         return surface.Snapshot();
     }
 

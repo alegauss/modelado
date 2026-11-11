@@ -29,14 +29,16 @@ internal static class StoreShot
     /// <param name="subline">The smaller line under it.</param>
     /// <param name="photo">The photo the model was made from, or null.</param>
     /// <param name="photoLabel">The words under the photo, in the listing's language (MOD92).</param>
+    /// <param name="badge">The badge under the brand mark saying it all runs on the PC.</param>
     /// <returns>The PNG.</returns>
-    public static byte[] Compose(byte[] capture, byte[] icon, string headline, string subline, byte[]? photo, string photoLabel = "Your photo")
+    public static byte[] Compose(byte[] capture, byte[] icon, string headline, string subline, byte[]? photo, string photoLabel, string badge)
     {
         using SKSurface surface = SKSurface.Create(new SKImageInfo(Width, Height, SKColorType.Rgba8888, SKAlphaType.Premul));
         SKCanvas canvas = surface.Canvas;
         using SKImage window = SKImage.FromEncodedData(capture);
 
-        SKRect area = new(Margin, 214, Width - Margin, Height - 36);
+        // Below the badge (which ends at 216) with room to breathe, where a centred window runs under it.
+        SKRect area = new(Margin, 252, Width - Margin, Height - 30);
         SKRect windowArea = photo is null ? area : new SKRect(600, area.Top, area.Right, area.Bottom);
         float scale = Math.Min(1f, Math.Min(windowArea.Width / window.Width, windowArea.Height / window.Height));
         float w = window.Width * scale, h = window.Height * scale;
@@ -46,6 +48,7 @@ internal static class StoreShot
 
         Backdrop(canvas, frame);
         BrandMark(canvas, icon);
+        Badge(canvas, badge);
         Headline(canvas, headline, subline, 470);
         Window(canvas, window, frame);
         if (photo is not null)
@@ -145,6 +148,59 @@ internal static class StoreShot
 
         using SKPaint rule = new() { IsAntialias = true, Color = Soft.WithAlpha(90), StrokeWidth = 2 };
         canvas.DrawLine(430, 50, 430, 150, rule);
+    }
+
+    /// <summary>
+    /// The badge under the brand mark, on every screenshot and every trailer frame: the app's first claim,
+    /// that it all runs on the PC and nothing is uploaded, in the listing's language. A shield and the
+    /// words on an accent-tinted pill, the type shrinking before the pill reaches the rule beside it.
+    /// </summary>
+    /// <param name="canvas">Where.</param>
+    /// <param name="text">The words.</param>
+    internal static void Badge(SKCanvas canvas, string text)
+    {
+        const float left = Margin, top = 172, height = 44, room = 354;
+        using SKTypeface face = Face(text, SKFontStyleWeight.SemiBold);
+        using SKFont font = new(face, 21);
+        while (font.Size > 14 && font.MeasureText(text) + 62 > room)
+        {
+            font.Size -= 0.5f;
+        }
+
+        float width = font.MeasureText(text) + 62;
+        SKRoundRect pill = new(SKRect.Create(left, top, width, height), height / 2, height / 2);
+        using (SKPaint fill = new() { IsAntialias = true, Color = Accent.WithAlpha(34) })
+        {
+            canvas.DrawRoundRect(pill, fill);
+        }
+
+        using (SKPaint edge = new() { IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 1.5f, Color = Accent.WithAlpha(150) })
+        {
+            canvas.DrawRoundRect(pill, edge);
+        }
+
+        // A shield with a tick: kept here, on this PC.
+        float cx = left + 26, cy = top + (height / 2);
+        using SKPathBuilder shape = new();
+        shape.MoveTo(cx, cy - 12);
+        shape.LineTo(cx + 10, cy - 8);
+        shape.CubicTo(cx + 10, cy + 3, cx + 6, cy + 9, cx, cy + 13);
+        shape.CubicTo(cx - 6, cy + 9, cx - 10, cy + 3, cx - 10, cy - 8);
+        shape.Close();
+        using SKPath shield = shape.Detach();
+        using (SKPaint ink = new() { IsAntialias = true, Color = Accent })
+        {
+            canvas.DrawPath(shield, ink);
+        }
+
+        using (SKPaint tick = new() { IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2.6f, StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round, Color = Bottom })
+        {
+            canvas.DrawLine(cx - 4.5f, cy + 0.5f, cx - 1, cy + 4, tick);
+            canvas.DrawLine(cx - 1, cy + 4, cx + 5, cy - 3.5f, tick);
+        }
+
+        using SKPaint words = new() { IsAntialias = true, Color = Ink };
+        canvas.DrawText(text, left + 46, cy + (font.Size * 0.36f), SKTextAlign.Left, font, words);
     }
 
     internal static void Headline(SKCanvas canvas, string headline, string subline, float left)
