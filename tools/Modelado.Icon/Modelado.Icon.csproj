@@ -13,6 +13,8 @@
   <ItemGroup>
     <!-- Brand's colours, and SkiaSharp to draw with, which Imaging already ships. -->
     <ProjectReference Include="..\..\src\Modelado.Imaging\Modelado.Imaging.csproj" />
+    <!-- MOD82: the hero art draws a demo model with the app's own renderer. -->
+    <ProjectReference Include="..\..\src\Modelado.Geometry\Modelado.Geometry.csproj" />
   </ItemGroup>
 
 </Project>

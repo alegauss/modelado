@@ -18,6 +18,7 @@ creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, liste
 | Screenshots, 1920 x 1080 | `artifacts\store-shots\screenshot-1..4.png` from `build\store-shots-vm.ps1` (after `build\publish.cmd`): the window captured on the VMware guest (`raw\`), then composed under its caption by `tools\Modelado.Icon --store-shot` (MOD81) |
 | Box art 1:1 | `artifacts\store-art\box-1x1-2160x2160.png` |
 | Poster art 9:16 | `artifacts\store-art\poster-9x16-1440x2160.png` |
+| Super hero art 16:9 | `artifacts\store-art\hero-16x9-3840x2160.png`: the chair Modelado made, drawn by its own renderer, no text since the Store sets the title over it; the listing plays a trailer only when this is there (MOD82) |
 | App tile icons | `artifacts\store-art\tile-300x300.png`, `tile-150x150.png`, `tile-71x71.png` |
 
 The art is drawn by `dotnet run --project tools\Modelado.Icon -c Release -- --store-art artifacts\store-art`.

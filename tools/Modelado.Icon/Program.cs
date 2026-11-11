@@ -49,6 +49,9 @@ if (args.Length == 2 && args[0] == "--store-art")
 
     File.WriteAllBytes(Path.Combine(args[1], "box-1x1-2160x2160.png"), Art(2160, 2160));
     File.WriteAllBytes(Path.Combine(args[1], "poster-9x16-1440x2160.png"), Art(1440, 2160));
+    // MOD82: the 16:9 Super hero art, without which the listing plays no trailer.
+    string chair = Path.Combine(FindRoot(), "site", "public", "demo", "chair.glb");
+    File.WriteAllBytes(Path.Combine(args[1], "hero-16x9-3840x2160.png"), HeroArt.Draw(chair, 3840, 2160));
     Console.WriteLine($"store art: {args[1]}");
     return 0;
 }

@@ -57,26 +57,38 @@ internal static class StoreShot
         return data.ToArray();
     }
 
-    private static void Backdrop(SKCanvas canvas, SKRect frame)
+    private static void Backdrop(SKCanvas canvas, SKRect frame) => Backdrop(canvas, Width, Height, new SKPoint(frame.MidX, frame.MidY));
+
+    /// <summary>
+    /// The listing's backdrop at any size, drawn on a 1920 x 1080 grid scaled to fit: the icon's deep
+    /// blues, a glow behind what the picture is about, and the wire mesh in two corners (MOD81, MOD82).
+    /// </summary>
+    /// <param name="canvas">Where.</param>
+    /// <param name="width">The picture's width in pixels.</param>
+    /// <param name="height">The picture's height in pixels.</param>
+    /// <param name="glowAt">The glow's centre, in the picture's own pixels.</param>
+    internal static void Backdrop(SKCanvas canvas, int width, int height, SKPoint glowAt)
     {
+        float scale = width / (float)Width;
         using (SKPaint fill = new() { IsAntialias = true })
         {
-            fill.Shader = SKShader.CreateLinearGradient(new SKPoint(0, 0), new SKPoint(0, Height), [Top, Bottom], SKShaderTileMode.Clamp);
-            canvas.DrawRect(0, 0, Width, Height, fill);
+            fill.Shader = SKShader.CreateLinearGradient(new SKPoint(0, 0), new SKPoint(0, height), [Top, Bottom], SKShaderTileMode.Clamp);
+            canvas.DrawRect(0, 0, width, height, fill);
         }
 
-        // A glow of the icon's light blue behind the window, so it reads as lit rather than pasted on.
+        // A glow of the icon's light blue behind the subject, so it reads as lit rather than pasted on.
         using (SKPaint glow = new() { IsAntialias = true })
         {
             SKColor light = new(Brand.IconTileLight.R, Brand.IconTileLight.G, Brand.IconTileLight.B);
-            glow.Shader = SKShader.CreateRadialGradient(new SKPoint(frame.MidX, frame.MidY), 1000, [light.WithAlpha(70), light.WithAlpha(0)], SKShaderTileMode.Clamp);
-            canvas.DrawRect(0, 0, Width, Height, glow);
+            glow.Shader = SKShader.CreateRadialGradient(glowAt, 1000 * scale, [light.WithAlpha(70), light.WithAlpha(0)], SKShaderTileMode.Clamp);
+            canvas.DrawRect(0, 0, width, height, glow);
         }
 
         // The wire mesh, bottom left, and the same turned half round into the top right.
-        Wave(canvas);
         canvas.Save();
-        canvas.Translate(Width, Height);
+        canvas.Scale(scale);
+        Wave(canvas);
+        canvas.Translate(Width, height / scale);
         canvas.Scale(-1, -1);
         Wave(canvas);
         canvas.Restore();
