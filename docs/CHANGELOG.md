@@ -99,3 +99,4 @@
 
 ## Block J — Local model quality: past TripoSR
 
+- ✅ **MOD71** **A local 3D Object comes out well below cloud services and newer open models, with the back of the object invented** — Six candidates weighed on licence, ONNX and memory: TripoSR stays, and TripoSG, the one that fits, goes to MOD80 (design recorded in `docs/local-3d-models.md`).

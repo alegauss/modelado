@@ -189,21 +189,24 @@ refusing it is recorded.
 
 ## Block J — Local model quality: past TripoSR
 
-### §MOD71 MOD71 — Evaluating a local model newer than TripoSR
+### §MOD80 MOD80 — Exporting and measuring TripoSG
 
-From the portfolio review of 30/10/2026 (visibility, `produtos/modelado.md`). TripoSR
-dates from 2024, and the open image-to-3D models published since (Hunyuan3D 2.x, TRELLIS
-and their successors) produce clearly better shape and texture, including the back of an
-object that TripoSR has to invent. Cloud services (Meshy, Tripo AI) and Microsoft's free
-Copilot 3D set the bar a visitor compares against; local quality is the weakest point of
-the product.
+MOD71's evaluation (`docs/local-3d-models.md`) found TripoSG (VAST, MIT) to be the one
+newer open image-to-3D model that passes the licence rule and computes nothing outside
+standard ONNX operators: a DINOv2 image encoder, a rectified-flow transformer and an SDF
+VAE decoder. Its card asks for "over 8 GB" of VRAM, so whether it fits the 8 GB the site
+promises is the first thing to learn.
 
-This is an evaluation, not a migration. For each candidate, record: licence (commercial
-use must be allowed, as every model Modelado ships today allows it), whether an ONNX
-export runs on ONNX Runtime with DirectML, video memory and RAM needed at a usable
-resolution, time per object on an 8 GB GPU and on the CPU, and the result on the same
-test photos TripoSR is measured on. The outcome is a short table and a verdict: add one
-as a "high quality" option, replace TripoSR, or keep it and look again later.
+Export it the way `scripts\export_models.py` exports TripoSR: one ONNX file per part
+(encoder, flow transformer, VAE decoder queried on points), checked against PyTorch on
+the model's own test image, FP32 and FP16. The flow's sampling loop and the marching
+cubes stay in C#, as TripoSR's grid sampling does. Then run it on the host's RTX 4060 (8
+GB) with DirectML and on the CPU, on the test photos TripoSR is measured on, recording
+peak video memory and RAM, time per object, and the mesh beside TripoSR's.
 
-Done when the table and the verdict are written in this section, and any follow-up is
-filed as its own line.
+TripoSG makes no colour; the photo projection (Sharp photo colours) colours the front
+and the rest takes a neutral clay, which is part of what to judge.
+
+Done when the measurements and the side-by-side are added to `docs/local-3d-models.md`
+with a verdict: offer TripoSG as a "high quality" 3D Object (filed as its own line), or
+record why not and try Step1X-3D's geometry stage next.

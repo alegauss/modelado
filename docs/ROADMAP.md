@@ -31,7 +31,7 @@
 
 ## Block J — Local model quality: past TripoSR
 
-- 💭 **MOD71** (deps: —) **A local 3D Object comes out well below cloud services and newer open models, with the back of the object invented** — TripoSR is from 2024, newer open models are clearly better, and only a measured comparison of licence, ONNX and memory says whether one fits. → §MOD71
+- 📋 **MOD80** (deps: —) **TripoSG has no ONNX export and has never been measured against TripoSR on the test photos** — It is the one newer open model that passes the licence rule, and only a measured run says whether it fits 8 GB and beats TripoSR. → §MOD80
 
 ## Done when — Block H
 
