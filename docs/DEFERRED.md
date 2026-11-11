@@ -12,7 +12,6 @@
 
 ## Block F — Installer, releases and auto update
 
-- ⏸ **MOD76** (deps: MOD73 ✅) **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — set aside (Guest Developer Mode): On the registered layout, modelado-cli --version from a fresh shell and the add-on's Edit in Modelado; waits on Developer Mode on the guest. → §MOD76
 - ⏸ **MOD77** (deps: MOD73 ✅, MOD74 ✅) **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — set aside (Guest Developer Mode): On the registered layout a model downloads, About opens its folder, and keys decrypt after a restart. → §MOD77
 
 ## Block G — Public site for 3D modelling

@@ -32,25 +32,6 @@ written down instead.
 Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
 reason it cannot be is recorded here and in the product sheet.
 
-### §MOD76 MOD76 — Execution aliases, and the add-on finding them
-
-The Blender add-on's default for Edit in Modelado is
-`%LOCALAPPDATA%\Programs\Modelado\Modelado.exe` (`blender\modelado\__init__.py`,
-`default_app`), the Inno install folder. A Store install has no such file, and its real
-folder under `C:\Program Files\WindowsApps` refuses to be started from outside the
-package.
-
-Declare `uap5:AppExecutionAlias` entries in the manifest from MOD73: `Modelado.exe` for
-the window and `modelado-cli.exe` for the command line, which needs its own
-`Application` element since an alias names an application. The add-on's `default_app`
-then tries the install folder first and falls back to the alias under
-`%LOCALAPPDATA%\Microsoft\WindowsApps`, so both builds work without the person setting
-the path. The add-on stays outside the Store package, as it is today.
-
-Done when, on the registered layout, `modelado-cli --version` runs from a fresh shell
-and the add-on's Edit in Modelado opens the window with the Blender object, without the
-path set by hand.
-
 ### §MOD77 MOD77 — Data folders under the package's file system redirection
 
 `ModelLibrary` downloads to `%LOCALAPPDATA%\Modelado\models` unless a folder is chosen,
