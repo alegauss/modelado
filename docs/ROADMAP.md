@@ -17,6 +17,7 @@
 - ⏳ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 - ⏳ **MOD82** (deps: —) **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — The hero art waits to be uploaded with the screenshots in the next submission. → §MOD82
 - 📋 **MOD84** (deps: MOD81 ⏳, MOD82 ⏳) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — A trailer at the top of the listing proves the models are 3D in a way a screenshot cannot. → §MOD84
+- ⏳ **MOD92** (deps: MOD81 ⏳) **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — The five new languages wait to be added in Partner Center, their CSV imported and screenshots uploaded in the next submission. → §MOD92
 
 ## Block G — Public site for 3D modelling
 
@@ -66,5 +67,11 @@
 - **The listing carries the 16:9 Super hero art** Checked in Partner Center's Store
   listing images after the next submission, which uploads
   artifacts\store-art\hero-16x9-3840x2160.png.
+
+## Done when — MOD92
+
+- **The Store page reads in all six listing languages** Checked on
+  apps.microsoft.com/detail/9PB86WW5NRR2 with hl=pt-br, de-de, fr-fr, es-es and zh-cn
+  after the submission carrying them passes certification.
 
 ## Non-goals

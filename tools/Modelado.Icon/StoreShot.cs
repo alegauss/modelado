@@ -28,8 +28,9 @@ internal static class StoreShot
     /// <param name="headline">The caption, with the words to stress in [brackets].</param>
     /// <param name="subline">The smaller line under it.</param>
     /// <param name="photo">The photo the model was made from, or null.</param>
+    /// <param name="photoLabel">The words under the photo, in the listing's language (MOD92).</param>
     /// <returns>The PNG.</returns>
-    public static byte[] Compose(byte[] capture, byte[] icon, string headline, string subline, byte[]? photo)
+    public static byte[] Compose(byte[] capture, byte[] icon, string headline, string subline, byte[]? photo, string photoLabel = "Your photo")
     {
         using SKSurface surface = SKSurface.Create(new SKImageInfo(Width, Height, SKColorType.Rgba8888, SKAlphaType.Premul));
         SKCanvas canvas = surface.Canvas;
@@ -49,7 +50,7 @@ internal static class StoreShot
         Window(canvas, window, frame);
         if (photo is not null)
         {
-            PhotoCard(canvas, photo, frame);
+            PhotoCard(canvas, photo, frame, photoLabel);
         }
 
         using SKImage image = surface.Snapshot();
@@ -161,13 +162,13 @@ internal static class StoreShot
             stressed = !stressed;
         }
 
-        using SKTypeface bold = SKTypeface.FromFamilyName("Segoe UI", SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
-        using SKTypeface regular = SKTypeface.FromFamilyName("Segoe UI");
+        using SKTypeface bold = Face(headline, SKFontStyleWeight.Bold);
+        using SKTypeface regular = Face(subline, SKFontStyleWeight.Normal);
 
         // The type shrinks before the headline runs past the right margin, down to a floor.
         float room = Width - Margin - left, size = 66;
         using SKFont font = new(bold, size);
-        while (size > 44 && runs.Sum(r => font.MeasureText(r.Text)) > room)
+        while (size > 40 && runs.Sum(r => font.MeasureText(r.Text)) > room)
         {
             size -= 1;
             font.Size = size;
@@ -183,8 +184,21 @@ internal static class StoreShot
         }
 
         using SKFont small = new(regular, 31);
+        while (small.Size > 22 && small.MeasureText(subline) > room)
+        {
+            small.Size -= 1;
+        }
+
         using SKPaint soft = new() { IsAntialias = true, Color = Soft };
         canvas.DrawText(subline, left + 2, 162, SKTextAlign.Left, small, soft);
+    }
+
+    // Segoe UI has no Chinese, Japanese or Korean, and a fallback chosen glyph by glyph mixes faces in
+    // one line: text that holds any of those is set wholly in Microsoft YaHei UI, Windows' own (MOD92).
+    private static SKTypeface Face(string text, SKFontStyleWeight weight)
+    {
+        bool cjk = text.Any(c => c is >= '⺀' and <= '鿿' or >= '豈' and <= '﫿' or >= '＀' and <= '￯');
+        return SKTypeface.FromFamilyName(cjk ? "Microsoft YaHei UI" : "Segoe UI", weight, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
     }
 
     private static void Window(SKCanvas canvas, SKImage window, SKRect frame)
@@ -207,7 +221,7 @@ internal static class StoreShot
 
     // The photo the model came from, as a print tilted a little, left of the window, and an arrow from
     // it into the window's viewport: "this photo became this model".
-    private static void PhotoCard(SKCanvas canvas, byte[] photoPng, SKRect frame)
+    private static void PhotoCard(SKCanvas canvas, byte[] photoPng, SKRect frame, string photoLabel)
     {
         using SKImage photo = SKImage.FromEncodedData(photoPng);
         float fit = Math.Min(400f / photo.Width, 440f / photo.Height);
@@ -231,10 +245,10 @@ internal static class StoreShot
         canvas.Restore();
         canvas.Restore();
 
-        using SKTypeface semibold = SKTypeface.FromFamilyName("Segoe UI", SKFontStyleWeight.SemiBold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+        using SKTypeface semibold = Face(photoLabel, SKFontStyleWeight.SemiBold);
         using SKFont label = new(semibold, 28);
         using SKPaint soft = new() { IsAntialias = true, Color = Soft };
-        canvas.DrawText("Your photo", cx, card.Bottom + 52, SKTextAlign.Center, label, soft);
+        canvas.DrawText(photoLabel, cx, card.Bottom + 52, SKTextAlign.Center, label, soft);
 
         // The arrow: from the card's right edge, over the gap, into the viewport.
         SKPoint from = new(card.Right + 10, cy + 30), to = new(frame.Left + 70, cy - 10);

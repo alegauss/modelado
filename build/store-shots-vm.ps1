@@ -1,15 +1,17 @@
 <#
 .SYNOPSIS
-    MOD79, MOD81: runs store-shots.ps1 on the VMware guest, brings the window captures back and composes
-    each under its caption into artifacts\store-shots.
+    MOD79, MOD81, MOD92: runs store-shots.ps1 on the VMware guest, brings the window captures back and
+    composes each under its caption, in every language of the listing, into
+    artifacts\store-shots\<language>.
 
 .DESCRIPTION
     Stages the publish folder build\publish.cmd made, the site's demos and the script as a git folder
     the runner can carry, as check-installer-vm.ps1 does, and brings each capture back with -Bring.
     Then tools\Modelado.Icon --store-shot draws each screenshot at 1920 x 1080: the brand mark, the
     headline with its stressed words in [brackets], the line under it, the window, and the photo the
-    model came from where there is one. The headlines must read as the captions in
-    build\msix\store-listing.md, brackets aside, or this stops: the Store shows both.
+    model came from where there is one. The words come from each language's captions in
+    build\msix\store-listing.md (store-listing-lib.ps1), so the Store's caption and the headline drawn
+    over the screenshot cannot drift apart.
 
       build\publish.cmd
       powershell -NoProfile -File build\store-shots-vm.ps1 [-ComposeOnly]
@@ -28,22 +30,14 @@ $out = Join-Path $repo 'artifacts\store-shots'
 $raw = Join-Path $out 'raw'
 $demo = Join-Path $repo 'site\public\demo'
 
-# One per capture store-shots.ps1 takes, in its order.
-$compose = @(
-    @{ Headline = 'One photo becomes [a whole 3D model]'; Subline = 'TripoSR infers the sides and the back, on your own PC'; Photo = 'chair.png' },
-    @{ Headline = 'Any photo becomes [a relief]'; Subline = 'Depth Anything V2 turns depth into height, textured with the photo'; Photo = 'studio\relief-face.jpg' },
-    @{ Headline = 'Refine it, [every step undoable]'; Subline = 'Simplify, subdivide, smooth, fill holes and flatten a base' },
-    @{ Headline = 'Export to GLB, OBJ, PLY or STL, [sized in millimetres]'; Subline = 'Ready for a 3D printer, a game engine, Blender or the web' }
-)
+# The photo each capture's model was made from, in store-shots.ps1's order; none for the edits.
+$photos = @('chair.png', 'studio\relief-face.jpg', $null, $null)
 
-# The captions the listing gives the Store, read from store-listing.md's numbered list.
-$listing = Get-Content (Join-Path $PSScriptRoot 'msix\store-listing.md') -Encoding UTF8
-$start = [Array]::IndexOf($listing, '**Screenshot captions**')
-$captions = @($listing[($start + 1)..($listing.Count - 1)] | Where-Object { $_ -match '^\d+\. ' } | ForEach-Object { $_ -replace '^\d+\. ', '' })
-$headlines = @($compose | ForEach-Object { $_.Headline -replace '[\[\]]', '' })
-if (($captions -join "`n") -ne ($headlines -join "`n")) {
-    Write-Host "The headlines and store-listing.md's captions differ:`n  listing:   $($captions -join ' | ')`n  headlines: $($headlines -join ' | ')"
-    exit 1
+# MOD92: the headlines, the lines under them and the photo label, per language, from store-listing.md.
+. (Join-Path $PSScriptRoot 'store-listing-lib.ps1')
+$langs = Read-StoreListing
+foreach ($code in $langs.Keys) {
+    if ($langs[$code].Shots.Count -ne $photos.Count) { Write-Host "store-listing.md: $code has $($langs[$code].Shots.Count) captions for $($photos.Count) captures"; exit 1 }
 }
 
 if (-not $ComposeOnly) {
@@ -58,7 +52,7 @@ if (-not $ComposeOnly) {
     & git -C $Stage init --quiet
     if ($LASTEXITCODE -ne 0) { exit 1 }
 
-    $bring = (1..$compose.Count | ForEach-Object { "capture-$_.png" }) -join ','
+    $bring = (1..$photos.Count | ForEach-Object { "capture-$_.png" }) -join ','
     $winwright = if ($env:WINWRIGHT_HOME) { $env:WINWRIGHT_HOME } else { 'D:\Git\alegauss\winwright' }
     & (Join-Path $winwright 'tools\run-tests-vm.ps1') -Tree $Stage -Name 'modelado-store-shots' -NoGate `
         -Run 'powershell -NoProfile -ExecutionPolicy Bypass -File store-shots.ps1 -Exe app\Modelado.exe -Demo demo -Out shots' `
@@ -74,13 +68,22 @@ if (-not $ComposeOnly) {
 & dotnet build (Join-Path $repo 'tools\Modelado.Icon') -c Release -v q --nologo | Out-Null
 if ($LASTEXITCODE -ne 0) { Write-Host 'tools\Modelado.Icon did not build.'; exit 1 }
 $tool = Get-ChildItem (Join-Path $repo 'tools\Modelado.Icon\bin\Release') -Recurse -Filter 'Modelado.Icon.exe' | Select-Object -First 1
-for ($i = 0; $i -lt $compose.Count; $i++) {
-    $c = $compose[$i]
-    $capture = Join-Path $raw "capture-$($i + 1).png"
-    if (-not (Test-Path $capture)) { Write-Host "No $capture"; exit 1 }
-    $arguments = @('--store-shot', $capture, (Join-Path $out "screenshot-$($i + 1).png"), $c.Headline, $c.Subline)
-    if ($c.Photo) { $arguments += Join-Path $demo $c.Photo }
-    & $tool.FullName @arguments
-    if ($LASTEXITCODE -ne 0) { exit 1 }
+# The same captures in every language: the window stays English until Block K translates it.
+Get-ChildItem $out -Filter 'screenshot-*.png' -ErrorAction SilentlyContinue | Remove-Item
+foreach ($code in $langs.Keys) {
+    $l = $langs[$code]
+    $dir = Join-Path $out $code
+    if (Test-Path $dir) { Remove-Item -Recurse -Force $dir }
+    New-Item -ItemType Directory -Force $dir | Out-Null
+    for ($i = 0; $i -lt $photos.Count; $i++) {
+        $capture = Join-Path $raw "capture-$($i + 1).png"
+        if (-not (Test-Path $capture)) { Write-Host "No $capture"; exit 1 }
+        $shot = $l.Shots[$i]
+        $arguments = @('--store-shot', $capture, (Join-Path $dir "screenshot-$($i + 1).png"), $shot.Headline, $shot.Subline)
+        if ($photos[$i]) { $arguments += @((Join-Path $demo $photos[$i]), $l.PhotoLabel) }
+        & $tool.FullName @arguments | Out-Null
+        if ($LASTEXITCODE -ne 0) { Write-Host "--store-shot failed for $code $($i + 1)"; exit 1 }
+    }
+    Write-Host "$code -> $dir"
 }
 Write-Host "screenshots: $out"

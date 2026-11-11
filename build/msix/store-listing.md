@@ -2,9 +2,26 @@
 
 What Partner Center asks for when the package is submitted, kept beside the manifest so a
 submission and the code it describes are reviewed together. Keep the wording in step with the
-README and the site: the pitch and the privacy facts are the same claims. English only, as the
-package's resources are (`Resources` in `AppxManifest.xml`) and as the non-goal on a multilingual
-interface keeps the app.
+README and the site: the pitch and the privacy facts are the same claims.
+
+**The language sections below are the source; the listing CSV and the screenshots are made from them
+(MOD92).** Six listings: English, Brazilian Portuguese, German, French, Spanish and Simplified
+Chinese. The package declares English alone (`Resources` in `AppxManifest.xml`), so the other five are
+added under Store listings > **Manage additional languages**. Until the interface is translated
+(Block K), each non-English description ends by saying the interface is in English.
+
+Each section keeps its shape, or the scripts stop and name it: four bold headers (short
+description, description, features, screenshot captions) and three `**Label:**` lines (keywords,
+copyright, the photo label). A caption line is the screenshot's headline, its stressed words in
+[brackets], then ` | ` and the smaller line under it; the Store's caption is the headline alone,
+without the brackets.
+
+1. `powershell -NoProfile -File build\store-shots-vm.ps1` captures the window on the VMware guest once
+   and composes it in every language, into `artifacts\store-shots\<language>\screenshot-1..4.png`.
+2. In Partner Center, Store listings > Export listings gives the CSV; `powershell -NoProfile -File
+   build\store-listing-csv.ps1 -Template <that .csv>` fills every language's text from this file into
+   `artifacts\store-listing\`, to import back. The import refuses images named by file, so the
+   screenshots go up on each language's page (or through the submission API).
 
 The first submission of an app can only be made on the Partner Center page: the submission API
 creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, listed since
@@ -15,7 +32,7 @@ creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, liste
 | What | Where it comes from |
 |---|---|
 | Package | `artifacts\msix\Modelado.msix` from `build\build-msix.cmd`, checked with `build\check-msix.ps1 -Layout artifacts\msix\layout -Cases` |
-| Screenshots, 1920 x 1080 | `artifacts\store-shots\screenshot-1..4.png` from `build\store-shots-vm.ps1` (after `build\publish.cmd`): the window captured on the VMware guest (`raw\`), then composed under its caption by `tools\Modelado.Icon --store-shot` (MOD81) |
+| Screenshots, 1920 x 1080 | `artifacts\store-shots\<language>\screenshot-1..4.png` from `build\store-shots-vm.ps1` (after `build\publish.cmd`): the window captured on the VMware guest (`raw\`), then composed under its caption by `tools\Modelado.Icon --store-shot` (MOD81) |
 | Box art 1:1 | `artifacts\store-art\box-1x1-2160x2160.png` |
 | Poster art 9:16 | `artifacts\store-art\poster-9x16-1440x2160.png` |
 | Super hero art 16:9 | `artifacts\store-art\hero-16x9-3840x2160.png`: the chair Modelado made, drawn by its own renderer, no text since the Store sets the title over it; the listing plays a trailer only when this is there (MOD82) |
@@ -133,12 +150,255 @@ can be added with your own key, and nothing is sent to them without your yes.
 
 **Copyright and trademark:** © Alegauss. The AI models carry their own licences, listed in About.
 
+**Photo label:** Your photo
+
 **Screenshot captions**
 
-Also each screenshot's headline: `build\store-shots-vm.ps1` holds them with the stressed words in
-brackets and stops when the two differ.
+1. One photo becomes [a whole 3D model] | TripoSR infers the sides and the back, on your own PC
+2. Any photo becomes [a relief] | Depth Anything V2 turns depth into height, textured with the photo
+3. Refine it, [every step undoable] | Simplify, subdivide, smooth, fill holes and flatten a base
+4. Export to GLB, OBJ, PLY or STL, [sized in millimetres] | Ready for a 3D printer, a game engine, Blender or the web
 
-1. One photo becomes a whole 3D model
-2. Any photo becomes a relief
-3. Refine it, every step undoable
-4. Export to GLB, OBJ, PLY or STL, sized in millimetres
+## Português (Brasil) (pt-br)
+
+**Descrição curta**
+
+Transforme uma foto em um modelo 3D no seu próprio PC: um objeto inteiro ou um relevo, limpo e
+exportado para impressão 3D, jogos ou a web. Nada é enviado para a internet.
+
+**Descrição**
+
+O Modelado transforma fotos em modelos 3D com uma IA que roda no seu próprio computador com Windows,
+na GPU quando houver uma. Suas fotos nunca são enviadas para a internet.
+
+Uma foto de um objeto vira um modelo inteiro e colorido com o TripoSR, que deduz as laterais e o
+verso. Qualquer foto vira um baixo-relevo com o Depth Anything V2, com a textura da própria foto e
+pronto para imprimir sobre uma base sólida.
+
+Depois é só refinar: simplificar, subdividir, suavizar, fechar buracos, remover pedaços soltos,
+aplainar a base, girar e espelhar, e cada passo pode ser desfeito. O Real-ESRGAN redesenha uma
+textura quatro vezes mais nítida. Abra também qualquer GLB, OBJ, PLY ou STL para editar, e exporte em
+GLB, OBJ, PLY ou STL com as medidas em milímetros.
+
+Cada modelo de IA é baixado uma vez só, depois de o app dizer o tamanho e de onde ele vem, e é
+conferido por SHA-256. Um add-on do Blender manda objetos para o Modelado e de volta. O Meshy AI e o
+Ideogram podem ser adicionados com a sua própria chave, e nada é enviado a eles sem o seu sim.
+
+A interface do app está em inglês por enquanto.
+
+**Recursos do produto**
+
+- Um objeto 3D inteiro a partir de uma foto (TripoSR)
+- Um relevo para imprimir a partir de qualquer foto (Depth Anything V2)
+- Simplificar, subdividir, suavizar, fechar buracos e aplainar a base, tudo desfazível
+- Texturas 4 vezes mais nítidas com o Real-ESRGAN
+- Exporta em GLB, OBJ, PLY ou STL, com medidas em milímetros para impressão
+- Roda no seu PC, na GPU via DirectML ou na CPU
+- Sem conta e sem telemetria; suas fotos ficam no seu PC
+
+**Palavras-chave:** modelo 3D, foto para 3D, impressão 3D, relevo, GLB, STL, IA
+
+**Direitos autorais e marcas:** © Alegauss. Os modelos de IA têm licenças próprias, listadas em About.
+
+**Rótulo da foto:** Sua foto
+
+**Legendas das capturas de tela**
+
+1. Uma foto vira [um modelo 3D inteiro] | O TripoSR deduz as laterais e o verso, no seu próprio PC
+2. Qualquer foto vira [um relevo] | O Depth Anything V2 transforma profundidade em altura, com a textura da foto
+3. Refine, [cada passo pode ser desfeito] | Simplifique, subdivida, suavize, feche buracos e aplaine a base
+4. Exporte em GLB, OBJ, PLY ou STL, [em milímetros] | Pronto para impressora 3D, motor de jogo, Blender ou a web
+
+## Deutsch (de-de)
+
+**Kurzbeschreibung**
+
+Verwandeln Sie ein Foto auf Ihrem eigenen PC in ein 3D-Modell: ein ganzes Objekt oder ein Relief,
+bereinigt und exportiert für den 3D-Druck, für Spiele oder das Web. Nichts wird hochgeladen.
+
+**Beschreibung**
+
+Modelado verwandelt Fotos in 3D-Modelle, mit KI, die auf Ihrem eigenen Windows-Computer läuft, auf
+der GPU, wenn eine vorhanden ist. Ihre Fotos werden nie hochgeladen.
+
+Aus dem Foto eines Objekts wird mit TripoSR ein vollständiges, farbiges Modell; Seiten und Rückseite
+werden abgeleitet. Aus jedem Foto wird mit Depth Anything V2 ein Flachrelief, mit dem Foto als Textur
+und auf einem massiven Sockel druckfertig.
+
+Danach verfeinern Sie es: vereinfachen, unterteilen, glätten, Löcher füllen, lose Teile entfernen,
+einen Sockel abflachen, drehen und spiegeln, und jeder Schritt lässt sich rückgängig machen.
+Real-ESRGAN zeichnet eine Textur viermal schärfer. Öffnen Sie auch jede GLB-, OBJ-, PLY- oder
+STL-Datei zum Bearbeiten, und exportieren Sie nach GLB, OBJ, PLY oder STL, in Millimetern bemaßt.
+
+Jedes KI-Modell wird nur einmal heruntergeladen, nachdem die App gesagt hat, wie groß es ist und
+woher es kommt, und per SHA-256 geprüft. Ein Blender-Add-on schickt Objekte an Modelado und zurück.
+Meshy AI und Ideogram lassen sich mit Ihrem eigenen Schlüssel hinzufügen, und ohne Ihre Zustimmung
+wird nichts an sie gesendet.
+
+Die Oberfläche der App ist vorerst auf Englisch.
+
+**Produktfunktionen**
+
+- Ein ganzes 3D-Objekt aus einem Foto (TripoSR)
+- Ein druckbares Relief aus jedem Foto (Depth Anything V2)
+- Vereinfachen, unterteilen, glätten, Löcher füllen und einen Sockel abflachen, alles umkehrbar
+- Viermal schärfere Texturen mit Real-ESRGAN
+- Export nach GLB, OBJ, PLY oder STL, in Millimetern für den 3D-Druck
+- Läuft auf Ihrem PC, auf der GPU über DirectML oder auf der CPU
+- Kein Konto und keine Telemetrie; Ihre Fotos bleiben auf Ihrem PC
+
+**Suchbegriffe:** 3D-Modell, Foto zu 3D, 3D-Druck, Relief, GLB, STL, KI
+
+**Urheberrecht und Marken:** © Alegauss. Die KI-Modelle haben eigene Lizenzen, aufgeführt unter About.
+
+**Fotobeschriftung:** Ihr Foto
+
+**Bildunterschriften**
+
+1. Aus einem Foto wird [ein ganzes 3D-Modell] | TripoSR leitet Seiten und Rückseite ab, auf Ihrem eigenen PC
+2. Aus jedem Foto wird [ein Relief] | Depth Anything V2 macht Tiefe zu Höhe, mit dem Foto als Textur
+3. Verfeinern, [jeder Schritt umkehrbar] | Vereinfachen, unterteilen, glätten, Löcher füllen, Sockel abflachen
+4. Export nach GLB, OBJ, PLY oder STL, [in Millimetern] | Bereit für 3D-Drucker, Spiele-Engines, Blender und das Web
+
+## Français (fr-fr)
+
+**Description courte**
+
+Transformez une photo en modèle 3D sur votre propre PC : un objet entier ou un relief, nettoyé et
+exporté pour l'impression 3D, les jeux ou le web. Rien n'est envoyé en ligne.
+
+**Description**
+
+Modelado transforme des photos en modèles 3D grâce à une IA qui tourne sur votre propre ordinateur
+Windows, sur le GPU s'il y en a un. Vos photos ne sont jamais envoyées en ligne.
+
+La photo d'un objet devient un modèle entier et en couleurs avec TripoSR, qui en déduit les côtés et
+le dos. N'importe quelle photo devient un bas-relief avec Depth Anything V2, texturé avec la photo et
+prêt à imprimer sur un socle plein.
+
+Ensuite, affinez-le : simplifier, subdiviser, lisser, combler les trous, retirer les morceaux isolés,
+aplanir une base, tourner et retourner en miroir, chaque étape pouvant être annulée. Real-ESRGAN
+redessine une texture quatre fois plus nette. Ouvrez aussi n'importe quel fichier GLB, OBJ, PLY ou
+STL pour le modifier, et exportez en GLB, OBJ, PLY ou STL, dimensionné en millimètres.
+
+Chaque modèle d'IA n'est téléchargé qu'une fois, après que l'application a indiqué sa taille et sa
+provenance, et il est vérifié par SHA-256. Un module complémentaire pour Blender envoie des objets
+vers Modelado et les récupère. Meshy AI et Ideogram peuvent être ajoutés avec votre propre clé, et
+rien ne leur est envoyé sans votre accord.
+
+L'interface de l'application est pour l'instant en anglais.
+
+**Fonctionnalités du produit**
+
+- Un objet 3D entier à partir d'une seule photo (TripoSR)
+- Un relief imprimable à partir de n'importe quelle photo (Depth Anything V2)
+- Simplifier, subdiviser, lisser, combler les trous et aplanir une base, tout est annulable
+- Des textures quatre fois plus nettes avec Real-ESRGAN
+- Export en GLB, OBJ, PLY ou STL, dimensionné en millimètres pour l'impression
+- Fonctionne sur votre PC, sur le GPU via DirectML ou sur le CPU
+- Ni compte ni télémétrie ; vos photos restent sur votre PC
+
+**Mots-clés :** modèle 3D, photo en 3D, impression 3D, relief, GLB, STL, IA
+
+**Droits d'auteur et marques :** © Alegauss. Les modèles d'IA ont leurs propres licences, listées dans About.
+
+**Légende de la photo :** Votre photo
+
+**Légendes des captures d'écran**
+
+1. Une photo devient [un modèle 3D entier] | TripoSR en déduit les côtés et le dos, sur votre propre PC
+2. Toute photo devient [un relief] | Depth Anything V2 change la profondeur en hauteur, texturée avec la photo
+3. Affinez-le, [chaque étape annulable] | Simplifier, subdiviser, lisser, combler les trous, aplanir une base
+4. Export en GLB, OBJ, PLY ou STL, [en millimètres] | Pour une imprimante 3D, un moteur de jeu, Blender ou le web
+
+## Español (es-es)
+
+**Descripción breve**
+
+Convierte una foto en un modelo 3D en tu propio PC: un objeto completo o un relieve, limpio y
+exportado para impresión 3D, juegos o la web. No se sube nada.
+
+**Descripción**
+
+Modelado convierte fotos en modelos 3D con una IA que se ejecuta en tu propio ordenador con Windows,
+en la GPU si la tiene. Tus fotos nunca se suben a internet.
+
+La foto de un objeto se convierte en un modelo completo y en color con TripoSR, que deduce sus lados
+y su parte trasera. Cualquier foto se convierte en un bajorrelieve con Depth Anything V2, con la
+textura de la foto y listo para imprimir sobre una base sólida.
+
+Después, refínalo: simplifica, subdivide, suaviza, rellena agujeros, quita piezas sueltas, aplana una
+base, gira y refleja, y cada paso se puede deshacer. Real-ESRGAN redibuja una textura cuatro veces
+más nítida. Abre también cualquier GLB, OBJ, PLY o STL para editarlo, y exporta a GLB, OBJ, PLY o
+STL con medidas en milímetros.
+
+Cada modelo de IA se descarga una sola vez, después de que la aplicación indique su tamaño y su
+origen, y se comprueba con SHA-256. Un complemento de Blender envía objetos a Modelado y de vuelta.
+Meshy AI e Ideogram se pueden añadir con tu propia clave, y no se les envía nada sin tu
+consentimiento.
+
+Por ahora, la interfaz de la aplicación está en inglés.
+
+**Características del producto**
+
+- Un objeto 3D completo a partir de una foto (TripoSR)
+- Un relieve imprimible a partir de cualquier foto (Depth Anything V2)
+- Simplificar, subdividir, suavizar, rellenar agujeros y aplanar una base, todo se puede deshacer
+- Texturas cuatro veces más nítidas con Real-ESRGAN
+- Exporta a GLB, OBJ, PLY o STL, con medidas en milímetros para imprimir
+- Se ejecuta en tu PC, en la GPU con DirectML o en la CPU
+- Sin cuenta y sin telemetría; tus fotos se quedan en tu PC
+
+**Palabras clave:** modelo 3D, foto a 3D, impresión 3D, relieve, GLB, STL, IA
+
+**Derechos de autor y marcas:** © Alegauss. Los modelos de IA tienen sus propias licencias, indicadas en About.
+
+**Rótulo de la foto:** Tu foto
+
+**Leyendas de las capturas de pantalla**
+
+1. Una foto se convierte en [un modelo 3D completo] | TripoSR deduce los lados y la parte trasera, en tu propio PC
+2. Cualquier foto se convierte en [un relieve] | Depth Anything V2 convierte la profundidad en altura, con la textura de la foto
+3. Refínalo, [cada paso se puede deshacer] | Simplifica, subdivide, suaviza, rellena agujeros y aplana una base
+4. Exporta a GLB, OBJ, PLY o STL, [en milímetros] | Para una impresora 3D, un motor de juegos, Blender o la web
+
+## 中文（简体） (zh-cn)
+
+**简短说明**
+
+在你自己的电脑上把一张照片变成 3D 模型：完整的物体或浮雕，经过清理后导出，用于 3D 打印、游戏或网页。不会上传任何内容。
+
+**说明**
+
+Modelado 借助在你自己的 Windows 电脑上运行的 AI 把照片变成 3D 模型，有 GPU 时就在 GPU 上运行。你的照片从不上传。
+
+用 TripoSR，一张物体照片就能变成完整的彩色模型，侧面和背面由模型推断。用 Depth Anything V2，任何照片都能变成浅浮雕，以照片为纹理，加上实心底座即可打印。
+
+然后进行精修：简化、细分、平滑、补洞、移除零散碎块、压平底座、旋转和镜像，每一步都可以撤销。Real-ESRGAN 能把纹理重绘得清晰四倍。你也可以打开任何 GLB、OBJ、PLY 或 STL 文件进行编辑，并按毫米尺寸导出为 GLB、OBJ、PLY 或 STL。
+
+每个 AI 模型只下载一次，下载前应用会说明它的大小和来源，并用 SHA-256 校验。Blender 插件可以把物体发送到 Modelado 再传回。使用你自己的密钥可以添加 Meshy AI 和 Ideogram，未经你同意不会向它们发送任何内容。
+
+应用界面目前为英文。
+
+**产品功能**
+
+- 一张照片生成完整的 3D 物体（TripoSR）
+- 任何照片都能生成可打印的浮雕（Depth Anything V2）
+- 简化、细分、平滑、补洞和压平底座，全部可撤销
+- 用 Real-ESRGAN 让纹理清晰四倍
+- 导出为 GLB、OBJ、PLY 或 STL，按毫米尺寸便于打印
+- 在你的电脑上运行，通过 DirectML 使用 GPU，或使用 CPU
+- 无需账户，没有遥测；你的照片留在你的电脑上
+
+**关键字:** 3D 模型, 照片转 3D, 3D 打印, 浮雕, GLB, STL, AI
+
+**版权和商标:** © Alegauss。AI 模型有各自的许可证，列在 About 中。
+
+**照片标签:** 你的照片
+
+**屏幕截图说明**
+
+1. 一张照片变成[完整的 3D 模型] | TripoSR 推断侧面和背面，全部在你自己的电脑上完成
+2. 任何照片都能变成[浮雕] | Depth Anything V2 把深度变成高度，并以照片为纹理
+3. 精修模型，[每一步都可撤销] | 简化、细分、平滑、补洞、压平底座
+4. 导出为 GLB、OBJ、PLY 或 STL，[按毫米尺寸] | 适用于 3D 打印机、游戏引擎、Blender 或网页

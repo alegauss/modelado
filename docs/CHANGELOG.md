@@ -75,6 +75,7 @@
 - ✅ **MOD72** **Every first download meets a SmartScreen warning that the README and the release notes have to explain away** — Modelado installs from the Microsoft Store signed by it, so no SmartScreen warning; the README and site lead with the Store, and the add-on finds the CLI via its alias.
 - ✅ **MOD81 (composed screenshots)** **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — store-shots-vm.ps1 captures the window turned and scrolled to each card, then --store-shot composes it under its caption, brand mark and source photo.
 - ✅ **MOD82 (hero drawn)** **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — --store-art writes hero-16x9-3840x2160.png: the chair drawn by the app's renderer on the screenshots' backdrop, the left and bottom kept clear for the Store's title.
+- ✅ **MOD92 (six listings written)** **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — store-listing.md holds the listing in six languages; store-shots-vm.ps1 composes the screenshots in each, and store-listing-csv.ps1 fills the export CSV.
 
 ## Block G — Public site for 3D modelling
 

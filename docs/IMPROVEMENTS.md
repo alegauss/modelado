@@ -91,6 +91,27 @@ History, then Export. Made so it can be remade when the interface changes:
 
 Done when the trailer and its thumbnail are in a submission and play on the listing.
 
+### §MOD92 MOD92 — Store listing in six languages
+
+Asked by the owner on 11/11/2026: a Store page in English, Brazilian Portuguese, German,
+French, Spanish and Simplified Chinese. Partner Center's "Manage additional languages"
+adds listings in languages the package does not declare; each needs a title, a
+description and at least one screenshot.
+
+- `build\msix\store-listing.md` holds one section per language (`en-us`, `pt-br`, `de-de`, `fr-fr`,
+  `es-es`, `zh-cn`) in claude-tray's shape: short description, description, features, screenshot
+  captions, keywords, copyright. Each caption line is the screenshot's headline, stressed words in
+  [brackets], then ` | ` and the line under it; the Store gets the headline without brackets.
+- Until Block K translates the interface, every non-English description says the interface is in
+  English, so nobody installs expecting otherwise; when K ships, that sentence goes and the window is
+  captured in each language.
+- `build\store-listing-lib.ps1` reads the sections; `store-shots-vm.ps1` captures the window once and
+  composes it per language into `artifacts\store-shots\<language>\`, with a CJK font where the text
+  needs one; `build\store-listing-csv.ps1`, after claude-tray's, fills Partner Center's exported
+  listing CSV from the file, since its import takes text but refuses images named by file.
+
+Done when the six listings are live on the Store page.
+
 ## Block G — Public site for 3D modelling
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
