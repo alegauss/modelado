@@ -37,6 +37,60 @@ redirection would sit beside): Done when, on the registered layout, a model down
 About opens the folder holding it and reports its size, and the DPAPI keys still decrypt
 after a restart.
 
+### §MOD81 MOD81 — Captioned Store screenshots
+
+Seen on the live listing (11/11/2026): at the Store's thumbnail size the four
+screenshots read as one light window with the Export card, the model small in the middle
+and no word saying what each shows. claude-tray's listing (T412) composes each capture
+under its caption at 1920 x 1080 on a branded backdrop; Modelado follows it, with what a
+3D app needs of its own.
+
+- `tools\Modelado.Icon --store-shot <capture> <out> <headline> [<photo>]` draws the backdrop in the
+  icon's blues, the brand mark (icon and name) in the top-left corner, the caption as the headline,
+  the window below it with rounded corners and a shadow, and, where a photo is given, that photo as a
+  card beside the window, so the shot says "this photo became this model".
+- `build\store-shots.ps1` captures the window smaller (about 1440 x 900), so the interface is not
+  shrunk below legibility, turns each model to a three-quarter view with a drag in the viewport, and
+  brings the card the caption is about into view through UI Automation: the 3D Object card, the
+  Relief card, Edit and improve with History after a Simplify and a Smooth, and Export with STL in
+  millimetres.
+- The captions in `build\msix\store-listing.md` become one per card shown, and the raw captures stay
+  beside the composed ones.
+
+Done when `artifacts\store-shots` holds the composed screenshots and they are in a
+submission.
+
+### §MOD82 MOD82 — Super hero art for the listing
+
+The Store shows a listing's trailers only when the listing also has the 16:9 Super hero
+art (3840 x 2160), and Modelado's `--store-art` draws the box, the poster and the tiles
+but not that one. claude-tray draws it without text (`hero-16x9-3840x2160.png`), because
+the Store sets the title over it. Modelado's should show what the app makes: a generated
+model on the icon's blue, not the icon alone, rendered from a demo model through the
+same renderer `modelado-cli --preview` uses, so it is redrawn when the renderer changes.
+Keep the left third and the bottom quarter quiet, where the Store lays its title and
+buttons.
+
+Done when `--store-art` writes `hero-16x9-3840x2160.png` and it is in a submission.
+
+### §MOD84 MOD84 — A trailer for the listing
+
+A 3D modeller's listing shows still pictures of models that can be turned, and the Store
+takes up to 15 trailers (MP4 or MOV, 1920 x 1080, under 2 GB, about 60 seconds
+recommended, each with a 1920 x 1080 PNG thumbnail), shown at the top of the listing
+when the Super hero art is there (MOD82).
+
+The trailer, 30 to 45 seconds, in the screenshots' look (MOD81): a photo opened and Generate 3D
+object pressed, the model turning, the View modes switched, a relief turning, a Refine step with its
+History, then Export. Made so it can be remade when the interface changes:
+- the turning shots are frames drawn by the app's own renderer, the camera stepped a fixed angle per
+  frame, not a hand-held screen recording;
+- the steps with clicks are captured from the window on the VMware guest, as the screenshots are;
+- each part carries its caption in the screenshots' headline style, and ffmpeg joins the frames into
+  an H.264 MP4 at 1920 x 1080, 30 fps.
+
+Done when the trailer and its thumbnail are in a submission and play on the listing.
+
 ## Block G — Public site for 3D modelling
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
