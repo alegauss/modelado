@@ -49,8 +49,13 @@ redirection and keeps working. Turning redirection off with `unvirtualizedResour
 the other way, but it is a second restricted capability to justify, so it is kept only
 if this one fails.
 
-Done when, on the registered layout, a model downloads, About opens the folder holding
-it and reports its size, and the DPAPI keys still decrypt after a restart.
+Checked 11/11/2026 on the host (MOD78's cases-packaged): About names the LocalCache
+folder and says downloads go with the app, and a key the CLI alias stored is decrypted
+to send a job the window then counts. Left, for a desk with no Modelado data of its own
+(the host has the person's models and keys, which a download through the real
+redirection would sit beside): Done when, on the registered layout, a model downloads,
+About opens the folder holding it and reports its size, and the DPAPI keys still decrypt
+after a restart.
 
 ### §MOD79 MOD79 — Store listing and the first submission
 
