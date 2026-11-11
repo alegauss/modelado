@@ -32,23 +32,6 @@ written down instead.
 Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
 reason it cannot be is recorded here and in the product sheet.
 
-### §MOD74 MOD74 — The updater stands down inside the package
-
-MOD30 and MOD31 check GitHub for a newer release and, on a click in About, download the
-installer, verify it against SHA256SUMS and run it silently. Inside an MSIX package that
-is both against the Store's policy (an app must not update itself outside the Store) and
-broken: the installer would write a second copy under `%LOCALAPPDATA%\Programs\Modelado`
-beside the package.
-
-Copy claude-tray's `src\Tray\PackageIdentity.cs` (T409): `GetCurrentPackageFullName`
-answering ERROR_INSUFFICIENT_BUFFER means the process runs with package identity. Under
-a package, `ReleaseCheck` never runs, About hides the update row and says updates come
-from the Microsoft Store, and `--releases` is ignored. The unpackaged build is
-unchanged.
-
-Done when a case on the registered layout shows About without the update offer and no
-request reaches the releases URL, and the installed build still offers it.
-
 ### §MOD75 MOD75 — File associations declared in the manifest
 
 `build\installer.iss` registers the `Modelado.Model` ProgID, `OpenWithProgids` for
