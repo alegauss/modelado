@@ -17,6 +17,35 @@ internal static class PackageIdentity
 
     public static bool IsPackaged { get; } = Detect();
 
+    /// <summary>The running package's family name (MOD77), or null when unpackaged.</summary>
+    public static string? FamilyName { get; } = IsPackaged ? ReadFamilyName() : null;
+
+    /// <summary>
+    /// Where a person outside the package finds <paramref name="path"/> (MOD77): the package's LocalCache
+    /// for a folder under %LOCALAPPDATA%, which Windows redirects there; anything else unchanged.
+    /// </summary>
+    public static string Visible(string path) =>
+        Modelado.Inference.PackagedPaths.Visible(path, FamilyName, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+
+    private static string? ReadFamilyName()
+    {
+        try
+        {
+            int length = 0;
+            if (GetCurrentPackageFamilyName(ref length, null) != ErrorInsufficientBuffer)
+            {
+                return null;
+            }
+
+            char[] name = new char[length];
+            return GetCurrentPackageFamilyName(ref length, name) == 0 ? new string(name, 0, Math.Max(0, length - 1)) : null;
+        }
+        catch (EntryPointNotFoundException)
+        {
+            return null;
+        }
+    }
+
     private static bool Detect()
     {
         try
@@ -36,4 +65,8 @@ internal static class PackageIdentity
     [DllImport("kernel32.dll", ExactSpelling = true)]
     [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     private static extern int GetCurrentPackageFullName(ref int packageFullNameLength, nint packageFullName);
+
+    [DllImport("kernel32.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+    private static extern int GetCurrentPackageFamilyName(ref int packageFamilyNameLength, [Out] char[]? packageFamilyName);
 }

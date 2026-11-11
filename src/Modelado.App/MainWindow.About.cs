@@ -58,7 +58,7 @@ public partial class MainWindow
         FillUpdates();
         FillCloudServices();
 
-        AboutModelsFolder.Text = $"From {string.Join(" and ", library.Roots)}";
+        AboutModelsFolder.Text = $"From {string.Join(" and ", library.Roots.Select(PackageIdentity.Visible))}";
 
         library.Refresh();
         IReadOnlyList<InstalledModel> installed = library.Installed();
@@ -72,9 +72,9 @@ public partial class MainWindow
 
         List<InstalledModel> downloads = [.. installed.Where(m => IsUnder(m.Root, library.DownloadRoot))];
         long downloaded = downloads.Sum(Bytes);
-        AboutDownloadNote.Text = downloaded > 0
-            ? $"Downloads go to {library.DownloadRoot}, where they take {Size(downloaded)}."
-            : $"Downloads go to {library.DownloadRoot}. Nothing is downloaded yet.";
+        AboutDownloadNote.Text = (downloaded > 0
+            ? $"Downloads go to {ShownDownloadRoot}, where they take {Size(downloaded)}."
+            : $"Downloads go to {ShownDownloadRoot}. Nothing is downloaded yet.") + RemovedWithTheApp;
         AboutDownloadedModels.ItemsSource = downloads
             .Select(m => new DownloadedRow(m.Name, $"{m.Name} · {string.Join(", ", m.Variants)} · {Size(Bytes(m))}", $"Download-{m.Name}", $"Remove-{m.Name}", $"Remove {m.Name}"))
             .ToList();
@@ -117,10 +117,19 @@ public partial class MainWindow
         }
     }
 
+    // MOD77: under an MSIX package the downloads folder is redirected into the package's LocalCache,
+    // and Explorer, outside the package, would open the real one, empty. So the folder is created
+    // from inside (where the redirection applies) and named and opened where Explorer finds it.
+    private string ShownDownloadRoot => PackageIdentity.Visible(library.DownloadRoot);
+
+    private static string RemovedWithTheApp => PackageIdentity.IsPackaged && PackageIdentity.FamilyName is not null
+        ? " They are removed when Modelado is uninstalled."
+        : "";
+
     private void OnAboutOpenFolder(object sender, RoutedEventArgs e)
     {
         Directory.CreateDirectory(library.DownloadRoot);
-        Process.Start(new ProcessStartInfo("explorer.exe", $"\"{library.DownloadRoot}\"") { UseShellExecute = true });
+        Process.Start(new ProcessStartInfo("explorer.exe", $"\"{ShownDownloadRoot}\"") { UseShellExecute = true });
     }
 
     // MOD23: a model a running operation or a download is using cannot be removed under it.
@@ -244,7 +253,7 @@ public partial class MainWindow
 
     private void OnAboutRemoveAll(object sender, RoutedEventArgs e)
     {
-        AboutRemoveAllQuestion.Text = $"Delete everything downloaded to {library.DownloadRoot}? Each operation offers its download again when next used.";
+        AboutRemoveAllQuestion.Text = $"Delete everything downloaded to {ShownDownloadRoot}? Each operation offers its download again when next used.";
         AboutRemoveAllConfirm.Visibility = Visibility.Visible;
     }
 

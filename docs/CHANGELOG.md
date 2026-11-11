@@ -69,6 +69,7 @@
 - ✅ **MOD74 (code)** **A Store install would still offer to download and run the Inno installer over itself from About** — Under package identity the release check never runs, About says updates come from the Store and hides every update control; unpackaged update cases still pass.
 - ✅ **MOD75 (manifest)** **Open with in Explorer would not list Modelado for .glb, .obj, .ply or .stl once it comes from the Store** — The package declares one 3D model association for .glb, .obj, .ply and .stl, held equal to installer.iss's types by an architecture test.
 - ✅ **MOD76 (aliases)** **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — The package declares Modelado.exe and modelado-cli.exe aliases, and the add-on falls back to them where the install folder has no exe.
+- ✅ **MOD77 (code)** **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — Under a package About and the consent name and open the models folder in the package's LocalCache, and say downloads go with the app.
 
 ## Block G — Public site for 3D modelling
 

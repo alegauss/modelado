@@ -34,7 +34,7 @@ public partial class MainWindow
             : $"Total: {Size(total)}.";
         ConsentFacts.Text = string.Join(Environment.NewLine,
             "• Only the models are downloaded. Your photo stays on this computer and is never uploaded.",
-            $"• They are saved in {library.DownloadRoot}, and About can remove them at any time.",
+            $"• They are saved in {ShownDownloadRoot}, and About can remove them at any time.{RemovedWithTheApp}",
             "• Each file is checked by SHA-256 before it is used.",
             "• Modelado keeps working while it downloads. A cancelled download resumes where it stopped.");
         ConsentLicense.Text = string.Join(Environment.NewLine, needed.Select(n => $"{n.Model.Name}: {n.Model.License} ({n.Model.LicenseUrl})."));
