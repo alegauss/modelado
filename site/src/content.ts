@@ -17,11 +17,12 @@ export const words = {
       "Turn a photo into a 3D object or a relief, then clean it up and export it for printing, games or the web, with AI on your own Windows computer. Nothing is uploaded.",
   },
   nav: {
+    // With the base, so they lead home from the privacy policy too.
     links: [
-      { href: "#what", label: "What it makes" },
-      { href: "#studio", label: "Studio" },
-      { href: "#privacy", label: "Privacy" },
-      { href: "#models", label: "Models" },
+      { href: `${BASE}#what`, label: "What it makes" },
+      { href: `${BASE}#studio`, label: "Studio" },
+      { href: `${BASE}#privacy`, label: "Privacy" },
+      { href: `${BASE}#models`, label: "Models" },
       { href: repoUrl, label: "Source" },
     ],
     cta: "Download",
@@ -210,6 +211,64 @@ export const words = {
         body: "Meshy AI and Ideogram can be added in About with your own key. Nothing is sent to them until you agree to that one job, with what it costs.",
       },
     ],
+    more: "The whole privacy policy",
+  },
+  // MOD79: the privacy policy the Microsoft Store listing links to, at /modelado/privacy/. Every
+  // sentence is a claim about what the app or this site does; change one when the code changes.
+  policy: {
+    path: "/privacy/",
+    title: "Modelado privacy policy",
+    description: "What Modelado and its website send, store and never collect: your photos stay on your PC, and nothing reaches the developer.",
+    eyebrow: "Privacy policy",
+    heading: "What Modelado sends, stores and never collects",
+    updated: "Last updated 11 November 2026.",
+    sections: [
+      {
+        title: "In short",
+        body: [
+          "Modelado turns photos into 3D models with AI models that run on your own computer. Your photos and models are processed on your PC and are not uploaded. Modelado has no account, no telemetry, no analytics and no crash reporting, and sends nothing to its developer.",
+        ],
+      },
+      {
+        title: "What the app connects to",
+        body: [
+          "Hugging Face (huggingface.co), to download the AI models. The first time an operation needs a model, the window says what it will download, how large it is and from where, and waits for your yes. It fetches the model list and the model files, and checks each file against its SHA-256 before using it. Nothing about your photos or models is sent. Hugging Face sees the request as any website does, including your IP address. A model source you add in About is fetched the same way.",
+          "GitHub (api.github.com), only in the copy installed from the release on GitHub: once a day it asks whether a newer release exists, sending the app's name and version. About turns this off. The copy installed from the Microsoft Store never checks: its updates come from the Store.",
+          "Meshy AI and Ideogram, only if you add your own key for them in About. Each job asks first, showing what will be sent and what it costs, and sends nothing without your yes: the photo or the description for Meshy AI's 3D, the model for its remesh and retexture, and the text describing a texture for Ideogram. What those services do with it is set by their own privacy policies.",
+        ],
+      },
+      {
+        title: "What the app stores on your PC",
+        body: [
+          "The downloaded models, your settings, the keys you added and a record of the cloud jobs you sent with their cost, all in Modelado's folder in your Windows user's local app data. The keys are encrypted with Windows' data protection for your user account. A copy installed from the Microsoft Store keeps this folder inside its package, and Windows removes it when Modelado is uninstalled; the installer from GitHub asks whether to delete the downloaded models.",
+          "Nothing of this leaves your PC, except what a cloud job you agreed to sends.",
+        ],
+      },
+      {
+        title: "The Blender add-on",
+        body: [
+          "The optional Blender add-on passes the object you choose between Blender and Modelado through temporary files on your PC. It connects to nothing itself; its cloud actions are the Meshy AI and Ideogram jobs above, through Modelado.",
+        ],
+      },
+      {
+        title: "This website",
+        body: [
+          "This site counts visits with Google Analytics only if you allow it in the banner. Nothing is loaded from Google before you choose, and Analytics settings in the footer changes the choice. GitHub Pages, which serves the site, records requests as any web server does.",
+        ],
+      },
+      {
+        title: "Children",
+        body: ["Modelado collects no personal information from anyone, children included."],
+      },
+      {
+        title: "Changes and contact",
+        body: [
+          "A change to this policy is published on this page with its date. Questions go to the project's issues on GitHub.",
+        ],
+      },
+    ],
+    contact: "Open an issue on GitHub",
+    contactUrl: `${repoUrl}/issues`,
   },
   speed: {
     eyebrow: "Speed",
@@ -249,6 +308,7 @@ export const words = {
     links: [
       { href: repoUrl, label: "Source on GitHub" },
       { href: releasesUrl, label: "Releases" },
+      { href: `${BASE}privacy/`, label: "Privacy policy" },
     ],
     disclaimer:
       "Modelado is free software. The AI models it downloads on first use carry their own licences, which its About panel lists.",

@@ -5,6 +5,6 @@ import { App } from "./App";
 // its index.html, with the head patched from the route table.
 export { ROUTES, canonicalUrl, jsonLd, outputDir, OG_IMAGE } from "./routes";
 
-export function render(): string {
-  return renderToString(<App />);
+export function render(path: string): string {
+  return renderToString(<App path={path} />);
 }

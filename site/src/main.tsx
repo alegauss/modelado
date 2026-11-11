@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { App } from "./App";
 import { ConsentBanner } from "./components/Consent";
+import { BASE } from "./content";
 import "./index.css";
 
 const root = document.getElementById("root");
@@ -9,11 +10,12 @@ if (!root) {
   throw new Error("#root is missing from index.html");
 }
 
-// The prerender wrote the markup; the client hydrates it in place.
+// The prerender wrote the markup; the client hydrates it in place, as the route it was served.
+const path = `/${window.location.pathname.slice(BASE.length)}`.replace(/\/?$/, "/").replace(/^\/+$/, "/");
 hydrateRoot(
   root,
   <StrictMode>
-    <App />
+    <App path={path} />
   </StrictMode>,
 );
 

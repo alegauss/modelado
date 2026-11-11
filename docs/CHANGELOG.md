@@ -71,6 +71,7 @@
 - ✅ **MOD76** **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — Both aliases start the registered package from outside it, CLI on the console, and the add-on resolves them where no install folder exists (MOD78, FIND checks).
 - ✅ **MOD77 (code)** **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — Under a package About and the consent name and open the models folder in the package's LocalCache, and say downloads go with the app.
 - ✅ **MOD78** **Nothing checks the packaged build, so a Store submission would be its first real install** — check-msix.ps1 -Cases registers the layout, checks Open with and both aliases, and runs cases-packaged; all pass on the host (design recorded in `cases-packaged/packaged.cases.json`).
+- ✅ **MOD79 (listing ready)** **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — store-listing.md holds the listing and policy answers, the site has a privacy page, and the screenshots and art are generated.
 
 ## Block G — Public site for 3D modelling
 

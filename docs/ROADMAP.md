@@ -14,8 +14,8 @@
 
 ## Block F — Installer, releases and auto update
 
-- 📋 **MOD72** (deps: MOD79) **Every first download meets a SmartScreen warning that the README and the release notes have to explain away** — claude-tray is already listed with its Store-signed MSIX, so MOD73 to MOD79 follow that path and the listing ends the warning. → §MOD72
-- 📋 **MOD79** (deps: MOD78 ✅) **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — claude-tray's listing CSV, screenshot and submission API scripts (T412, T417) carry over, leaving Modelado's own policy answers to write. → §MOD79
+- 📋 **MOD72** (deps: MOD79 ⏳) **Every first download meets a SmartScreen warning that the README and the release notes have to explain away** — claude-tray is already listed with its Store-signed MSIX, so MOD73 to MOD79 follow that path and the listing ends the warning. → §MOD72
+- ⏳ **MOD79** (deps: MOD78 ✅) **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — The first submission goes through the Partner Center page; done when it passes certification and Modelado is listed. → §MOD79
 
 ## Block G — Public site for 3D modelling
 
@@ -43,6 +43,12 @@
   winwright's run-tests-vm.cmd, never on the operator's desk. Friction with winwright is
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
+
+## Done when — MOD79
+
+- **Modelado is listed in the Microsoft Store under 9PB86WW5NRR2** Checked by the Store
+  page answering for apps.microsoft.com/detail/9PB86WW5NRR2, after the first submission
+  made on the Partner Center page has passed certification.
 
 ## Non-goals
 

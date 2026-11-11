@@ -1,5 +1,5 @@
 import { SiteButton } from "@viglet/viglet-design-system/site";
-import { releasesUrl, words } from "../content";
+import { BASE, releasesUrl, words } from "../content";
 
 // MOD34: after the hero and what it makes, the moves from a photo to a file, privacy, speed, the
 // models and the download. The release and the models are read at build time (vite.config.ts), so
@@ -50,6 +50,9 @@ export function Privacy() {
             </li>
           ))}
         </ul>
+        <p className="policy-more">
+          <a href={`${BASE}privacy/`}>{w.more}</a>
+        </p>
       </div>
     </section>
   );

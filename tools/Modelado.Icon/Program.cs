@@ -34,6 +34,23 @@ if (args.Length == 2 && args[0] == "--msix-assets")
     return 0;
 }
 
+// MOD79: --store-art writes the images Partner Center's listing asks for, each named for its slot and
+// uploaded by hand: the app tiles, the 1:1 box art and the 9:16 poster art, the icon on the brand's
+// deep tile colour. No text on them: the Store sets the title beside or over them.
+if (args.Length == 2 && args[0] == "--store-art")
+{
+    Directory.CreateDirectory(args[1]);
+    foreach (int tile in new[] { 300, 150, 71 })
+    {
+        File.WriteAllBytes(Path.Combine(args[1], $"tile-{tile}x{tile}.png"), Draw(tile));
+    }
+
+    File.WriteAllBytes(Path.Combine(args[1], "box-1x1-2160x2160.png"), Art(2160, 2160));
+    File.WriteAllBytes(Path.Combine(args[1], "poster-9x16-1440x2160.png"), Art(1440, 2160));
+    Console.WriteLine($"store art: {args[1]}");
+    return 0;
+}
+
 int[] sizes = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256];
 string output = args.Length > 0 ? args[0] : Path.Combine(FindRoot(), "src", "Modelado.App", "Modelado.ico");
 
@@ -118,6 +135,20 @@ static byte[] Draw(int size)
         }
     }
 
+    using SKImage image = surface.Snapshot();
+    using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
+    return data.ToArray();
+}
+
+// The icon at half the shorter side, centred on the deep tile colour (MOD79's listing art).
+static byte[] Art(int width, int height)
+{
+    using SKSurface surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
+    SKCanvas canvas = surface.Canvas;
+    canvas.Clear(Sk(Brand.IconTileDeep));
+    int side = Math.Min(width, height) / 2;
+    using SKImage icon = SKImage.FromEncodedData(Draw(side));
+    canvas.DrawImage(icon, (width - side) / 2f, (height - side) / 2f, new SKSamplingOptions(SKFilterMode.Linear));
     using SKImage image = surface.Snapshot();
     using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
     return data.ToArray();

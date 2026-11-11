@@ -6,11 +6,15 @@ export const SITE_ORIGIN = "https://alegauss.github.io";
 // Absolute, because a platform fetching the social card is not on this origin.
 export const OG_IMAGE = `${SITE_ORIGIN}${BASE}og.png`;
 
-export const ROUTES = [{ path: "/", title: words.meta.title, description: words.meta.description }];
+export const ROUTES = [
+  { path: "/", title: words.meta.title, description: words.meta.description },
+  // MOD79: the privacy policy the Microsoft Store listing links to.
+  { path: words.policy.path, title: words.policy.title, description: words.policy.description },
+];
 
 /** The canonical and og:url for a route, carrying the base. */
 export function canonicalUrl(path: string): string {
-  const rel = path === "/" ? "" : `${path.replace(/^\//, "")}/`;
+  const rel = path === "/" ? "" : `${path.replace(/^\/|\/$/g, "")}/`;
   return `${SITE_ORIGIN}${BASE}${rel}`;
 }
 
@@ -38,5 +42,5 @@ export function jsonLd() {
 
 /** Where a route's HTML is written, relative to dist/: "" for the root. */
 export function outputDir(path: string): string {
-  return path === "/" ? "" : path.replace(/^\//, "");
+  return path === "/" ? "" : path.replace(/^\/|\/$/g, "");
 }
