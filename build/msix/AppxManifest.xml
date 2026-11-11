@@ -8,14 +8,18 @@
   Family Name Alegauss.Modelado_d7cpypw1jc0bm). The Store signs the package, so Name and Publisher
   must match the reservation exactly or the upload is refused.
 
-  The execution aliases for Modelado.exe and modelado-cli.exe (MOD76) are added here by their own
-  task.
+  MOD76: a package's folder under WindowsApps cannot be started from outside it, so both exes carry
+  an execution alias, on PATH for every shell under %LOCALAPPDATA%\Microsoft\WindowsApps, which the
+  Blender add-on falls back to. An alias names an application, so modelado-cli is a second one,
+  kept out of the Start menu and run as a console program.
 -->
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  IgnorableNamespaces="uap uap5 desktop4 rescap">
 
   <Identity Name="Alegauss.Modelado"
             Publisher="CN=1ADDE401-7D09-4729-8E49-C28AEEA80170"
@@ -62,6 +66,28 @@
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
         </uap:Extension>
+        <uap5:Extension Category="windows.appExecutionAlias">
+          <uap5:AppExecutionAlias>
+            <uap5:ExecutionAlias Alias="Modelado.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
+      </Extensions>
+    </Application>
+    <Application Id="ModeladoCli" Executable="modelado-cli.exe" EntryPoint="Windows.FullTrustApplication"
+                 desktop4:Subsystem="console" desktop4:SupportsMultipleInstances="true">
+      <uap:VisualElements
+        DisplayName="modelado-cli"
+        Description="Modelado's pipelines on the command line."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        AppListEntry="none" />
+      <Extensions>
+        <uap5:Extension Category="windows.appExecutionAlias">
+          <uap5:AppExecutionAlias desktop4:Subsystem="console">
+            <uap5:ExecutionAlias Alias="modelado-cli.exe" />
+          </uap5:AppExecutionAlias>
+        </uap5:Extension>
       </Extensions>
     </Application>
   </Applications>

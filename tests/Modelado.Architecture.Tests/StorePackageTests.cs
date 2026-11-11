@@ -37,6 +37,19 @@ public sealed partial class StorePackageTests
         Assert.Equal(installer, package);
     }
 
+    [Fact]
+    public void BothExesHaveAnExecutionAlias()
+    {
+        XNamespace uap5 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/5";
+        Dictionary<string, string?> aliasOf = Manifest().Descendants(Foundation + "Application").ToDictionary(
+            a => (string)a.Attribute("Executable")!,
+            a => a.Descendants(uap5 + "ExecutionAlias").Select(e => (string?)e.Attribute("Alias")).SingleOrDefault());
+
+        // MOD76: the Blender add-on and a terminal start each exe through its alias, by its own name.
+        Assert.Equal("Modelado.exe", aliasOf["Modelado.exe"]);
+        Assert.Equal("modelado-cli.exe", aliasOf["modelado-cli.exe"]);
+    }
+
     [GeneratedRegex(@"Software\\Classes\\(\.[a-z0-9]+)\\OpenWithProgids")]
     private static partial Regex OpenWithProgids();
 }

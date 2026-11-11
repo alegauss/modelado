@@ -46,20 +46,30 @@ EDITS = {
 }
 
 
+def runnable(path: str) -> bool:
+    """Whether `path` can be started: a file, or a Store package's execution alias (MOD76), which is a
+    reparse point that some Python builds do not report as a file."""
+    return os.path.isfile(path) or os.path.lexists(path)
+
+
+def installed(exe: str) -> str:
+    """Where Modelado's `exe` is: the Inno install folder (MOD28) when it holds one, else the execution
+    alias a Store install puts under WindowsApps (MOD76), since a package's own folder cannot be started
+    from outside it. Neither present, the install folder, so a missing-file message names it."""
+    local = os.environ.get("LOCALAPPDATA", "")
+    folder = os.path.join(local, "Programs", "Modelado", exe)
+    alias = os.path.join(local, "Microsoft", "WindowsApps", exe)
+    return alias if not runnable(folder) and runnable(alias) else folder
+
+
 def default_cli() -> str:
-    """Where the installer puts modelado-cli (MOD28), unless MODELADO_CLI names another."""
-    named = os.environ.get("MODELADO_CLI")
-    if named:
-        return named
-    return os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Modelado", "modelado-cli.exe")
+    """modelado-cli as installed, unless MODELADO_CLI names another."""
+    return os.environ.get("MODELADO_CLI") or installed("modelado-cli.exe")
 
 
 def default_app() -> str:
-    """Where the installer puts the Modelado window (MOD28), unless MODELADO_APP names another."""
-    named = os.environ.get("MODELADO_APP")
-    if named:
-        return named
-    return os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Modelado", "Modelado.exe")
+    """The Modelado window as installed, unless MODELADO_APP names another."""
+    return os.environ.get("MODELADO_APP") or installed("Modelado.exe")
 
 
 def edit_args(kind: str, settings) -> list:
@@ -501,7 +511,7 @@ class MODELADO_OT_edit(bpy.types.Operator):
 
     def invoke(self, context, event):
         cli = cli_path(context)
-        if not os.path.isfile(cli):
+        if not runnable(cli):
             self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
             return {"CANCELLED"}
 
@@ -569,7 +579,7 @@ class MODELADO_OT_generate(bpy.types.Operator):
 
     def invoke(self, context, event):
         cli = cli_path(context)
-        if not os.path.isfile(cli):
+        if not runnable(cli):
             self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
             return {"CANCELLED"}
 
@@ -688,7 +698,7 @@ class MODELADO_OT_texture(bpy.types.Operator):
 
     def invoke(self, context, event):
         cli = cli_path(context)
-        if not os.path.isfile(cli):
+        if not runnable(cli):
             self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
             return {"CANCELLED"}
         if self.action == "MATERIAL" and not os.path.isfile(bpy.path.abspath(context.scene.modelado.material_image)):
@@ -740,7 +750,7 @@ class MODELADO_OT_round_trip(bpy.types.Operator):
 
     def invoke(self, context, event):
         app = app_path(context)
-        if not os.path.isfile(app):
+        if not runnable(app):
             self.report({"ERROR"}, f"Modelado was not found at {app}; set it in the add-on's preferences")
             return {"CANCELLED"}
 
@@ -800,7 +810,7 @@ class MODELADO_OT_cloud(bpy.types.Operator):
         cli = cli_path(context)
         title, _, needs_texture = CLOUD_ACTIONS[self.action]
         settings = context.scene.modelado
-        if not os.path.isfile(cli):
+        if not runnable(cli):
             self.report({"ERROR"}, f"modelado-cli was not found at {cli}; set it in the add-on's preferences")
             return {"CANCELLED"}
         if needs_texture and base_colour_image(context.active_object)[0] is None:

@@ -401,5 +401,33 @@ with tempfile.TemporaryDirectory(prefix="modelado-local-") as local:
         else:
             os.environ["LOCALAPPDATA"] = kept_local
 
+# MOD76: with no path set, the add-on finds the Inno install folder, and a Store install through the
+# execution aliases under WindowsApps, since a package's own folder cannot be started from outside it.
+kept_local = os.environ.get("LOCALAPPDATA")
+kept_named = {name: os.environ.pop(name, None) for name in ("MODELADO_CLI", "MODELADO_APP")}
+with tempfile.TemporaryDirectory() as local:
+    os.environ["LOCALAPPDATA"] = local
+    folder = os.path.join(local, "Programs", "Modelado")
+    aliases = os.path.join(local, "Microsoft", "WindowsApps")
+    check("FIND: nothing installed names the install folder", modelado.default_cli() == os.path.join(folder, "modelado-cli.exe"))
+    os.makedirs(aliases)
+    for exe in ("modelado-cli.exe", "Modelado.exe"):
+        open(os.path.join(aliases, exe), "wb").close()
+    check("FIND: a Store install's aliases", (modelado.default_cli(), modelado.default_app()) == (os.path.join(aliases, "modelado-cli.exe"), os.path.join(aliases, "Modelado.exe")))
+    os.makedirs(folder)
+    open(os.path.join(folder, "modelado-cli.exe"), "wb").close()
+    check("FIND: the install folder first, where it holds the exe", modelado.default_cli() == os.path.join(folder, "modelado-cli.exe"))
+    os.environ["MODELADO_CLI"] = "D:\\elsewhere\\modelado-cli.exe"
+    check("FIND: MODELADO_CLI over both", modelado.default_cli() == "D:\\elsewhere\\modelado-cli.exe")
+for name, value in kept_named.items():
+    if value is None:
+        os.environ.pop(name, None)
+    else:
+        os.environ[name] = value
+if kept_local is None:
+    del os.environ["LOCALAPPDATA"]
+else:
+    os.environ["LOCALAPPDATA"] = kept_local
+
 print(f"{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)

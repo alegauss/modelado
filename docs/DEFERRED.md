@@ -15,6 +15,7 @@
 - ⏸ **MOD73** (deps: —) **No MSIX package exists for the identity reserved in Partner Center, so nothing can be uploaded to the Store** — set aside (Guest Developer Mode.): check-msix-vm.ps1 must start Modelado from the registered layout's Start entry on the guest, which refuses it until Developer Mode is on. → §MOD73
 - ⏸ **MOD74** (deps: MOD73 ✅) **A Store install would still offer to download and run the Inno installer over itself from About** — set aside (Guest Developer Mode.): MOD78's case on the registered layout must show About without the update offer, which waits on Developer Mode on the guest. → §MOD74
 - ⏸ **MOD75** (deps: MOD73 ✅) **Open with in Explorer would not list Modelado for .glb, .obj, .ply or .stl once it comes from the Store** — set aside (Guest Developer Mode): On the registered layout, Open with on a .glb and an .stl must list Modelado and show the model; it waits on Developer Mode on the guest. → §MOD75
+- ⏸ **MOD76** (deps: MOD73 ✅) **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — set aside (Guest Developer Mode): On the registered layout, modelado-cli --version from a fresh shell and the add-on's Edit in Modelado; waits on Developer Mode on the guest. → §MOD76
 
 ## Block G — Public site for 3D modelling
 
