@@ -59,6 +59,9 @@ public sealed class CliJsonTests : IDisposable
     [Fact]
     public void A_photo_becomes_a_meshy_model_priced_first_and_recorded_where_the_window_reads_it()
     {
+        // The key the job is sent with is stored with DPAPI, as CloudKeysTests' are: Windows only.
+        Assert.SkipUnless(OperatingSystem.IsWindows(), "DPAPI is Windows'");
+
         // MOD65, over the UI cases' Meshy stand-in: every image-to-3D job is the cube, for 30 credits.
         string local = Path.Combine(folder, "local");
         string photo = Path.Combine(Repository.Root, "cases", "fixtures", "photo.png");
@@ -109,6 +112,9 @@ public sealed class CliJsonTests : IDisposable
     [Fact]
     public void A_texture_is_drawn_and_a_model_remeshed_and_retextured_each_priced_first()
     {
+        // The keys are stored with DPAPI, as CloudKeysTests' are: Windows only.
+        Assert.SkipUnless(OperatingSystem.IsWindows(), "DPAPI is Windows'");
+
         // MOD45, over the UI cases' stand-ins: Ideogram draws candidate.png, Meshy's remesh gives
         // the cube subdivided (5 credits) and its retexture the cube (10 credits).
         string local = Path.Combine(folder, "local");
