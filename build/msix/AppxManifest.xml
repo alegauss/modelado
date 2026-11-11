@@ -8,8 +8,8 @@
   Family Name Alegauss.Modelado_d7cpypw1jc0bm). The Store signs the package, so Name and Publisher
   must match the reservation exactly or the upload is refused.
 
-  The file associations (MOD75) and the execution aliases for Modelado.exe and modelado-cli.exe
-  (MOD76) are added here by their own tasks.
+  The execution aliases for Modelado.exe and modelado-cli.exe (MOD76) are added here by their own
+  task.
 -->
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -45,6 +45,24 @@
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <!-- MOD75: "Open with Modelado" for the models the app opens, as installer.iss writes it for
+             the unpackaged build. A package's own registry writes land in its private hive, where
+             Explorer never looks, so the package declares them here. The file arrives as the first
+             argument, the bare path CommandLine.cs already opens. -->
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="modelado.model">
+            <uap:DisplayName>3D model</uap:DisplayName>
+            <uap:Logo>Assets\Square44x44Logo.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.glb</uap:FileType>
+              <uap:FileType>.obj</uap:FileType>
+              <uap:FileType>.ply</uap:FileType>
+              <uap:FileType>.stl</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 

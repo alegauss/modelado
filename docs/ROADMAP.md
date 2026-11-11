@@ -15,10 +15,9 @@
 ## Block F — Installer, releases and auto update
 
 - 📋 **MOD72** (deps: MOD79) **Every first download meets a SmartScreen warning that the README and the release notes have to explain away** — claude-tray is already listed with its Store-signed MSIX, so MOD73 to MOD79 follow that path and the listing ends the warning. → §MOD72
-- 📋 **MOD75** (deps: MOD73 ✅) **Open with in Explorer would not list Modelado for .glb, .obj, .ply or .stl once it comes from the Store** — The installer writes the associations to HKCU, which a package writes into its private hive, so they must move to the manifest. → §MOD75
 - 📋 **MOD76** (deps: MOD73 ✅) **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — A package's folder under WindowsApps cannot be launched from outside it, so both exes need execution aliases and the add-on must use them. → §MOD76
 - 📋 **MOD77** (deps: MOD73 ✅, MOD74 ✅) **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — Models, settings, keys and the cloud ledger live there, and explorer.exe runs outside the package, seeing the real folder rather than the redirected one. → §MOD77
-- 📋 **MOD78** (deps: MOD74 ✅, MOD75, MOD76, MOD77) **Nothing checks the packaged build, so a Store submission would be its first real install** — Each Store change is only seen with package identity, which the VM gives by registering the layout before the winwright cases run. → §MOD78
+- 📋 **MOD78** (deps: MOD74 ✅, MOD75 ✅, MOD76, MOD77) **Nothing checks the packaged build, so a Store submission would be its first real install** — Each Store change is only seen with package identity, which the VM gives by registering the layout before the winwright cases run. → §MOD78
 - 📋 **MOD79** (deps: MOD78) **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — claude-tray's listing CSV, screenshot and submission API scripts (T412, T417) carry over, leaving Modelado's own policy answers to write. → §MOD79
 
 ## Block G — Public site for 3D modelling
