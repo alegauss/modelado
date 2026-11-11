@@ -6,6 +6,9 @@ export const THEME_KEY = "modelado-theme";
 export const BASE = "/modelado/";
 export const repoUrl = "https://github.com/alegauss/modelado";
 export const releasesUrl = `${repoUrl}/releases/latest`;
+// MOD72, MOD79: the Store listing, signed and updated by the Store: the first way in, and the
+// installer on GitHub the second.
+export const storeUrl = "https://apps.microsoft.com/detail/9PB86WW5NRR2";
 
 /** A file under public/, with the base. */
 export const asset = (path: string) => `${BASE}${path}`;
@@ -25,7 +28,7 @@ export const words = {
       { href: `${BASE}#models`, label: "Models" },
       { href: repoUrl, label: "Source" },
     ],
-    cta: "Download",
+    cta: "Get it",
     themeLabel: (next: string) => `Switch to the ${next} theme`,
   },
   intro: {
@@ -33,7 +36,7 @@ export const words = {
     title: "A photo becomes a 3D model you can turn, print and share.",
     lead:
       "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, on the GPU when it has one.",
-    download: "Download for Windows 10 and 11",
+    download: "Get it from the Microsoft Store",
     source: "See the source",
   },
   // MOD33: one real result, made by modelado-cli object --resolution 320 with the published models
@@ -299,13 +302,15 @@ export const words = {
   download: {
     eyebrow: "Download",
     title: "Modelado for Windows 10 and 11",
-    lead: "Free and open source, with no account. Once a day the app asks GitHub whether a newer release exists, sending only its name and version; About turns that off.",
-    button: (version: string, size: string) => `Download Modelado ${version} · ${size}`,
-    fallback: "Download the latest release",
+    lead: "Free and open source, with no account. The Microsoft Store signs it and keeps it up to date. The installer on GitHub is the other way in: it is not code-signed, so SmartScreen warns the first time, and once a day that copy asks GitHub whether a newer release exists, sending only its name and version; About turns that off.",
+    store: "Get it from the Microsoft Store",
+    button: (version: string, size: string) => `Installer ${version} · ${size}`,
+    fallback: "The installer on GitHub",
     sums: "Each release lists its installer's SHA-256 in SHA256SUMS.",
   },
   footer: {
     links: [
+      { href: storeUrl, label: "Microsoft Store" },
       { href: repoUrl, label: "Source on GitHub" },
       { href: releasesUrl, label: "Releases" },
       { href: `${BASE}privacy/`, label: "Privacy policy" },

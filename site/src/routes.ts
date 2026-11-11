@@ -1,4 +1,4 @@
-import { BASE, releasesUrl, repoUrl, words } from "./content";
+import { BASE, repoUrl, storeUrl, words } from "./content";
 
 // The one page. The table is what the design system's prerender reads.
 export const SITE_ORIGIN = "https://alegauss.github.io";
@@ -34,8 +34,9 @@ export function jsonLd() {
     license: "https://spdx.org/licenses/Apache-2.0.html",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    downloadUrl: releasesUrl,
-    sameAs: [repoUrl],
+    downloadUrl: storeUrl,
+    installUrl: storeUrl,
+    sameAs: [repoUrl, storeUrl],
     author: { "@type": "Person", "@id": `${SITE_ORIGIN}/#person`, name: "Alexandre Oliveira", url: "https://github.com/alegauss" },
   };
 }

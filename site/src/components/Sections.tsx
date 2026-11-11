@@ -1,5 +1,5 @@
 import { SiteButton } from "@viglet/viglet-design-system/site";
-import { BASE, releasesUrl, words } from "../content";
+import { BASE, releasesUrl, storeUrl, words } from "../content";
 
 // MOD34: after the hero and what it makes, the moves from a photo to a file, privacy, speed, the
 // models and the download. The release and the models are read at build time (vite.config.ts), so
@@ -137,7 +137,8 @@ export function Download() {
         </div>
         <p className="sec-lead">{w.lead}</p>
         <div className="download-actions">
-          <SiteButton href={release?.url ?? releasesUrl} rel="noopener">
+          <SiteButton href={storeUrl} rel="noopener">{w.store}</SiteButton>
+          <SiteButton variant="ghost" href={release?.url ?? releasesUrl} rel="noopener">
             {release ? w.button(release.version, megabytes(release.bytes)) : w.fallback}
           </SiteButton>
         </div>

@@ -1,5 +1,5 @@
 import { SiteButton } from "@viglet/viglet-design-system/site";
-import { releasesUrl, repoUrl, words } from "../content";
+import { repoUrl, storeUrl, words } from "../content";
 import { Hero } from "./Hero";
 
 // The first word: what Modelado is and where to get it, then the hero: a photo and the model made
@@ -13,7 +13,7 @@ export function Intro() {
         <h1>{w.title}</h1>
         <p className="intro-lead">{w.lead}</p>
         <div className="intro-actions">
-          <SiteButton href={releasesUrl} rel="noopener">{w.download}</SiteButton>
+          <SiteButton href={storeUrl} rel="noopener">{w.download}</SiteButton>
           <SiteButton variant="ghost" href={repoUrl} rel="noopener">{w.source}</SiteButton>
         </div>
         <Hero />

@@ -1,5 +1,5 @@
 import { SiteButton, SiteFooter, SiteNav, SiteThemeToggle } from "@viglet/viglet-design-system/site";
-import { BASE, THEME_KEY, asset, releasesUrl, words } from "../content";
+import { BASE, THEME_KEY, asset, storeUrl, words } from "../content";
 import { ConsentSettings } from "./Consent";
 
 // The nav and the footer, drawn by the design system's site layer so Modelado sits in the same
@@ -14,7 +14,7 @@ export function Nav() {
       links={words.nav.links}
       actions={
         <>
-          <SiteButton href={releasesUrl} rel="noopener">{words.nav.cta}</SiteButton>
+          <SiteButton href={storeUrl} rel="noopener">{words.nav.cta}</SiteButton>
           <SiteThemeToggle storageKey={THEME_KEY} label={words.nav.themeLabel} />
         </>
       }

@@ -12,26 +12,6 @@
 
 ## Block F — Installer, releases and auto update
 
-### §MOD72 MOD72 — Distributing through the Microsoft Store
-
-From the portfolio review of 30/10/2026 (visibility, `estrategia/portfolio.md`). The
-installer is not signed, and the README and the release notes both have to warn about
-SmartScreen. The decision for all of the author's Windows apps is the Microsoft Store,
-which signs the MSIX package itself, instead of buying a certificate. claude-tray tests
-the path first (visibility VS58); this line follows what that test learns.
-
-Modelado's own points to check against the Store's rules: about 1.1 GB of models is
-downloaded on first use, to a folder the person can choose; the app updates itself by
-downloading and running the installer (Block F), which a Store package must not do, so
-that path is switched off in the Store build and updates come from the Store; the
-`.glb`, `.obj`, `.ply` and `.stl` file associations and `modelado-cli` on the PATH must
-survive packaging, since the Blender add-on calls the CLI; and the optional Meshy and
-Ideogram keys are stored per user. If one of these rules out MSIX, the outcome is
-written down instead.
-
-Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
-reason it cannot be is recorded here and in the product sheet.
-
 ### §MOD77 MOD77 — Data folders under the package's file system redirection
 
 `ModelLibrary` downloads to `%LOCALAPPDATA%\Modelado\models` unless a folder is chosen,
@@ -56,25 +36,6 @@ to send a job the window then counts. Left, for a desk with no Modelado data of 
 redirection would sit beside): Done when, on the registered layout, a model downloads,
 About opens the folder holding it and reports its size, and the DPAPI keys still decrypt
 after a restart.
-
-### §MOD79 MOD79 — Store listing and the first submission
-
-Store ID `9PB86WW5NRR2` (MOD73). Port claude-tray's `build\store-listing-lib.ps1`,
-`store-listing-csv.ps1`, `store-shots.ps1` and `store-submit.ps1`: the listing text in
-English and Portuguese, screenshots taken from the real window with a generated model in
-the viewer, hero and box art drawn by `tools\Modelado.Icon`, and the package sent
-through the submission API.
-
-The answers Modelado needs of its own:
-- privacy policy URL on the site (Block G), covering the local-only photos, the optional Meshy and Ideogram calls with the person's own keys, and the site's consented analytics;
-- certification notes: the ONNX models are data downloaded from Hugging Face with pinned SHA-256 digests after consent, not code; `runFullTrust` is needed for ONNX Runtime with DirectML and for starting Blender;
-- the Store's current rules for apps that generate content with AI, checked against the cloud text-to-texture feature, with whatever reporting path they require;
-- the age rating questionnaire.
-
-Submitted for certification on 11/11/2026 through the Partner Center page, with the
-listing, art and answers in `build\msix\store-listing.md`; the first upload was refused
-for a headless second application, fixed by aliasing modelado-cli alone. Done when the
-submission passes certification and Modelado is listed, which closes MOD72.
 
 ## Block G — Public site for 3D modelling
 

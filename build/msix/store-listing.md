@@ -7,7 +7,8 @@ package's resources are (`Resources` in `AppxManifest.xml`) and as the non-goal 
 interface keeps the app.
 
 The first submission of an app can only be made on the Partner Center page: the submission API
-creates later ones by copying the last published. Store ID `9PB86WW5NRR2`.
+creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, listed since
+11/11/2026 at https://apps.microsoft.com/detail/9PB86WW5NRR2.
 
 ## Files
 

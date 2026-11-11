@@ -4,10 +4,12 @@ For anyone who wants to work in 3D with AI and save time: Modelado is a Windows 
 **photos of objects into 3D models**, and edits and improves any 3D model, with AI models running
 on your own computer. No photo leaves the PC.
 
-**Download:** the [latest release](https://github.com/alegauss/modelado/releases/latest) holds
-`Modelado-Setup-<version>.exe`. It installs per user, without administrator rights. It is not
-code-signed yet, so Windows SmartScreen warns the first time (**More info**, then **Run
-anyway**); the release's `SHA256SUMS` is what to check the file against. The site,
+**Get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PB86WW5NRR2)**: signed by
+the Store, updated by it, and installed without a SmartScreen warning. The
+[latest release](https://github.com/alegauss/modelado/releases/latest) also holds
+`Modelado-Setup-<version>.exe`, which installs per user without administrator rights; it is not
+code-signed, so SmartScreen warns the first time (**More info**, then **Run anyway**), and the
+release's `SHA256SUMS` is what to check it against. The site,
 [alegauss.github.io/modelado](https://alegauss.github.io/modelado/), shows what it makes.
 
 Modelado is a sibling of [Revelei](https://github.com/alegauss/revelei), which improves photos:
@@ -101,8 +103,9 @@ starts Blender with the model shown imported into an empty scene.
 
 ## Using it
 
-Install it from the [latest release](https://github.com/alegauss/modelado/releases/latest) and
-start it from the Start menu. Open a photo (or drop it on the window) and choose
+Install it from the [Microsoft Store](https://apps.microsoft.com/detail/9PB86WW5NRR2) or the
+[latest release](https://github.com/alegauss/modelado/releases/latest) and start it from the
+Start menu. Open a photo (or drop it on the window) and choose
 **Generate 3D object** or **Generate relief**. On first use the app shows how much it will
 download, from where and under which licence; the download can be paused and resumed, and each
 file is checked by SHA-256 before it is used. **About and models** lists what is installed,
