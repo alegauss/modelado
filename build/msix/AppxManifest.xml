@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  MOD73: the Microsoft Store package, after claude-tray's build\msix\AppxManifest.xml (T409).
+  build\build-msix.ps1 fills {VERSION} from <Version> in Directory.Build.props, so the version still
+  lives in one place; the Store requires the fourth part to be 0.
+
+  Identity is the Partner Center reservation (account Alegauss, Store ID 9PB86WW5NRR2, Package
+  Family Name Alegauss.Modelado_d7cpypw1jc0bm). The Store signs the package, so Name and Publisher
+  must match the reservation exactly or the upload is refused.
+
+  The file associations (MOD75) and the execution aliases for Modelado.exe and modelado-cli.exe
+  (MOD76) are added here by their own tasks.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+  <Identity Name="Alegauss.Modelado"
+            Publisher="CN=1ADDE401-7D09-4729-8E49-C28AEEA80170"
+            Version="{VERSION}"
+            ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Modelado</DisplayName>
+    <PublisherDisplayName>Alegauss</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <!-- Windows 10 1903, the minimum the README and installer.iss name. -->
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.18362.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="Modelado" Executable="Modelado.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Modelado"
+        Description="Photos into 3D models, with AI models running on your own PC."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png" />
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

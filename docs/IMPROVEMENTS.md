@@ -40,15 +40,19 @@ PublisherDisplayName `Alegauss`, Package Family Name `Alegauss.Modelado_d7cpypw1
 Store ID `9PB86WW5NRR2`. The Store signs the package, so the manifest's Identity must
 match these values exactly or the upload is refused.
 
-Follow claude-tray's `build\msix\AppxManifest.xml` and `build\build-msix.ps1` (T409,
-T416): a `build\msix\AppxManifest.xml` whose `{VERSION}` comes from `<Version>` in
-`Directory.Build.props` as X.Y.Z.0 (the Store requires the fourth part to be 0); a
-layout in `artifacts\msix\layout` holding the same self-contained x64 publish folder the
-Inno installer takes (both exes, the licences, no pdb or debug DLLs); Store logos drawn
-by `tools\Modelado.Icon` in every targetsize and altform-unplated variant; `makepri` so
-the taskbar icon is not drawn on an accent plate; `makeappx pack` unsigned; and
-`-Register` to install the layout on the test VM in developer mode. Only `runFullTrust`
-as a capability, with claude-tray's justification reused.
+Built (11/11/2026): `build\msix\AppxManifest.xml`; `build\publish.cmd`, the publish
+folder the Inno installer and the package now share; `tools\Modelado.Icon --msix-assets`
+for the logos and their targetsize and altform-unplated variants; and
+`build\build-msix.ps1`, which indexes only `Assets` with makepri (over the whole layout
+it read .NET's satellite folders as languages and split `resources.language-*.pri` out)
+and packs `artifacts\msix\Modelado.msix`, 86 MB, unsigned.
+
+Left: `build\check-msix-vm.ps1` stages the layout and runs `build\check-msix.ps1` on the
+guest, which registers it, checks the family name and the Start entry, starts Modelado
+through `shell:AppsFolder` and removes the package. The guest refuses the unsigned
+layout (0x80073CFF): Developer Mode is off there, and the run is not elevated, so the
+script cannot turn it on (filed in winwright as WW618). Once it is on (Settings, System,
+For developers), run the check; MOD78 reuses it.
 
 Done when `build\build-msix.cmd` writes `Modelado.msix` and the registered layout starts
 Modelado from the Start menu on the VM.

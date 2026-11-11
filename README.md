@@ -152,6 +152,19 @@ Modelado** for .glb, .obj, .ply and .stl. Models are not bundled. A newer instal
 place and keeps the downloaded models; uninstalling asks whether to delete them.
 `check-installer-vm.ps1` installs, upgrades, opens a model and uninstalls on the VMware guest.
 
+### The Store package
+
+```
+build\build-msix.cmd
+powershell -NoProfile -File build\check-msix-vm.ps1
+```
+
+`build-msix.cmd` packs the same publish folder (`build\publish.cmd`) with
+`build\msix\AppxManifest.xml`, the identity reserved in Partner Center, into
+`artifacts\msix\Modelado.msix`, unsigned: the Store signs it on upload. `-Register` installs the
+layout on this machine, and `check-msix-vm.ps1` registers it on the VMware guest and starts
+Modelado from its Start menu entry; both need Developer Mode.
+
 ### A release
 
 ```

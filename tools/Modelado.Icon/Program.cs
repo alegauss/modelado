@@ -8,6 +8,31 @@ using SkiaSharp;
 // format has allowed since Windows Vista, as in PhotoBoost's app-icon script.
 //
 //   dotnet run --project tools\Modelado.Icon [out.ico]     default src\Modelado.App\Modelado.ico
+//   dotnet run --project tools\Modelado.Icon -- --msix-assets <dir>
+//
+// MOD73: --msix-assets writes the logos build\msix\AppxManifest.xml names, after claude-tray's T409 and
+// T416: the three the manifest points at, and the 44 px logo's targetsize variants, each with an
+// altform-unplated twin. The shell draws a logo without an unplated variant on a square in the accent
+// colour, and finds the variants only through the resources.pri build-msix.ps1 indexes.
+
+if (args.Length == 2 && args[0] == "--msix-assets")
+{
+    Directory.CreateDirectory(args[1]);
+    (string File, int Size)[] logos = [("Square44x44Logo.png", 44), ("Square150x150Logo.png", 150), ("StoreLogo.png", 50)];
+    int[] targets = [16, 24, 32, 48, 256];
+    IEnumerable<(string File, int Size)> variants = targets.SelectMany(s => new[]
+    {
+        ($"Square44x44Logo.targetsize-{s}.png", s),
+        ($"Square44x44Logo.targetsize-{s}_altform-unplated.png", s),
+    });
+    foreach ((string file, int size) in logos.Concat(variants))
+    {
+        File.WriteAllBytes(Path.Combine(args[1], file), Draw(size));
+    }
+
+    Console.WriteLine($"msix logos: {args[1]}  ({logos.Length + (targets.Length * 2)} files)");
+    return 0;
+}
 
 int[] sizes = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256];
 string output = args.Length > 0 ? args[0] : Path.Combine(FindRoot(), "src", "Modelado.App", "Modelado.ico");
