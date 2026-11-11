@@ -172,3 +172,46 @@ through a command-line switch or environment variable, so they keep asserting on
 text whatever the guest's display language. One case changes the setting and checks that
 the choice persists. The MSIX manifest declares the shipped languages in Resources so
 the Store lists them.
+
+### §MOD87 MOD87 — Brazilian Portuguese (pt-BR)
+
+Add Strings.pt-BR.resx with every key from the English file. Terms of the trade (mesh,
+GLB, OBJ, STL, texture, prompt) follow the usage of Blender's pt-BR translation, and
+product names are never translated. A test checks that the file has the same keys and
+the same {n} placeholders as the English one, a check that every language task reuses.
+One winwright case launches in pt-BR and confirms that the window title and the main
+buttons render without clipping. A native speaker reviews the text before the task
+ships.
+
+### §MOD88 MOD88 — German (de)
+
+Add Strings.de.resx, held by the key and placeholder parity test from MOD87. German
+strings run 30 to 40 percent longer than English, so buttons, the side panel and the
+status bar may need to grow or wrap rather than clip. Fix any width that MOD87 did not
+expose in the shared XAML, not in a German-only style. A winwright case launches in
+German and checks the main window for clipped text. A native speaker reviews the text
+before the task ships.
+
+### §MOD89 MOD89 — French (fr)
+
+Add Strings.fr.resx, held by the key and placeholder parity test from MOD87. French puts
+a non-breaking space before colons, question marks and exclamation marks, so strings
+that end in those characters carry the space in the resource rather than relying on the
+layout. A winwright case launches in French and checks the main window for clipped text.
+A native speaker reviews the text before the task ships.
+
+### §MOD90 MOD90 — Spanish (es)
+
+Add Strings.es.resx as neutral Spanish, held by the key and placeholder parity test from
+MOD87. Avoid regional terms, so that es-ES and es-MX both fall back to it without a
+regional file. A winwright case launches in Spanish and checks the main window for
+clipped text. A native speaker reviews the text before the task ships.
+
+### §MOD91 MOD91 — Simplified Chinese (zh-Hans)
+
+Add Strings.zh-Hans.resx, held by the key and placeholder parity test from MOD87. zh-CN
+and zh-SG must resolve to it. The font set in Styles.xaml needs a CJK fallback
+(Microsoft YaHei UI), or WPF falls back to a glyph set that renders unevenly. Check that
+every custom font in the styles has that fallback. Chinese text is short but tall, so
+the case checks vertical clipping in rows of fixed height. A native speaker reviews the
+text before the task ships.
