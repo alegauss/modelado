@@ -16,6 +16,22 @@ through OpenAsync like any other file. When Windows can do so for the package, t
 paths also feed the taskbar Jump List. A case opens two fixture files, restarts the app,
 and finds both listed in order.
 
+### §MOD98 MOD98 — An icon rail with one operation shown at a time
+
+MainWindow.xaml stacks 3D Object, Relief, Cloud 3D, Edit and improve, Export, History
+and Quality in one ScrollViewer. Add a narrow vertical rail of icons, about 48 px wide,
+on the panel's edge next to the viewport, with one Segoe Fluent icon per card, a
+tooltip, an AutomationId (Rail-Object, Rail-Relief, …) and a selected state. The panel
+shows only the selected card, so the viewport stays visible and usable, unlike a modal,
+which the user weighed and set aside because these settings are tuned while watching the
+model. The choice persists in SettingsFile. A card's essentials (its main control and
+its Generate button) stay on top, and the rest folds into Advanced, as on 3D Object
+today. A dot on an icon means its model still needs a download, so the "One-time
+download" note leaves the card. Cloud 3D hides with its rail icon when no key is held.
+The rail is keyboard reachable (arrows move, Enter selects). Existing winwright cases
+first select the rail icon of the card they drive. A new case checks that pressing each
+icon shows that card alone, and that the choice survives a restart.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads

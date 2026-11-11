@@ -7,6 +7,7 @@
 ## Block B — Windows interface built like PhotoBoost
 
 - 📋 **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Every Windows editor offers recent files, and without them a generated photo or an edited model is easy to lose. → §MOD94
+- 📋 **MOD98** (deps: —) **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — Every setting is read past every other, and the Generate button of the card in use is often below the fold. → §MOD98
 
 ## Block C — Existing code wired into the window
 
