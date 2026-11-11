@@ -16,7 +16,6 @@
 - ⏸ **MOD75** (deps: MOD73 ✅) **Open with in Explorer would not list Modelado for .glb, .obj, .ply or .stl once it comes from the Store** — set aside (Guest Developer Mode): On the registered layout, Open with on a .glb and an .stl must list Modelado and show the model; it waits on Developer Mode on the guest. → §MOD75
 - ⏸ **MOD76** (deps: MOD73 ✅) **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — set aside (Guest Developer Mode): On the registered layout, modelado-cli --version from a fresh shell and the add-on's Edit in Modelado; waits on Developer Mode on the guest. → §MOD76
 - ⏸ **MOD77** (deps: MOD73 ✅, MOD74 ✅) **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — set aside (Guest Developer Mode): On the registered layout a model downloads, About opens its folder, and keys decrypt after a restart. → §MOD77
-- ⏸ **MOD78** (deps: MOD74 ✅, MOD75 ✅, MOD76 ✅, MOD77 ✅) **Nothing checks the packaged build, so a Store submission would be its first real install** — set aside (Guest dev mode): Each Store change is only seen with package identity, which the VM gives by registering the layout before the winwright cases run. → §MOD78
 
 ## Block G — Public site for 3D modelling
 

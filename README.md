@@ -168,8 +168,13 @@ entry and removes it again; all need Developer Mode. The guest has it off, so th
 the desk that has it:
 
 ```
-powershell -NoProfile -File build\check-msix.ps1 -Layout artifacts\msix\layout
+powershell -NoProfile -File build\check-msix.ps1 -Layout artifacts\msix\layout -Cases
 ```
+
+`-Cases` also checks Open with and both execution aliases, then runs the UI cases in
+`cases-packaged\` against the registered package (`MODELADO_PACKAGED=1`), after a
+`dotnet build Modelado.slnx`. They stage `LOCALAPPDATA` wherever they write, so the desk's own
+Modelado data is never touched.
 
 ### A release
 

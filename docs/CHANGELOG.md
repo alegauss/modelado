@@ -70,6 +70,7 @@
 - ✅ **MOD75 (manifest)** **Open with in Explorer would not list Modelado for .glb, .obj, .ply or .stl once it comes from the Store** — The package declares one 3D model association for .glb, .obj, .ply and .stl, held equal to installer.iss's types by an architecture test.
 - ✅ **MOD76 (aliases)** **The Blender add-on and a terminal cannot start Modelado or modelado-cli from a Store install** — The package declares Modelado.exe and modelado-cli.exe aliases, and the add-on falls back to them where the install folder has no exe.
 - ✅ **MOD77 (code)** **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — Under a package About and the consent name and open the models folder in the package's LocalCache, and say downloads go with the app.
+- ✅ **MOD78** **Nothing checks the packaged build, so a Store submission would be its first real install** — check-msix.ps1 -Cases registers the layout, checks Open with and both aliases, and runs cases-packaged; all pass on the host (design recorded in `cases-packaged/packaged.cases.json`).
 
 ## Block G — Public site for 3D modelling
 

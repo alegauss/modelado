@@ -25,10 +25,28 @@ public sealed class CasesRun
 {
     private static bool Live => Environment.GetEnvironmentVariable("MODELADO_LIVE") == "1";
 
+    // MOD78: MODELADO_PACKAGED=1 runs cases-packaged, whose fixtures start the registered Store
+    // package through its execution aliases. build\check-msix.ps1 -Cases sets it, between registering
+    // the layout and removing it, on a desk with Developer Mode.
+    private static bool Packaged => Environment.GetEnvironmentVariable("MODELADO_PACKAGED") == "1";
+
+    private static string CasesFolder
+    {
+        get
+        {
+            if (Packaged)
+            {
+                return "cases-packaged";
+            }
+
+            return Live ? "cases-live" : "cases";
+        }
+    }
+
     [Fact]
     public void EveryUiCaseInThisRepositoryRuns()
     {
-        IReadOnlyList<CaseDeclaration> declared = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, Live ? "cases-live" : "cases")));
+        IReadOnlyList<CaseDeclaration> declared = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, CasesFolder)));
         Assert.NotEmpty(declared);
 
         Desk desk = Desk.Read();

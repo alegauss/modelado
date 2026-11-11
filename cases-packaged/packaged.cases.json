@@ -1,0 +1,88 @@
+{
+  // MOD78: the cases on the registered Store package. CasesRun loads this folder when
+  // MODELADO_PACKAGED=1, which build\check-msix.ps1 -Cases sets after registering
+  // artifacts\msix\layout on a desk with Developer Mode, and removes the package afterwards.
+  //
+  // Every fixture starts Modelado through its execution alias (MOD76), the one way in from outside
+  // a package, so the process has package identity. The About case stages nothing, so the folder it
+  // names is the one Windows really redirects (MOD77); it only reads. Whatever writes (a key, the
+  // cloud ledger) stages LOCALAPPDATA, so no packaged run can touch the desk's own Modelado data.
+  //
+  // They run on the host, not the VMware guest like every other case: the guest has Developer Mode
+  // off and a run there cannot turn it on (WW618). Two claims stay unread: a download landing in the
+  // real redirected folder, which would write beside the desk's own models, and the file association
+  // activated as Explorer does it (WW619); check-msix.ps1 reads its registration instead.
+
+  "fixtures": [
+    {
+      "name": "the packaged window, as its Start entry opens it",
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
+      "arguments": ["--provider", "cpu"],
+      "shareable": false
+    },
+    {
+      // MOD75: what a file association runs, Modelado.exe "<file>": the bare path CommandLine.cs opens.
+      // winwright cannot activate the association itself (WW619); check-msix.ps1 checks it is registered.
+      "name": "the packaged window opened on a model the way Open with does",
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
+      "arguments": ["cases/fixtures/two-textures.glb", "--provider", "cpu"],
+      "shareable": false
+    },
+    {
+      // MOD76, MOD77: modelado-cli through its alias stores a Meshy key and sends a photo to the
+      // stand-in, which decrypts that key; then the packaged window opens on the job the CLI wrote.
+      "name": "the packaged window started after the packaged modelado-cli sent a photo to Meshy AI",
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "before": [
+        { "run": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe", "arguments": ["cloud", "key", "meshy", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"], "input": "msy_case_key" },
+        { "run": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe", "arguments": ["cloud", "image-to-3d", "{root}/cases/fixtures/photo.png", "-o", "{files}/meshy.glb", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"] }
+      ],
+      "arguments": ["--provider", "cpu", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    }
+  ],
+
+  "cases": [
+    {
+      "name": "the packaged About leaves updates to the Store and names the redirected models folder",
+      "catches": "a Store install that still offers to run the Inno installer over itself, or an About that names a models folder Explorer shows empty",
+      "filed": "MOD78",
+      "tags": ["package", "about", "updates"],
+      "fixture": "the packaged window, as its Start entry opens it",
+      "steps": [
+        { "locator": "Button#UpdateChip", "act": "read", "absent": true, "named": "no update chip on the status bar (MOD74)" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutUpdateStatus", "act": "read", "reads": "name", "expect": "Updates come from the Microsoft Store.", "named": "About says the Store owns updates (MOD74)" },
+        { "locator": "Button#AboutCheckUpdates", "act": "read", "absent": true, "named": "with no Check for updates" },
+        { "locator": "CheckBox#AboutAutoUpdate", "act": "read", "absent": true, "named": "and no automatic check to turn on" },
+        { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": "\\\\Packages\\\\Alegauss\\.Modelado_d7cpypw1jc0bm\\\\LocalCache\\\\Local\\\\Modelado\\\\models", "named": "downloads are named in the package's LocalCache (MOD77)" },
+        { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": "They are removed when Modelado is uninstalled\\.$", "named": "and said to go with the app" }
+      ]
+    },
+
+    {
+      "name": "the packaged window opens a model passed the way its file association passes it",
+      "catches": "a package whose Open with starts Modelado without the file, or on an empty window",
+      "filed": "MOD78",
+      "tags": ["package", "open"],
+      "fixture": "the packaged window opened on a model the way Open with does",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "two-textures.glb", "named": "the model is open (MOD75)" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "matches": "^6 vertices · 2 triangles", "named": "with its geometry" }
+      ]
+    },
+
+    {
+      "name": "the packaged modelado-cli runs through its alias and the packaged window reads what it wrote",
+      "catches": "a Store install whose command line cannot be started from outside the package, or whose window cannot read the key and the job the command line stored",
+      "filed": "MOD78",
+      "tags": ["package", "cloud"],
+      "fixture": "the packaged window started after the packaged modelado-cli sent a photo to Meshy AI",
+      "steps": [
+        { "locator": "Button#CloudChip", "act": "read", "reads": "name", "expect": "Meshy AI · 30 credits this month", "named": "the status bar counts the job the CLI alias sent with the key it stored (MOD76, MOD77)" }
+      ]
+    }
+  ]
+}

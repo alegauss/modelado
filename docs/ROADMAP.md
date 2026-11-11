@@ -15,7 +15,7 @@
 ## Block F — Installer, releases and auto update
 
 - 📋 **MOD72** (deps: MOD79) **Every first download meets a SmartScreen warning that the README and the release notes have to explain away** — claude-tray is already listed with its Store-signed MSIX, so MOD73 to MOD79 follow that path and the listing ends the warning. → §MOD72
-- 📋 **MOD79** (deps: MOD78 ⏸) **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — claude-tray's listing CSV, screenshot and submission API scripts (T412, T417) carry over, leaving Modelado's own policy answers to write. → §MOD79
+- 📋 **MOD79** (deps: MOD78 ✅) **Modelado has no Store listing, screenshots, privacy URL or certification notes, so the package cannot be submitted** — claude-tray's listing CSV, screenshot and submission API scripts (T412, T417) carry over, leaving Modelado's own policy answers to write. → §MOD79
 
 ## Block G — Public site for 3D modelling
 

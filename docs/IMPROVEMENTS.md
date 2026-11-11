@@ -103,26 +103,6 @@ if this one fails.
 Done when, on the registered layout, a model downloads, About opens the folder holding
 it and reports its size, and the DPAPI keys still decrypt after a restart.
 
-### §MOD78 MOD78 — winwright cases on the registered package
-
-MOD74 to MOD77 each change behaviour only when the process has package identity, and the
-unpackaged cases in `cases\` cannot see that. As with every other app check, these run
-on the VMware guest through winwright's `run-tests-vm.cmd`, never on the host.
-
-A fixture registers `artifacts\msix\layout` with `Add-AppxPackage -Register` (developer
-mode on the guest) and removes the package afterwards. The cases then start Modelado
-through its alias and check: About has no update offer and names the redirected models
-folder; a `.glb` opened through its file association shows in the viewer; `modelado-cli
---version` answers from a fresh shell; and a downloaded model survives a restart. Where
-winwright cannot spell a step (registering a package, activating a file association),
-file it with the winwright-friction skill instead of scripting around it here.
-
-In place (11/11/2026): `build\check-msix-vm.ps1` stages the layout and
-`build\check-msix.ps1` registers it on the guest, which refuses it (0x80073CFF) while
-Developer Mode is off; winwright's WW618 asks the runner to prepare that. Done when the
-packaged cases pass on the VM beside the existing suite, and the unpackaged cases still
-pass.
-
 ### §MOD79 MOD79 — Store listing and the first submission
 
 Store ID `9PB86WW5NRR2` (MOD73). Port claude-tray's `build\store-listing-lib.ps1`,
