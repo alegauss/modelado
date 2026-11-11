@@ -32,31 +32,6 @@ written down instead.
 Done when Modelado is listed in the Store with the add-on still finding its CLI, or the
 reason it cannot be is recorded here and in the product sheet.
 
-### §MOD73 MOD73 — The Store package, built from the publish folder
-
-The name is reserved in Partner Center (05/11/2026): Package/Identity/Name
-`Alegauss.Modelado`, Publisher `CN=1ADDE401-7D09-4729-8E49-C28AEEA80170`,
-PublisherDisplayName `Alegauss`, Package Family Name `Alegauss.Modelado_d7cpypw1jc0bm`,
-Store ID `9PB86WW5NRR2`. The Store signs the package, so the manifest's Identity must
-match these values exactly or the upload is refused.
-
-Built (11/11/2026): `build\msix\AppxManifest.xml`; `build\publish.cmd`, the publish
-folder the Inno installer and the package now share; `tools\Modelado.Icon --msix-assets`
-for the logos and their targetsize and altform-unplated variants; and
-`build\build-msix.ps1`, which indexes only `Assets` with makepri (over the whole layout
-it read .NET's satellite folders as languages and split `resources.language-*.pri` out)
-and packs `artifacts\msix\Modelado.msix`, 86 MB, unsigned.
-
-Left: `build\check-msix-vm.ps1` stages the layout and runs `build\check-msix.ps1` on the
-guest, which registers it, checks the family name and the Start entry, starts Modelado
-through `shell:AppsFolder` and removes the package. The guest refuses the unsigned
-layout (0x80073CFF): Developer Mode is off there, and the run is not elevated, so the
-script cannot turn it on (filed in winwright as WW618). Once it is on (Settings, System,
-For developers), run the check; MOD78 reuses it.
-
-Done when `build\build-msix.cmd` writes `Modelado.msix` and the registered layout starts
-Modelado from the Start menu on the VM.
-
 ### §MOD74 MOD74 — The updater stands down inside the package
 
 MOD30 and MOD31 check GitHub for a newer release and, on a click in About, download the

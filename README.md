@@ -163,8 +163,13 @@ powershell -NoProfile -File build\check-msix-vm.ps1
 `build-msix.cmd` packs the same publish folder (`build\publish.cmd`) with
 `build\msix\AppxManifest.xml`, the identity reserved in Partner Center, into
 `artifacts\msix\Modelado.msix`, unsigned: the Store signs it on upload. `-Register` installs the
-layout on this machine, and `check-msix-vm.ps1` registers it on the VMware guest and starts
-Modelado from its Start menu entry; both need Developer Mode.
+layout on this machine, and `check-msix.ps1` registers it, starts Modelado from its Start menu
+entry and removes it again; all need Developer Mode. The guest has it off, so the check runs on
+the desk that has it:
+
+```
+powershell -NoProfile -File build\check-msix.ps1 -Layout artifacts\msix\layout
+```
 
 ### A release
 

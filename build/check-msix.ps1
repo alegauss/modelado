@@ -9,19 +9,27 @@
     that is not elevated may not, and WW618 asks winwright to prepare the guest for it. Each step
     prints ok or FAIL; the exit code is the number of failures.
 #>
+[CmdletBinding()]
+# The layout to register: .\layout where check-msix-vm.ps1 staged it, or artifacts\msix\layout when run
+# on a desk that already has Developer Mode (the host, by the user's choice of 11/11/2026).
+param([string]$Layout = (Join-Path $PSScriptRoot 'layout'))
+
 $ErrorActionPreference = 'Stop'
 $failures = 0
 function Check([string]$what, [bool]$ok) {
     if ($ok) { Write-Host "ok   $what" } else { Write-Host "FAIL $what"; $script:failures++ }
 }
 
-$manifest = Join-Path $PSScriptRoot 'layout\AppxManifest.xml'
+$manifest = Join-Path $Layout 'AppxManifest.xml'
 $unlock = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock'
-try {
-    New-Item $unlock -Force -ErrorAction SilentlyContinue | Out-Null
-    Set-ItemProperty $unlock -Name AllowDevelopmentWithoutDevLicense -Value 1 -Type DWord
-} catch {
-    Write-Host "Developer Mode could not be turned on here: $($_.Exception.Message)"
+$devMode = (Get-ItemProperty $unlock -ErrorAction SilentlyContinue).AllowDevelopmentWithoutDevLicense -eq 1
+if (-not $devMode) {
+    try {
+        New-Item $unlock -Force -ErrorAction SilentlyContinue | Out-Null
+        Set-ItemProperty $unlock -Name AllowDevelopmentWithoutDevLicense -Value 1 -Type DWord
+    } catch {
+        Write-Host "Developer Mode could not be turned on here: $($_.Exception.Message)"
+    }
 }
 
 Get-AppxPackage -Name 'Alegauss.Modelado' | Remove-AppxPackage
