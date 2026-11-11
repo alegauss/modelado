@@ -4,6 +4,18 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
+### §MOD94 MOD94 — Recent files
+
+Keep the last ten paths that OpenAsync loaded and that Save wrote, newest first, in the
+settings file (SettingsFile) and not in the registry, so the MSIX package and the
+portable build behave alike. Show them on the drop zone under Open…, each with the file
+name, the folder and a thumbnail for photos, and in a Recent menu beside the Open
+toolbar button. A path that no longer exists is shown greyed with "Remove from list"
+rather than being dropped silently. When MOD95 lands, generated photos enter the list
+through OpenAsync like any other file. When Windows can do so for the package, the same
+paths also feed the taskbar Jump List. A case opens two fixture files, restarts the app,
+and finds both listed in order.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
@@ -115,6 +127,33 @@ Done when the six listings are live on the Store page.
 ## Block G — Public site for 3D modelling
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
+
+### §MOD93 MOD93 — The Ideogram button once its panel is open
+
+OnDropGenerate in MainWindow.Generate.cs only toggles GeneratePanel's visibility, and
+the button keeps the same text, "Generate a photo with Ideogram…", in both states. With
+the panel open, the button sits above the fields it already showed, and a second press
+either collapses them with no visible cue or, as the user saw, appears to do nothing.
+Reproduce this first on the guest, because the report says nothing happens, while a
+collapse should still be visible. While the panel is open, the button either hides or
+becomes an explicit "Hide" or "Cancel" toggle, and the panel takes focus on its first
+field ("The object"). A winwright case presses the button, finds the panel and the
+prompt field focused, presses the toggle, and finds the panel collapsed and the button
+restored.
+
+### §MOD95 MOD95 — Keep every generated photo where the user can find it
+
+ShowCandidatesAsync keeps the candidates in memory only. OpenCandidateAsync writes only
+the pressed candidate, to %LOCALAPPDATA%\Modelado\generated, which the MSIX package
+virtualises under the package's LocalCache, and nothing in the window names that folder.
+Write every candidate as soon as the job returns, carrying its prompt and seed in the
+PNG as today, to Pictures\Modelado (the user's own library, visible outside the
+package), and name the files after the prompt and the seed. The drop zone gets a
+"Generated photos" strip of the most recent ones, which open as if dropped, plus a link
+that opens the folder in Explorer. A job that fails to save says where it tried to
+write, and the images stay in memory until the user saves or discards them. Cases check
+that all four candidates of a fixture job land on disk before any is pressed, and that
+the strip lists them.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

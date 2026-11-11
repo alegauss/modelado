@@ -6,6 +6,8 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
+- 📋 **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Every Windows editor offers recent files, and without them a generated photo or an edited model is easy to lose. → §MOD94
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
@@ -22,6 +24,9 @@
 ## Block G — Public site for 3D modelling
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
+
+- 📋 **MOD93** (deps: —) **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — A button that appears dead next to the panel it opened makes the user think the app hung and click again. → §MOD93
+- 📋 **MOD95** (deps: —) **Paid Ideogram images are lost: unchosen candidates are discarded, the chosen one lands in a folder the app hides** — Every candidate is paid for, so a photo used once and never found again is money spent twice when it is redrawn. → §MOD95
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
