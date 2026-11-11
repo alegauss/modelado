@@ -14,9 +14,9 @@
 
 ## Block F — Installer, releases and auto update
 
-- 📋 **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — A listing is judged from its thumbnails; claude-tray's captioned shots (T412) show the way. → §MOD81
+- ⏳ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 - 📋 **MOD82** (deps: —) **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — The Store plays trailers only on a listing that has the hero art, so MOD84 waits on this. → §MOD82
-- 📋 **MOD84** (deps: MOD81, MOD82) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — A trailer at the top of the listing proves the models are 3D in a way a screenshot cannot. → §MOD84
+- 📋 **MOD84** (deps: MOD81 ⏳, MOD82) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — A trailer at the top of the listing proves the models are 3D in a way a screenshot cannot. → §MOD84
 
 ## Block G — Public site for 3D modelling
 
@@ -25,6 +25,11 @@
 ## Block I — Blender integration: AI tools for existing Blender models
 
 ## Block J — Local model quality: past TripoSR
+
+## Block K — Translated interface
+
+- 📋 **MOD85** (deps: —) **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — Each translation needs one neutral English source of truth; without it every language edits the same strings in many places. → §MOD85
+- 📋 **MOD86** (deps: MOD85) **The app forces en-US on every thread and has no way to show its interface in another language** — Translations are useless until the app follows the Windows display language and lets the user choose one in settings. → §MOD86
 
 ## Done when — Block H
 
@@ -45,8 +50,10 @@
   filed in its own roadmap (D:\Git\alegauss\winwright, prefix WW) rather than worked
   around here.
 
-## Non-goals
+## Done when — MOD81
 
-- **A Portuguese or multilingual interface** All code, UI text, CLI output, comments,
-  tests and docs are written in English, as PhotoBoost's are; a translation layer would
-  double every string the cases assert on.
+- **The listing shows the four captioned screenshots** Checked on
+  apps.microsoft.com/detail/9PB86WW5NRR2 after the submission that carries
+  artifacts\store-shots\screenshot-1..4.png passes certification.
+
+## Non-goals

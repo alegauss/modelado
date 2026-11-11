@@ -15,7 +15,7 @@ creates later ones by copying the last published. Store ID `9PB86WW5NRR2`, liste
 | What | Where it comes from |
 |---|---|
 | Package | `artifacts\msix\Modelado.msix` from `build\build-msix.cmd`, checked with `build\check-msix.ps1 -Layout artifacts\msix\layout -Cases` |
-| Screenshots, 1920 x 1080 | `artifacts\store-shots\screenshot-1..4.png` from `build\store-shots-vm.ps1` (after `build\publish.cmd`), taken on the VMware guest |
+| Screenshots, 1920 x 1080 | `artifacts\store-shots\screenshot-1..4.png` from `build\store-shots-vm.ps1` (after `build\publish.cmd`): the window captured on the VMware guest (`raw\`), then composed under its caption by `tools\Modelado.Icon --store-shot` (MOD81) |
 | Box art 1:1 | `artifacts\store-art\box-1x1-2160x2160.png` |
 | Poster art 9:16 | `artifacts\store-art\poster-9x16-1440x2160.png` |
 | App tile icons | `artifacts\store-art\tile-300x300.png`, `tile-150x150.png`, `tile-71x71.png` |
@@ -134,7 +134,10 @@ can be added with your own key, and nothing is sent to them without your yes.
 
 **Screenshot captions**
 
-1. Open a photo of an object and make it a whole 3D model
-2. A relief from any photo, textured with it
-3. A landscape as a relief, ready to export
-4. A 3D object made from one photo, ready to export
+Also each screenshot's headline: `build\store-shots-vm.ps1` holds them with the stressed words in
+brackets and stops when the two differ.
+
+1. One photo becomes a whole 3D model
+2. Any photo becomes a relief
+3. Refine it, every step undoable
+4. Export to GLB, OBJ, PLY or STL, sized in millimetres

@@ -143,3 +143,32 @@ beside TripoSR's. TripoSG makes no colour; the photo projection colours the fron
 Done when the measurements and side-by-side are in `docs/local-3d-models.md` with a
 verdict: offer TripoSG as a "high quality" 3D Object (its own line), or record why not
 and try Step1X-3D's geometry stage.
+
+## Block K — Translated interface
+
+### §MOD85 MOD85 — English resource file as the base language
+
+Move every visible string in Modelado.App (MainWindow.xaml, Styles.xaml, the
+MainWindow.*.cs partials, DownloadText and the dialogs) into Properties/Strings.resx as
+the neutral English culture. XAML reads the strings through a markup extension or
+x:Static, and code reads them through the generated Strings class. Format strings take
+placeholders ({0}) rather than concatenation, because word order changes between
+languages. Only the app's interface is in scope. The CLI, the Blender add-on, the site,
+the Store listing, log text and exception messages stay English. An architecture test
+fails when a XAML Text, Content, Header, ToolTip or Title attribute holds a literal
+instead of a resource reference, so a new string cannot skip the file. Because the
+English text is unchanged, the winwright cases keep passing without edits.
+
+### §MOD86 MOD86 — Interface language follows Windows, with a setting
+
+App.xaml.cs pins both culture and UI culture to en-US (MOD49, held by CultureTests).
+Split the two. CurrentCulture stays invariant-safe for numbers written to files, the
+formats MeshExport and the cloud requests depend on. CurrentUICulture takes the language
+chosen in settings, which defaults to the Windows display language when a satellite
+assembly exists for it, and to English otherwise. The supported list is en, pt-BR, de,
+fr, es and zh-Hans. A language change asks for a restart rather than re-binding the live
+window. CultureTests is rewritten to hold the split. The winwright cases pin English
+through a command-line switch or environment variable, so they keep asserting on English
+text whatever the guest's display language. One case changes the setting and checks that
+the choice persists. The MSIX manifest declares the shipped languages in Resources so
+the Store lists them.
