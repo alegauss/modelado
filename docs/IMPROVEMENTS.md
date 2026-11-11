@@ -71,8 +71,10 @@ The answers Modelado needs of its own:
 - the Store's current rules for apps that generate content with AI, checked against the cloud text-to-texture feature, with whatever reporting path they require;
 - the age rating questionnaire.
 
-Done when the submission passes certification and Modelado is listed, which closes
-MOD72.
+Submitted for certification on 11/11/2026 through the Partner Center page, with the
+listing, art and answers in `build\msix\store-listing.md`; the first upload was refused
+for a headless second application, fixed by aliasing modelado-cli alone. Done when the
+submission passes certification and Modelado is listed, which closes MOD72.
 
 ## Block G — Public site for 3D modelling
 

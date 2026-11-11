@@ -49,10 +49,21 @@ it. Any GLB, OBJ, PLY or STL file can also be opened directly, with no download.
 The app sends no telemetry and has no account. Meshy AI and Ideogram are optional cloud services
 that work only with the user's own API key, entered in About; each job shows what is sent and its
 price and waits for consent. Updates come from the Store: the package never checks GitHub for
-releases. The execution aliases let the optional Blender add-on and a terminal start `Modelado.exe`
-and `modelado-cli.exe`.
+releases. The `modelado-cli.exe` execution alias lets the optional Blender add-on and a terminal
+run the command line and open the window (`modelado-cli window`).
 
 ### Restricted capability: runFullTrust
+
+Partner Center's field takes about 500 characters and cuts the rest silently. What went with the
+first submission (11/11/2026):
+
+> Modelado is a Win32 desktop app (.NET, WPF) packaged as MSIX. It runs as the user, never
+> elevated. Full trust lets it run AI models locally with ONNX Runtime and DirectML on the GPU,
+> open and save photos and 3D models wherever the user picks, and start Blender or be started by
+> its Blender add-on through the modelado-cli alias. Photos never leave the PC; no data goes to
+> the developer.
+
+The longer answer, for a reviewer who asks:
 
 > Modelado is a classic Win32 desktop application (.NET 10, WPF) packaged as MSIX, so it runs as
 > Windows.FullTrustApplication. It does not elevate, install services or drivers, and runs entirely
@@ -62,7 +73,7 @@ and `modelado-cli.exe`.
 > 2. Opening and saving 3D models and photos anywhere the user picks, and the file associations for
 >    .glb, .obj, .ply and .stl.
 > 3. Starting Blender with the model shown (Open in Blender), and being started by the Blender
->    add-on and from a terminal through the Modelado.exe and modelado-cli.exe execution aliases.
+>    add-on and from a terminal through the modelado-cli.exe execution alias.
 >
 > No data is sent to the developer.
 
