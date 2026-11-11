@@ -3,8 +3,12 @@
   // MODELADO_PACKAGED=1, which build\check-msix.ps1 -Cases sets after registering
   // artifacts\msix\layout on a desk with Developer Mode, and removes the package afterwards.
   //
-  // Every fixture starts Modelado through its execution alias (MOD76), the one way in from outside
-  // a package, so the process has package identity. The About case stages nothing, so the folder it
+  // Every fixture starts Modelado as the add-on and a terminal do, "modelado-cli window" through the
+  // package's one execution alias (MOD76, MOD79), the way in from outside a package, so the window
+  // has package identity. winwright cannot yet follow a window that the launched process's child
+  // draws (WW620), so since MOD79 these wait on it: check-msix.ps1 -Cases checks the CLI's window by
+  // script, and -RunCases runs them once winwright can. They last passed at 817ffff, when the
+  // package still aliased Modelado.exe itself. The About case stages nothing, so the folder it
   // names is the one Windows really redirects (MOD77); it only reads. Whatever writes (a key, the
   // cloud ledger) stages LOCALAPPDATA, so no packaged run can touch the desk's own Modelado data.
   //
@@ -16,29 +20,29 @@
   "fixtures": [
     {
       "name": "the packaged window, as its Start entry opens it",
-      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
-      "arguments": ["--provider", "cpu"],
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe",
+      "arguments": ["window", "--provider", "cpu"],
       "shareable": false
     },
     {
       // MOD75: what a file association runs, Modelado.exe "<file>": the bare path CommandLine.cs opens.
       // winwright cannot activate the association itself (WW619); check-msix.ps1 checks it is registered.
       "name": "the packaged window opened on a model the way Open with does",
-      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
-      "arguments": ["cases/fixtures/two-textures.glb", "--provider", "cpu"],
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe",
+      "arguments": ["window", "cases/fixtures/two-textures.glb", "--provider", "cpu"],
       "shareable": false
     },
     {
       // MOD76, MOD77: modelado-cli through its alias stores a Meshy key and sends a photo to the
       // stand-in, which decrypts that key; then the packaged window opens on the job the CLI wrote.
       "name": "the packaged window started after the packaged modelado-cli sent a photo to Meshy AI",
-      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\Modelado.exe",
+      "application": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe",
       "variables": { "LOCALAPPDATA": "{files}" },
       "before": [
         { "run": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe", "arguments": ["cloud", "key", "meshy", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"], "input": "msy_case_key" },
         { "run": "%LOCALAPPDATA%\\Microsoft\\WindowsApps\\modelado-cli.exe", "arguments": ["cloud", "image-to-3d", "{root}/cases/fixtures/photo.png", "-o", "{files}/meshy.glb", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"] }
       ],
-      "arguments": ["--provider", "cpu", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
+      "arguments": ["window", "--provider", "cpu", "--cloud-api", "meshy=http://127.0.0.1:47631/meshy/"],
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     }

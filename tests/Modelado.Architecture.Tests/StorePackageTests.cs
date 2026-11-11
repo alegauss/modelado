@@ -38,16 +38,24 @@ public sealed partial class StorePackageTests
     }
 
     [Fact]
-    public void BothExesHaveAnExecutionAlias()
+    public void OneApplicationWithModeladoCliAsItsConsoleAlias()
     {
         XNamespace uap5 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/5";
-        Dictionary<string, string?> aliasOf = Manifest().Descendants(Foundation + "Application").ToDictionary(
-            a => (string)a.Attribute("Executable")!,
-            a => a.Descendants(uap5 + "ExecutionAlias").Select(e => (string?)e.Attribute("Alias")).SingleOrDefault());
+        XNamespace desktop4 = "http://schemas.microsoft.com/appx/manifest/desktop/windows10/4";
+        XElement[] applications = [.. Manifest().Descendants(Foundation + "Application")];
 
-        // MOD76: the Blender add-on and a terminal start each exe through its alias, by its own name.
-        Assert.Equal("Modelado.exe", aliasOf["Modelado.exe"]);
-        Assert.Equal("modelado-cli.exe", aliasOf["modelado-cli.exe"]);
+        // MOD79: a second application without a Start entry is refused by the Store as headless, so
+        // there is one, the window's, in the Start menu.
+        XElement application = Assert.Single(applications);
+        Assert.Equal("Modelado.exe", (string?)application.Attribute("Executable"));
+        Assert.Null(application.Descendants(Uap + "VisualElements").Single().Attribute("AppListEntry"));
+
+        // MOD76: the Blender add-on and a terminal reach modelado-cli through its alias, on the
+        // console, and the window through "modelado-cli window".
+        XElement alias = Assert.Single(application.Descendants(uap5 + "Extension"), e => (string?)e.Attribute("Category") == "windows.appExecutionAlias");
+        Assert.Equal("modelado-cli.exe", (string?)alias.Attribute("Executable"));
+        Assert.Equal("console", (string?)alias.Element(uap5 + "AppExecutionAlias")!.Attribute(desktop4 + "Subsystem"));
+        Assert.Equal("modelado-cli.exe", (string?)alias.Descendants(uap5 + "ExecutionAlias").Single().Attribute("Alias"));
     }
 
     [GeneratedRegex(@"Software\\Classes\\(\.[a-z0-9]+)\\OpenWithProgids")]

@@ -171,10 +171,12 @@ the desk that has it:
 powershell -NoProfile -File build\check-msix.ps1 -Layout artifacts\msix\layout -Cases
 ```
 
-`-Cases` also checks Open with and both execution aliases, then runs the UI cases in
-`cases-packaged\` against the registered package (`MODELADO_PACKAGED=1`), after a
-`dotnet build Modelado.slnx`. They stage `LOCALAPPDATA` wherever they write, so the desk's own
-Modelado data is never touched.
+`-Cases` also checks Open with, the `modelado-cli.exe` execution alias and the window
+`modelado-cli window` opens through it: the package aliases the CLI alone, since the Store refuses
+a second application without a Start entry. `-RunCases` adds the UI cases in `cases-packaged\`
+(`MODELADO_PACKAGED=1`, after a `dotnet build Modelado.slnx`), which wait on winwright following a
+window a launched process's child draws (WW620). They stage `LOCALAPPDATA` wherever they write, so
+the desk's own Modelado data is never touched.
 
 ### A release
 

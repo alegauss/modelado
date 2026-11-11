@@ -492,6 +492,15 @@ def app_path(context) -> str:
     return addon.preferences.app if addon else default_app()
 
 
+def app_command(app: str, cli: str) -> list:
+    """How Edit in Modelado starts the window: Modelado.exe where it is found, else `modelado-cli
+    window` (MOD79), the one way into a Store install, whose package aliases the CLI alone. Empty
+    where neither is found."""
+    if runnable(app):
+        return [app]
+    return [cli, "window"] if runnable(cli) else []
+
+
 class MODELADO_OT_edit(bpy.types.Operator):
     """Edit the selected mesh with Modelado"""
 
@@ -750,14 +759,15 @@ class MODELADO_OT_round_trip(bpy.types.Operator):
 
     def invoke(self, context, event):
         app = app_path(context)
-        if not runnable(app):
+        command = app_command(app, cli_path(context))
+        if not command:
             self.report({"ERROR"}, f"Modelado was not found at {app}; set it in the add-on's preferences")
             return {"CANCELLED"}
 
         self._name = context.active_object.name
         self._folder = tempfile.TemporaryDirectory(prefix="modelado-session-")
         start_session(context.active_object, self._folder.name, context.scene.modelado.apply_modifiers)
-        self._process = subprocess.Popen([app, "--blender-session", self._folder.name])
+        self._process = subprocess.Popen([*command, "--blender-session", self._folder.name])
         self._applied = 0
         self._timer = context.window_manager.event_timer_add(0.5, window=context.window)
         context.window_manager.modal_handler_add(self)

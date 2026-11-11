@@ -14,9 +14,11 @@
 # on a desk that already has Developer Mode (the host, by the user's choice of 11/11/2026).
 param(
     [string]$Layout = (Join-Path $PSScriptRoot 'layout'),
-    # MOD78: also check the association and the CLI alias, and run cases-packaged against the
-    # registered package (tests\Modelado.Cases with MODELADO_PACKAGED=1), from a built checkout.
-    [switch]$Cases
+    # MOD78: also check the association, the CLI alias and the window it opens.
+    [switch]$Cases,
+    # With -Cases, also run cases-packaged (tests\Modelado.Cases with MODELADO_PACKAGED=1) from a
+    # built checkout. They reach the window through modelado-cli window, which needs WW620.
+    [switch]$RunCases
 )
 
 $ErrorActionPreference = 'Stop'
@@ -71,24 +73,46 @@ if ($Cases) {
         Check "Open with lists the package for $type" ($null -ne $ours)
     }
 
-    # MOD76: both aliases, and the CLI's answering from a shell that is not the package's.
+    # MOD76, MOD79: the one alias, the CLI's, answering from a shell that is not the package's.
     $aliases = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps'
-    Check 'Modelado.exe has an alias on PATH' (Test-Path (Join-Path $aliases 'Modelado.exe'))
     $help = & cmd /c "`"$(Join-Path $aliases 'modelado-cli.exe')`" --help" 2>&1 | Out-String
     Check 'modelado-cli --help answers through its alias, on the console' ($LASTEXITCODE -eq 0 -and $help -match 'modelado-cli')
 
-    $repo = Split-Path -Parent $PSScriptRoot
-    $env:MODELADO_PACKAGED = '1'
-    try {
-        # The test app itself, as run-tests.cmd and run-live.cmd start it: dotnet test refuses
-        # Microsoft.Testing.Platform's runner on the .NET 10 SDK.
-        $runner = Join-Path $repo 'tests\Modelado.Cases\bin\Debug\net10.0-windows\Modelado.Cases.exe'
-        if (-not (Test-Path $runner)) { throw "No $runner (dotnet build Modelado.slnx first)" }
-        & $runner
-        Check 'cases-packaged pass against the registered package' ($LASTEXITCODE -eq 0)
+    # MOD79: the window through "modelado-cli window", the way the Blender add-on and a terminal reach
+    # it: the package's own Modelado.exe, a child of the CLI, which waits until it closes.
+    $cli = Start-Process (Join-Path $aliases 'modelado-cli.exe') -ArgumentList 'window', '--provider', 'cpu' -PassThru
+    $child = $null
+    foreach ($i in 1..60) {
+        Start-Sleep -Seconds 1
+        $child = Get-Process Modelado -ErrorAction SilentlyContinue |
+            Where-Object { $_.MainWindowHandle -ne 0 -and $_.Path -like "$install*" } | Select-Object -First 1
+        if ($child) { break }
     }
-    finally {
-        Remove-Item Env:\MODELADO_PACKAGED
+    Check 'modelado-cli window opens the package''s window' ($null -ne $child)
+    if ($child) {
+        $parent = (Get-CimInstance Win32_Process -Filter "ProcessId = $($child.Id)").ParentProcessId
+        Check 'as a child of the CLI, which waits for it' ($parent -eq $cli.Id -and -not $cli.HasExited)
+        $child.CloseMainWindow() | Out-Null
+        Check 'and the CLI ends when the window closes' ($cli.WaitForExit(20000))
+    }
+    if (-not $cli.HasExited) { $cli.Kill() }
+
+    # cases-packaged starts the window the same way, and winwright cannot yet follow a window a
+    # launched process's child draws (WW620), so its cases wait on that; -RunCases runs them anyway.
+    if ($RunCases) {
+        $repo = Split-Path -Parent $PSScriptRoot
+        $env:MODELADO_PACKAGED = '1'
+        try {
+            # The test app itself, as run-tests.cmd and run-live.cmd start it: dotnet test refuses
+            # Microsoft.Testing.Platform's runner on the .NET 10 SDK.
+            $runner = Join-Path $repo 'tests\Modelado.Cases\bin\Debug\net10.0-windows\Modelado.Cases.exe'
+            if (-not (Test-Path $runner)) { throw "No $runner (dotnet build Modelado.slnx first)" }
+            & $runner
+            Check 'cases-packaged pass against the registered package' ($LASTEXITCODE -eq 0)
+        }
+        finally {
+            Remove-Item Env:\MODELADO_PACKAGED
+        }
     }
 }
 

@@ -46,6 +46,17 @@ public sealed class CliJsonTests : IDisposable
     }
 
     [Fact]
+    public void Window_refuses_where_no_window_is_installed_beside_it()
+    {
+        // MOD79: here the CLI runs from the test's output, which holds no Modelado window, so the
+        // command the Store package's only alias reaches the window through says so and starts nothing.
+        (int code, string _, string err) = Run("window", "--provider", "cpu");
+
+        Assert.Equal(2, code);
+        Assert.Contains("the Modelado window is not installed beside modelado-cli", err, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_photo_becomes_a_meshy_model_priced_first_and_recorded_where_the_window_reads_it()
     {
         // MOD65, over the UI cases' Meshy stand-in: every image-to-3D job is the cube, for 30 credits.

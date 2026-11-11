@@ -414,6 +414,11 @@ with tempfile.TemporaryDirectory() as local:
     for exe in ("modelado-cli.exe", "Modelado.exe"):
         open(os.path.join(aliases, exe), "wb").close()
     check("FIND: a Store install's aliases", (modelado.default_cli(), modelado.default_app()) == (os.path.join(aliases, "modelado-cli.exe"), os.path.join(aliases, "Modelado.exe")))
+    # MOD79: the package aliases the CLI alone, so the window is started through it.
+    os.remove(os.path.join(aliases, "Modelado.exe"))
+    check("FIND: with only the CLI's alias, Edit in Modelado runs modelado-cli window",
+          modelado.app_command(modelado.default_app(), modelado.default_cli()) == [os.path.join(aliases, "modelado-cli.exe"), "window"])
+    check("FIND: with neither, nothing to run", modelado.app_command(os.path.join(local, "none.exe"), os.path.join(local, "none-cli.exe")) == [])
     os.makedirs(folder)
     open(os.path.join(folder, "modelado-cli.exe"), "wb").close()
     check("FIND: the install folder first, where it holds the exe", modelado.default_cli() == os.path.join(folder, "modelado-cli.exe"))

@@ -55,6 +55,8 @@ const string Usage = """
         --keep-uv            keeps the model's own UVs
     (each cloud command takes --service, --estimate and --cloud-api as image-to-3d does)
     modelado-cli cloud key <service>            stores the key given on standard input
+    modelado-cli window [arguments]             starts the Modelado window beside this program
+                                                with these arguments, and waits until it closes
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
             --manifest <url>          --size <units> (longest side when saving)
@@ -72,6 +74,31 @@ if (args.Length == 0 || args[0] is "-h" or "--help")
 {
     Console.WriteLine(Usage);
     return 0;
+}
+
+// MOD79: the window, started from this program's own folder with the rest of the arguments, which
+// are the window's and not checked here. A Store package can give an execution alias to one program
+// only (a second application without a Start entry is refused as headless), and that alias is this
+// one, so the Blender add-on and a terminal reach the window through it. It waits for the window, as
+// the add-on's Edit in Modelado follows the process to know when the session ends.
+if (args[0] == "window")
+{
+    string window = Path.Combine(AppContext.BaseDirectory, OperatingSystem.IsWindows() ? "Modelado.exe" : "Modelado");
+    if (!File.Exists(window))
+    {
+        await Console.Error.WriteLineAsync($"ERROR the Modelado window is not installed beside modelado-cli ({window}).").ConfigureAwait(false);
+        return 2;
+    }
+
+    ProcessStartInfo start = new(window) { UseShellExecute = false };
+    foreach (string arg in args.Skip(1))
+    {
+        start.ArgumentList.Add(arg);
+    }
+
+    using Process started = Process.Start(start)!;
+    await started.WaitForExitAsync().ConfigureAwait(false);
+    return started.ExitCode;
 }
 
 // MOD48: refused here, before anything loads, as ERROR and an exit code a script can read.
