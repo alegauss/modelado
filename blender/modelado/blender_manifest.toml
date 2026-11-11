@@ -1,18 +1,24 @@
 schema_version = "1.0.0"
 
 # MOD43: Modelado's mesh edits on the selected object, through modelado-cli.
+# MOD70: written to extensions.blender.org's rules (blender\LISTING.md); every short text here is
+# at most 64 characters without a closing stop, as `blender --command extension validate` wants.
 id = "modelado"
-version = "0.1.0"
+version = "0.2.0"
 name = "Modelado"
-tagline = "Simplify, subdivide, smooth, fill holes and more with Modelado"
+tagline = "Edit meshes and turn photos into 3D with the Modelado app"
 maintainer = "Alexandre Oliveira"
 type = "add-on"
-website = "https://github.com/alegauss/modelado"
+website = "https://alegauss.github.io/modelado/"
 tags = ["Mesh", "Modeling"]
 blender_version_min = "4.2.0"
+
+# modelado-cli, which every operator runs, is a Windows x64 program.
+platforms = ["windows-x64"]
 
 # Code that imports bpy is bound by Blender's own licence.
 license = ["SPDX:GPL-3.0-or-later"]
 
 [permissions]
-files = "Writes the object to a temporary GLB for modelado-cli and reads the edited one back"
+files = "Reads photos and swaps temporary GLB files with modelado-cli"
+network = "Meshy AI and Ideogram jobs via modelado-cli, after consent"

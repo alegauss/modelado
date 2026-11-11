@@ -182,8 +182,10 @@ site; and the screenshots show the round trip (Edit in Modelado, Send to Blender
 the platform refuses add-ons that need an external program, the refusal is recorded and
 the add-on stays in the release.
 
-Done when the add-on is submitted to extensions.blender.org with the listing written
-here, or the platform's reason for refusing it is recorded.
+Those points are settled in `blender/LISTING.md`, and the manifest passes `extension
+validate` on every gate; only the upload is left. Done when the add-on is submitted to
+extensions.blender.org with the listing written here, or the platform's reason for
+refusing it is recorded.
 
 ## Block J — Local model quality: past TripoSR
 

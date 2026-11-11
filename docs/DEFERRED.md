@@ -18,5 +18,7 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
+- ⏸ **MOD70** (deps: —) **Someone browsing Blender's extensions platform never finds the Modelado add-on** — set aside (Waits on the user's Blender ID upload.): Upload the built zip to extensions.blender.org under the user's Blender ID, or record the platform's reason for refusing it. → §MOD70
+
 ## Block J — Local model quality: past TripoSR
 

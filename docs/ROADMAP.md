@@ -29,8 +29,6 @@
 
 ## Block I — Blender integration: AI tools for existing Blender models
 
-- 📋 **MOD70** (deps: —) **Someone browsing Blender's extensions platform never finds the Modelado add-on** — Blender users install add-ons from inside Blender, and the add-on already carries a manifest in the extensions format. → §MOD70
-
 ## Block J — Local model quality: past TripoSR
 
 - 💭 **MOD71** (deps: —) **A local 3D Object comes out well below cloud services and newer open models, with the back of the object invented** — TripoSR is from 2024, newer open models are clearly better, and only a measured comparison of licence, ONNX and memory says whether one fits. → §MOD71
