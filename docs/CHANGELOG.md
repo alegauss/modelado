@@ -122,6 +122,7 @@
 - ✅ **MOD88 (translation written)** **The interface has no German (de) translation** — The window reads in German from Strings.de.resx, held to the English keys and placeholders, and its buttons stay in their panels.
 - ✅ **MOD89 (translation written)** **The interface has no French (fr) translation** — The window reads in French from Strings.fr.resx, typeset with non-breaking spaces and held to the English keys and placeholders.
 - ✅ **MOD90 (translation written)** **The interface has no Spanish (es) translation** — The window reads in neutral Spanish from Strings.es.resx, which es-ES and es-MX both resolve to, held to the English keys and placeholders.
+- ✅ **MOD91 (translation written)** **The interface has no Simplified Chinese (zh-Hans) translation** — The window reads in Simplified Chinese from Strings.zh-Hans.resx, which zh-CN and zh-SG resolve to, every font falling back to Microsoft YaHei UI.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

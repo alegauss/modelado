@@ -36,6 +36,7 @@ public sealed class LanguageSettingTests : IDisposable
     [InlineData("pt-PT", "pt-BR")]
     [InlineData("de-AT", "de")]
     [InlineData("zh-CN", "zh-Hans")]
+    [InlineData("zh-SG", "zh-Hans")]
     [InlineData("fr-CA", "fr")]
     [InlineData("es-ES", "es")]
     [InlineData("es-MX", "es")]

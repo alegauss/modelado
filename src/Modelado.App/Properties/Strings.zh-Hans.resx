@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Modelado</value>
+  </data>
+  <data name="ViewLabel" xml:space="preserve">
+    <value>视图：</value>
+  </data>
+  <data name="ModelInColour" xml:space="preserve">
+    <value>彩色模型</value>
+  </data>
+  <data name="ModelInClay" xml:space="preserve">
+    <value>黏土模型</value>
+  </data>
+  <data name="MeshEdges" xml:space="preserve">
+    <value>网格（边）</value>
+  </data>
+  <data name="InputPhoto" xml:space="preserve">
+    <value>输入照片</value>
+  </data>
+  <data name="ResetViewButtonTip" xml:space="preserve">
+    <value>正视图（Home）。双击模型效果相同。</value>
+  </data>
+  <data name="SaveViewButtonTip" xml:space="preserve">
+    <value>将视图另存为图像：以当前相机和视图样式保存为 PNG，长边 1024 至 4096 px，透明背景</value>
+  </data>
+  <data name="ToolbarOpenTip" xml:space="preserve">
+    <value>打开物体的照片（PNG、JPEG、WebP）以生成模型，或打开 3D 模型（GLB、OBJ、PLY、STL）进行编辑。也可以将文件拖放到窗口上。（Ctrl+O）</value>
+  </data>
+  <data name="ToolbarSaveAsTip" xml:space="preserve">
+    <value>将模型另存为 GLB、OBJ、PLY 或 STL（Ctrl+S）</value>
+  </data>
+  <data name="SendToBlenderButtonTip" xml:space="preserve">
+    <value>发送到 Blender：将当前显示的版本放回其来源物体上，作为 Blender 撤销中的一步</value>
+  </data>
+  <data name="SendToBlender" xml:space="preserve">
+    <value>发送到 Blender</value>
+  </data>
+  <data name="UndoButtonTip" xml:space="preserve">
+    <value>撤销：回到模型的上一个版本（Ctrl+Z）</value>
+  </data>
+  <data name="RedoButtonTip" xml:space="preserve">
+    <value>重做（Ctrl+Y 或 Ctrl+Shift+Z）</value>
+  </data>
+  <data name="RotateXButtonTip" xml:space="preserve">
+    <value>绕 X 轴旋转 90°，用于躺倒的模型</value>
+  </data>
+  <data name="RotateYButtonTip" xml:space="preserve">
+    <value>绕竖直轴旋转 90°</value>
+  </data>
+  <data name="RotateZButtonTip" xml:space="preserve">
+    <value>绕 Z 轴旋转 90°</value>
+  </data>
+  <data name="MirrorButtonTip" xml:space="preserve">
+    <value>左右镜像</value>
+  </data>
+  <data name="DropTitle" xml:space="preserve">
+    <value>将照片或 3D 模型拖放到此处</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>打开…</value>
+  </data>
+  <data name="DropAdvice" xml:space="preserve">
+    <value>最适合单个完整物体，居中摆放，背景纯色。所有处理都在这台电脑上进行，照片不会离开本机。</value>
+  </data>
+  <data name="TheObject" xml:space="preserve">
+    <value>物体</value>
+  </data>
+  <data name="GeneratePromptTip" xml:space="preserve">
+    <value>要画什么，例如一把木椅。</value>
+  </data>
+  <data name="AskedAs" xml:space="preserve">
+    <value>实际请求</value>
+  </data>
+  <data name="GenerateTemplate" xml:space="preserve">
+    <value>{object}, one whole object, centred, three-quarter view from slightly above, soft even studio light, plain light grey background, no text, nothing else in the picture</value>
+  </data>
+  <data name="GenerateTemplateTip" xml:space="preserve">
+    <value>{object} 会替换为该物体；其余部分要求生成最适合 3D 重建的图像。</value>
+  </data>
+  <data name="GenerateAspectSquare" xml:space="preserve">
+    <value>正方形</value>
+  </data>
+  <data name="GenerateSpeedQuick" xml:space="preserve">
+    <value>快速</value>
+  </data>
+  <data name="GenerateSpeedDefault" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="GenerateSpeedBest" xml:space="preserve">
+    <value>最佳</value>
+  </data>
+  <data name="GenerateCountOne" xml:space="preserve">
+    <value>1 张图像</value>
+  </data>
+  <data name="GenerateCountTwo" xml:space="preserve">
+    <value>2 张图像</value>
+  </data>
+  <data name="GenerateCountThree" xml:space="preserve">
+    <value>3 张图像</value>
+  </data>
+  <data name="GenerateCountFour" xml:space="preserve">
+    <value>4 张图像</value>
+  </data>
+  <data name="SendIt" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>暂不</value>
+  </data>
+  <data name="ViewerHint" xml:space="preserve">
+    <value>拖动以旋转 · 滚轮缩放 · 双击重新居中</value>
+  </data>
+  <data name="OperationsTitle" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="PauseButton" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="ObjectCardTitle" xml:space="preserve">
+    <value>3D 物体</value>
+  </data>
+  <data name="ObjectCardCaption" xml:space="preserve">
+    <value>完整模型，其正面、侧面和背面由 TripoSR 从单张照片推断得出。按顶点着色。</value>
+  </data>
+  <data name="MeshResolution" xml:space="preserve">
+    <value>网格分辨率</value>
+  </data>
+  <data name="ObjectResolution128" xml:space="preserve">
+    <value>128 · 快速草稿</value>
+  </data>
+  <data name="ObjectResolution256" xml:space="preserve">
+    <value>256 · TripoSR 默认</value>
+  </data>
+  <data name="ObjectResolution384" xml:space="preserve">
+    <value>384 · 精细</value>
+  </data>
+  <data name="ObjectThresholdLabel" xml:space="preserve">
+    <value>厚度（密度阈值）：{0:0}</value>
+  </data>
+  <data name="ObjectThresholdTip" xml:space="preserve">
+    <value>调低会使物体变厚并封闭孔洞；调高会使其变薄并分离各部分。25 是 TripoSR 自身的默认值。</value>
+  </data>
+  <data name="ObjectRemoveBackground" xml:space="preserve">
+    <value>移除照片背景（U²-Net）</value>
+  </data>
+  <data name="ObjectRemoveBackgroundTip" xml:space="preserve">
+    <value>仅当 PNG 已抠图并带有透明度时关闭：此时会按原样使用。</value>
+  </data>
+  <data name="ObjectProjectPhoto" xml:space="preserve">
+    <value>正面使用清晰的照片颜色</value>
+  </data>
+  <data name="ObjectProjectPhotoTip" xml:space="preserve">
+    <value>TripoSR 的颜色来自 64 × 64 网格；此选项会把照片本身的颜色重新铺回照片所示的那一面。</value>
+  </data>
+  <data name="ObjectEnhancePhoto" xml:space="preserve">
+    <value>先增强小照片（Real-ESRGAN）</value>
+  </data>
+  <data name="ObjectEnhancePhotoTip" xml:space="preserve">
+    <value>适用于小于 1024 px 或有噪点的照片：在抠图和重建之前用 AI 放大 4×。</value>
+  </data>
+  <data name="ObjectAdvancedHeader" xml:space="preserve">
+    <value>高级</value>
+  </data>
+  <data name="ObjectEveryPoint" xml:space="preserve">
+    <value>采样每个网格点（较慢，可捕捉细小部件）</value>
+  </data>
+  <data name="ObjectEveryPointTip" xml:space="preserve">
+    <value>计算整个采样网格，而不是约四分之一，因此采样耗时约为原来的 4×；粗略采样会漏掉的细腿和把手得以保留。</value>
+  </data>
+  <data name="ObjectSmoothingLabel" xml:space="preserve">
+    <value>平滑次数：{0}</value>
+  </data>
+  <data name="ObjectSmoothingTip" xml:space="preserve">
+    <value>生成表面后执行的 Taubin 平滑次数；0 保留原始网格以便雕刻。每次平滑只占 256 分辨率下运行时间的一小部分。</value>
+  </data>
+  <data name="ObjectPiecesLabel" xml:space="preserve">
+    <value>丢弃小于 {0}% 的零散碎块</value>
+  </data>
+  <data name="ObjectPiecesTip" xml:space="preserve">
+    <value>小于最大部分该比例的碎片会被丢弃；0 保留所有碎块。几乎不增加运行时间。</value>
+  </data>
+  <data name="ObjectButton" xml:space="preserve">
+    <value>生成 3D 物体</value>
+  </data>
+  <data name="ReliefCardTitle" xml:space="preserve">
+    <value>浮雕</value>
+  </data>
+  <data name="ReliefCardCaption" xml:space="preserve">
+    <value>每个像素的深度（Depth Anything V2）转换为高度：生成一个以照片为纹理的浅浮雕。适用于任何图像：人脸、风景、建筑。</value>
+  </data>
+  <data name="DepthModel" xml:space="preserve">
+    <value>深度模型</value>
+  </data>
+  <data name="ReliefResolution256" xml:space="preserve">
+    <value>256 · 默认</value>
+  </data>
+  <data name="ReliefResolution512" xml:space="preserve">
+    <value>512 · 精细</value>
+  </data>
+  <data name="ReliefDepthLabel" xml:space="preserve">
+    <value>浮雕高度：{0:P0}</value>
+  </data>
+  <data name="ReliefDepthTip" xml:space="preserve">
+    <value>最近点凸出的距离，以宽度的比例表示。</value>
+  </data>
+  <data name="ReliefBaseLabel" xml:space="preserve">
+    <value>实心底座：{0}</value>
+  </data>
+  <data name="ReliefBaseTip" xml:space="preserve">
+    <value>有底座时网格是封闭的（实心），可以用于 3D 打印。没有底座时只是一个表面。</value>
+  </data>
+  <data name="ReliefRemoveBackground" xml:space="preserve">
+    <value>仅物体（移除背景）</value>
+  </data>
+  <data name="ReliefButton" xml:space="preserve">
+    <value>生成浮雕</value>
+  </data>
+  <data name="CloudCardTitle" xml:space="preserve">
+    <value>云端 3D</value>
+  </data>
+  <data name="CloudCardCaption" xml:space="preserve">
+    <value>由云服务根据打开的照片或文字描述生成带纹理的模型。发送什么、花费多少，都会在发送前说明。</value>
+  </data>
+  <data name="CloudServiceLabel" xml:space="preserve">
+    <value>服务</value>
+  </data>
+  <data name="CloudFromPhoto" xml:space="preserve">
+    <value>基于照片</value>
+  </data>
+  <data name="CloudFromText" xml:space="preserve">
+    <value>基于描述</value>
+  </data>
+  <data name="CloudTexture" xml:space="preserve">
+    <value>带纹理</value>
+  </data>
+  <data name="CloudTextureTip" xml:space="preserve">
+    <value>关闭则只生成无纹理的形状，费用更低。</value>
+  </data>
+  <data name="CloudPbr" xml:space="preserve">
+    <value>PBR 贴图（金属度、粗糙度、法线）</value>
+  </data>
+  <data name="QuadTopology" xml:space="preserve">
+    <value>四边面拓扑</value>
+  </data>
+  <data name="CloudQuadsTip" xml:space="preserve">
+    <value>使用四边面而非三角形，便于在 Blender 中编辑。</value>
+  </data>
+  <data name="EditCardTitle" xml:space="preserve">
+    <value>编辑与改进</value>
+  </data>
+  <data name="EditCardCaption" xml:space="preserve">
+    <value>适用于生成的模型或打开的 3D 模型。每一步都可以撤销。</value>
+  </data>
+  <data name="SimplifyAmountTip" xml:space="preserve">
+    <value>更少的三角形：文件更小更轻，适用于游戏、网页和切片软件，同时保持形状。</value>
+  </data>
+  <data name="SimplifyButton" xml:space="preserve">
+    <value>简化</value>
+  </data>
+  <data name="SubdivideButton" xml:space="preserve">
+    <value>细分</value>
+  </data>
+  <data name="SubdivideButtonTip" xml:space="preserve">
+    <value>三角形数量变为 4×，并做圆滑处理：表面更平滑，适合大尺寸打印。</value>
+  </data>
+  <data name="FillHolesButton" xml:space="preserve">
+    <value>填充孔洞</value>
+  </data>
+  <data name="FillHolesButtonTip" xml:space="preserve">
+    <value>封闭网格中的孔洞，使其成为实心（水密）以便打印。</value>
+  </data>
+  <data name="PiecesButton" xml:space="preserve">
+    <value>移除零散碎块</value>
+  </data>
+  <data name="PiecesButtonTip" xml:space="preserve">
+    <value>删除小于最大部分该比例的零散碎片。</value>
+  </data>
+  <data name="PiecesText" xml:space="preserve">
+    <value>小于 5%</value>
+  </data>
+  <data name="SmoothButton" xml:space="preserve">
+    <value>平滑</value>
+  </data>
+  <data name="SmoothButtonTip" xml:space="preserve">
+    <value>去除锯齿边缘和噪点而不缩小模型（Taubin），按此次数执行。</value>
+  </data>
+  <data name="SmoothText" xml:space="preserve">
+    <value>3 次</value>
+  </data>
+  <data name="FlattenButton" xml:space="preserve">
+    <value>平底</value>
+  </data>
+  <data name="FlattenButtonTip" xml:space="preserve">
+    <value>从底部压平模型高度的该比例，使其能立在打印平台上。</value>
+  </data>
+  <data name="WithAI" xml:space="preserve">
+    <value>使用 AI</value>
+  </data>
+  <data name="UpscaleTextureButton" xml:space="preserve">
+    <value>纹理清晰度提升 4×（Real-ESRGAN）</value>
+  </data>
+  <data name="UpscaleTextureButtonTip" xml:space="preserve">
+    <value>适用于带纹理的模型（浮雕、打开的 OBJ 和 GLB）：放大并清理纹理图像，最高 4096 px。</value>
+  </data>
+  <data name="NewTextureButtonTip" xml:space="preserve">
+    <value>绘制一种无缝材质（木材、石材、涂漆金属）并应用到模型表面。</value>
+  </data>
+  <data name="Material" xml:space="preserve">
+    <value>材质</value>
+  </data>
+  <data name="NewTexturePromptTip" xml:space="preserve">
+    <value>例如：风化的灰色石材、橡木板、红色涂漆金属。</value>
+  </data>
+  <data name="ReprojectButton" xml:space="preserve">
+    <value>重新应用照片颜色</value>
+  </data>
+  <data name="ReprojectButtonTip" xml:space="preserve">
+    <value>将照片的清晰颜色重新铺回物体正面，例如在细分之后。</value>
+  </data>
+  <data name="Triangles" xml:space="preserve">
+    <value>三角形</value>
+  </data>
+  <data name="CloudRemeshPolycountTip" xml:space="preserve">
+    <value>100 至 300,000：新网格的三角形数量。</value>
+  </data>
+  <data name="CloudRetexturePromptTip" xml:space="preserve">
+    <value>新表面的外观，例如风化橡木、涂漆钢材。</value>
+  </data>
+  <data name="CloudKeepUv" xml:space="preserve">
+    <value>保留模型的 UV</value>
+  </data>
+  <data name="ExportCardTitle" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="ExportFormatLabel" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="ExportFormatGlb" xml:space="preserve">
+    <value>GLB · Windows、Blender、网页</value>
+  </data>
+  <data name="ExportFormatObj" xml:space="preserve">
+    <value>OBJ · 带纹理或颜色</value>
+  </data>
+  <data name="ExportFormatPly" xml:space="preserve">
+    <value>PLY · 带颜色，MeshLab</value>
+  </data>
+  <data name="ExportFormatStl" xml:space="preserve">
+    <value>STL · 3D 打印</value>
+  </data>
+  <data name="ExportObjTexture" xml:space="preserve">
+    <value>纹理，另存为旁边的 .mtl 和 .png</value>
+  </data>
+  <data name="ExportObjVertexColours" xml:space="preserve">
+    <value>顶点颜色，仅存于 .obj 中</value>
+  </data>
+  <data name="ExportGlbStandard" xml:space="preserve">
+    <value>标准，所有查看器都能打开</value>
+  </data>
+  <data name="ExportGlbCompact" xml:space="preserve">
+    <value>紧凑，大小约减半：适用于网页、Blender</value>
+  </data>
+  <data name="ExportPlyBinary" xml:space="preserve">
+    <value>二进制，更小更快</value>
+  </data>
+  <data name="ExportPlyAscii" xml:space="preserve">
+    <value>ASCII，可作为文本阅读</value>
+  </data>
+  <data name="LongestSide" xml:space="preserve">
+    <value>最长边</value>
+  </data>
+  <data name="ExportSaveAs" xml:space="preserve">
+    <value>另存为…</value>
+  </data>
+  <data name="OpenInBlender" xml:space="preserve">
+    <value>在 Blender 中打开</value>
+  </data>
+  <data name="OpenInBlenderTip" xml:space="preserve">
+    <value>启动 Blender，并将此模型导入空场景</value>
+  </data>
+  <data name="HistoryCardTitle" xml:space="preserve">
+    <value>历史记录</value>
+  </data>
+  <data name="QualityCardTitle" xml:space="preserve">
+    <value>质量</value>
+  </data>
+  <data name="QualityStandard" xml:space="preserve">
+    <value>标准（GPU 上使用 FP16，下载量减半）</value>
+  </data>
+  <data name="QualityHigh" xml:space="preserve">
+    <value>高质量（全程 FP32）</value>
+  </data>
+  <data name="QualityCaption" xml:space="preserve">
+    <value>在 CPU 上始终使用 FP32，因为在 CPU 上它更快。模型在首次使用时从 Hugging Face 下载，并通过 SHA-256 校验。</value>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="UpdatesTitle" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="AboutCheckUpdates" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+  <data name="AboutReleasePage" xml:space="preserve">
+    <value>打开发布页面</value>
+  </data>
+  <data name="AboutInstallUpdate" xml:space="preserve">
+    <value>更新并重启</value>
+  </data>
+  <data name="AboutUpdateUnsaved" xml:space="preserve">
+    <value>当前显示的模型尚未保存，重启会丢失该模型及其历史记录。请先用“另存为”保存，或仍然更新。</value>
+  </data>
+  <data name="AboutUpdateAnyway" xml:space="preserve">
+    <value>更新并丢弃</value>
+  </data>
+  <data name="AboutUpdateKeep" xml:space="preserve">
+    <value>保留</value>
+  </data>
+  <data name="AboutAutoUpdate" xml:space="preserve">
+    <value>每天自动检查一次更新</value>
+  </data>
+  <data name="AboutAutoUpdateTip" xml:space="preserve">
+    <value>向 api.github.com 查询最新版本，只发送 Modelado 的名称和版本号。</value>
+  </data>
+  <data name="CloudServices" xml:space="preserve">
+    <value>云服务</value>
+  </data>
+  <data name="CloudServicesCaption" xml:space="preserve">
+    <value>可选。填入密钥后，该服务的操作会显示在本地操作旁边；每次都须经你同意才会发送任何内容。</value>
+  </data>
+  <data name="WhereInferenceRuns" xml:space="preserve">
+    <value>推理运行位置</value>
+  </data>
+  <data name="ProviderAuto" xml:space="preserve">
+    <value>自动（可用时通过 DirectML 使用 GPU，否则使用 CPU）</value>
+  </data>
+  <data name="ProviderDirectML" xml:space="preserve">
+    <value>GPU（DirectML）</value>
+  </data>
+  <data name="ProviderCpu" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="ProviderCpuTip" xml:space="preserve">
+    <value>适用于出错的 GPU，或对某个模型而言比 CPU 更慢的 GPU。</value>
+  </data>
+  <data name="ProviderCaption" xml:space="preserve">
+    <value>此选择从下一个操作开始生效，并在下次启动时保留；命令行中的 --provider 对该次运行仍然优先。</value>
+  </data>
+  <data name="ModelsTitle" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="ModelSources" xml:space="preserve">
+    <value>模型来源</value>
+  </data>
+  <data name="ModelSourcesCaption" xml:space="preserve">
+    <value>内置模型排在最前。添加 Hugging Face 仓库（owner/name）或清单 URL 后，其中为某个操作列出的模型会成为该操作卡片上的一个选项。</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="AboutAddSource" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="AboutSourceInputTip" xml:space="preserve">
+    <value>Hugging Face 上的 owner/name，或 manifest.json 的 https 地址</value>
+  </data>
+  <data name="AboutSourceKeep" xml:space="preserve">
+    <value>添加此来源</value>
+  </data>
+  <data name="DownloadsTitle" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="AboutDownloadAll" xml:space="preserve">
+    <value>全部下载（离线使用）</value>
+  </data>
+  <data name="AboutOpenFolder" xml:space="preserve">
+    <value>打开模型文件夹</value>
+  </data>
+  <data name="AboutRemoveAll" xml:space="preserve">
+    <value>移除所有下载…</value>
+  </data>
+  <data name="AboutRemoveAllDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="AboutRemoveAllKeep" xml:space="preserve">
+    <value>保留</value>
+  </data>
+  <data name="ThirdPartySoftware" xml:space="preserve">
+    <value>第三方软件</value>
+  </data>
+  <data name="AboutNotices" xml:space="preserve">
+    <value>ONNX Runtime（MIT）及 DirectML（Microsoft 软件许可条款），以及 SkiaSharp（MIT）。</value>
+  </data>
+  <data name="WhatIsDownloaded" xml:space="preserve">
+    <value>下载的内容</value>
+  </data>
+  <data name="GoodToKnow" xml:space="preserve">
+    <value>须知</value>
+  </data>
+  <data name="LicenseTitle" xml:space="preserve">
+    <value>许可证</value>
+  </data>
+  <data name="AboutButton" xml:space="preserve">
+    <value>关于和模型</value>
+  </data>
+  <data name="CloudChipTip" xml:space="preserve">
+    <value>本月云服务的花费及其预算</value>
+  </data>
+  <data name="UpdateChipTip" xml:space="preserve">
+    <value>查看新内容及安装方法</value>
+  </data>
+  <data name="SizeGigabytes" xml:space="preserve">
+    <value>{0:0.0} GB</value>
+  </data>
+  <data name="SizeMegabytes" xml:space="preserve">
+    <value>{0} MB</value>
+  </data>
+  <data name="SecondsLeft" xml:space="preserve">
+    <value>剩余约 {0:0} 秒</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>剩余约 {0:0} 分钟</value>
+  </data>
+  <data name="DownloadVerifying" xml:space="preserve">
+    <value>正在校验…</value>
+  </data>
+  <data name="DownloadRetrying" xml:space="preserve">
+    <value>{0} · 连接中断，正在重试…</value>
+  </data>
+  <data name="DownloadStarting" xml:space="preserve">
+    <value>{0} · 正在开始…</value>
+  </data>
+  <data name="DownloadRunning" xml:space="preserve">
+    <value>{0} · {1:0.0} MB/s · {2}</value>
+  </data>
+  <data name="DownloadDone" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="DropFormatsText" xml:space="preserve">
+    <value>照片：{0}
+3D 模型：{1}</value>
+  </data>
+  <data name="FrontView" xml:space="preserve">
+    <value>正视图</value>
+  </data>
+  <data name="SaveViewAsImage" xml:space="preserve">
+    <value>将视图另存为图像</value>
+  </data>
+  <data name="OpenDialogTitle" xml:space="preserve">
+    <value>打开照片或 3D 模型</value>
+  </data>
+  <data name="OpenDialogFilter" xml:space="preserve">
+    <value>照片和 3D 模型|{0};{1}|照片|{0}|3D 模型 (GLB, OBJ, PLY, STL)|{1}|所有文件|*.*</value>
+  </data>
+  <data name="NotOpenable" xml:space="preserve">
+    <value>{0} 不是 Modelado 能打开的照片或 3D 模型。</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>找不到 {0}。</value>
+  </data>
+  <data name="FileNotOpened" xml:space="preserve">
+    <value>无法打开 {0}：{1}</value>
+  </data>
+  <data name="OpeningFile" xml:space="preserve">
+    <value>正在打开 {0}…</value>
+  </data>
+  <data name="WindowTitleWithFile" xml:space="preserve">
+    <value>{0} · Modelado</value>
+  </data>
+  <data name="HistoryOpened" xml:space="preserve">
+    <value>已打开</value>
+  </data>
+  <data name="PhotoSource" xml:space="preserve">
+    <value>{0} · {1} × {2}</value>
+  </data>
+  <data name="PhotoSourceCutOut" xml:space="preserve">
+    <value>{0} · {1} × {2} · 已抠图</value>
+  </data>
+  <data name="HistoryItem" xml:space="preserve">
+    <value>{0}. {1}</value>
+  </data>
+  <data name="MeshCounts" xml:space="preserve">
+    <value>{0:N0} 个顶点 · {1:N0} 个三角形</value>
+  </data>
+  <data name="MeshTexture" xml:space="preserve">
+    <value>纹理 {0} × {1}</value>
+  </data>
+  <data name="MeshOpen" xml:space="preserve">
+    <value>非封闭</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="SaveViewDialogTitle" xml:space="preserve">
+    <value>将视图另存为图像</value>
+  </data>
+  <data name="DefaultModelName" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="SaveViewFileName" xml:space="preserve">
+    <value>{0} 视图</value>
+  </data>
+  <data name="SaveViewFilter" xml:space="preserve">
+    <value>PNG (长边 {0} px)|*.png</value>
+  </data>
+  <data name="SavedView" xml:space="preserve">
+    <value>已保存 {0} · {1} × {2} px</value>
+  </data>
+  <data name="NotSaved" xml:space="preserve">
+    <value>无法保存 {0}</value>
+  </data>
+  <data name="SimplifyLabel" xml:space="preserve">
+    <value>简化为三角形数量的 {0:P0}</value>
+  </data>
+  <data name="BaseNone" xml:space="preserve">
+    <value>无底座</value>
+  </data>
+  <data name="BaseShare" xml:space="preserve">
+    <value>宽度的 {0:P0}</value>
+  </data>
+  <data name="TurnAboutX" xml:space="preserve">
+    <value>绕 X 轴旋转</value>
+  </data>
+  <data name="TurnAboutY" xml:space="preserve">
+    <value>绕 Y 轴旋转</value>
+  </data>
+  <data name="TurnAboutZ" xml:space="preserve">
+    <value>绕 Z 轴旋转</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>镜像</value>
+  </data>
+  <data name="PassOne" xml:space="preserve">
+    <value>1 次</value>
+  </data>
+  <data name="PassMany" xml:space="preserve">
+    <value>{0} 次</value>
+  </data>
+  <data name="PiecesUnder" xml:space="preserve">
+    <value>小于 {0}%</value>
+  </data>
+  <data name="SimplifyStep" xml:space="preserve">
+    <value>简化至 {0:P0}</value>
+  </data>
+  <data name="SubdivideConfirm" xml:space="preserve">
+    <value>模型将增至 {0:N0} 个三角形，查看和保存都会很吃力。是否继续？</value>
+  </data>
+  <data name="SubdivideStep" xml:space="preserve">
+    <value>细分</value>
+  </data>
+  <data name="SmoothStepOne" xml:space="preserve">
+    <value>平滑，1 次</value>
+  </data>
+  <data name="SmoothStepMany" xml:space="preserve">
+    <value>平滑，{0} 次</value>
+  </data>
+  <data name="FillHolesStep" xml:space="preserve">
+    <value>填充孔洞</value>
+  </data>
+  <data name="FillHolesNone" xml:space="preserve">
+    <value>填充孔洞 · 没有需要填充的孔洞</value>
+  </data>
+  <data name="FillHolesOpen" xml:space="preserve">
+    <value>填充孔洞 · 已填充 {0} 个孔洞 · 仍有开放边</value>
+  </data>
+  <data name="FillHolesClosed" xml:space="preserve">
+    <value>填充孔洞 · 已填充 {0} 个孔洞 · 网格已封闭</value>
+  </data>
+  <data name="RemovePiecesStep" xml:space="preserve">
+    <value>移除小于 {0}% 的碎块</value>
+  </data>
+  <data name="FlatBaseStep" xml:space="preserve">
+    <value>在 {0}% 处做平底</value>
+  </data>
+  <data name="TurnStep" xml:space="preserve">
+    <value>绕 {0} 轴旋转 90°</value>
+  </data>
+  <data name="SharperTextureStep" xml:space="preserve">
+    <value>更清晰的纹理</value>
+  </data>
+  <data name="PhotoColoursStep" xml:space="preserve">
+    <value>照片颜色</value>
+  </data>
+  <data name="UndoneTo" xml:space="preserve">
+    <value>已撤销：回到“{0}”</value>
+  </data>
+  <data name="RedoneTo" xml:space="preserve">
+    <value>已重做：{0}</value>
+  </data>
+  <data name="TrianglesCount" xml:space="preserve">
+    <value>{0:N0} 个三角形</value>
+  </data>
+  <data name="EditDone" xml:space="preserve">
+    <value>{0} · {1:N0} → {2:N0} 个三角形 · {3:0.0} 秒</value>
+  </data>
+  <data name="UndoHint" xml:space="preserve">
+    <value>按 Ctrl+Z 可撤销。</value>
+  </data>
+  <data name="StepCancelled" xml:space="preserve">
+    <value>{0}：已取消</value>
+  </data>
+  <data name="StepFailed" xml:space="preserve">
+    <value>{0}：失败</value>
+  </data>
+  <data name="StageRemovingBackground" xml:space="preserve">
+    <value>正在移除背景</value>
+  </data>
+  <data name="StageEncoding" xml:space="preserve">
+    <value>正在读取照片（TripoSR）</value>
+  </data>
+  <data name="StageSamplingDensity" xml:space="preserve">
+    <value>正在推算形状</value>
+  </data>
+  <data name="StageExtractingSurface" xml:space="preserve">
+    <value>正在提取表面</value>
+  </data>
+  <data name="StageColouring" xml:space="preserve">
+    <value>正在着色</value>
+  </data>
+  <data name="StageEnhancingPhoto" xml:space="preserve">
+    <value>正在增强照片（Real-ESRGAN）</value>
+  </data>
+  <data name="StageProjectingPhoto" xml:space="preserve">
+    <value>正在铺上照片颜色</value>
+  </data>
+  <data name="StageEstimatingDepth" xml:space="preserve">
+    <value>正在估算深度</value>
+  </data>
+  <data name="StageBuildingRelief" xml:space="preserve">
+    <value>正在构建浮雕</value>
+  </data>
+  <data name="StageTook" xml:space="preserve">
+    <value>{0} {1:0.0} 秒</value>
+  </data>
+  <data name="RunDone" xml:space="preserve">
+    <value>{0} · {1:0.0} 秒 · {2}</value>
+  </data>
+  <data name="Cancelling" xml:space="preserve">
+    <value>正在取消…</value>
+  </data>
+  <data name="ExportSizeInvalid" xml:space="preserve">
+    <value>请输入大于 0 的尺寸。</value>
+  </data>
+  <data name="ExportBox" xml:space="preserve">
+    <value>{0:0.##} × {1:0.##} × {2:0.##} {3}（宽 × 高 × 深）</value>
+  </data>
+  <data name="UnitMillimetres" xml:space="preserve">
+    <value>mm</value>
+  </data>
+  <data name="UnitUnits" xml:space="preserve">
+    <value>单位</value>
+  </data>
+  <data name="ExportNoteStlScale" xml:space="preserve">
+    <value>STL 以毫米为单位读取，因此上面的尺寸就是打印尺寸。</value>
+  </data>
+  <data name="ExportNoteStlColours" xml:space="preserve">
+    <value>STL 只保存形状，因此颜色会被丢弃。</value>
+  </data>
+  <data name="ExportNoteStlOpen" xml:space="preserve">
+    <value>网格存在开放边，因此不是水密的，不适合打印：“填充孔洞”可以将其封闭。</value>
+  </data>
+  <data name="ExportNotePlyTexture" xml:space="preserve">
+    <value>PLY 不支持纹理，因此在每个顶点处采样颜色。</value>
+  </data>
+  <data name="ExportNoteGrey" xml:space="preserve">
+    <value>模型没有颜色，因此将保存为灰色。</value>
+  </data>
+  <data name="SaveModelDialogTitle" xml:space="preserve">
+    <value>保存 3D 模型</value>
+  </data>
+  <data name="SaveFilterObj" xml:space="preserve">
+    <value>OBJ|*.obj</value>
+  </data>
+  <data name="SaveFilterPly" xml:space="preserve">
+    <value>PLY|*.ply</value>
+  </data>
+  <data name="SaveFilterStl" xml:space="preserve">
+    <value>STL (毫米)|*.stl</value>
+  </data>
+  <data name="SaveFilterGlb" xml:space="preserve">
+    <value>GLB (二进制 glTF)|*.glb</value>
+  </data>
+  <data name="ExportSaved" xml:space="preserve">
+    <value>已保存 {0}</value>
+  </data>
+  <data name="ExportSavedCompact" xml:space="preserve">
+    <value>已保存 {0} · 紧凑</value>
+  </data>
+  <data name="ExportSavedTexture" xml:space="preserve">
+    <value>已保存 {0} · 纹理另存为 {1}</value>
+  </data>
+  <data name="ExportSavedCompactTexture" xml:space="preserve">
+    <value>已保存 {0} · 紧凑 · 纹理另存为 {1}</value>
+  </data>
+  <data name="ExportSavedSize" xml:space="preserve">
+    <value>已保存 {0} · 最长边 {1:0.##} {2}</value>
+  </data>
+  <data name="NotSavedBecause" xml:space="preserve">
+    <value>无法保存 {0}：{1}</value>
+  </data>
+  <data name="GeneratePhotoWith" xml:space="preserve">
+    <value>用 {0} 生成照片…</value>
+  </data>
+  <data name="GenerateCountWith" xml:space="preserve">
+    <value>用 {1} 生成 {0}</value>
+  </data>
+  <data name="GenerateCountWithCost" xml:space="preserve">
+    <value>用 {1} 生成 {0} · ~{2}</value>
+  </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>此描述将发送到 {0}。{1}</value>
+  </data>
+  <data name="ConsentDescriptionCost" xml:space="preserve">
+    <value>此描述将发送到 {0}，费用约 {1}。{2}</value>
+  </data>
+  <data name="DrawingWith" xml:space="preserve">
+    <value>正在用 {0} 绘制…</value>
+  </data>
+  <data name="OpenThisOne" xml:space="preserve">
+    <value>打开这张</value>
+  </data>
+  <data name="CandidateName" xml:space="preserve">
+    <value>候选 {0}</value>
+  </data>
+  <data name="PressToOpen" xml:space="preserve">
+    <value>点击即可打开。</value>
+  </data>
+  <data name="CandidatesPress" xml:space="preserve">
+    <value>{0} 个候选：点击其中一个即可打开。</value>
+  </data>
+  <data name="ImageNotKept" xml:space="preserve">
+    <value>无法保留图像：{0}</value>
+  </data>
+  <data name="FromBlenderTitle" xml:space="preserve">
+    <value>来自 Blender 的 {0} · Modelado</value>
+  </data>
+  <data name="FromBlender" xml:space="preserve">
+    <value>来自 Blender 的 {0}</value>
+  </data>
+  <data name="OpenedInBlender" xml:space="preserve">
+    <value>已在 Blender 中打开：{0}</value>
+  </data>
+  <data name="BlenderNotStarted" xml:space="preserve">
+    <value>无法启动 Blender：{0}</value>
+  </data>
+  <data name="EditedInModelado" xml:space="preserve">
+    <value>已在 Modelado 中编辑</value>
+  </data>
+  <data name="SentToBlender" xml:space="preserve">
+    <value>已发送到 Blender：{0}，版本 {1}</value>
+  </data>
+  <data name="NotSentToBlender" xml:space="preserve">
+    <value>未发送到 Blender</value>
+  </data>
+  <data name="NewTextureWith" xml:space="preserve">
+    <value>用 {0} 生成新纹理…</value>
+  </data>
+  <data name="DrawCountWith" xml:space="preserve">
+    <value>用 {1} 绘制 {0}</value>
+  </data>
+  <data name="DrawCountWithCost" xml:space="preserve">
+    <value>用 {1} 绘制 {0} · ~{2}</value>
+  </data>
+  <data name="AskedAsTemplate" xml:space="preserve">
+    <value>实际请求：{0}</value>
+  </data>
+  <data name="ConsentTexture" xml:space="preserve">
+    <value>此描述将发送到 {0}；模型留在本机。{1}</value>
+  </data>
+  <data name="ConsentTextureCost" xml:space="preserve">
+    <value>此描述将发送到 {0}，费用约 {1}；模型留在本机。{2}</value>
+  </data>
+  <data name="PutThisOnModel" xml:space="preserve">
+    <value>将此纹理应用到模型</value>
+  </data>
+  <data name="TextureName" xml:space="preserve">
+    <value>纹理 {0}</value>
+  </data>
+  <data name="PressToPutOn" xml:space="preserve">
+    <value>点击即可应用到模型。</value>
+  </data>
+  <data name="TexturesPress" xml:space="preserve">
+    <value>{0} 个纹理：点击其中一个即可应用到模型。</value>
+  </data>
+  <data name="TextureNotRead" xml:space="preserve">
+    <value>无法读取纹理：{0}</value>
+  </data>
+  <data name="NewTextureStep" xml:space="preserve">
+    <value>新纹理：{0}</value>
+  </data>
+  <data name="ConsentTitleText" xml:space="preserve">
+    <value>{0} 需要一次性下载</value>
+  </data>
+  <data name="ConsentLeadOne" xml:space="preserve">
+    <value>{0} 使用一个首次使用时下载的 AI 模型：{1}。之后即可离线工作，适用于你打开的所有照片和模型。</value>
+  </data>
+  <data name="ConsentLeadMany" xml:space="preserve">
+    <value>{0} 使用若干首次使用时下载的 AI 模型：{1}。之后即可离线工作，适用于你打开的所有照片和模型。</value>
+  </data>
+  <data name="ConsentFile" xml:space="preserve">
+    <value>{0} · {1} · {2} · 来自 {3}</value>
+  </data>
+  <data name="ConsentTotalPartial" xml:space="preserve">
+    <value>总计：{0}，因为其中 {1} 已在本机。</value>
+  </data>
+  <data name="ConsentTotalAll" xml:space="preserve">
+    <value>总计：{0}。</value>
+  </data>
+  <data name="ConsentFactPhoto" xml:space="preserve">
+    <value>• 只下载模型。你的照片保留在这台电脑上，绝不会上传。</value>
+  </data>
+  <data name="ConsentFactFolder" xml:space="preserve">
+    <value>• 模型保存在 {0}，可随时在“关于”中移除。{1}</value>
+  </data>
+  <data name="ConsentFactChecked" xml:space="preserve">
+    <value>• 每个文件在使用前都会通过 SHA-256 校验。</value>
+  </data>
+  <data name="ConsentFactResume" xml:space="preserve">
+    <value>• 下载期间 Modelado 仍可正常使用。已取消的下载会从中断处继续。</value>
+  </data>
+  <data name="ConsentLicenseLine" xml:space="preserve">
+    <value>{0}: {1} ({2}).</value>
+  </data>
+  <data name="ModelListUnreadable" xml:space="preserve">
+    <value>无法从 Hugging Face 读取模型列表。请检查网络连接后重试。</value>
+  </data>
+  <data name="ModelListLacks" xml:space="preserve">
+    <value>模型列表（{0}）不包含 {1}。</value>
+  </data>
+  <data name="DownloadingModels" xml:space="preserve">
+    <value>正在下载模型</value>
+  </data>
+  <data name="DownloadingModelsStatus" xml:space="preserve">
+    <value>正在下载模型：{0}</value>
+  </data>
+  <data name="ModelsReady" xml:space="preserve">
+    <value>模型已就绪 · 已下载 {0} 个文件</value>
+  </data>
+  <data name="EachFileChecked" xml:space="preserve">
+    <value>每个文件都已通过 SHA-256 校验。</value>
+  </data>
+  <data name="DownloadPausedContinue" xml:space="preserve">
+    <value>下载已暂停。现在继续吗？</value>
+  </data>
+  <data name="DownloadModelsTitle" xml:space="preserve">
+    <value>下载模型</value>
+  </data>
+  <data name="DownloadPaused" xml:space="preserve">
+    <value>下载已暂停</value>
+  </data>
+  <data name="ResumesNextTime" xml:space="preserve">
+    <value>下次会从中断处继续。</value>
+  </data>
+  <data name="DownloadCancelled" xml:space="preserve">
+    <value>下载已取消</value>
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
+    <value>下载失败。
+
+{0}</value>
+  </data>
+  <data name="Pausing" xml:space="preserve">
+    <value>正在暂停…</value>
+  </data>
+  <data name="ObjectFirstUseAccept" xml:space="preserve">
+    <value>下载并生成 3D 物体</value>
+  </data>
+  <data name="ReliefFirstUseAccept" xml:space="preserve">
+    <value>下载并生成浮雕</value>
+  </data>
+  <data name="TextureFirstUseTitle" xml:space="preserve">
+    <value>更清晰的纹理</value>
+  </data>
+  <data name="TextureFirstUseAccept" xml:space="preserve">
+    <value>下载并锐化纹理</value>
+  </data>
+  <data name="ModelsNotInstalled" xml:space="preserve">
+    <value>模型未安装</value>
+  </data>
+  <data name="ModelListUnreadableOffline" xml:space="preserve">
+    <value>无法读取模型列表。没有网络时，只有已下载的模型可用。</value>
+  </data>
+  <data name="ModelListUnreadableOfflineBecause" xml:space="preserve">
+    <value>无法读取模型列表（{0}）。没有网络时，只有已下载的模型可用。</value>
+  </data>
+  <data name="DownloadQueued" xml:space="preserve">
+    <value>下载已排队</value>
+  </data>
+  <data name="DownloadQueuedDetail" xml:space="preserve">
+    <value>其他下载完成后会立即开始。</value>
+  </data>
+  <data name="DownloadingPercent" xml:space="preserve">
+    <value>正在下载 · {0}%</value>
+  </data>
+  <data name="PausedPercent" xml:space="preserve">
+    <value>已暂停 · {0}%</value>
+  </data>
+  <data name="PausedDetail" xml:space="preserve">
+    <value>继续时会从中断处开始；已下载的内容不会重新获取。</value>
+  </data>
+  <data name="ResumeDownload" xml:space="preserve">
+    <value>继续下载</value>
+  </data>
+  <data name="DownloadStopped" xml:space="preserve">
+    <value>下载已停止</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="OneTimeDownloadLeft" xml:space="preserve">
+    <value>一次性下载 · 剩余 {0}</value>
+  </data>
+  <data name="OneTimeDownload" xml:space="preserve">
+    <value>一次性下载 · {0}</value>
+  </data>
+  <data name="FirstUseDetail" xml:space="preserve">
+    <value>{0}，来自 {1}。你的照片绝不会上传。</value>
+  </data>
+  <data name="ListAnd" xml:space="preserve">
+    <value> 和 </value>
+  </data>
+  <data name="ListComma" xml:space="preserve">
+    <value>、</value>
+  </data>
+  <data name="ReadyOffline" xml:space="preserve">
+    <value>已就绪：{0} 现在可以离线工作。</value>
+  </data>
+  <data name="ReadyStartsNow" xml:space="preserve">
+    <value>已下载并校验。{0} 现在开始；进度显示在顶部。</value>
+  </data>
+  <data name="DownloadGone" xml:space="preserve">
+    <value>下载服务器上已没有此文件（错误 404）。请更新 Modelado（新版本知道当前的下载位置），然后重试。</value>
+  </data>
+  <data name="DownloadFailedKept" xml:space="preserve">
+    <value>{0} 已下载的部分会保留；点击“重试”将从那里继续。</value>
+  </data>
+  <data name="SourcesUnreadable" xml:space="preserve">
+    <value>无法读取已添加的来源，因此只提供内置模型：{0}</value>
+  </data>
+  <data name="BuiltInSource" xml:space="preserve">
+    <value>alegauss/modelado-models（内置）</value>
+  </data>
+  <data name="RemoveNamed" xml:space="preserve">
+    <value>移除 {0}</value>
+  </data>
+  <data name="ManifestOverride" xml:space="preserve">
+    <value>本次运行使用 --manifest {0}，而不是内置模型和已添加的来源。</value>
+  </data>
+  <data name="SourceTypeFirst" xml:space="preserve">
+    <value>请先输入 Hugging Face 仓库（owner/name）或清单 URL。</value>
+  </data>
+  <data name="SourceAlready" xml:space="preserve">
+    <value>{0} 已经是一个来源。</value>
+  </data>
+  <data name="BuiltInListUnreadable" xml:space="preserve">
+    <value>无法读取内置模型列表，因此无法与之核对。请检查网络连接后重试。</value>
+  </data>
+  <data name="SourceListsNone" xml:space="preserve">
+    <value>{0} 未列出任何模型。</value>
+  </data>
+  <data name="SourceListsOne" xml:space="preserve">
+    <value>{0} 列出了 1 个模型。要添加吗？</value>
+  </data>
+  <data name="SourceListsMany" xml:space="preserve">
+    <value>{0} 列出了 {1} 个模型。要添加吗？</value>
+  </data>
+  <data name="SourceModelLine" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3}</value>
+  </data>
+  <data name="SourcesNotSaved" xml:space="preserve">
+    <value>这些来源在 Modelado 关闭前有效，但无法保存：{0}</value>
+  </data>
+  <data name="DepthBuiltIn" xml:space="preserve">
+    <value>Depth Anything V2 Small（内置）</value>
+  </data>
+  <data name="DepthFromSource" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotCheckedYet" xml:space="preserve">
+    <value>尚未检查。</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>正在检查…</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Modelado {0} 已发布；当前版本为 {1}。</value>
+  </data>
+  <data name="UpdateLatest" xml:space="preserve">
+    <value>Modelado {0} 是最新版本。</value>
+  </data>
+  <data name="UpdateUnreachable" xml:space="preserve">
+    <value>无法连接 GitHub 检查更新。</value>
+  </data>
+  <data name="UpdatesFromStore" xml:space="preserve">
+    <value>更新通过 Microsoft Store 提供。</value>
+  </data>
+  <data name="UpdateChipText" xml:space="preserve">
+    <value>有可用更新 {0}</value>
+  </data>
+  <data name="UpdateWhileBusy" xml:space="preserve">
+    <value>{0} 正在运行：请等它完成或将其取消，然后再更新。</value>
+  </data>
+  <data name="UpdateVerifying" xml:space="preserve">
+    <value>正在根据 {1} 校验 Modelado {0}…</value>
+  </data>
+  <data name="UpdateDownloading" xml:space="preserve">
+    <value>正在下载 Modelado {0}：{1}%</value>
+  </data>
+  <data name="UpdateInstalling" xml:space="preserve">
+    <value>正在安装 Modelado {0}；完成后将重新启动。</value>
+  </data>
+  <data name="UpdateRefused" xml:space="preserve">
+    <value>{0} 未安装任何内容。</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>无法安装更新：{0}</value>
+  </data>
+  <data name="ChoiceNotSaved" xml:space="preserve">
+    <value>无法保存此选择：{0}</value>
+  </data>
+  <data name="CardDownloadStatus" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="VersionUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="VersionText" xml:space="preserve">
+    <value>版本 {0}</value>
+  </data>
+  <data name="AboutInferenceGpu" xml:space="preserve">
+    <value>在这台电脑上将照片转换为 3D 模型：用 TripoSR 生成完整物体，或用 Depth Anything V2 生成浮雕。推理在 ONNX Runtime 中运行，通过 DirectML 使用 GPU。照片不会上传到任何地方。</value>
+  </data>
+  <data name="AboutInferenceCpu" xml:space="preserve">
+    <value>在这台电脑上将照片转换为 3D 模型：用 TripoSR 生成完整物体，或用 Depth Anything V2 生成浮雕。推理在 ONNX Runtime 中运行，使用 CPU。照片不会上传到任何地方。</value>
+  </data>
+  <data name="ChosenByFlag" xml:space="preserve">
+    <value>本次运行由 --provider 指定。</value>
+  </data>
+  <data name="ModelsFrom" xml:space="preserve">
+    <value>来自 {0}</value>
+  </data>
+  <data name="NoModelsYet" xml:space="preserve">
+    <value>暂无：每个操作会在首次使用时下载自己的模型。</value>
+  </data>
+  <data name="ModelListBuiltIn" xml:space="preserve">
+    <value>内置于此版本</value>
+  </data>
+  <data name="ModelsDownloadedFrom" xml:space="preserve">
+    <value>模型从 huggingface.co/alegauss/modelado-models 下载；模型列表：{0}。</value>
+  </data>
+  <data name="DownloadsGoTake" xml:space="preserve">
+    <value>下载内容保存在 {0}，占用 {1}。</value>
+  </data>
+  <data name="DownloadsGoNone" xml:space="preserve">
+    <value>下载内容保存在 {0}。尚未下载任何内容。</value>
+  </data>
+  <data name="DownloadedRow" xml:space="preserve">
+    <value>{0} · {1} · {2}</value>
+  </data>
+  <data name="InstalledRow" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3} · {4} ({5})</value>
+  </data>
+  <data name="WorkingOffline" xml:space="preserve">
+    <value>离线工作</value>
+  </data>
+  <data name="DownloadEverything" xml:space="preserve">
+    <value>全部下载</value>
+  </data>
+  <data name="RemovedOnUninstall" xml:space="preserve">
+    <value> 卸载 Modelado 时会将其移除。</value>
+  </data>
+  <data name="ModelInUse" xml:space="preserve">
+    <value>{0} 正被 {1} 使用；请在其完成后再移除。</value>
+  </data>
+  <data name="DownloadRunningNoRemove" xml:space="preserve">
+    <value>有下载正在进行；请在其完成或取消后再移除模型。</value>
+  </data>
+  <data name="ModelBeingDownloaded" xml:space="preserve">
+    <value>正在为 {1} 下载 {0}；请先取消或等其完成。</value>
+  </data>
+  <data name="ProviderNotSaved" xml:space="preserve">
+    <value>此选择在 Modelado 关闭前有效，但无法保存：{0}</value>
+  </data>
+  <data name="ModelNotRemoved" xml:space="preserve">
+    <value>无法移除 {0}：{1}</value>
+  </data>
+  <data name="RemoveAllQuestion" xml:space="preserve">
+    <value>删除下载到 {0} 的所有内容？各操作下次使用时会再次提供下载。</value>
+  </data>
+  <data name="DownloadsNotRemoved" xml:space="preserve">
+    <value>未能移除全部下载内容：{0}</value>
+  </data>
+  <data name="SpentUnit" xml:space="preserve">
+    <value>已花费</value>
+  </data>
+  <data name="ChipSpentOfBudget" xml:space="preserve">
+    <value>本月 {0:0.##} / {1:0.##} {2}</value>
+  </data>
+  <data name="ChipSpent" xml:space="preserve">
+    <value>本月 {0:0.##} {1}</value>
+  </data>
+  <data name="ChipService" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="ChipServiceNearlySpent" xml:space="preserve">
+    <value>{0} · {1} · 即将用完</value>
+  </data>
+  <data name="ChipServiceSpent" xml:space="preserve">
+    <value>{0} · {1} · 已用完</value>
+  </data>
+  <data name="MonthlyBudgetName" xml:space="preserve">
+    <value>{0} 月度预算</value>
+  </data>
+  <data name="SetMonthlyBudget" xml:space="preserve">
+    <value>设置月度预算</value>
+  </data>
+  <data name="SetMonthlyBudgetName" xml:space="preserve">
+    <value>设置 {0} 月度预算</value>
+  </data>
+  <data name="BudgetInvalid" xml:space="preserve">
+    <value>预算须为大于 0 的数字，留空表示不设预算。</value>
+  </data>
+  <data name="BudgetNotSaved" xml:space="preserve">
+    <value>无法保存预算：{0}</value>
+  </data>
+  <data name="UsageMonth" xml:space="preserve">
+    <value>本月 {0:0.##} {1}（今天 {2:0.##}，累计 {3:0.##}），按本应用的统计。</value>
+  </data>
+  <data name="BudgetNearlySpent" xml:space="preserve">
+    <value>每月预算 {0:0.##}：即将用完。</value>
+  </data>
+  <data name="BudgetSpent" xml:space="preserve">
+    <value>每月预算 {0:0.##}：已用完。</value>
+  </data>
+  <data name="BudgetWithin" xml:space="preserve">
+    <value>每月预算 {0:0.##}：未超出。</value>
+  </data>
+  <data name="UsageDrift" xml:space="preserve">
+    <value>{0}：{1} 个任务，预估 {2:0.##}，实际扣费 {3:0.##}。</value>
+  </data>
+  <data name="PricesStale" xml:space="preserve">
+    <value>其价格读取于 {0:yyyy-MM-dd}，已超过 90 天，因此估算可能不准确。</value>
+  </data>
+  <data name="PricesRead" xml:space="preserve">
+    <value>价格读取于 {0:yyyy-MM-dd}。</value>
+  </data>
+  <data name="BalanceLeft" xml:space="preserve">
+    <value>{0} 报告剩余 {1}。</value>
+  </data>
+  <data name="BalanceUnavailable" xml:space="preserve">
+    <value>无法向 {0} 查询余额：{1}</value>
+  </data>
+  <data name="KeyStored" xml:space="preserve">
+    <value>已存储密钥。</value>
+  </data>
+  <data name="NoKey" xml:space="preserve">
+    <value>无密钥。</value>
+  </data>
+  <data name="SaveAndTest" xml:space="preserve">
+    <value>保存并测试</value>
+  </data>
+  <data name="GetAKey" xml:space="preserve">
+    <value>获取密钥</value>
+  </data>
+  <data name="ApiKeyName" xml:space="preserve">
+    <value>{0} API 密钥</value>
+  </data>
+  <data name="SaveAndTestName" xml:space="preserve">
+    <value>保存并测试 {0} 密钥</value>
+  </data>
+  <data name="RemoveKeyName" xml:space="preserve">
+    <value>移除 {0} 密钥</value>
+  </data>
+  <data name="GetKeyName" xml:space="preserve">
+    <value>获取 {0} 密钥</value>
+  </data>
+  <data name="TypeKeyFirst" xml:space="preserve">
+    <value>请先输入密钥。</value>
+  </data>
+  <data name="TestingKey" xml:space="preserve">
+    <value>正在测试密钥…</value>
+  </data>
+  <data name="KeyNotSaved" xml:space="preserve">
+    <value>{0} 密钥未保存。</value>
+  </data>
+  <data name="ServiceUnreachable" xml:space="preserve">
+    <value>无法连接 {0}：{1}</value>
+  </data>
+  <data name="GenerateWith" xml:space="preserve">
+    <value>用 {0} 生成</value>
+  </data>
+  <data name="GenerateWithCost" xml:space="preserve">
+    <value>用 {0} 生成 · ~{1}</value>
+  </data>
+  <data name="ConsentPhoto" xml:space="preserve">
+    <value>这张照片（{0}）将发送到 {1}。{2}</value>
+  </data>
+  <data name="ConsentPhotoCost" xml:space="preserve">
+    <value>这张照片（{0}）将发送到 {1}，费用约 {2}。{3}</value>
+  </data>
+  <data name="KeyUnreadable" xml:space="preserve">
+    <value>{0}：无法读取 {1} 密钥；请在“关于”中重新存储。</value>
+  </data>
+  <data name="WithService" xml:space="preserve">
+    <value>使用 {0}</value>
+  </data>
+  <data name="Remesh" xml:space="preserve">
+    <value>重构网格</value>
+  </data>
+  <data name="RemeshCost" xml:space="preserve">
+    <value>重构网格 · ~{0}</value>
+  </data>
+  <data name="Retexture" xml:space="preserve">
+    <value>重做纹理</value>
+  </data>
+  <data name="RetextureCost" xml:space="preserve">
+    <value>重做纹理 · ~{0}</value>
+  </data>
+  <data name="ConsentModel" xml:space="preserve">
+    <value>此模型（{0} 个三角形，GLB 格式 {1}）将发送到 {2}。{3}</value>
+  </data>
+  <data name="ConsentModelCost" xml:space="preserve">
+    <value>此模型（{0} 个三角形，GLB 格式 {1}）将发送到 {2}，费用约 {3}。{4}</value>
+  </data>
+  <data name="ResumedJob" xml:space="preserve">
+    <value>{0}（已恢复）</value>
+  </data>
+  <data name="ResumedKeyGone" xml:space="preserve">
+    <value>{0}：其密钥已不存在，因此该任务留在了服务端。</value>
+  </data>
+  <data name="WaitingAt" xml:space="preserve">
+    <value>正在 {0} 排队等待</value>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>处理中</value>
+  </data>
+  <data name="WorkingProgress" xml:space="preserve">
+    <value>{0} · {1:P0}</value>
+  </data>
+  <data name="FetchingModel" xml:space="preserve">
+    <value>正在获取模型</value>
+  </data>
+  <data name="CloudDone" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="LanguageTitle" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="LanguageWindows" xml:space="preserve">
+    <value>Windows 显示语言（{0}）</value>
+  </data>
+  <data name="LanguageNow" xml:space="preserve">
+    <value>窗口当前显示为 {0}。</value>
+  </data>
+  <data name="LanguageNextStart" xml:space="preserve">
+    <value>下次启动 Modelado 时，窗口将显示为 {0}。</value>
+  </data>
+</root>

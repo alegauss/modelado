@@ -143,6 +143,14 @@
       "shareable": false
     },
     {
+      // MOD91: the photo open in Simplified Chinese, the one translation in a non-Latin script.
+      "name": "a window in Simplified Chinese with the photo open",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_LANGUAGE": "zh-Hans" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -955,6 +963,24 @@
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Acerca de y modelos", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
         { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "La ventana está en español.", "named": "About says the window is in Spanish" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
+      ]
+    },
+
+    {
+      // WW624: "within" holds a button inside its panel; text cut off inside its own row still passes.
+      "name": "the window reads in Simplified Chinese and its buttons stay in the side panel",
+      "catches": "a Chinese translation that does not load, characters lost on the way, or a taller caption that pushes a button out of the side panel",
+      "filed": "MOD91",
+      "tags": ["language"],
+      "fixture": "a window in Simplified Chinese with the photo open",
+      "steps": [
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "生成 3D 物体", "named": "the 3D Object card's button is in Chinese" },
+        { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "生成浮雕", "named": "the Relief card's button too" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "关于和模型", "named": "the status bar's About button" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "matches": "^窗口当前显示为 中文.简体.。$", "named": "About says the window is in Simplified Chinese" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
       ]
     },

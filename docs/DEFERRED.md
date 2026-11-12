@@ -36,6 +36,7 @@
 - ⏸ **MOD88** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no German (de) translation** — set aside (Needs a native German review.): A native speaker reviews the German text, and a case checks captions fit their buttons once winwright can say it (WW624). → §MOD88
 - ⏸ **MOD89** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no French (fr) translation** — set aside (Needs a native French review.): A native speaker reviews the French text, and a case checks captions fit their buttons once winwright can say it (WW624). → §MOD89
 - ⏸ **MOD90** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Spanish (es) translation** — set aside (Needs a native Spanish review.): A native speaker reviews the Spanish text, and a case checks captions fit their buttons once winwright can say it (WW624). → §MOD90
+- ⏸ **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Simplified Chinese (zh-Hans) translation** — set aside (Needs a native Chinese review.): A native speaker reviews the Chinese text, and a case checks captions fit their rows once winwright can say it (WW624). → §MOD91
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

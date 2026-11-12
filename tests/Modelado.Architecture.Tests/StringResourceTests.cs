@@ -145,6 +145,18 @@ public sealed partial class StringResourceTests
     private static IEnumerable<string> Placeholders(string value) =>
         Placeholder().Matches(value).Select(m => m.Value).Order(StringComparer.Ordinal);
 
+    // MOD91: Chinese text draws in a CJK font picked on purpose, so every font family the styles
+    // and the window name ends with Microsoft YaHei UI.
+    [Theory]
+    [MemberData(nameof(XamlFiles))]
+    public void EveryFontFamilyFallsBackToACjkFont(string file)
+    {
+        string source = File.ReadAllText(Path.Combine(App, file));
+        string[] families = [.. FontFamilyValue().Matches(source).Select(m => m.Groups["family"].Value).Where(value => !value.StartsWith('{'))];
+
+        Assert.All(families, family => Assert.EndsWith(", Microsoft YaHei UI", family, StringComparison.Ordinal));
+    }
+
     // MOD86: the Store lists the languages the package declares, so each translation the app ships
     // (Strings.<language>.resx) is declared beside English, and nothing else is.
     [Fact]
@@ -186,6 +198,9 @@ public sealed partial class StringResourceTests
 
     [GeneratedRegex(@"\{[^{}]*\}")]
     private static partial Regex Holes();
+
+    [GeneratedRegex(@"(FontFamily=""|Property=""FontFamily"" Value=""|<FontFamily[^>]*>)(?<family>[^""<]+)")]
+    private static partial Regex FontFamilyValue();
 
     [GeneratedRegex(@"\{\d+(:[^{}]*)?\}")]
     private static partial Regex Placeholder();

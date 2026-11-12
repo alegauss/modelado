@@ -50,7 +50,6 @@
 
 ## Block K — Translated interface
 
-- 📋 **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Simplified Chinese (zh-Hans) translation** — Simplified Chinese is the largest language market left, and the only one here that tests a non-Latin script and font fallback. → §MOD91
 - 📋 **MOD134** (deps: MOD85 ✅) **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Budget notes, cloud job titles, the provider chip and its fallback reason stay English beside translated text. → §MOD134
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
@@ -146,5 +145,11 @@
 - **A native speaker has reviewed the Spanish interface text** A Spanish reader goes
   through Strings.es.resx in the running window, checks it reads neutral to Spain and
   Latin America, and settles the terminology questions the design section lists.
+
+## Done when — MOD91
+
+- **A native speaker has reviewed the Simplified Chinese interface text** A Chinese
+  reader goes through Strings.zh-Hans.resx in the running window and settles the
+  terminology and punctuation questions the design section lists.
 
 ## Non-goals

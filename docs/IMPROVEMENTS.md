@@ -563,6 +563,15 @@ every custom font in the styles has that fallback. Chinese text is short but tal
 the case checks vertical clipping in rows of fixed height. A native speaker reviews the
 text before the task ships.
 
+Landed: the file (mainland usage, full-width punctuation in sentences, "、" as the list
+comma), zh-hans in the MSIX manifest, Microsoft YaHei UI ending every font family (held
+by StringResourceTests), zh-CN and zh-SG held by LanguageSettingTests, and a case
+reading the Chinese captions with the 3D Object button inside the side panel. For the
+review: ListAnd as " 和 " with spaces; clay view as 黏土模型 (or 白模); Remesh/Retexture as
+重构网格/重做纹理; open mesh as 非封闭 and watertight as 水密; the sampling grid as 采样网格; 秒 and 分钟
+for s and min; budget states 即将用完/已用完/未超出. The row-height check waits on winwright
+(WW624).
+
 ### §MOD134 Library sentences in the window
 
 MOD85 moved every string Modelado.App writes into Properties/Strings.resx, but the
