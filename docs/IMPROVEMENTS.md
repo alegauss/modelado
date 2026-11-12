@@ -546,6 +546,14 @@ MOD87. Avoid regional terms, so that es-ES and es-MX both fall back to it withou
 regional file. A winwright case launches in Spanish and checks the main window for
 clipped text. A native speaker reviews the text before the task ships.
 
+Landed: the file ("usted" imperatives, "este equipo", no "ordenador" or "vosotros"), es
+in the MSIX manifest, LanguageSettingTests holding es-ES and es-MX to it, and a case
+reading the Spanish captions with the 3D Object button inside the side panel. For the
+review: Mirror as "Reflejar"; quads as "cuadriláteros"; watertight as "hermética" and
+"Rellenar huecos"; "Remallar"/"Retexturizar"; passes as "pasadas"; slicers as
+"laminadores"; model sources as "Orígenes de modelos"; WorkingOffline as "Trabajo sin
+conexión"; "300 000" with a space. The caption-fit check waits on winwright (WW624).
+
 ### §MOD91 MOD91 — Simplified Chinese (zh-Hans)
 
 Add Strings.zh-Hans.resx, held by the key and placeholder parity test from MOD87. zh-CN

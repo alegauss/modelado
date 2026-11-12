@@ -37,6 +37,8 @@ public sealed class LanguageSettingTests : IDisposable
     [InlineData("de-AT", "de")]
     [InlineData("zh-CN", "zh-Hans")]
     [InlineData("fr-CA", "fr")]
+    [InlineData("es-ES", "es")]
+    [InlineData("es-MX", "es")]
     [InlineData("en-GB", "en")]
     [InlineData("ja-JP", "en")]
     public void Windows_display_language_finds_its_translation_or_English(string windows, string shown) =>
