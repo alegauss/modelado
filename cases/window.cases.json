@@ -151,6 +151,19 @@
       "shareable": false
     },
     {
+      // MOD94: a start after two files were opened and a third has since gone: the settings.json
+      // an earlier run left, its {files} filled with where the staged cube and photo landed.
+      "name": "a window started with recent files in its settings, one of them gone",
+      "files": [
+        "cases/fixtures/cube.obj",
+        "cases/fixtures/photo.png",
+        { "from": "cases/fixtures/settings-recent.json", "to": "Modelado/settings.json", "fill": true }
+      ],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -1187,6 +1200,25 @@
         { "locator": "Button#Candidate-2", "act": "invoke", "named": "the second is chosen" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-2\\.png · 64 × 48$", "named": "it opens as a photo, saved with its seed in the name" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the operations take it" }
+      ]
+    },
+
+    {
+      "name": "a start lists the recent files newest first on the drop zone, a gone one greyed and removable, and one opens",
+      "catches": "a list that is not read back at start, one in the wrong order, a missing file dropped silently or still offered to open, or an entry that does not open its file",
+      "filed": "MOD94",
+      "tags": ["drop", "recent"],
+      "fixture": "a window started with recent files in its settings, one of them gone",
+      "steps": [
+        { "locator": "Button#Recent-1", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the newest comes first" },
+        { "locator": "Button#Recent-2", "act": "read", "reads": "name", "expect": "photo.png", "named": "then the one before" },
+        { "locator": "Button#Recent-3", "act": "read", "reads": "name", "expect": "gone.obj", "named": "the file that has gone is still listed" },
+        { "locator": "Button#Recent-3", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "greyed, not offered to open" },
+        { "locator": "Button#RecentRemove-1", "act": "read", "absent": true, "named": "a file still there has no Remove from list" },
+        { "locator": "Button#RecentRemove-3", "act": "invoke", "named": "Remove from list is pressed on the gone one" },
+        { "locator": "Button#Recent-3", "act": "read", "absent": true, "named": "it leaves the list" },
+        { "locator": "Button#Recent-1", "act": "invoke", "named": "the cube is opened from the list" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "and it is what is open" }
       ]
     },
 

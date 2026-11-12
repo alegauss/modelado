@@ -131,6 +131,31 @@
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0" />
             <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="{x:Static p:Strings.OpenButton}" Command="Open"
                     Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Center" Padding="24,8" Margin="0,14,0,0" />
+            <!-- MOD94: what was opened or saved lately, newest first; a file no longer there is greyed
+                 and can be taken off the list. -->
+            <StackPanel x:Name="RecentPanel" Margin="0,16,0,0" Visibility="Collapsed">
+              <TextBlock Text="{x:Static p:Strings.RecentTitle}" Style="{StaticResource FieldLabel}" />
+              <ItemsControl x:Name="RecentList" AutomationProperties.AutomationId="RecentList" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <DockPanel Margin="0,2">
+                      <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.RemoveFromList}" Padding="8,2" Margin="6,0,0,0"
+                              Visibility="{Binding RemoveVisibility}" Tag="{Binding Path}"
+                              AutomationProperties.AutomationId="{Binding RemoveId}" Click="OnRemoveRecent" />
+                      <Button Tag="{Binding Path}" IsEnabled="{Binding Exists}" HorizontalContentAlignment="Left" Padding="8,4"
+                              AutomationProperties.AutomationId="{Binding OpenId}" AutomationProperties.Name="{Binding Name}"
+                              ToolTip="{Binding Path}" Click="OnOpenRecent">
+                        <StackPanel>
+                          <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Folder}" FontSize="11" TextTrimming="CharacterEllipsis"
+                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                      </Button>
+                    </DockPanel>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
             <TextBlock Style="{StaticResource StatCaption}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,16,0,0"
                        Text="{x:Static p:Strings.DropAdvice}" />
             <TextBlock x:Name="OpenError" AutomationProperties.AutomationId="OpenError" TextWrapping="Wrap" TextAlignment="Center"

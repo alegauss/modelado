@@ -6,7 +6,7 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 📋 **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Every Windows editor offers recent files, and without them a generated photo or an edited model is easy to lose. → §MOD94
+- ⏳ **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Still to come: the Recent menu beside the toolbar's Open, thumbnails for photos, and the taskbar Jump List where the package allows it. → §MOD94
 - 📋 **MOD98** (deps: —) **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — Every setting is read past every other, and the Generate button of the card in use is often below the fold. → §MOD98
 - 📋 **MOD99** (deps: —) **The services the app drives (Meshy, Ideogram, Blender) appear only as text, with no logo anywhere in the window** — A logo tells which service an action or a charge belongs to at a glance, where a name has to be read. → §MOD99
 - 📋 **MOD100** (deps: MOD99) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
@@ -150,5 +150,12 @@
 - **A native speaker has reviewed the Simplified Chinese interface text** A Chinese
   reader goes through Strings.zh-Hans.resx in the running window and settles the
   terminology and punctuation questions the design section lists.
+
+## Done when — MOD94
+
+- **Recent files reach the toolbar, show photo thumbnails and feed the Jump List** A
+  case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
+  entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
+  for the package.
 
 ## Non-goals

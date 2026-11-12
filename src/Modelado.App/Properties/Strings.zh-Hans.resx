@@ -1377,4 +1377,10 @@
   <data name="HideGenerate" xml:space="preserve">
     <value>隐藏照片生成器</value>
   </data>
+  <data name="RecentTitle" xml:space="preserve">
+    <value>最近使用</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>从列表中移除</value>
+  </data>
 </root>

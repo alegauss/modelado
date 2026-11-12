@@ -52,6 +52,7 @@ public partial class MainWindow : Window, IDisposable
         ThemeMode = Theme.Mode(Appearance.Default.Theme);
         InitializeComponent();
         ShowSliderLabels();
+        FillRecent();
 
         // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
         foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton).Append(SaveViewButton))
@@ -235,6 +236,7 @@ public partial class MainWindow : Window, IDisposable
         savedVersion = shownVersion;
         ShowSource(Path.GetFileName(path));
         Opened();
+        Remember(path);
 
         // MOD59: a model with more textures than one mesh keeps opens with them baked into its colours.
         if (notice is not null)
@@ -279,6 +281,7 @@ public partial class MainWindow : Window, IDisposable
         ShowImage(photo);
         ShowSource(Ui.Format(photo.HasTransparency ? Strings.PhotoSourceCutOut : Strings.PhotoSource, Path.GetFileName(path), photo.Width, photo.Height));
         Opened();
+        Remember(path);
     }
 
     // A new model, from a reconstruction or a file: the history starts over and the view resets.

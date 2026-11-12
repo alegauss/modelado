@@ -121,6 +121,54 @@ public static class UpdateSetting
 }
 
 /// <summary>
+/// The photos and models opened or saved lately (MOD94), newest first, kept in settings.json rather
+/// than the registry so the Store package and the installed build keep them alike.
+/// </summary>
+public static class RecentFiles
+{
+    private const string Key = "recentFiles";
+
+    /// <summary>How many are kept.</summary>
+    public const int Kept = 10;
+
+    /// <summary>The list, newest first.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <returns>Full paths; empty where there is no file or no list.</returns>
+    public static IReadOnlyList<string> Load(string path)
+    {
+        try
+        {
+            return File.Exists(path) && JsonNode.Parse(File.ReadAllText(path)) is JsonObject { } settings && settings[Key] is JsonArray list
+                ? [.. list.Select(item => item is JsonValue value && value.TryGetValue(out string? name) ? name : null).OfType<string>().Where(name => name.Length > 0).Take(Kept)]
+                : [];
+        }
+        catch (Exception error) when (error is JsonException or IOException or UnauthorizedAccessException)
+        {
+            return [];
+        }
+    }
+
+    /// <summary>Puts a file first, removing an earlier mention of it and the oldest past <see cref="Kept"/>.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="file">The file opened or saved.</param>
+    public static void Add(string path, string file) =>
+        Save(path, [Path.GetFullPath(file), .. Load(path).Where(other => !Same(other, file))]);
+
+    /// <summary>Takes a file off the list.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="file">The file.</param>
+    public static void Remove(string path, string file) =>
+        Save(path, [.. Load(path).Where(other => !Same(other, file))]);
+
+    private static void Save(string path, IEnumerable<string> files) =>
+        SettingsFile.Write(path, Key, new JsonArray([.. files.Take(Kept).Select(file => (JsonNode)JsonValue.Create(file))]));
+
+    // Windows paths compare without case, and one spelled with .\ or / is the same file.
+    private static bool Same(string a, string b) =>
+        string.Equals(Path.GetFullPath(a), Path.GetFullPath(b), StringComparison.OrdinalIgnoreCase);
+}
+
+/// <summary>
 /// The language the window's text is in (MOD86): the one chosen in About, or Windows' display
 /// language where none is. Only the interface follows it; numbers keep one format (MOD49).
 /// </summary>

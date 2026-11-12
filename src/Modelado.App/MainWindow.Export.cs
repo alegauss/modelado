@@ -175,6 +175,7 @@ public partial class MainWindow
                 _ => Ui.Format(Strings.ExportSavedCompactTexture, names, texture),
             };
             savedVersion = shownVersion;
+            Remember(path);
             LastRunSaid(Ui.Format(Strings.ExportSavedSize, names, size, SizeUnit(format)));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)

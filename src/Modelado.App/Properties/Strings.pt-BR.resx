@@ -1377,4 +1377,10 @@ Modelos 3D: {1}</value>
   <data name="HideGenerate" xml:space="preserve">
     <value>Ocultar o gerador de fotos</value>
   </data>
+  <data name="RecentTitle" xml:space="preserve">
+    <value>Recentes</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Remover da lista</value>
+  </data>
 </root>

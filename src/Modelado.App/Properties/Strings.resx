@@ -1377,4 +1377,10 @@
   <data name="HideGenerate" xml:space="preserve">
     <value>Hide the photo generator</value>
   </data>
+  <data name="RecentTitle" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Remove from list</value>
+  </data>
 </root>

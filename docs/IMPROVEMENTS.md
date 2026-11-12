@@ -16,6 +16,13 @@ through OpenAsync like any other file. When Windows can do so for the package, t
 paths also feed the taskbar Jump List. A case opens two fixture files, restarts the app,
 and finds both listed in order.
 
+Landed: RecentFiles in Modelado.Inference (RecentFilesTests), the drop zone's list in
+MainWindow.Recent.cs fed by every open and save, and a case whose fixture stages a
+settings.json filled with {files} (winwright's fill), which stands in for the restart:
+two staged files and a gone one, read back in order. Left: the toolbar menu (a drop-down
+on ToolbarOpen sharing FillRecent's rows), photo thumbnails (decoded small off the
+window's thread, cached by path and time written), and the Jump List.
+
 ### §MOD98 MOD98 — An icon rail with one operation shown at a time
 
 MainWindow.xaml stacks 3D Object, Relief, Cloud 3D, Edit and improve, Export, History
