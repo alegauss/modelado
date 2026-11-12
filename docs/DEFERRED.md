@@ -13,6 +13,7 @@
 ## Block F — Installer, releases and auto update
 
 - ⏸ **MOD77** (deps: MOD73 ✅, MOD74 ✅) **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — set aside (Guest Developer Mode): On the registered layout a model downloads, About opens its folder, and keys decrypt after a restart. → §MOD77
+- ⏸ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — set aside (The upload publishes to the Store; the user runs it.): The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 
 ## Block G — Public site for 3D modelling
 
