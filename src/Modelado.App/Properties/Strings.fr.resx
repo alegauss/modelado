@@ -1266,9 +1266,6 @@ Modèles 3D : {1}</value>
   <data name="BalanceUnavailable" xml:space="preserve">
     <value>Impossible de demander son solde à {0} : {1}</value>
   </data>
-  <data name="KeyStored" xml:space="preserve">
-    <value>Une clé est enregistrée.</value>
-  </data>
   <data name="NoKey" xml:space="preserve">
     <value>Aucune clé.</value>
   </data>
@@ -1394,5 +1391,17 @@ Modèles 3D : {1}</value>
   </data>
   <data name="OpenGeneratedFolder" xml:space="preserve">
     <value>Ouvrir le dossier</value>
+  </data>
+  <data name="KeyFromEnvironment" xml:space="preserve">
+    <value>Utilise {0} de l’environnement ({1}). Pour une autre clé, modifiez {0}.</value>
+  </data>
+  <data name="KeyStoredBy" xml:space="preserve">
+    <value>Enregistrée par Modelado ({0}).</value>
+  </data>
+  <data name="ReplaceKey" xml:space="preserve">
+    <value>Remplacer la clé…</value>
+  </data>
+  <data name="ReplaceKeyName" xml:space="preserve">
+    <value>Remplacer la clé {0}</value>
   </data>
 </root>

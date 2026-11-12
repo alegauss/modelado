@@ -347,21 +347,6 @@ translations include it.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD96 MOD96 — Where each cloud key comes from
-
-FillCloudServices in MainWindow.Cloud.cs prints "A key is stored." whenever
-CloudKeys.Has is true, then always shows an empty PasswordBox with Save and test. The
-stored key is the DPAPI file under %LOCALAPPDATA%\Modelado, written by About or by the
-CLI. Nothing reads MESHY_API_KEY or IDEOGRAM_API_KEY, although a user with those
-variables set expects them to be used. CloudKeys resolves a key from the environment
-variable first (MESHY_API_KEY, IDEOGRAM_API_KEY), then from the stored file, in the app
-and in the CLI alike, and reports which source answered. About states the source and the
-key's last four characters: "Using IDEOGRAM_API_KEY from the environment (…a1b2)" or
-"Stored by Modelado (…a1b2)". When the key comes from the environment, the box and
-Remove are hidden, and a line says to change the variable instead. When it is stored,
-the box is collapsed behind a "Replace key…" button. Tests cover the order of
-precedence, and a case with an environment key finds the source line and no box.
-
 ## Block I — Blender integration: AI tools for existing Blender models
 
 ### §MOD70 MOD70 — Publishing the add-on on extensions.blender.org

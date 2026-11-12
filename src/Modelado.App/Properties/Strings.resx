@@ -1266,9 +1266,6 @@
   <data name="BalanceUnavailable" xml:space="preserve">
     <value>{0} could not be asked for its balance: {1}</value>
   </data>
-  <data name="KeyStored" xml:space="preserve">
-    <value>A key is stored.</value>
-  </data>
   <data name="NoKey" xml:space="preserve">
     <value>No key.</value>
   </data>
@@ -1394,5 +1391,17 @@
   </data>
   <data name="OpenGeneratedFolder" xml:space="preserve">
     <value>Open the folder</value>
+  </data>
+  <data name="KeyFromEnvironment" xml:space="preserve">
+    <value>Using {0} from the environment ({1}). To use another key, change {0}.</value>
+  </data>
+  <data name="KeyStoredBy" xml:space="preserve">
+    <value>Stored by Modelado ({0}).</value>
+  </data>
+  <data name="ReplaceKey" xml:space="preserve">
+    <value>Replace key…</value>
+  </data>
+  <data name="ReplaceKeyName" xml:space="preserve">
+    <value>Replace the {0} key</value>
   </data>
 </root>

@@ -1266,9 +1266,6 @@
   <data name="BalanceUnavailable" xml:space="preserve">
     <value>Das Guthaben bei {0} konnte nicht abgefragt werden: {1}</value>
   </data>
-  <data name="KeyStored" xml:space="preserve">
-    <value>Ein Schlüssel ist gespeichert.</value>
-  </data>
   <data name="NoKey" xml:space="preserve">
     <value>Kein Schlüssel.</value>
   </data>
@@ -1394,5 +1391,17 @@
   </data>
   <data name="OpenGeneratedFolder" xml:space="preserve">
     <value>Ordner öffnen</value>
+  </data>
+  <data name="KeyFromEnvironment" xml:space="preserve">
+    <value>{0} aus der Umgebung wird verwendet ({1}). Für einen anderen Schlüssel {0} ändern.</value>
+  </data>
+  <data name="KeyStoredBy" xml:space="preserve">
+    <value>Von Modelado gespeichert ({0}).</value>
+  </data>
+  <data name="ReplaceKey" xml:space="preserve">
+    <value>Schlüssel ersetzen…</value>
+  </data>
+  <data name="ReplaceKeyName" xml:space="preserve">
+    <value>{0}-Schlüssel ersetzen</value>
   </data>
 </root>

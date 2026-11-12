@@ -164,6 +164,15 @@
       "shareable": false
     },
     {
+      // MOD96: an Ideogram key set in the environment, as a user with IDEOGRAM_API_KEY has it.
+      "name": "a window with an Ideogram key in the environment",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
+      "variables": { "LOCALAPPDATA": "{files}", "IDEOGRAM_API_KEY": "case-env-ideogram-key-a1b2" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -1234,6 +1243,45 @@
         { "locator": "MenuItem#RecentMenu-1", "act": "read", "reads": "name", "expect": "cube.obj", "named": "its menu lists the same files, newest first" },
         { "locator": "MenuItem#RecentMenu-2", "act": "invoke", "named": "the photo is chosen from it" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "and the photo is what is open" }
+      ]
+    },
+
+    {
+      "name": "a key set in the environment is used and About says so, with no box to type one over it",
+      "catches": "a key in IDEOGRAM_API_KEY that is not read, About offering a box beside it that would never be used, or the key shown beyond its last four characters",
+      "filed": "MOD96",
+      "tags": ["cloud", "about"],
+      "fixture": "a window with an Ideogram key in the environment",
+      "steps": [
+        { "locator": "Button#DropGenerate", "act": "read", "reads": "name", "expect": "Generate a photo with Ideogram…", "named": "the environment's key is used with nothing stored" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "Using IDEOGRAM_API_KEY from the environment (…a1b2). To use another key, change IDEOGRAM_API_KEY.", "named": "About names the variable and the key's last four characters" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "read", "absent": true, "named": "with no box to type over it" },
+        { "locator": "Button#CloudRemove-ideogram", "act": "read", "absent": true, "named": "and nothing to remove" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" }
+      ]
+    },
+
+    {
+      "name": "a stored key is named with its last four characters, its box behind Replace key",
+      "catches": "a stored key shown beside an empty box that reads as missing, or a Replace that does not open the box",
+      "filed": "MOD96",
+      "tags": ["cloud", "about"],
+      "fixture": "an empty window with Ideogram stood in by the fixture server",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "No key.", "named": "nothing stored yet" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "a key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once Ideogram's dry run accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "and opened again" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "Stored by Modelado (…-key).", "named": "the key is said to be stored, by its last four characters" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "read", "absent": true, "named": "with no empty box beside it" },
+        { "locator": "Button#CloudReplace-ideogram", "act": "invoke", "named": "Replace key is pressed" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "read", "reads": "focused", "expect": "focused", "named": "the box opens, ready for the new key" },
+        { "locator": "Button#CloudRemove-ideogram", "act": "invoke", "named": "Remove forgets the stored key" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "No key.", "named": "and About says so" }
       ]
     },
 

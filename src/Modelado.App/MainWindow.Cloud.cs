@@ -41,17 +41,37 @@ public partial class MainWindow
     {
         StackPanel row = new() { Margin = new Thickness(0, 0, 0, 10) };
         row.Children.Add(new TextBlock { Text = service.DisplayName, FontWeight = FontWeights.SemiBold });
-        TextBlock status = new() { Style = (Style)FindResource("StatCaption"), TextWrapping = TextWrapping.Wrap, Text = cloudKeys.Has(service.Id) ? Strings.KeyStored : Strings.NoKey };
+        TextBlock status = new() { Style = (Style)FindResource("StatCaption"), TextWrapping = TextWrapping.Wrap, Text = KeyStatus(service.Id) };
         PasswordBox key = new() { Margin = new Thickness(0, 4, 0, 4) };
         Button save = new() { Content = Strings.SaveAndTest, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0) };
-        Button remove = new() { Content = Strings.Remove, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0), IsEnabled = cloudKeys.Has(service.Id) };
+        Button replace = new() { Content = Strings.ReplaceKey, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0) };
+        Button remove = new() { Content = Strings.Remove, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0) };
         Button page = new() { Content = Strings.GetAKey, Padding = new Thickness(12, 2, 12, 2) };
         // Named by its own text, which is what a screen reader should say.
         AutomationProperties.SetAutomationId(status, $"CloudStatus-{service.Id}");
         Identify(key, $"CloudKey-{service.Id}", Ui.Format(Strings.ApiKeyName, service.DisplayName));
         Identify(save, $"CloudSave-{service.Id}", Ui.Format(Strings.SaveAndTestName, service.DisplayName));
+        Identify(replace, $"CloudReplace-{service.Id}", Ui.Format(Strings.ReplaceKeyName, service.DisplayName));
         Identify(remove, $"CloudRemove-{service.Id}", Ui.Format(Strings.RemoveKeyName, service.DisplayName));
         Identify(page, $"CloudKeyPage-{service.Id}", Ui.Format(Strings.GetKeyName, service.DisplayName));
+
+        // MOD96: with no key, the box to type one; with a stored one, Replace key… opens the box
+        // and Remove forgets it; with one set in the environment, neither: the variable is changed.
+        void Show(bool typing)
+        {
+            KeySource source = cloudKeys.Source(service.Id);
+            bool editing = source == KeySource.None || (typing && source == KeySource.Stored);
+            key.Visibility = save.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+            replace.Visibility = source == KeySource.Stored && !editing ? Visibility.Visible : Visibility.Collapsed;
+            remove.Visibility = source == KeySource.Stored ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        Show(typing: false);
+        replace.Click += (_, _) =>
+        {
+            Show(typing: true);
+            key.Focus();
+        };
 
         save.Click += async (_, _) =>
         {
@@ -82,15 +102,15 @@ public partial class MainWindow
             finally
             {
                 save.IsEnabled = true;
-                remove.IsEnabled = cloudKeys.Has(service.Id);
+                Show(typing: key.Password.Length > 0);
                 UpdateCloudCard();
             }
         };
         remove.Click += (_, _) =>
         {
             cloudKeys.Remove(service.Id);
-            status.Text = Strings.NoKey;
-            remove.IsEnabled = false;
+            status.Text = KeyStatus(service.Id);
+            Show(typing: false);
             UpdateCloudCard();
         };
         page.Click += (_, _) => Process.Start(new ProcessStartInfo(service.KeyPage.AbsoluteUri) { UseShellExecute = true });
@@ -99,12 +119,21 @@ public partial class MainWindow
         row.Children.Add(key);
         WrapPanel buttons = new();
         buttons.Children.Add(save);
+        buttons.Children.Add(replace);
         buttons.Children.Add(remove);
         buttons.Children.Add(page);
         row.Children.Add(buttons);
         row.Children.Add(CloudUsageRow(service));
         return row;
     }
+
+    // Where the key comes from and its last four characters, never more of it.
+    private string KeyStatus(string providerId) => cloudKeys.Source(providerId) switch
+    {
+        KeySource.Environment => Ui.Format(Strings.KeyFromEnvironment, CloudKeys.Variable(providerId), cloudKeys.Hint(providerId)),
+        KeySource.Stored => Ui.Format(Strings.KeyStoredBy, cloudKeys.Hint(providerId)),
+        _ => Strings.NoKey,
+    };
 
     private static void Identify(FrameworkElement element, string id, string name)
     {

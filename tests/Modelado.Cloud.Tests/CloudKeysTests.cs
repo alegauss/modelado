@@ -62,6 +62,45 @@ public sealed class CloudKeysTests : IDisposable
         Assert.Null(keys.Load("meshy"));
     }
 
+    [Fact]
+    public void A_key_in_the_environment_wins_over_a_stored_one_and_is_never_stored()
+    {
+        Assert.SkipUnless(OperatingSystem.IsWindows(), "DPAPI is Windows'");
+        // A provider id of this test's own, so its variable is set nowhere else.
+        string id = $"t{Guid.NewGuid():N}"[..12];
+        CloudKeys keys = new(folder);
+        Assert.Equal(KeySource.None, keys.Source(id));
+        Assert.Null(keys.Hint(id));
+
+        keys.Save(id, Secret);
+        Assert.Equal(KeySource.Stored, keys.Source(id));
+        Assert.Equal("…cdef", keys.Hint(id));
+
+        Environment.SetEnvironmentVariable(CloudKeys.Variable(id), " env_key_000000000a1b2 ");
+        try
+        {
+            Assert.Equal(KeySource.Environment, keys.Source(id));
+            Assert.Equal("env_key_000000000a1b2", keys.Load(id));
+            Assert.Equal("…a1b2", keys.Hint(id));
+
+            keys.Remove(id);
+            Assert.True(keys.Has(id));
+            Assert.False(File.Exists(Path.Combine(folder, id + ".key")));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(CloudKeys.Variable(id), null);
+        }
+
+        Assert.Equal(KeySource.None, keys.Source(id));
+    }
+
+    [Theory]
+    [InlineData("meshy", "MESHY_API_KEY")]
+    [InlineData("ideogram", "IDEOGRAM_API_KEY")]
+    public void The_variable_is_the_providers_id_in_capitals(string id, string variable) =>
+        Assert.Equal(variable, CloudKeys.Variable(id));
+
     [Theory]
     [InlineData("../meshy")]
     [InlineData("meshy.key")]

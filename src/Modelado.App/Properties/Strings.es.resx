@@ -1266,9 +1266,6 @@ Modelos 3D: {1}</value>
   <data name="BalanceUnavailable" xml:space="preserve">
     <value>No se pudo consultar el saldo de {0}: {1}</value>
   </data>
-  <data name="KeyStored" xml:space="preserve">
-    <value>Hay una clave guardada.</value>
-  </data>
   <data name="NoKey" xml:space="preserve">
     <value>Sin clave.</value>
   </data>
@@ -1394,5 +1391,17 @@ Modelos 3D: {1}</value>
   </data>
   <data name="OpenGeneratedFolder" xml:space="preserve">
     <value>Abrir la carpeta</value>
+  </data>
+  <data name="KeyFromEnvironment" xml:space="preserve">
+    <value>Se usa {0} del entorno ({1}). Para usar otra clave, cambie {0}.</value>
+  </data>
+  <data name="KeyStoredBy" xml:space="preserve">
+    <value>Guardada por Modelado ({0}).</value>
+  </data>
+  <data name="ReplaceKey" xml:space="preserve">
+    <value>Reemplazar clave…</value>
+  </data>
+  <data name="ReplaceKeyName" xml:space="preserve">
+    <value>Reemplazar la clave de {0}</value>
   </data>
 </root>

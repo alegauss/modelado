@@ -1266,9 +1266,6 @@
   <data name="BalanceUnavailable" xml:space="preserve">
     <value>无法向 {0} 查询余额：{1}</value>
   </data>
-  <data name="KeyStored" xml:space="preserve">
-    <value>已存储密钥。</value>
-  </data>
   <data name="NoKey" xml:space="preserve">
     <value>无密钥。</value>
   </data>
@@ -1394,5 +1391,17 @@
   </data>
   <data name="OpenGeneratedFolder" xml:space="preserve">
     <value>打开文件夹</value>
+  </data>
+  <data name="KeyFromEnvironment" xml:space="preserve">
+    <value>正在使用环境变量 {0} 中的密钥（{1}）。如需使用其他密钥，请修改 {0}。</value>
+  </data>
+  <data name="KeyStoredBy" xml:space="preserve">
+    <value>已由 Modelado 保存（{0}）。</value>
+  </data>
+  <data name="ReplaceKey" xml:space="preserve">
+    <value>替换密钥…</value>
+  </data>
+  <data name="ReplaceKeyName" xml:space="preserve">
+    <value>替换 {0} 密钥</value>
   </data>
 </root>
