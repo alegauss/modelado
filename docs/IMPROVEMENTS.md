@@ -514,6 +514,14 @@ expose in the shared XAML, not in a German-only style. A winwright case launches
 German and checks the main window for clipped text. A native speaker reviews the text
 before the task ships.
 
+Landed: the file, de in the MSIX manifest, and a case reading the German captions with
+the 3D Object button held inside the side panel; no width had to change. For the review:
+mesh as "Netz" and vertex as "Vertex"; Remesh/Retexture as "Neu vernetzen"/"Neu
+texturieren"; clay view as "Modell in Ton"; flat base "Flacher Boden" against solid base
+"Massiver Sockel"; watertight as "wasserdicht"; Candidate as "Vorschlag"; Pause as
+"Anhalten"; Best as "Beste"; LanguageNow as "Sprache des Fensters: {0}."; no "Sie"
+address anywhere. The caption-fit check waits on winwright (WW624).
+
 ### §MOD89 MOD89 — French (fr)
 
 Add Strings.fr.resx, held by the key and placeholder parity test from MOD87. French puts

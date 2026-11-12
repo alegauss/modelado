@@ -119,6 +119,14 @@
       "shareable": false
     },
     {
+      // MOD88: the photo open in German, whose captions run the longest of the translations.
+      "name": "a window in German with the photo open",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_LANGUAGE": "de" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -877,6 +885,24 @@
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Sobre e modelos", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
         { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "A janela está em português (Brasil).", "named": "About says the window is in Brazilian Portuguese" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
+      ]
+    },
+
+    {
+      // WW624: "within" is the strongest claim on the layout; a caption cut off inside its button still passes.
+      "name": "the window reads in German and its longer captions stay in the window",
+      "catches": "a German translation that does not load, or a longer caption that pushes a button out of the side panel or the status bar",
+      "filed": "MOD88",
+      "tags": ["language"],
+      "fixture": "a window in German with the photo open",
+      "steps": [
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "3D-Objekt erzeugen", "named": "the 3D Object card's button is in German" },
+        { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Relief erzeugen", "named": "the Relief card's button too" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Info und Modelle", "named": "the status bar's About button" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "Sprache des Fensters: Deutsch.", "named": "About names the window's language" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
       ]
     },

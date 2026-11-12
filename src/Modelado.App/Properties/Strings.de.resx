@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Modelado</value>
+  </data>
+  <data name="ViewLabel" xml:space="preserve">
+    <value>Ansicht:</value>
+  </data>
+  <data name="ModelInColour" xml:space="preserve">
+    <value>Modell in Farbe</value>
+  </data>
+  <data name="ModelInClay" xml:space="preserve">
+    <value>Modell in Ton</value>
+  </data>
+  <data name="MeshEdges" xml:space="preserve">
+    <value>Netz (Kanten)</value>
+  </data>
+  <data name="InputPhoto" xml:space="preserve">
+    <value>Eingabefoto</value>
+  </data>
+  <data name="ResetViewButtonTip" xml:space="preserve">
+    <value>Vorderansicht (Home). Ein Doppelklick auf das Modell bewirkt dasselbe.</value>
+  </data>
+  <data name="SaveViewButtonTip" xml:space="preserve">
+    <value>Ansicht als Bild speichern: diese Kamera und dieser Ansichtsstil als PNG, 1024 bis 4096 px an der langen Seite, auf transparentem Hintergrund</value>
+  </data>
+  <data name="ToolbarOpenTip" xml:space="preserve">
+    <value>Foto eines Objekts (PNG, JPEG, WebP) öffnen, um daraus ein Modell zu erstellen, oder ein 3D-Modell (GLB, OBJ, PLY, STL) zum Bearbeiten. Die Datei kann auch auf das Fenster gezogen werden. (Ctrl+O)</value>
+  </data>
+  <data name="ToolbarSaveAsTip" xml:space="preserve">
+    <value>Modell als GLB, OBJ, PLY oder STL speichern (Ctrl+S)</value>
+  </data>
+  <data name="SendToBlenderButtonTip" xml:space="preserve">
+    <value>An Blender senden: die angezeigte Version auf das Ursprungsobjekt übertragen, als ein Schritt im Rückgängig-Verlauf von Blender</value>
+  </data>
+  <data name="SendToBlender" xml:space="preserve">
+    <value>An Blender senden</value>
+  </data>
+  <data name="UndoButtonTip" xml:space="preserve">
+    <value>Rückgängig: zurück zur vorherigen Version des Modells (Ctrl+Z)</value>
+  </data>
+  <data name="RedoButtonTip" xml:space="preserve">
+    <value>Wiederholen (Ctrl+Y oder Ctrl+Shift+Z)</value>
+  </data>
+  <data name="RotateXButtonTip" xml:space="preserve">
+    <value>90° um die X-Achse drehen, für ein liegendes Modell</value>
+  </data>
+  <data name="RotateYButtonTip" xml:space="preserve">
+    <value>90° um die vertikale Achse drehen</value>
+  </data>
+  <data name="RotateZButtonTip" xml:space="preserve">
+    <value>90° um die Z-Achse drehen</value>
+  </data>
+  <data name="MirrorButtonTip" xml:space="preserve">
+    <value>Von links nach rechts spiegeln</value>
+  </data>
+  <data name="DropTitle" xml:space="preserve">
+    <value>Foto oder 3D-Modell hierher ziehen</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Öffnen…</value>
+  </data>
+  <data name="DropAdvice" xml:space="preserve">
+    <value>Am besten mit einem ganzen Objekt, mittig, vor einfarbigem Hintergrund. Alles läuft auf diesem Computer; kein Foto verlässt ihn.</value>
+  </data>
+  <data name="TheObject" xml:space="preserve">
+    <value>Das Objekt</value>
+  </data>
+  <data name="GeneratePromptTip" xml:space="preserve">
+    <value>Was gezeichnet werden soll, z. B. ein Holzstuhl.</value>
+  </data>
+  <data name="AskedAs" xml:space="preserve">
+    <value>Angefragt als</value>
+  </data>
+  <data name="GenerateTemplate" xml:space="preserve">
+    <value>{object}, one whole object, centred, three-quarter view from slightly above, soft even studio light, plain light grey background, no text, nothing else in the picture</value>
+  </data>
+  <data name="GenerateTemplateTip" xml:space="preserve">
+    <value>{object} wird durch das Objekt ersetzt; der Rest verlangt das, womit eine 3D-Rekonstruktion am besten gelingt.</value>
+  </data>
+  <data name="GenerateAspectSquare" xml:space="preserve">
+    <value>Quadratisch</value>
+  </data>
+  <data name="GenerateSpeedQuick" xml:space="preserve">
+    <value>Schnell</value>
+  </data>
+  <data name="GenerateSpeedDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="GenerateSpeedBest" xml:space="preserve">
+    <value>Beste</value>
+  </data>
+  <data name="GenerateCountOne" xml:space="preserve">
+    <value>1 Bild</value>
+  </data>
+  <data name="GenerateCountTwo" xml:space="preserve">
+    <value>2 Bilder</value>
+  </data>
+  <data name="GenerateCountThree" xml:space="preserve">
+    <value>3 Bilder</value>
+  </data>
+  <data name="GenerateCountFour" xml:space="preserve">
+    <value>4 Bilder</value>
+  </data>
+  <data name="SendIt" xml:space="preserve">
+    <value>Senden</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Nicht jetzt</value>
+  </data>
+  <data name="ViewerHint" xml:space="preserve">
+    <value>Ziehen zum Drehen · Mausrad zum Zoomen · Doppelklick zum Zentrieren</value>
+  </data>
+  <data name="OperationsTitle" xml:space="preserve">
+    <value>Vorgänge</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="PauseButton" xml:space="preserve">
+    <value>Anhalten</value>
+  </data>
+  <data name="ObjectCardTitle" xml:space="preserve">
+    <value>3D-Objekt</value>
+  </data>
+  <data name="ObjectCardCaption" xml:space="preserve">
+    <value>Ein ganzes Modell, mit Vorderseite, Seiten und Rückseite, die TripoSR aus einem einzigen Foto ableitet. Pro Vertex eingefärbt.</value>
+  </data>
+  <data name="MeshResolution" xml:space="preserve">
+    <value>Netzauflösung</value>
+  </data>
+  <data name="ObjectResolution128" xml:space="preserve">
+    <value>128 · schneller Entwurf</value>
+  </data>
+  <data name="ObjectResolution256" xml:space="preserve">
+    <value>256 · TripoSR-Standard</value>
+  </data>
+  <data name="ObjectResolution384" xml:space="preserve">
+    <value>384 · fein</value>
+  </data>
+  <data name="ObjectThresholdLabel" xml:space="preserve">
+    <value>Dicke (Dichteschwelle): {0:0}</value>
+  </data>
+  <data name="ObjectThresholdTip" xml:space="preserve">
+    <value>Niedriger macht das Objekt dicker und schließt Löcher; höher macht es dünner und trennt Teile. 25 ist der Wert von TripoSR.</value>
+  </data>
+  <data name="ObjectRemoveBackground" xml:space="preserve">
+    <value>Hintergrund des Fotos entfernen (U²-Net)</value>
+  </data>
+  <data name="ObjectRemoveBackgroundTip" xml:space="preserve">
+    <value>Nur für ein bereits freigestelltes PNG mit Transparenz ausschalten: Es wird unverändert verwendet.</value>
+  </data>
+  <data name="ObjectProjectPhoto" xml:space="preserve">
+    <value>Scharfe Fotofarben auf der Vorderseite</value>
+  </data>
+  <data name="ObjectProjectPhotoTip" xml:space="preserve">
+    <value>TripoSR färbt aus einem 64 × 64-Raster; dies legt die eigenen Farben des Fotos wieder auf die Seite, die es zeigt.</value>
+  </data>
+  <data name="ObjectEnhancePhoto" xml:space="preserve">
+    <value>Kleines Foto zuerst verbessern (Real-ESRGAN)</value>
+  </data>
+  <data name="ObjectEnhancePhotoTip" xml:space="preserve">
+    <value>Für Fotos unter 1024 px oder mit Rauschen: vergrößert 4× mit KI vor dem Freistellen und Rekonstruieren.</value>
+  </data>
+  <data name="ObjectAdvancedHeader" xml:space="preserve">
+    <value>Erweitert</value>
+  </data>
+  <data name="ObjectEveryPoint" xml:space="preserve">
+    <value>Jeden Rasterpunkt abtasten (langsamer, erfasst dünne Teile)</value>
+  </data>
+  <data name="ObjectEveryPointTip" xml:space="preserve">
+    <value>Wertet das ganze Raster statt etwa eines Viertels aus, daher dauert das Abtasten etwa 4× so lange; dünne Beine und Griffe, die der grobe Durchlauf überspringt, bleiben erhalten.</value>
+  </data>
+  <data name="ObjectSmoothingLabel" xml:space="preserve">
+    <value>Glättungsdurchläufe: {0}</value>
+  </data>
+  <data name="ObjectSmoothingTip" xml:space="preserve">
+    <value>Taubin-Durchläufe nach dem Erzeugen der Oberfläche; 0 behält das rohe Netz als Ausgangspunkt zum Sculpten. Jeder Durchlauf ist ein kleiner Teil eines Laufs bei 256.</value>
+  </data>
+  <data name="ObjectPiecesLabel" xml:space="preserve">
+    <value>Lose Teile unter {0}% entfernen</value>
+  </data>
+  <data name="ObjectPiecesTip" xml:space="preserve">
+    <value>Fragmente, die kleiner als dieser Anteil des größten Teils sind, werden entfernt; 0 behält jedes Teil. Die Laufzeit steigt dadurch kaum.</value>
+  </data>
+  <data name="ObjectButton" xml:space="preserve">
+    <value>3D-Objekt erzeugen</value>
+  </data>
+  <data name="ReliefCardTitle" xml:space="preserve">
+    <value>Relief</value>
+  </data>
+  <data name="ReliefCardCaption" xml:space="preserve">
+    <value>Die Tiefe jedes Pixels (Depth Anything V2) wird zur Höhe: ein Flachrelief mit dem Foto als Textur. Funktioniert mit jedem Bild: Gesichter, Landschaften, Gebäude.</value>
+  </data>
+  <data name="DepthModel" xml:space="preserve">
+    <value>Tiefenmodell</value>
+  </data>
+  <data name="ReliefResolution256" xml:space="preserve">
+    <value>256 · Standard</value>
+  </data>
+  <data name="ReliefResolution512" xml:space="preserve">
+    <value>512 · fein</value>
+  </data>
+  <data name="ReliefDepthLabel" xml:space="preserve">
+    <value>Reliefhöhe: {0:P0}</value>
+  </data>
+  <data name="ReliefDepthTip" xml:space="preserve">
+    <value>Wie weit der nächstgelegene Punkt hervorsteht, als Anteil der Breite.</value>
+  </data>
+  <data name="ReliefBaseLabel" xml:space="preserve">
+    <value>Massiver Sockel: {0}</value>
+  </data>
+  <data name="ReliefBaseTip" xml:space="preserve">
+    <value>Mit Sockel ist das Netz geschlossen (massiv) und kann an einen 3D-Drucker gehen. Ohne Sockel ist es nur die Oberfläche.</value>
+  </data>
+  <data name="ReliefRemoveBackground" xml:space="preserve">
+    <value>Nur das Objekt (Hintergrund entfernen)</value>
+  </data>
+  <data name="ReliefButton" xml:space="preserve">
+    <value>Relief erzeugen</value>
+  </data>
+  <data name="CloudCardTitle" xml:space="preserve">
+    <value>Cloud-3D</value>
+  </data>
+  <data name="CloudCardCaption" xml:space="preserve">
+    <value>Ein texturiertes Modell von einem Cloud-Dienst, aus dem geöffneten Foto oder einer Beschreibung. Was gesendet wird und was es kostet, wird vor dem Senden angezeigt.</value>
+  </data>
+  <data name="CloudServiceLabel" xml:space="preserve">
+    <value>Dienst</value>
+  </data>
+  <data name="CloudFromPhoto" xml:space="preserve">
+    <value>Aus dem Foto</value>
+  </data>
+  <data name="CloudFromText" xml:space="preserve">
+    <value>Aus einer Beschreibung</value>
+  </data>
+  <data name="CloudTexture" xml:space="preserve">
+    <value>Texturiert</value>
+  </data>
+  <data name="CloudTextureTip" xml:space="preserve">
+    <value>Aus liefert nur die Form, günstiger.</value>
+  </data>
+  <data name="CloudPbr" xml:space="preserve">
+    <value>PBR-Maps (Metall, Rauheit, Normalen)</value>
+  </data>
+  <data name="QuadTopology" xml:space="preserve">
+    <value>Quad-Topologie</value>
+  </data>
+  <data name="CloudQuadsTip" xml:space="preserve">
+    <value>Vierecke statt Dreiecke, zum Bearbeiten in Blender.</value>
+  </data>
+  <data name="EditCardTitle" xml:space="preserve">
+    <value>Bearbeiten und verbessern</value>
+  </data>
+  <data name="EditCardCaption" xml:space="preserve">
+    <value>Für das erzeugte oder ein geöffnetes 3D-Modell. Jeder Schritt lässt sich rückgängig machen.</value>
+  </data>
+  <data name="SimplifyAmountTip" xml:space="preserve">
+    <value>Weniger Dreiecke: eine kleinere, leichtere Datei für Spiele, das Web und Slicer, bei erhaltener Form.</value>
+  </data>
+  <data name="SimplifyButton" xml:space="preserve">
+    <value>Vereinfachen</value>
+  </data>
+  <data name="SubdivideButton" xml:space="preserve">
+    <value>Unterteilen</value>
+  </data>
+  <data name="SubdivideButtonTip" xml:space="preserve">
+    <value>4× so viele Dreiecke, abgerundet: eine glattere Oberfläche für große Drucke.</value>
+  </data>
+  <data name="FillHolesButton" xml:space="preserve">
+    <value>Löcher füllen</value>
+  </data>
+  <data name="FillHolesButtonTip" xml:space="preserve">
+    <value>Schließt die Löcher im Netz, damit es für den Druck massiv (wasserdicht) ist.</value>
+  </data>
+  <data name="PiecesButton" xml:space="preserve">
+    <value>Lose Teile entfernen</value>
+  </data>
+  <data name="PiecesButtonTip" xml:space="preserve">
+    <value>Löscht lose Fragmente, die kleiner als dieser Anteil des größten Teils sind.</value>
+  </data>
+  <data name="PiecesText" xml:space="preserve">
+    <value>unter 5%</value>
+  </data>
+  <data name="SmoothButton" xml:space="preserve">
+    <value>Glätten</value>
+  </data>
+  <data name="SmoothButtonTip" xml:space="preserve">
+    <value>Entfernt Zacken und Rauschen, ohne das Modell schrumpfen zu lassen (Taubin), in so vielen Durchläufen.</value>
+  </data>
+  <data name="SmoothText" xml:space="preserve">
+    <value>3 Durchläufe</value>
+  </data>
+  <data name="FlattenButton" xml:space="preserve">
+    <value>Flacher Boden</value>
+  </data>
+  <data name="FlattenButtonTip" xml:space="preserve">
+    <value>Flacht diesen Anteil der Modellhöhe von unten ab, damit es auf dem Druckbett steht.</value>
+  </data>
+  <data name="WithAI" xml:space="preserve">
+    <value>Mit KI</value>
+  </data>
+  <data name="UpscaleTextureButton" xml:space="preserve">
+    <value>4× schärfere Textur (Real-ESRGAN)</value>
+  </data>
+  <data name="UpscaleTextureButtonTip" xml:space="preserve">
+    <value>Für texturierte Modelle (Reliefs, geöffnete OBJ und GLB): vergrößert und bereinigt das Texturbild, bis 4096 px.</value>
+  </data>
+  <data name="NewTextureButtonTip" xml:space="preserve">
+    <value>Zeichnet ein nahtloses Material (Holz, Stein, lackiertes Metall) und legt es auf die Oberfläche des Modells.</value>
+  </data>
+  <data name="Material" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="NewTexturePromptTip" xml:space="preserve">
+    <value>Zum Beispiel: verwitterter grauer Stein, Eichendielen, rot lackiertes Metall.</value>
+  </data>
+  <data name="ReprojectButton" xml:space="preserve">
+    <value>Fotofarben neu auftragen</value>
+  </data>
+  <data name="ReprojectButtonTip" xml:space="preserve">
+    <value>Legt die scharfen Farben des Fotos wieder auf die Vorderseite des Objekts, z. B. nach dem Unterteilen.</value>
+  </data>
+  <data name="Triangles" xml:space="preserve">
+    <value>Dreiecke</value>
+  </data>
+  <data name="CloudRemeshPolycountTip" xml:space="preserve">
+    <value>100 bis 300.000: die Dreieckszahl des sauberen Netzes.</value>
+  </data>
+  <data name="CloudRetexturePromptTip" xml:space="preserve">
+    <value>Wie die neue Oberfläche aussieht, z. B. verwitterte Eiche, lackierter Stahl.</value>
+  </data>
+  <data name="CloudKeepUv" xml:space="preserve">
+    <value>UVs des Modells behalten</value>
+  </data>
+  <data name="ExportCardTitle" xml:space="preserve">
+    <value>Exportieren</value>
+  </data>
+  <data name="ExportFormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="ExportFormatGlb" xml:space="preserve">
+    <value>GLB · Windows, Blender, Web</value>
+  </data>
+  <data name="ExportFormatObj" xml:space="preserve">
+    <value>OBJ · mit Textur oder Farben</value>
+  </data>
+  <data name="ExportFormatPly" xml:space="preserve">
+    <value>PLY · mit Farben, MeshLab</value>
+  </data>
+  <data name="ExportFormatStl" xml:space="preserve">
+    <value>STL · 3D-Druck</value>
+  </data>
+  <data name="ExportObjTexture" xml:space="preserve">
+    <value>Textur, als .mtl und .png daneben</value>
+  </data>
+  <data name="ExportObjVertexColours" xml:space="preserve">
+    <value>Farben pro Vertex, nur in der .obj</value>
+  </data>
+  <data name="ExportGlbStandard" xml:space="preserve">
+    <value>Standard, in jedem Viewer lesbar</value>
+  </data>
+  <data name="ExportGlbCompact" xml:space="preserve">
+    <value>Kompakt, etwa halbe Größe: Web, Blender</value>
+  </data>
+  <data name="ExportPlyBinary" xml:space="preserve">
+    <value>Binär, kleiner und schneller</value>
+  </data>
+  <data name="ExportPlyAscii" xml:space="preserve">
+    <value>ASCII, als Text lesbar</value>
+  </data>
+  <data name="LongestSide" xml:space="preserve">
+    <value>Längste Seite</value>
+  </data>
+  <data name="ExportSaveAs" xml:space="preserve">
+    <value>Speichern unter…</value>
+  </data>
+  <data name="OpenInBlender" xml:space="preserve">
+    <value>In Blender öffnen</value>
+  </data>
+  <data name="OpenInBlenderTip" xml:space="preserve">
+    <value>Blender starten, mit diesem Modell in eine leere Szene importiert</value>
+  </data>
+  <data name="HistoryCardTitle" xml:space="preserve">
+    <value>Verlauf</value>
+  </data>
+  <data name="QualityCardTitle" xml:space="preserve">
+    <value>Qualität</value>
+  </data>
+  <data name="QualityStandard" xml:space="preserve">
+    <value>Standard (FP16 auf der GPU, halber Download)</value>
+  </data>
+  <data name="QualityHigh" xml:space="preserve">
+    <value>Hohe Qualität (durchgehend FP32)</value>
+  </data>
+  <data name="QualityCaption" xml:space="preserve">
+    <value>Auf der CPU wird immer FP32 verwendet, weil es dort schneller ist. Modelle werden bei der ersten Verwendung von Hugging Face heruntergeladen und per SHA-256 geprüft.</value>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="UpdatesTitle" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="AboutCheckUpdates" xml:space="preserve">
+    <value>Nach Updates suchen</value>
+  </data>
+  <data name="AboutReleasePage" xml:space="preserve">
+    <value>Release-Seite öffnen</value>
+  </data>
+  <data name="AboutInstallUpdate" xml:space="preserve">
+    <value>Aktualisieren und neu starten</value>
+  </data>
+  <data name="AboutUpdateUnsaved" xml:space="preserve">
+    <value>Das angezeigte Modell ist nicht gespeichert, und ein Neustart verwirft es samt Verlauf. Zuerst mit „Speichern unter“ sichern oder trotzdem aktualisieren.</value>
+  </data>
+  <data name="AboutUpdateAnyway" xml:space="preserve">
+    <value>Aktualisieren und verwerfen</value>
+  </data>
+  <data name="AboutUpdateKeep" xml:space="preserve">
+    <value>Behalten</value>
+  </data>
+  <data name="AboutAutoUpdate" xml:space="preserve">
+    <value>Automatisch einmal täglich nach Updates suchen</value>
+  </data>
+  <data name="AboutAutoUpdateTip" xml:space="preserve">
+    <value>Fragt api.github.com nach dem neuesten Release und sendet dabei nur Name und Version von Modelado.</value>
+  </data>
+  <data name="CloudServices" xml:space="preserve">
+    <value>Cloud-Dienste</value>
+  </data>
+  <data name="CloudServicesCaption" xml:space="preserve">
+    <value>Optional. Mit einem Schlüssel erscheinen die Aktionen des Dienstes neben den lokalen, und nichts wird ohne Zustimmung im Einzelfall gesendet.</value>
+  </data>
+  <data name="WhereInferenceRuns" xml:space="preserve">
+    <value>Wo die Inferenz läuft</value>
+  </data>
+  <data name="ProviderAuto" xml:space="preserve">
+    <value>Automatisch (GPU mit DirectML, wenn sie funktioniert, sonst CPU)</value>
+  </data>
+  <data name="ProviderDirectML" xml:space="preserve">
+    <value>GPU (DirectML)</value>
+  </data>
+  <data name="ProviderCpu" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="ProviderCpuTip" xml:space="preserve">
+    <value>Für eine GPU, die versagt oder bei einem Modell langsamer ist als die CPU.</value>
+  </data>
+  <data name="ProviderCaption" xml:space="preserve">
+    <value>Die Auswahl gilt ab dem nächsten Vorgang und bleibt für den nächsten Start erhalten; --provider in der Befehlszeile hat für diesen Lauf weiterhin Vorrang.</value>
+  </data>
+  <data name="ModelsTitle" xml:space="preserve">
+    <value>Modelle</value>
+  </data>
+  <data name="ModelSources" xml:space="preserve">
+    <value>Modellquellen</value>
+  </data>
+  <data name="ModelSourcesCaption" xml:space="preserve">
+    <value>Die integrierten Modelle stehen an erster Stelle. Wird ein Hugging-Face-Repository (owner/name) oder eine Manifest-URL hinzugefügt, wird ein dort für einen Vorgang gelistetes Modell auf der Karte dieses Vorgangs wählbar.</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="AboutAddSource" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AboutSourceInputTip" xml:space="preserve">
+    <value>owner/name auf Hugging Face oder die https-Adresse einer manifest.json</value>
+  </data>
+  <data name="AboutSourceKeep" xml:space="preserve">
+    <value>Diese Quelle hinzufügen</value>
+  </data>
+  <data name="DownloadsTitle" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="AboutDownloadAll" xml:space="preserve">
+    <value>Alles herunterladen (Offline-Nutzung)</value>
+  </data>
+  <data name="AboutOpenFolder" xml:space="preserve">
+    <value>Modellordner öffnen</value>
+  </data>
+  <data name="AboutRemoveAll" xml:space="preserve">
+    <value>Alle Downloads entfernen…</value>
+  </data>
+  <data name="AboutRemoveAllDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="AboutRemoveAllKeep" xml:space="preserve">
+    <value>Behalten</value>
+  </data>
+  <data name="ThirdPartySoftware" xml:space="preserve">
+    <value>Software von Drittanbietern</value>
+  </data>
+  <data name="AboutNotices" xml:space="preserve">
+    <value>ONNX Runtime (MIT) mit DirectML (Microsoft-Software-Lizenzbedingungen) und SkiaSharp (MIT).</value>
+  </data>
+  <data name="WhatIsDownloaded" xml:space="preserve">
+    <value>Was heruntergeladen wird</value>
+  </data>
+  <data name="GoodToKnow" xml:space="preserve">
+    <value>Gut zu wissen</value>
+  </data>
+  <data name="LicenseTitle" xml:space="preserve">
+    <value>Lizenz</value>
+  </data>
+  <data name="AboutButton" xml:space="preserve">
+    <value>Info und Modelle</value>
+  </data>
+  <data name="CloudChipTip" xml:space="preserve">
+    <value>Was die Cloud-Dienste diesen Monat gekostet haben, und ihre Budgets</value>
+  </data>
+  <data name="UpdateChipTip" xml:space="preserve">
+    <value>Neuerungen und Installation anzeigen</value>
+  </data>
+  <data name="SizeGigabytes" xml:space="preserve">
+    <value>{0:0.0} GB</value>
+  </data>
+  <data name="SizeMegabytes" xml:space="preserve">
+    <value>{0} MB</value>
+  </data>
+  <data name="SecondsLeft" xml:space="preserve">
+    <value>noch etwa {0:0} s</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>noch etwa {0:0} min</value>
+  </data>
+  <data name="DownloadVerifying" xml:space="preserve">
+    <value>Wird geprüft…</value>
+  </data>
+  <data name="DownloadRetrying" xml:space="preserve">
+    <value>{0} · Verbindung verloren, neuer Versuch…</value>
+  </data>
+  <data name="DownloadStarting" xml:space="preserve">
+    <value>{0} · wird gestartet…</value>
+  </data>
+  <data name="DownloadRunning" xml:space="preserve">
+    <value>{0} · {1:0.0} MB/s · {2}</value>
+  </data>
+  <data name="DownloadDone" xml:space="preserve">
+    <value>{0} von {1}</value>
+  </data>
+  <data name="DropFormatsText" xml:space="preserve">
+    <value>Fotos: {0}
+3D-Modelle: {1}</value>
+  </data>
+  <data name="FrontView" xml:space="preserve">
+    <value>Vorderansicht</value>
+  </data>
+  <data name="SaveViewAsImage" xml:space="preserve">
+    <value>Ansicht als Bild speichern</value>
+  </data>
+  <data name="OpenDialogTitle" xml:space="preserve">
+    <value>Foto oder 3D-Modell öffnen</value>
+  </data>
+  <data name="OpenDialogFilter" xml:space="preserve">
+    <value>Fotos und 3D-Modelle|{0};{1}|Fotos|{0}|3D-Modelle (GLB, OBJ, PLY, STL)|{1}|Alle Dateien|*.*</value>
+  </data>
+  <data name="NotOpenable" xml:space="preserve">
+    <value>{0} ist kein Foto oder 3D-Modell, das Modelado öffnen kann.</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>{0} wurde nicht gefunden.</value>
+  </data>
+  <data name="FileNotOpened" xml:space="preserve">
+    <value>{0} konnte nicht geöffnet werden: {1}</value>
+  </data>
+  <data name="OpeningFile" xml:space="preserve">
+    <value>{0} wird geöffnet…</value>
+  </data>
+  <data name="WindowTitleWithFile" xml:space="preserve">
+    <value>{0} · Modelado</value>
+  </data>
+  <data name="HistoryOpened" xml:space="preserve">
+    <value>Geöffnet</value>
+  </data>
+  <data name="PhotoSource" xml:space="preserve">
+    <value>{0} · {1} × {2}</value>
+  </data>
+  <data name="PhotoSourceCutOut" xml:space="preserve">
+    <value>{0} · {1} × {2} · freigestellt</value>
+  </data>
+  <data name="HistoryItem" xml:space="preserve">
+    <value>{0}. {1}</value>
+  </data>
+  <data name="MeshCounts" xml:space="preserve">
+    <value>{0:N0} Vertices · {1:N0} Dreiecke</value>
+  </data>
+  <data name="MeshTexture" xml:space="preserve">
+    <value>Textur {0} × {1}</value>
+  </data>
+  <data name="MeshOpen" xml:space="preserve">
+    <value>offen</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="SaveViewDialogTitle" xml:space="preserve">
+    <value>Ansicht als Bild speichern</value>
+  </data>
+  <data name="DefaultModelName" xml:space="preserve">
+    <value>modell</value>
+  </data>
+  <data name="SaveViewFileName" xml:space="preserve">
+    <value>{0} Ansicht</value>
+  </data>
+  <data name="SaveViewFilter" xml:space="preserve">
+    <value>PNG, {0} px an der langen Seite|*.png</value>
+  </data>
+  <data name="SavedView" xml:space="preserve">
+    <value>Gespeichert: {0} · {1} × {2} px</value>
+  </data>
+  <data name="NotSaved" xml:space="preserve">
+    <value>{0} konnte nicht gespeichert werden</value>
+  </data>
+  <data name="SimplifyLabel" xml:space="preserve">
+    <value>Auf {0:P0} der Dreiecke vereinfachen</value>
+  </data>
+  <data name="BaseNone" xml:space="preserve">
+    <value>kein Sockel</value>
+  </data>
+  <data name="BaseShare" xml:space="preserve">
+    <value>{0:P0} der Breite</value>
+  </data>
+  <data name="TurnAboutX" xml:space="preserve">
+    <value>Um X drehen</value>
+  </data>
+  <data name="TurnAboutY" xml:space="preserve">
+    <value>Um Y drehen</value>
+  </data>
+  <data name="TurnAboutZ" xml:space="preserve">
+    <value>Um Z drehen</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Spiegeln</value>
+  </data>
+  <data name="PassOne" xml:space="preserve">
+    <value>1 Durchlauf</value>
+  </data>
+  <data name="PassMany" xml:space="preserve">
+    <value>{0} Durchläufe</value>
+  </data>
+  <data name="PiecesUnder" xml:space="preserve">
+    <value>unter {0}%</value>
+  </data>
+  <data name="SimplifyStep" xml:space="preserve">
+    <value>Auf {0:P0} vereinfachen</value>
+  </data>
+  <data name="SubdivideConfirm" xml:space="preserve">
+    <value>Das Modell würde auf {0:N0} Dreiecke anwachsen, schwer anzuzeigen und zu speichern. Fortfahren?</value>
+  </data>
+  <data name="SubdivideStep" xml:space="preserve">
+    <value>Unterteilen</value>
+  </data>
+  <data name="SmoothStepOne" xml:space="preserve">
+    <value>Glätten, 1 Durchlauf</value>
+  </data>
+  <data name="SmoothStepMany" xml:space="preserve">
+    <value>Glätten, {0} Durchläufe</value>
+  </data>
+  <data name="FillHolesStep" xml:space="preserve">
+    <value>Löcher füllen</value>
+  </data>
+  <data name="FillHolesNone" xml:space="preserve">
+    <value>Löcher füllen · keine Löcher vorhanden</value>
+  </data>
+  <data name="FillHolesOpen" xml:space="preserve">
+    <value>Löcher füllen · {0} Loch/Löcher gefüllt · einige offene Kanten bleiben</value>
+  </data>
+  <data name="FillHolesClosed" xml:space="preserve">
+    <value>Löcher füllen · {0} Loch/Löcher gefüllt · das Netz ist geschlossen</value>
+  </data>
+  <data name="RemovePiecesStep" xml:space="preserve">
+    <value>Teile unter {0}% entfernen</value>
+  </data>
+  <data name="FlatBaseStep" xml:space="preserve">
+    <value>Flacher Boden bei {0}%</value>
+  </data>
+  <data name="TurnStep" xml:space="preserve">
+    <value>90° um {0} drehen</value>
+  </data>
+  <data name="SharperTextureStep" xml:space="preserve">
+    <value>Schärfere Textur</value>
+  </data>
+  <data name="PhotoColoursStep" xml:space="preserve">
+    <value>Fotofarben</value>
+  </data>
+  <data name="UndoneTo" xml:space="preserve">
+    <value>Rückgängig: zurück zu „{0}“</value>
+  </data>
+  <data name="RedoneTo" xml:space="preserve">
+    <value>Wiederholt: {0}</value>
+  </data>
+  <data name="TrianglesCount" xml:space="preserve">
+    <value>{0:N0} Dreiecke</value>
+  </data>
+  <data name="EditDone" xml:space="preserve">
+    <value>{0} · {1:N0} → {2:N0} Dreiecke · {3:0.0} s</value>
+  </data>
+  <data name="UndoHint" xml:space="preserve">
+    <value>Ctrl+Z macht es rückgängig.</value>
+  </data>
+  <data name="StepCancelled" xml:space="preserve">
+    <value>{0}: abgebrochen</value>
+  </data>
+  <data name="StepFailed" xml:space="preserve">
+    <value>{0}: fehlgeschlagen</value>
+  </data>
+  <data name="StageRemovingBackground" xml:space="preserve">
+    <value>Hintergrund wird entfernt</value>
+  </data>
+  <data name="StageEncoding" xml:space="preserve">
+    <value>Foto wird gelesen (TripoSR)</value>
+  </data>
+  <data name="StageSamplingDensity" xml:space="preserve">
+    <value>Form wird ermittelt</value>
+  </data>
+  <data name="StageExtractingSurface" xml:space="preserve">
+    <value>Oberfläche wird extrahiert</value>
+  </data>
+  <data name="StageColouring" xml:space="preserve">
+    <value>Wird eingefärbt</value>
+  </data>
+  <data name="StageEnhancingPhoto" xml:space="preserve">
+    <value>Foto wird verbessert (Real-ESRGAN)</value>
+  </data>
+  <data name="StageProjectingPhoto" xml:space="preserve">
+    <value>Fotofarben werden aufgetragen</value>
+  </data>
+  <data name="StageEstimatingDepth" xml:space="preserve">
+    <value>Tiefe wird geschätzt</value>
+  </data>
+  <data name="StageBuildingRelief" xml:space="preserve">
+    <value>Relief wird erstellt</value>
+  </data>
+  <data name="StageTook" xml:space="preserve">
+    <value>{0} {1:0.0} s</value>
+  </data>
+  <data name="RunDone" xml:space="preserve">
+    <value>{0} · {1:0.0} s · {2}</value>
+  </data>
+  <data name="Cancelling" xml:space="preserve">
+    <value>Wird abgebrochen…</value>
+  </data>
+  <data name="ExportSizeInvalid" xml:space="preserve">
+    <value>Eine Größe über 0 eingeben.</value>
+  </data>
+  <data name="ExportBox" xml:space="preserve">
+    <value>{0:0.##} × {1:0.##} × {2:0.##} {3} (Breite × Höhe × Tiefe)</value>
+  </data>
+  <data name="UnitMillimetres" xml:space="preserve">
+    <value>mm</value>
+  </data>
+  <data name="UnitUnits" xml:space="preserve">
+    <value>Einheiten</value>
+  </data>
+  <data name="ExportNoteStlScale" xml:space="preserve">
+    <value>STL wird in Millimetern gelesen, daher ist die Größe oben die des Drucks.</value>
+  </data>
+  <data name="ExportNoteStlColours" xml:space="preserve">
+    <value>STL speichert nur die Form, daher gehen die Farben verloren.</value>
+  </data>
+  <data name="ExportNoteStlOpen" xml:space="preserve">
+    <value>Das Netz hat offene Kanten und ist daher nicht wasserdicht für den Druck: „Löcher füllen“ schließt sie.</value>
+  </data>
+  <data name="ExportNotePlyTexture" xml:space="preserve">
+    <value>PLY hat keine Textur, daher werden die Farben an jedem Vertex abgetastet.</value>
+  </data>
+  <data name="ExportNoteGrey" xml:space="preserve">
+    <value>Das Modell hat keine Farben und wird daher grau gespeichert.</value>
+  </data>
+  <data name="SaveModelDialogTitle" xml:space="preserve">
+    <value>3D-Modell speichern</value>
+  </data>
+  <data name="SaveFilterObj" xml:space="preserve">
+    <value>OBJ|*.obj</value>
+  </data>
+  <data name="SaveFilterPly" xml:space="preserve">
+    <value>PLY|*.ply</value>
+  </data>
+  <data name="SaveFilterStl" xml:space="preserve">
+    <value>STL, in Millimetern|*.stl</value>
+  </data>
+  <data name="SaveFilterGlb" xml:space="preserve">
+    <value>GLB, binäres glTF|*.glb</value>
+  </data>
+  <data name="ExportSaved" xml:space="preserve">
+    <value>Gespeichert: {0}</value>
+  </data>
+  <data name="ExportSavedCompact" xml:space="preserve">
+    <value>Gespeichert: {0} · kompakt</value>
+  </data>
+  <data name="ExportSavedTexture" xml:space="preserve">
+    <value>Gespeichert: {0} · Textur als {1}</value>
+  </data>
+  <data name="ExportSavedCompactTexture" xml:space="preserve">
+    <value>Gespeichert: {0} · kompakt · Textur als {1}</value>
+  </data>
+  <data name="ExportSavedSize" xml:space="preserve">
+    <value>Gespeichert: {0} · {1:0.##} {2} an der längsten Seite</value>
+  </data>
+  <data name="NotSavedBecause" xml:space="preserve">
+    <value>{0} konnte nicht gespeichert werden: {1}</value>
+  </data>
+  <data name="GeneratePhotoWith" xml:space="preserve">
+    <value>Foto mit {0} erzeugen…</value>
+  </data>
+  <data name="GenerateCountWith" xml:space="preserve">
+    <value>{0} mit {1} erzeugen</value>
+  </data>
+  <data name="GenerateCountWithCost" xml:space="preserve">
+    <value>{0} mit {1} erzeugen · ~{2}</value>
+  </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>Diese Beschreibung geht an {0}.{1}</value>
+  </data>
+  <data name="ConsentDescriptionCost" xml:space="preserve">
+    <value>Diese Beschreibung geht für etwa {1} an {0}.{2}</value>
+  </data>
+  <data name="DrawingWith" xml:space="preserve">
+    <value>{0} zeichnet…</value>
+  </data>
+  <data name="OpenThisOne" xml:space="preserve">
+    <value>Dieses öffnen</value>
+  </data>
+  <data name="CandidateName" xml:space="preserve">
+    <value>Vorschlag {0}</value>
+  </data>
+  <data name="PressToOpen" xml:space="preserve">
+    <value>Zum Öffnen anklicken.</value>
+  </data>
+  <data name="CandidatesPress" xml:space="preserve">
+    <value>{0} Vorschläge: zum Öffnen einen anklicken.</value>
+  </data>
+  <data name="ImageNotKept" xml:space="preserve">
+    <value>Das Bild konnte nicht übernommen werden: {0}</value>
+  </data>
+  <data name="FromBlenderTitle" xml:space="preserve">
+    <value>{0} aus Blender · Modelado</value>
+  </data>
+  <data name="FromBlender" xml:space="preserve">
+    <value>{0} aus Blender</value>
+  </data>
+  <data name="OpenedInBlender" xml:space="preserve">
+    <value>In Blender geöffnet: {0}</value>
+  </data>
+  <data name="BlenderNotStarted" xml:space="preserve">
+    <value>Blender konnte nicht gestartet werden: {0}</value>
+  </data>
+  <data name="EditedInModelado" xml:space="preserve">
+    <value>In Modelado bearbeitet</value>
+  </data>
+  <data name="SentToBlender" xml:space="preserve">
+    <value>An Blender gesendet: {0}, Version {1}</value>
+  </data>
+  <data name="NotSentToBlender" xml:space="preserve">
+    <value>Nicht an Blender gesendet</value>
+  </data>
+  <data name="NewTextureWith" xml:space="preserve">
+    <value>Neue Textur mit {0}…</value>
+  </data>
+  <data name="DrawCountWith" xml:space="preserve">
+    <value>{0} mit {1} zeichnen</value>
+  </data>
+  <data name="DrawCountWithCost" xml:space="preserve">
+    <value>{0} mit {1} zeichnen · ~{2}</value>
+  </data>
+  <data name="AskedAsTemplate" xml:space="preserve">
+    <value>Angefragt als: {0}</value>
+  </data>
+  <data name="ConsentTexture" xml:space="preserve">
+    <value>Diese Beschreibung geht an {0}; das Modell bleibt hier.{1}</value>
+  </data>
+  <data name="ConsentTextureCost" xml:space="preserve">
+    <value>Diese Beschreibung geht für etwa {1} an {0}; das Modell bleibt hier.{2}</value>
+  </data>
+  <data name="PutThisOnModel" xml:space="preserve">
+    <value>Auf das Modell anwenden</value>
+  </data>
+  <data name="TextureName" xml:space="preserve">
+    <value>Textur {0}</value>
+  </data>
+  <data name="PressToPutOn" xml:space="preserve">
+    <value>Zum Anwenden auf das Modell anklicken.</value>
+  </data>
+  <data name="TexturesPress" xml:space="preserve">
+    <value>{0} Texturen: zum Anwenden auf das Modell eine anklicken.</value>
+  </data>
+  <data name="TextureNotRead" xml:space="preserve">
+    <value>Die Textur konnte nicht gelesen werden: {0}</value>
+  </data>
+  <data name="NewTextureStep" xml:space="preserve">
+    <value>Neue Textur: {0}</value>
+  </data>
+  <data name="ConsentTitleText" xml:space="preserve">
+    <value>{0} erfordert einen einmaligen Download</value>
+  </data>
+  <data name="ConsentLeadOne" xml:space="preserve">
+    <value>{0} verwendet ein KI-Modell, das beim ersten Mal heruntergeladen wird: {1}. Danach funktioniert es offline, für jedes geöffnete Foto und Modell.</value>
+  </data>
+  <data name="ConsentLeadMany" xml:space="preserve">
+    <value>{0} verwendet KI-Modelle, die beim ersten Mal heruntergeladen werden: {1}. Danach funktionieren sie offline, für jedes geöffnete Foto und Modell.</value>
+  </data>
+  <data name="ConsentFile" xml:space="preserve">
+    <value>{0} · {1} · {2} · von {3}</value>
+  </data>
+  <data name="ConsentTotalPartial" xml:space="preserve">
+    <value>Gesamt: {0}, da {1} davon bereits vorhanden ist.</value>
+  </data>
+  <data name="ConsentTotalAll" xml:space="preserve">
+    <value>Gesamt: {0}.</value>
+  </data>
+  <data name="ConsentFactPhoto" xml:space="preserve">
+    <value>• Nur die Modelle werden heruntergeladen. Das Foto bleibt auf diesem Computer und wird nie hochgeladen.</value>
+  </data>
+  <data name="ConsentFactFolder" xml:space="preserve">
+    <value>• Sie werden in {0} gespeichert und lassen sich jederzeit unter „Info“ entfernen.{1}</value>
+  </data>
+  <data name="ConsentFactChecked" xml:space="preserve">
+    <value>• Jede Datei wird vor der Verwendung per SHA-256 geprüft.</value>
+  </data>
+  <data name="ConsentFactResume" xml:space="preserve">
+    <value>• Modelado arbeitet während des Downloads weiter. Ein abgebrochener Download wird dort fortgesetzt, wo er aufgehört hat.</value>
+  </data>
+  <data name="ConsentLicenseLine" xml:space="preserve">
+    <value>{0}: {1} ({2}).</value>
+  </data>
+  <data name="ModelListUnreadable" xml:space="preserve">
+    <value>Die Modellliste konnte nicht von Hugging Face gelesen werden. Verbindung prüfen und erneut versuchen.</value>
+  </data>
+  <data name="ModelListLacks" xml:space="preserve">
+    <value>Die Modellliste ({0}) enthält {1} nicht.</value>
+  </data>
+  <data name="DownloadingModels" xml:space="preserve">
+    <value>Modelle werden heruntergeladen</value>
+  </data>
+  <data name="DownloadingModelsStatus" xml:space="preserve">
+    <value>Modelle werden heruntergeladen: {0}</value>
+  </data>
+  <data name="ModelsReady" xml:space="preserve">
+    <value>Modelle bereit · {0} Datei(en) heruntergeladen</value>
+  </data>
+  <data name="EachFileChecked" xml:space="preserve">
+    <value>Jede Datei wurde per SHA-256 geprüft.</value>
+  </data>
+  <data name="DownloadPausedContinue" xml:space="preserve">
+    <value>Download angehalten. Jetzt fortsetzen?</value>
+  </data>
+  <data name="DownloadModelsTitle" xml:space="preserve">
+    <value>Modelle herunterladen</value>
+  </data>
+  <data name="DownloadPaused" xml:space="preserve">
+    <value>Download angehalten</value>
+  </data>
+  <data name="ResumesNextTime" xml:space="preserve">
+    <value>Beim nächsten Mal wird er dort fortgesetzt, wo er aufgehört hat.</value>
+  </data>
+  <data name="DownloadCancelled" xml:space="preserve">
+    <value>Download abgebrochen</value>
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
+    <value>Der Download ist fehlgeschlagen.
+
+{0}</value>
+  </data>
+  <data name="Pausing" xml:space="preserve">
+    <value>Wird angehalten…</value>
+  </data>
+  <data name="ObjectFirstUseAccept" xml:space="preserve">
+    <value>Herunterladen und 3D-Objekt erzeugen</value>
+  </data>
+  <data name="ReliefFirstUseAccept" xml:space="preserve">
+    <value>Herunterladen und Relief erzeugen</value>
+  </data>
+  <data name="TextureFirstUseTitle" xml:space="preserve">
+    <value>Eine schärfere Textur</value>
+  </data>
+  <data name="TextureFirstUseAccept" xml:space="preserve">
+    <value>Herunterladen und Textur schärfen</value>
+  </data>
+  <data name="ModelsNotInstalled" xml:space="preserve">
+    <value>Modelle nicht installiert</value>
+  </data>
+  <data name="ModelListUnreadableOffline" xml:space="preserve">
+    <value>Die Modellliste konnte nicht gelesen werden. Ohne Internet funktionieren nur bereits heruntergeladene Modelle.</value>
+  </data>
+  <data name="ModelListUnreadableOfflineBecause" xml:space="preserve">
+    <value>Die Modellliste konnte nicht gelesen werden ({0}). Ohne Internet funktionieren nur bereits heruntergeladene Modelle.</value>
+  </data>
+  <data name="DownloadQueued" xml:space="preserve">
+    <value>Download in Warteschlange</value>
+  </data>
+  <data name="DownloadQueuedDetail" xml:space="preserve">
+    <value>Er startet, sobald der andere Download fertig ist.</value>
+  </data>
+  <data name="DownloadingPercent" xml:space="preserve">
+    <value>Download läuft · {0}%</value>
+  </data>
+  <data name="PausedPercent" xml:space="preserve">
+    <value>Angehalten · {0}%</value>
+  </data>
+  <data name="PausedDetail" xml:space="preserve">
+    <value>Fortsetzen macht dort weiter, wo der Download aufgehört hat; bereits Heruntergeladenes wird nicht erneut abgerufen.</value>
+  </data>
+  <data name="ResumeDownload" xml:space="preserve">
+    <value>Download fortsetzen</value>
+  </data>
+  <data name="DownloadStopped" xml:space="preserve">
+    <value>Download gestoppt</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Erneut versuchen</value>
+  </data>
+  <data name="OneTimeDownloadLeft" xml:space="preserve">
+    <value>Einmaliger Download · noch {0}</value>
+  </data>
+  <data name="OneTimeDownload" xml:space="preserve">
+    <value>Einmaliger Download · {0}</value>
+  </data>
+  <data name="FirstUseDetail" xml:space="preserve">
+    <value>{0}, von {1}. Das Foto wird nie hochgeladen.</value>
+  </data>
+  <data name="ListAnd" xml:space="preserve">
+    <value> und </value>
+  </data>
+  <data name="ListComma" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="ReadyOffline" xml:space="preserve">
+    <value>Bereit: {0} funktioniert jetzt offline.</value>
+  </data>
+  <data name="ReadyStartsNow" xml:space="preserve">
+    <value>Heruntergeladen und geprüft. {0} startet jetzt; der Fortschritt wird oben angezeigt.</value>
+  </data>
+  <data name="DownloadGone" xml:space="preserve">
+    <value>Der Downloadserver hat diese Datei nicht mehr (Fehler 404). Modelado aktualisieren, das die aktuellen Download-Adressen kennt, und dann erneut versuchen.</value>
+  </data>
+  <data name="DownloadFailedKept" xml:space="preserve">
+    <value>{0} Bereits Heruntergeladenes bleibt erhalten; „Erneut versuchen“ macht dort weiter.</value>
+  </data>
+  <data name="SourcesUnreadable" xml:space="preserve">
+    <value>Die hinzugefügten Quellen konnten nicht gelesen werden, daher werden nur die integrierten Modelle angeboten: {0}</value>
+  </data>
+  <data name="BuiltInSource" xml:space="preserve">
+    <value>alegauss/modelado-models (integriert)</value>
+  </data>
+  <data name="RemoveNamed" xml:space="preserve">
+    <value>{0} entfernen</value>
+  </data>
+  <data name="ManifestOverride" xml:space="preserve">
+    <value>--manifest {0} wird für diesen Lauf statt der integrierten Modelle und der hinzugefügten Quellen verwendet.</value>
+  </data>
+  <data name="SourceTypeFirst" xml:space="preserve">
+    <value>Zuerst ein Hugging-Face-Repository (owner/name) oder eine Manifest-URL eingeben.</value>
+  </data>
+  <data name="SourceAlready" xml:space="preserve">
+    <value>{0} ist bereits eine Quelle.</value>
+  </data>
+  <data name="BuiltInListUnreadable" xml:space="preserve">
+    <value>Die integrierte Modellliste konnte nicht gelesen werden, daher kann nichts damit abgeglichen werden. Verbindung prüfen und erneut versuchen.</value>
+  </data>
+  <data name="SourceListsNone" xml:space="preserve">
+    <value>{0} listet keine Modelle.</value>
+  </data>
+  <data name="SourceListsOne" xml:space="preserve">
+    <value>{0} listet 1 Modell. Hinzufügen?</value>
+  </data>
+  <data name="SourceListsMany" xml:space="preserve">
+    <value>{0} listet {1} Modelle. Hinzufügen?</value>
+  </data>
+  <data name="SourceModelLine" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3}</value>
+  </data>
+  <data name="SourcesNotSaved" xml:space="preserve">
+    <value>Die Quellen werden verwendet, bis Modelado geschlossen wird, konnten aber nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="DepthBuiltIn" xml:space="preserve">
+    <value>Depth Anything V2 Small (integriert)</value>
+  </data>
+  <data name="DepthFromSource" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotCheckedYet" xml:space="preserve">
+    <value>Noch nicht geprüft.</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>Wird geprüft…</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Modelado {0} ist verfügbar; installiert ist {1}.</value>
+  </data>
+  <data name="UpdateLatest" xml:space="preserve">
+    <value>Modelado {0} ist die neueste Version.</value>
+  </data>
+  <data name="UpdateUnreachable" xml:space="preserve">
+    <value>GitHub war für die Update-Suche nicht erreichbar.</value>
+  </data>
+  <data name="UpdatesFromStore" xml:space="preserve">
+    <value>Updates kommen aus dem Microsoft Store.</value>
+  </data>
+  <data name="UpdateChipText" xml:space="preserve">
+    <value>Update {0} verfügbar</value>
+  </data>
+  <data name="UpdateWhileBusy" xml:space="preserve">
+    <value>{0} läuft: abschließen lassen oder abbrechen, dann aktualisieren.</value>
+  </data>
+  <data name="UpdateVerifying" xml:space="preserve">
+    <value>Modelado {0} wird anhand von {1} geprüft…</value>
+  </data>
+  <data name="UpdateDownloading" xml:space="preserve">
+    <value>Modelado {0} wird heruntergeladen: {1}%</value>
+  </data>
+  <data name="UpdateInstalling" xml:space="preserve">
+    <value>Modelado {0} wird installiert; danach startet es neu.</value>
+  </data>
+  <data name="UpdateRefused" xml:space="preserve">
+    <value>{0} Es wurde nichts installiert.</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>Das Update konnte nicht installiert werden: {0}</value>
+  </data>
+  <data name="ChoiceNotSaved" xml:space="preserve">
+    <value>Die Auswahl konnte nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="CardDownloadStatus" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="VersionUnknown" xml:space="preserve">
+    <value>unbekannt</value>
+  </data>
+  <data name="VersionText" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="AboutInferenceGpu" xml:space="preserve">
+    <value>Macht auf diesem Computer aus einem Foto ein 3D-Modell: ein ganzes Objekt mit TripoSR oder ein Relief mit Depth Anything V2. Die Inferenz läuft in ONNX Runtime, auf der GPU mit DirectML. Kein Foto wird irgendwohin hochgeladen.</value>
+  </data>
+  <data name="AboutInferenceCpu" xml:space="preserve">
+    <value>Macht auf diesem Computer aus einem Foto ein 3D-Modell: ein ganzes Objekt mit TripoSR oder ein Relief mit Depth Anything V2. Die Inferenz läuft in ONNX Runtime, auf der CPU. Kein Foto wird irgendwohin hochgeladen.</value>
+  </data>
+  <data name="ChosenByFlag" xml:space="preserve">
+    <value>Für diesen Lauf durch --provider gewählt.</value>
+  </data>
+  <data name="ModelsFrom" xml:space="preserve">
+    <value>Aus {0}</value>
+  </data>
+  <data name="NoModelsYet" xml:space="preserve">
+    <value>Noch keine: Jeder Vorgang lädt seine eigenen bei der ersten Verwendung herunter.</value>
+  </data>
+  <data name="ModelListBuiltIn" xml:space="preserve">
+    <value>in diese Version integriert</value>
+  </data>
+  <data name="ModelsDownloadedFrom" xml:space="preserve">
+    <value>Modelle werden von huggingface.co/alegauss/modelado-models heruntergeladen; Modellliste: {0}.</value>
+  </data>
+  <data name="DownloadsGoTake" xml:space="preserve">
+    <value>Downloads werden in {0} gespeichert und belegen dort {1}.</value>
+  </data>
+  <data name="DownloadsGoNone" xml:space="preserve">
+    <value>Downloads werden in {0} gespeichert. Noch nichts heruntergeladen.</value>
+  </data>
+  <data name="DownloadedRow" xml:space="preserve">
+    <value>{0} · {1} · {2}</value>
+  </data>
+  <data name="InstalledRow" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3} · {4} ({5})</value>
+  </data>
+  <data name="WorkingOffline" xml:space="preserve">
+    <value>Offline arbeiten</value>
+  </data>
+  <data name="DownloadEverything" xml:space="preserve">
+    <value>Alles herunterladen</value>
+  </data>
+  <data name="RemovedOnUninstall" xml:space="preserve">
+    <value> Sie werden entfernt, wenn Modelado deinstalliert wird.</value>
+  </data>
+  <data name="ModelInUse" xml:space="preserve">
+    <value>{0} wird von {1} verwendet; nach dessen Abschluss entfernen.</value>
+  </data>
+  <data name="DownloadRunningNoRemove" xml:space="preserve">
+    <value>Ein Download läuft; Modelle erst entfernen, wenn er fertig oder abgebrochen ist.</value>
+  </data>
+  <data name="ModelBeingDownloaded" xml:space="preserve">
+    <value>{0} wird für {1} heruntergeladen; das zuerst abbrechen oder abschließen.</value>
+  </data>
+  <data name="ProviderNotSaved" xml:space="preserve">
+    <value>Die Auswahl wird verwendet, bis Modelado geschlossen wird, konnte aber nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="ModelNotRemoved" xml:space="preserve">
+    <value>{0} konnte nicht entfernt werden: {1}</value>
+  </data>
+  <data name="RemoveAllQuestion" xml:space="preserve">
+    <value>Alles in {0} Heruntergeladene löschen? Jeder Vorgang bietet seinen Download bei der nächsten Verwendung erneut an.</value>
+  </data>
+  <data name="DownloadsNotRemoved" xml:space="preserve">
+    <value>Die Downloads konnten nicht alle entfernt werden: {0}</value>
+  </data>
+  <data name="SpentUnit" xml:space="preserve">
+    <value>ausgegeben</value>
+  </data>
+  <data name="ChipSpentOfBudget" xml:space="preserve">
+    <value>{0:0.##} von {1:0.##} {2} diesen Monat</value>
+  </data>
+  <data name="ChipSpent" xml:space="preserve">
+    <value>{0:0.##} {1} diesen Monat</value>
+  </data>
+  <data name="ChipService" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="ChipServiceNearlySpent" xml:space="preserve">
+    <value>{0} · {1} · fast aufgebraucht</value>
+  </data>
+  <data name="ChipServiceSpent" xml:space="preserve">
+    <value>{0} · {1} · aufgebraucht</value>
+  </data>
+  <data name="MonthlyBudgetName" xml:space="preserve">
+    <value>Monatsbudget für {0}</value>
+  </data>
+  <data name="SetMonthlyBudget" xml:space="preserve">
+    <value>Monatsbudget festlegen</value>
+  </data>
+  <data name="SetMonthlyBudgetName" xml:space="preserve">
+    <value>Monatsbudget für {0} festlegen</value>
+  </data>
+  <data name="BudgetInvalid" xml:space="preserve">
+    <value>Ein Budget ist eine Zahl über 0, oder leer für keines.</value>
+  </data>
+  <data name="BudgetNotSaved" xml:space="preserve">
+    <value>Das Budget konnte nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="UsageMonth" xml:space="preserve">
+    <value>Diesen Monat {0:0.##} {1} (heute {2:0.##}, insgesamt {3:0.##}), laut Zählung dieser App.</value>
+  </data>
+  <data name="BudgetNearlySpent" xml:space="preserve">
+    <value>Budget {0:0.##} pro Monat: fast aufgebraucht.</value>
+  </data>
+  <data name="BudgetSpent" xml:space="preserve">
+    <value>Budget {0:0.##} pro Monat: aufgebraucht.</value>
+  </data>
+  <data name="BudgetWithin" xml:space="preserve">
+    <value>Budget {0:0.##} pro Monat: im Rahmen.</value>
+  </data>
+  <data name="UsageDrift" xml:space="preserve">
+    <value>{0}: {1} Auftrag/Aufträge, geschätzt {2:0.##}, berechnet {3:0.##}.</value>
+  </data>
+  <data name="PricesStale" xml:space="preserve">
+    <value>Die Preise wurden am {0:yyyy-MM-dd} gelesen, vor über 90 Tagen, daher können die Schätzungen abweichen.</value>
+  </data>
+  <data name="PricesRead" xml:space="preserve">
+    <value>Preise gelesen am {0:yyyy-MM-dd}.</value>
+  </data>
+  <data name="BalanceLeft" xml:space="preserve">
+    <value>{0} meldet {1} Restguthaben.</value>
+  </data>
+  <data name="BalanceUnavailable" xml:space="preserve">
+    <value>Das Guthaben bei {0} konnte nicht abgefragt werden: {1}</value>
+  </data>
+  <data name="KeyStored" xml:space="preserve">
+    <value>Ein Schlüssel ist gespeichert.</value>
+  </data>
+  <data name="NoKey" xml:space="preserve">
+    <value>Kein Schlüssel.</value>
+  </data>
+  <data name="SaveAndTest" xml:space="preserve">
+    <value>Speichern und testen</value>
+  </data>
+  <data name="GetAKey" xml:space="preserve">
+    <value>Schlüssel anfordern</value>
+  </data>
+  <data name="ApiKeyName" xml:space="preserve">
+    <value>API-Schlüssel für {0}</value>
+  </data>
+  <data name="SaveAndTestName" xml:space="preserve">
+    <value>Schlüssel für {0} speichern und testen</value>
+  </data>
+  <data name="RemoveKeyName" xml:space="preserve">
+    <value>Schlüssel für {0} entfernen</value>
+  </data>
+  <data name="GetKeyName" xml:space="preserve">
+    <value>Schlüssel für {0} anfordern</value>
+  </data>
+  <data name="TypeKeyFirst" xml:space="preserve">
+    <value>Zuerst den Schlüssel eingeben.</value>
+  </data>
+  <data name="TestingKey" xml:space="preserve">
+    <value>Schlüssel wird getestet…</value>
+  </data>
+  <data name="KeyNotSaved" xml:space="preserve">
+    <value>{0} Er wurde nicht gespeichert.</value>
+  </data>
+  <data name="ServiceUnreachable" xml:space="preserve">
+    <value>{0} war nicht erreichbar: {1}</value>
+  </data>
+  <data name="GenerateWith" xml:space="preserve">
+    <value>Mit {0} erzeugen</value>
+  </data>
+  <data name="GenerateWithCost" xml:space="preserve">
+    <value>Mit {0} erzeugen · ~{1}</value>
+  </data>
+  <data name="ConsentPhoto" xml:space="preserve">
+    <value>Dieses Foto, {0}, geht an {1}.{2}</value>
+  </data>
+  <data name="ConsentPhotoCost" xml:space="preserve">
+    <value>Dieses Foto, {0}, geht für etwa {2} an {1}.{3}</value>
+  </data>
+  <data name="KeyUnreadable" xml:space="preserve">
+    <value>{0}: Der Schlüssel für {1} konnte nicht gelesen werden; unter „Info“ erneut speichern.</value>
+  </data>
+  <data name="WithService" xml:space="preserve">
+    <value>Mit {0}</value>
+  </data>
+  <data name="Remesh" xml:space="preserve">
+    <value>Neu vernetzen</value>
+  </data>
+  <data name="RemeshCost" xml:space="preserve">
+    <value>Neu vernetzen · ~{0}</value>
+  </data>
+  <data name="Retexture" xml:space="preserve">
+    <value>Neu texturieren</value>
+  </data>
+  <data name="RetextureCost" xml:space="preserve">
+    <value>Neu texturieren · ~{0}</value>
+  </data>
+  <data name="ConsentModel" xml:space="preserve">
+    <value>Dieses Modell, {0} Dreiecke, {1} als GLB, geht an {2}.{3}</value>
+  </data>
+  <data name="ConsentModelCost" xml:space="preserve">
+    <value>Dieses Modell, {0} Dreiecke, {1} als GLB, geht für etwa {3} an {2}.{4}</value>
+  </data>
+  <data name="ResumedJob" xml:space="preserve">
+    <value>{0} (fortgesetzt)</value>
+  </data>
+  <data name="ResumedKeyGone" xml:space="preserve">
+    <value>{0}: Der Schlüssel fehlt, daher wurde der Auftrag beim Dienst belassen.</value>
+  </data>
+  <data name="WaitingAt" xml:space="preserve">
+    <value>Warten auf {0}</value>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>In Arbeit</value>
+  </data>
+  <data name="WorkingProgress" xml:space="preserve">
+    <value>{0} · {1:P0}</value>
+  </data>
+  <data name="FetchingModel" xml:space="preserve">
+    <value>Modell wird abgerufen</value>
+  </data>
+  <data name="CloudDone" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="LanguageTitle" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="LanguageWindows" xml:space="preserve">
+    <value>Windows-Anzeigesprache ({0})</value>
+  </data>
+  <data name="LanguageNow" xml:space="preserve">
+    <value>Sprache des Fensters: {0}.</value>
+  </data>
+  <data name="LanguageNextStart" xml:space="preserve">
+    <value>Beim nächsten Start von Modelado wechselt das Fenster zu {0}.</value>
+  </data>
+</root>
