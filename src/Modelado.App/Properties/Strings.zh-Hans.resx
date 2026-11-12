@@ -1383,4 +1383,10 @@
   <data name="RemoveFromList" xml:space="preserve">
     <value>从列表中移除</value>
   </data>
+  <data name="RecentTip" xml:space="preserve">
+    <value>最近的文件：最近打开或保存的照片和模型</value>
+  </data>
+  <data name="RecentNone" xml:space="preserve">
+    <value>尚未打开任何文件</value>
+  </data>
 </root>

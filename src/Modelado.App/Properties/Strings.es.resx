@@ -1383,4 +1383,10 @@ Modelos 3D: {1}</value>
   <data name="RemoveFromList" xml:space="preserve">
     <value>Quitar de la lista</value>
   </data>
+  <data name="RecentTip" xml:space="preserve">
+    <value>Archivos recientes: las fotos y los modelos abiertos o guardados últimamente</value>
+  </data>
+  <data name="RecentNone" xml:space="preserve">
+    <value>Nada abierto todavía</value>
+  </data>
 </root>

@@ -73,6 +73,27 @@ an info icon. Existing AutomationIds are kept where the control survives, so the
 only add a navigation step. Cases press each page and find its key control. MOD96 and
 MOD97 land inside these pages, whichever ships first.
 
+### §MOD136 Row identity in About's lists
+
+Found in MOD94: a WPF ItemsControl keeps its items' automation peers in a table keyed by
+the item's Equals. When ItemsSource is replaced and a new item is equal by value to an
+old one, the new container is handed the old peer, whose element is gone, and the entry
+vanishes from the accessibility tree while it still shows on screen. Recent files hit it
+the moment the thumbnails swapped the list in: Button#Recent-1 stopped resolving though
+it was drawn.
+
+About builds its rows the same way, as positional records rebuilt on every FillAbout:
+SourceRow (model sources, MainWindow.Sources.cs) and DownloadedRow (downloads,
+MainWindow.About.cs). Opening About a second time, or removing one source or model,
+rebuilds the rows equal by value to the ones before, so a screen reader and a winwright
+case can lose the Remove buttons they had. The current cases pass because each step's
+list differs from the last.
+
+Give both records reference equality, as RecentRow now does (Equals by ReferenceEquals,
+GetHashCode by RuntimeHelpers), or make them classes. An architecture test can hold
+every record used as an ItemsSource row in Modelado.App to that, and a case reopens
+About after a removal and invokes a Remove that was there before.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads

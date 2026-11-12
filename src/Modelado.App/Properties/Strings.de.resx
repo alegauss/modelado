@@ -1383,4 +1383,10 @@
   <data name="RemoveFromList" xml:space="preserve">
     <value>Aus Liste entfernen</value>
   </data>
+  <data name="RecentTip" xml:space="preserve">
+    <value>Zuletzt verwendete Dateien: kürzlich geöffnete oder gespeicherte Fotos und Modelle</value>
+  </data>
+  <data name="RecentNone" xml:space="preserve">
+    <value>Noch nichts geöffnet</value>
+  </data>
 </root>

@@ -1383,4 +1383,10 @@
   <data name="RemoveFromList" xml:space="preserve">
     <value>Remove from list</value>
   </data>
+  <data name="RecentTip" xml:space="preserve">
+    <value>Recent files: the photos and models opened or saved lately</value>
+  </data>
+  <data name="RecentNone" xml:space="preserve">
+    <value>Nothing opened yet</value>
+  </data>
 </root>

@@ -26,7 +26,7 @@
 - ✅ **MOD58** **The UI cases run as one test that now takes over ten minutes, so the 10m hang bound ends a green run as hung** — run-tests.cmd gives each test 20 minutes before it is dumped as hung, and the guest gate's UI cases pass at 10m16s instead of being ended at 10m.
 - ✅ **MOD53** **A reconstruction and a model download have never been seen in the status bar's chips** — On the guest's real models, a 3D Object and a Relief each showed the job chip, then a last run on the CPU chosen in About; the window's mesh matched modelado-cli's.
 - ✅ **MOD61** **The UI cases on the real models are rebuilt by hand for each task and deleted, so nothing re-checks them** — cases-live holds the real-model cases, MOD53's first; run-live-vm.cmd downloads the models on the guest and ran them green under winwright.live.json's waits (design recorded in `README.md`).
-- ✅ **MOD94 (drop zone list)** **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — The last ten files opened or saved are listed newest first on the drop zone, kept in settings.json, a gone one greyed with Remove from list.
+- ✅ **MOD94 (all but the Jump List)** **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — The last ten files opened or saved are on the drop zone and in the toolbar's Recent menu, photos with thumbnails, a gone one greyed and removable.
 
 ## Block C — Existing code wired into the window
 

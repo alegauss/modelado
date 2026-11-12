@@ -6,10 +6,11 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- ⏳ **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Still to come: the Recent menu beside the toolbar's Open, thumbnails for photos, and the taskbar Jump List where the package allows it. → §MOD94
+- 🛠 **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — Still to come: the same paths in the taskbar Jump List, checked on the packaged build as well as the installed one. → §MOD94
 - 📋 **MOD98** (deps: —) **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — Every setting is read past every other, and the Generate button of the card in use is often below the fold. → §MOD98
 - 📋 **MOD99** (deps: —) **The services the app drives (Meshy, Ideogram, Blender) appear only as text, with no logo anywhere in the window** — A logo tells which service an action or a charge belongs to at a glance, where a name has to be read. → §MOD99
 - 📋 **MOD100** (deps: MOD99) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
+- 📋 **MOD136** (deps: —) **About's source and download rows, rebuilt equal by value, can drop out of the accessibility tree while still shown** — A Remove button a screen reader or a case found once can vanish from the tree when About is opened again. → §MOD136
 
 ## Block C — Existing code wired into the window
 

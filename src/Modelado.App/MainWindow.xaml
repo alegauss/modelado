@@ -59,6 +59,14 @@
                   ToolTip="{x:Static p:Strings.ToolbarOpenTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE8E5;" />
           </Button>
+          <!-- MOD94: the drop zone's recent files, in a menu, for when something is already open. -->
+          <Button x:Name="ToolbarRecent" AutomationProperties.AutomationId="ToolbarRecent" AutomationProperties.Name="{x:Static p:Strings.RecentTitle}"
+                  ToolTip="{x:Static p:Strings.RecentTip}" Click="OnToolbarRecent">
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE81C;" />
+            <Button.ContextMenu>
+              <ContextMenu x:Name="RecentMenu" AutomationProperties.AutomationId="RecentMenu" />
+            </Button.ContextMenu>
+          </Button>
           <Button x:Name="ToolbarSaveAs" AutomationProperties.AutomationId="ToolbarSaveAs" AutomationProperties.Name="Save as"
                   Command="SaveAs" ToolTip="{x:Static p:Strings.ToolbarSaveAsTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE792;" />
@@ -142,6 +150,11 @@
                       <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.RemoveFromList}" Padding="8,2" Margin="6,0,0,0"
                               Visibility="{Binding RemoveVisibility}" Tag="{Binding Path}"
                               AutomationProperties.AutomationId="{Binding RemoveId}" Click="OnRemoveRecent" />
+                      <!-- A photo shows itself, decoded small off the window's thread; a model has none.
+                           Beside the button rather than in it, so the button keeps one name and no children. -->
+                      <Image DockPanel.Dock="Left" Source="{Binding Thumbnail}" Width="40" Height="40" Margin="0,0,6,0"
+                             Stretch="UniformToFill" Visibility="{Binding ThumbnailVisibility}"
+                             AutomationProperties.AutomationId="{Binding ThumbnailId}" AutomationProperties.Name="{Binding Name}" />
                       <Button Tag="{Binding Path}" IsEnabled="{Binding Exists}" HorizontalContentAlignment="Left" Padding="8,4"
                               AutomationProperties.AutomationId="{Binding OpenId}" AutomationProperties.Name="{Binding Name}"
                               ToolTip="{Binding Path}" Click="OnOpenRecent">

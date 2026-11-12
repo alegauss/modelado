@@ -1217,8 +1217,15 @@
         { "locator": "Button#RecentRemove-1", "act": "read", "absent": true, "named": "a file still there has no Remove from list" },
         { "locator": "Button#RecentRemove-3", "act": "invoke", "named": "Remove from list is pressed on the gone one" },
         { "locator": "Button#Recent-3", "act": "read", "absent": true, "named": "it leaves the list" },
+        { "locator": "Image#RecentThumbnail-2", "act": "read", "reads": "name", "expect": "photo.png", "named": "the photo shows a thumbnail of itself" },
+        { "locator": "Image#RecentThumbnail-1", "act": "read", "absent": true, "named": "the model has none" },
+        { "locator": "Button#Recent-1", "act": "read", "reads": "name", "expect": "cube.obj", "named": "an entry unchanged by the thumbnails is still in the tree once they arrive" },
         { "locator": "Button#Recent-1", "act": "invoke", "named": "the cube is opened from the list" },
-        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "and it is what is open" }
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "and it is what is open" },
+        { "locator": "Button#ToolbarRecent", "act": "invoke", "named": "with the drop zone gone, the toolbar's Recent is pressed" },
+        { "locator": "MenuItem#RecentMenu-1", "act": "read", "reads": "name", "expect": "cube.obj", "named": "its menu lists the same files, newest first" },
+        { "locator": "MenuItem#RecentMenu-2", "act": "invoke", "named": "the photo is chosen from it" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "and the photo is what is open" }
       ]
     },
 
