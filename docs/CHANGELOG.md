@@ -27,7 +27,7 @@
 - ✅ **MOD53** **A reconstruction and a model download have never been seen in the status bar's chips** — On the guest's real models, a 3D Object and a Relief each showed the job chip, then a last run on the CPU chosen in About; the window's mesh matched modelado-cli's.
 - ✅ **MOD61** **The UI cases on the real models are rebuilt by hand for each task and deleted, so nothing re-checks them** — cases-live holds the real-model cases, MOD53's first; run-live-vm.cmd downloads the models on the guest and ran them green under winwright.live.json's waits (design recorded in `README.md`).
 - ✅ **MOD94 (all but the Jump List)** **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — The last ten files opened or saved are on the drop zone and in the toolbar's Recent menu, photos with thumbnails, a gone one greyed and removable.
-- ✅ **MOD98 (the rail)** **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — An icon rail beside the viewport brings the chosen card into view and keeps the choice for the next start, Cloud 3D, Export and History iconed only while shown.
+- ✅ **MOD98 (rail and one card at a time)** **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — An icon rail beside the viewport shows the chosen operation card alone and keeps the choice for the next start; every case picks its card first.
 
 ## Block C — Existing code wired into the window
 

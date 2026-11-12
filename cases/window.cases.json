@@ -406,6 +406,7 @@
         { "locator": "Button#OpenButton", "act": "drop file", "with": "cases/fixtures/photo.png", "named": "a photo is dropped" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "it opens" },
         { "locator": "Text#OpenError", "act": "read", "absent": true, "named": "and the refusal is gone with the drop zone" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "the operations panel has appeared" },
         { "locator": "Image#ViewImage", "act": "drop file", "with": "cases/fixtures/cube.obj", "named": "a model is dropped on the photo" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "it replaces the photo" },
@@ -425,6 +426,7 @@
       "fixture": "a window with a photo open, downloading from the fixture server",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed with no models" },
         { "locator": "Text#ConsentTitle", "act": "read", "reads": "name", "expect": "Relief needs a one-time download", "named": "the offer opens in place of the stage" },
         { "locator": "List#ConsentFiles > ListItem[order=top]", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · FP32 · 1 MB · from 127.0.0.1:47631/files", "named": "the model, its variant, its size and its source" },
@@ -436,8 +438,10 @@
         { "locator": "Button#ConsentDecline", "act": "invoke", "named": "Not now is pressed" },
         { "locator": "Text#ConsentTitle", "act": "read", "absent": true, "named": "the offer closes" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "the photo is still open" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "the other operation is usable" },
         { "locator": "Text#DownloadChip", "act": "read", "absent": true, "named": "and nothing was downloaded" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed again" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "and this time the download is accepted" },
         { "locator": "Text#DownloadChip", "act": "read", "reads": "name", "matches": "^Relief: \\d+ of 1 MB", "named": "the download starts, with its chip in the status bar" },
@@ -455,14 +459,18 @@
       "fixture": "a window with a photo open and a fresh models folder",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "the 3D Object card names its download and its size" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "and so does the Relief card" },
         { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "depth-anything-v2-small, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "which model, and from where" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Downloading · \\d+%$", "named": "the card says it is downloading, and how far" },
         { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "matches": "^\\d+ of 1 MB · ", "named": "with the megabytes done of the total" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the other operation stays usable meanwhile" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefFirstUseAction", "act": "read", "reads": "name", "expect": "Pause", "named": "it offers a pause" },
         { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "Pause is pressed" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Paused · \\d+%$", "named": "the card says it is paused" },
@@ -481,6 +489,7 @@
       "fixture": "a window with a photo open, to download and remove a model",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
         { "locator": "Button#ReliefFirstUseAction", "act": "invoke", "named": "it is paused at once" },
@@ -502,6 +511,7 @@
         { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": "Nothing is downloaded yet\\.$", "named": "and the total says so" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "the Relief card offers its download again" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "and the 3D Object card is as it was" }
       ]
     },
@@ -549,6 +559,7 @@
         { "locator": "Button#AboutSourceKeep", "act": "invoke", "named": "Add this source is pressed" },
         { "locator": "Text#Source-1", "act": "read", "reads": "name", "expect": "http://127.0.0.1:47631/files/custom-manifest.json", "named": "the source is listed after the built-in one" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the Relief card now offers a depth model" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[order=top]", "act": "read", "reads": "name", "expect": "Depth Anything V2 Small (built in)", "named": "the built-in one first" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[nameStarts=\"my-depth\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "the source's my-depth is chosen" },
@@ -570,6 +581,7 @@
       "fixture": "a window started with a model source already added",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the kept source's depth model is offered at start" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "my-depth (http://127.0.0.1:47631/files/custom-manifest.json)", "named": "named with the source it came from" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "collapse", "named": "the list is closed" },
@@ -612,7 +624,9 @@
       "fixture": "a window opened on the photo fixture",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "photo.png · 64 × 48", "named": "the source chip names the photo and its size" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Generate 3D object can be pressed" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and so can Generate relief" },
         { "locator": "Button#ToolbarSaveAs", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and there is no model to save yet" }
       ]
@@ -664,6 +678,7 @@
       "fixture": "a window on the cube fixture, to edit",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=top]", "act": "read", "reads": "name", "expect": "1. Opened", "named": "the history starts at the opened model" },
         { "locator": "Button#RotateXButton", "act": "invoke", "named": "Turn about X is pressed" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Turn 90° about X", "named": "the turn is the second version" },
@@ -689,6 +704,7 @@
       "fixture": "a window on the cube fixture, to edit",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "The model has no colours, so it is saved grey.", "named": "GLB is first, and the grey cube is said to stay grey" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
@@ -708,6 +724,7 @@
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -737,6 +754,7 @@
       "fixture": "a window on a staged textured model, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "two-textures.glb", "named": "the textured model is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"GLB\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "GLB is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -756,6 +774,7 @@
       "fixture": "a window on a staged textured model, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "two-textures.glb", "named": "the textured model is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"GLB\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "GLB is chosen" },
         { "locator": "RadioButton#ExportGlbStandard", "act": "read", "reads": "selected", "expect": "selected", "named": "the standard geometry is the default" },
@@ -777,6 +796,7 @@
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "units", "named": "GLB is sized in its own units" },
         { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "one unit on the longest side" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
@@ -854,6 +874,7 @@
       "fixture": "a window opened on the photo fixture",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Group#ObjectAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "Advanced starts closed" },
         { "locator": "Group#ObjectAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "and opens" },
         { "locator": "CheckBox#ObjectEveryPoint", "act": "read", "reads": "toggle", "expect": "Off", "named": "coarse step 2, the CLI's default" },
@@ -879,6 +900,7 @@
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
         { "locator": "Text#SmoothText", "act": "read", "reads": "name", "expect": "3 passes", "named": "Smooth starts at 3 passes" },
         { "locator": "Text#PiecesText", "act": "read", "reads": "name", "expect": "under 5%", "named": "loose pieces at under 5%" },
         { "locator": "Text#FlattenText", "act": "read", "reads": "name", "expect": "3%", "named": "and the flat base at 3%" },
@@ -893,7 +915,9 @@
         { "locator": "Slider#FlattenAmount", "act": "set range", "with": "6", "reads": "range", "expect": "6", "named": "the flat base is set to 6%" },
         { "locator": "Button#FlattenButton", "act": "invoke", "named": "Flat base is pressed" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Flat base at 6% · ", "named": "the run names 6%" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Flat base at 6%$", "named": "and the history keeps the amount" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -974,8 +998,10 @@
       "tags": ["language"],
       "fixture": "a window in Brazilian Portuguese with the photo open",
       "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "Gerar objeto 3D", "named": "the 3D Object card's button is in Portuguese" },
         { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Gerar relevo", "named": "the Relief card's button too, scrolled below the fold at this size" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Sobre e modelos", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
@@ -992,8 +1018,10 @@
       "tags": ["language"],
       "fixture": "a window in German with the photo open",
       "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "3D-Objekt erzeugen", "named": "the 3D Object card's button is in German" },
         { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Relief erzeugen", "named": "the Relief card's button too" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Info und Modelle", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
@@ -1010,8 +1038,10 @@
       "tags": ["language"],
       "fixture": "a window in French with the photo open",
       "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "Générer l’objet 3D", "named": "the 3D Object card's button is in French, its apostrophe typographic" },
         { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Générer le relief", "named": "the Relief card's button too" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "À propos et modèles", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
@@ -1028,8 +1058,10 @@
       "tags": ["language"],
       "fixture": "a window in Spanish with the photo open",
       "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "Generar objeto 3D", "named": "the 3D Object card's button is in Spanish" },
         { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Generar relieve", "named": "the Relief card's button too" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Acerca de y modelos", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
@@ -1046,8 +1078,10 @@
       "tags": ["language"],
       "fixture": "a window in Simplified Chinese with the photo open",
       "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "生成 3D 物体", "named": "the 3D Object card's button is in Chinese" },
         { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "生成浮雕", "named": "the Relief card's button too" },
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "关于和模型", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
@@ -1070,6 +1104,7 @@
         { "locator": "Button#CloudSave-meshy", "act": "invoke", "named": "Save and test is pressed" },
         { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "Meshy accepts it and says the balance" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "ListItem#Rail-Cloud", "act": "select", "reads": "selected", "expect": "selected", "named": "the Cloud 3D card is chosen on the rail (MOD98)" },
         { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~30 credits", "named": "the card offers Meshy, priced textured" },
         { "locator": "CheckBox#CloudTexture", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the texture is turned off" },
         { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~20 credits", "named": "and the estimate drops to the bare shape's" },
@@ -1079,6 +1114,7 @@
         { "locator": "Window[class=\"#32770\"]", "act": "read", "absent": true, "named": "in the card, not a dialog" },
         { "locator": "Button#CloudConsentSend", "act": "invoke", "named": "Send it is pressed" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "Meshy's model is shown" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "\\. Meshy AI: image to 3D$", "named": "as a version labelled with the service" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Meshy AI: image to 3D · 30 credits", "named": "and the status bar says what it cost" }
       ]
@@ -1092,6 +1128,7 @@
       "fixture": "a window on the photo started with a Meshy key already stored",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the window opened the photo" },
+        { "locator": "ListItem#Rail-Cloud", "act": "select", "reads": "selected", "expect": "selected", "named": "the Cloud 3D card is chosen on the rail (MOD98)" },
         { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~30 credits", "named": "and offers Meshy from the stored key, priced" }
       ]
     },
@@ -1115,6 +1152,7 @@
         { "locator": "Text#CloudUsage-meshy", "act": "read", "reads": "name", "matches": "Meshy AI reports 470 credits left\\.", "named": "and the balance Meshy reports" },
         { "locator": "Button#CloudChip", "act": "read", "reads": "name", "expect": "Meshy AI · 0 of 35 credits this month", "named": "the status bar counts it" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "ListItem#Rail-Cloud", "act": "select", "reads": "selected", "expect": "selected", "named": "the Cloud 3D card is chosen on the rail (MOD98)" },
         { "locator": "Button#CloudGenerate", "act": "invoke", "named": "Generate with Meshy is pressed" },
         { "locator": "Text#CloudConsentText", "act": "read", "reads": "name", "matches": "for about 30 credits\\. 35 of 35 left this month\\.$", "named": "the consent line says what the budget leaves" },
         { "locator": "Button#CloudConsentSend", "act": "invoke", "named": "Send it is pressed" },
@@ -1137,7 +1175,9 @@
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "Cube from Blender", "named": "the window names the Blender object" },
         { "locator": "Button#SendToBlenderButton", "act": "read", "reads": "name", "expect": "Send to Blender", "named": "and offers to send it back" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
         { "locator": "Button#SubdivideButton", "act": "invoke", "named": "Subdivide is pressed" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Subdivide", "named": "the first edit" },
         { "locator": "Button#SendToBlenderButton", "act": "invoke", "named": "Send to Blender is pressed" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Sent to Blender: Cube, version 1", "named": "the first send" },
@@ -1161,6 +1201,7 @@
       "fixture": "a window on the cube, with a stub standing in for Blender",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "Button#OpenInBlender", "act": "invoke", "named": "Open in Blender is pressed" },
         { "process": "starts", "act": "read", "matches": "^blender\\.exe --python-expr .*import_scene\\.gltf.*cube\\.glb", "named": "Blender is started importing the cube" },
         { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Opened in Blender: cube.glb", "named": "and the card says so" }
@@ -1175,6 +1216,7 @@
       "fixture": "a window on the cube where no Blender is found",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "Button#ExportSaveAs", "act": "read", "reads": "name", "expect": "Save as…", "named": "the Export card is there" },
         { "locator": "Button#OpenInBlender", "act": "read", "absent": true, "named": "without Open in Blender" }
       ]
@@ -1207,21 +1249,26 @@
         { "locator": "Button#CloudSave-meshy", "act": "invoke", "named": "and saved" },
         { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "once Meshy accepts it" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
         { "locator": "Button#CloudRemesh", "act": "read", "reads": "name", "expect": "Remesh · ~5 credits", "named": "the Edit card offers Meshy's remesh, priced" },
         { "locator": "Button#CloudRemesh", "act": "invoke", "named": "Remesh is pressed" },
         { "locator": "Text#CloudEditConsentText", "act": "read", "reads": "name", "matches": "^This model, 12 triangles, .+ as a GLB, goes to Meshy AI for about 5 credits\\.$", "named": "it says what goes, before sending" },
         { "locator": "Button#CloudEditSend", "act": "invoke", "named": "Send it is pressed" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "26 vertices · 48 triangles", "named": "the remeshed model is shown" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "^2\\. Meshy AI: remesh$", "named": "as the second version" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
         { "locator": "Edit#CloudRetexturePrompt", "act": "set value", "with": "weathered oak", "reads": "value", "expect": "weathered oak", "named": "a new texture is described" },
         { "locator": "Button#CloudRetexture", "act": "invoke", "named": "Retexture is pressed" },
         { "locator": "Text#CloudEditConsentText", "act": "read", "reads": "name", "matches": "^This model, 48 triangles, .+ goes to Meshy AI for about 10 credits\\.$", "named": "it says what goes again" },
         { "locator": "Button#CloudEditSend", "act": "invoke", "named": "Send it is pressed again" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "matches": "^3\\. Meshy AI: retexture$", "named": "the retexture is the third version" },
         { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "26 vertices · 48 triangles", "named": "back to the remesh" },
         { "locator": "Button#UndoButton", "act": "invoke", "named": "and again" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "back to the cube as opened" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -1263,6 +1310,7 @@
         { "locator": "Button#GeneratedFolder", "act": "read", "reads": "name", "expect": "Open the folder", "named": "beside a link to their folder" },
         { "locator": "Button#Candidate-2", "act": "invoke", "named": "the second is chosen" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "a-wooden-chair-2.png · 64 × 48", "named": "it opens as a photo from where it was kept" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the operations take it" }
       ]
     },
@@ -1357,6 +1405,7 @@
       "fixture": "a window started after the Relief card was chosen on the rail",
       "steps": [
         { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "selected", "expect": "selected", "named": "the rail starts on Relief" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "read", "within": "Pane#OperationsScroll", "named": "with the Relief card in view" }
       ]
     },
@@ -1396,6 +1445,7 @@
         { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
         { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once the stand-in accepts it" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
         { "locator": "Button#NewTextureButton", "act": "read", "reads": "name", "expect": "New texture with Ideogram…", "named": "the Edit card offers a new texture" },
         { "locator": "Button#NewTextureButton", "act": "invoke", "named": "which is pressed" },
         { "locator": "Text#NewTextureAsked", "act": "read", "reads": "name", "matches": "^Asked as: \\{material\\}, a flat seamless tileable texture", "named": "it says how the material is asked for" },
@@ -1406,6 +1456,7 @@
         { "locator": "Button#NewTextureSend", "act": "invoke", "named": "Send it is pressed" },
         { "locator": "Text#NewTextureStatus", "act": "read", "reads": "name", "expect": "4 textures: press one to put it on the model.", "named": "the textures come back" },
         { "locator": "Button#TextureCandidate-2", "act": "invoke", "named": "the second is chosen" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. New texture: grey stone", "named": "it is the model's next version" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^New texture: grey stone · 12 → 12 triangles", "named": "with the shape untouched" },
         { "locator": "Button#UndoButton", "act": "invoke", "named": "Undo is pressed" },

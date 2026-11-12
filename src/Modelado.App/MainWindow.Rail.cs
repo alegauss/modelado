@@ -7,14 +7,40 @@ using Modelado.Inference;
 namespace Modelado.App;
 
 /// <summary>
-/// The Operations rail (MOD98): an icon per card on the panel's edge beside the viewport, so the
-/// card in use is one press away however long the others are. Choosing one scrolls its card to the
-/// top of the panel, and the choice is kept for the next start. Cloud 3D, Export and History show
-/// their icon only while their card is shown.
+/// The Operations rail (MOD98): an icon per card on the panel's edge beside the viewport. The panel
+/// shows the chosen card alone, so its settings and its Generate button are not read past the
+/// others', while the model stays in view to tune against (a modal was weighed and set aside for
+/// that). The choice is kept for the next start. Cloud 3D, Export and History have an icon only
+/// while they are available.
 /// </summary>
 public partial class MainWindow
 {
     private bool fillingRail;
+
+    // Each card sits in a host shown only while its card is the one chosen; the card's own
+    // Visibility keeps saying whether it is available at all, which its rail icon follows.
+    private readonly Dictionary<string, Border> cardHosts = new(StringComparer.Ordinal);
+
+    private static readonly string[] CardNames = ["Object", "Relief", "Cloud", "Edit", "Export", "History", "Quality"];
+
+    private void WrapCards()
+    {
+        StackPanel stack = (StackPanel)OperationsScroll.Content;
+        foreach (string name in CardNames)
+        {
+            Border card = CardOf(name)!;
+            int at = stack.Children.IndexOf(card);
+            stack.Children.RemoveAt(at);
+            Border host = new() { Child = card, Visibility = name == "Object" ? Visibility.Visible : Visibility.Collapsed };
+            cardHosts[name] = host;
+            stack.Children.Insert(at, host);
+        }
+
+        // 3D Object until the panel opens on the card kept from the last start.
+        fillingRail = true;
+        RailObject.IsSelected = true;
+        fillingRail = false;
+    }
 
     private Border? CardOf(string? name) => name switch
     {
@@ -66,15 +92,19 @@ public partial class MainWindow
         }
     }
 
-    // The card's top at the panel's top, or as near as the scroll goes.
+    // The chosen card alone, from its top; a card that is not available falls back to 3D Object.
     private void ShowCard(string? name)
     {
-        if (CardOf(name) is not { IsVisible: true } card || OperationsScroll.Content is not System.Windows.Media.Visual content)
+        if (name is null || CardOf(name) is not { Visibility: Visibility.Visible })
         {
-            return;
+            name = "Object";
         }
 
-        double top = card.TransformToAncestor(content).Transform(new Point(0, 0)).Y;
-        OperationsScroll.ScrollToVerticalOffset(top);
+        foreach ((string card, Border host) in cardHosts)
+        {
+            host.Visibility = card == name ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        OperationsScroll.ScrollToTop();
     }
 }

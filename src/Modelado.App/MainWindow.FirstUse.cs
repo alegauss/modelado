@@ -77,8 +77,25 @@ public partial class MainWindow
     private void ShowFirstUse(FirstUseCard card, ModelManifest? listed)
     {
         IReadOnlyList<ModelRequest> missing = runner.Missing(card.Models());
-        card.Bar.Visibility = Visibility.Collapsed;
-        card.Action.Visibility = Visibility.Collapsed;
+
+        // MOD98: the bar and the action are set once, to where this reading leaves them, never
+        // collapsed and shown again on each progress report: a control flickered four times a
+        // second drops out of the accessibility tree once its card has been hidden and shown.
+        card.Action.Tag = null;
+        Visibility bar = Visibility.Collapsed;
+        try
+        {
+            ShowFirstUseStage(card, listed, missing, ref bar);
+        }
+        finally
+        {
+            card.Bar.Visibility = bar;
+            card.Action.Visibility = card.Action.Tag is null ? Visibility.Collapsed : Visibility.Visible;
+        }
+    }
+
+    private void ShowFirstUseStage(FirstUseCard card, ModelManifest? listed, IReadOnlyList<ModelRequest> missing, ref Visibility bar)
+    {
         if (missing.Count == 0 && card.Downloading is null)
         {
             card.Stage = FirstUseStage.Offered;
@@ -114,14 +131,14 @@ public partial class MainWindow
                 card.Badge.Text = Ui.Format(Strings.DownloadingPercent, DownloadText.Percent(progress));
                 card.Detail.Text = DownloadText.Line(progress);
                 card.Bar.Value = DownloadText.Percent(progress);
-                card.Bar.Visibility = Visibility.Visible;
+                bar = Visibility.Visible;
                 ShowAction(card, Strings.PauseButton);
                 break;
             case FirstUseStage.Paused:
                 card.Badge.Text = Ui.Format(Strings.PausedPercent, DownloadText.Percent(new DownloadProgress("", total - pending, total)));
                 card.Detail.Text = Strings.PausedDetail;
                 card.Bar.Value = total == 0 ? 0 : 100 * (total - pending) / total;
-                card.Bar.Visibility = Visibility.Visible;
+                bar = Visibility.Visible;
                 ShowAction(card, Strings.ResumeDownload);
                 break;
             case FirstUseStage.Failed:
@@ -141,11 +158,15 @@ public partial class MainWindow
         }
     }
 
+    // Its caption and the card it acts on; ShowFirstUse shows it once the reading is done.
     private static void ShowAction(FirstUseCard card, string label)
     {
-        card.Action.Content = label;
+        if (!Equals(card.Action.Content, label))
+        {
+            card.Action.Content = label;
+        }
+
         card.Action.Tag = card;
-        card.Action.Visibility = Visibility.Visible;
     }
 
     /// <summary>

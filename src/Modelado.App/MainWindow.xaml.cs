@@ -52,6 +52,7 @@ public partial class MainWindow : Window, IDisposable
         ThemeMode = Theme.Mode(Appearance.Default.Theme);
         InitializeComponent();
         ShowSliderLabels();
+        WrapCards();
         FillRecent();
         FillGenerated();
 
