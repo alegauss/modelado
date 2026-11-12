@@ -844,9 +844,6 @@
   <data name="CandidatesPress" xml:space="preserve">
     <value>{0} 个候选：点击其中一个即可打开。</value>
   </data>
-  <data name="ImageNotKept" xml:space="preserve">
-    <value>无法保留图像：{0}</value>
-  </data>
   <data name="FromBlenderTitle" xml:space="preserve">
     <value>来自 Blender 的 {0} · Modelado</value>
   </data>
@@ -1388,5 +1385,14 @@
   </data>
   <data name="RecentNone" xml:space="preserve">
     <value>尚未打开任何文件</value>
+  </data>
+  <data name="GeneratedNotKept" xml:space="preserve">
+    <value>无法将照片保存到 {0}：{1} 点击其中一张重试。</value>
+  </data>
+  <data name="GeneratedTitle" xml:space="preserve">
+    <value>生成的照片</value>
+  </data>
+  <data name="OpenGeneratedFolder" xml:space="preserve">
+    <value>打开文件夹</value>
   </data>
 </root>

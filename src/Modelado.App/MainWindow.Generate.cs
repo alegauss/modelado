@@ -118,6 +118,7 @@ public partial class MainWindow
         {
             pendingCloud = null;
             generatePrompt = request.Prompt ?? "";
+            generateObject = GeneratePrompt.Text.Trim();
             GenerateCandidates.Children.Clear();
             GenerateStatus.Text = Ui.Format(Strings.DrawingWith, service.DisplayName);
             await RunCloudAsync(service, request).ConfigureAwait(true);
@@ -128,14 +129,31 @@ public partial class MainWindow
         }
     }
 
-    // Each candidate a button showing it, named by its place, so a reader and a case can choose.
-    private Task ShowCandidatesAsync(CloudResult result)
+    // MOD95: every candidate is paid for, so each is kept the moment the job returns, then shown as
+    // a button named by its place, so a reader and a case can choose. One that could not be kept is
+    // said with where it was to go, and written again when pressed.
+    private async Task ShowCandidatesAsync(CloudResult result)
     {
         GenerateCandidates.Children.Clear();
         IReadOnlyList<CloudImage> images = result.Images ?? [new CloudImage(result.Bytes, generatePrompt, null)];
+        string? notKept = null;
+        string?[] kept = new string?[images.Count];
+        for (int i = 0; i < images.Count; i++)
+        {
+            try
+            {
+                kept[i] = await KeepAsync(images[i]).ConfigureAwait(true);
+            }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException)
+            {
+                notKept = Ui.Format(Strings.GeneratedNotKept, GeneratedFolder, error.Message);
+            }
+        }
+
         for (int i = 0; i < images.Count; i++)
         {
             CloudImage candidate = images[i];
+            string? path = kept[i];
             BitmapImage picture = new();
             picture.BeginInit();
             picture.StreamSource = new MemoryStream(candidate.Bytes);
@@ -153,44 +171,31 @@ public partial class MainWindow
             int place = i + 1;
             AutomationProperties.SetAutomationId(choose, $"Candidate-{place}");
             AutomationProperties.SetName(choose, Ui.Format(Strings.CandidateName, place));
-            choose.Click += async (_, _) => await OpenCandidateAsync(candidate).ConfigureAwait(true);
+            choose.Click += async (_, _) => await OpenCandidateAsync(candidate, path).ConfigureAwait(true);
             GenerateCandidates.Children.Add(choose);
         }
 
-        GenerateStatus.Text = images.Count == 1 ? Strings.PressToOpen : Ui.Format(Strings.CandidatesPress, images.Count);
-        return Task.CompletedTask;
+        GenerateStatus.Text = notKept ?? (images.Count == 1 ? Strings.PressToOpen : Ui.Format(Strings.CandidatesPress, images.Count));
+        FillGenerated();
     }
 
-    // Saved where generated photos are kept, carrying what made it, then opened as if dropped.
-    private async Task OpenCandidateAsync(CloudImage candidate)
+    // The chosen candidate opens as if dropped: from where it was kept, or written now if it was not.
+    private async Task OpenCandidateAsync(CloudImage candidate, string? kept)
     {
-        string folder = Path.Combine(Path.GetDirectoryName(CloudLedger.DefaultPath)!, "generated");
-        string path = Path.Combine(folder, string.Create(CultureInfo.InvariantCulture, $"ideogram-{DateTime.Now:yyyyMMdd-HHmmss}-{candidate.Seed ?? 0}.png"));
+        string path;
         try
         {
-            RgbaImage image;
-            using (MemoryStream stream = new(candidate.Bytes))
-            {
-                image = ImageCodec.Decode(stream, "the generated image");
-            }
-
-            Dictionary<string, string> text = new(StringComparer.Ordinal) { ["Prompt"] = candidate.Prompt.Length > 0 ? candidate.Prompt : generatePrompt, ["Software"] = "Modelado, Ideogram 3.0" };
-            if (candidate.Seed is { } seed)
-            {
-                text["Seed"] = seed.ToString(CultureInfo.InvariantCulture);
-            }
-
-            Directory.CreateDirectory(folder);
-            await File.WriteAllBytesAsync(path, ImageCodec.EncodePng(image, text)).ConfigureAwait(true);
+            path = kept ?? await KeepAsync(candidate).ConfigureAwait(true);
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException)
         {
-            GenerateStatus.Text = Ui.Format(Strings.ImageNotKept, error.Message);
+            GenerateStatus.Text = Ui.Format(Strings.GeneratedNotKept, GeneratedFolder, error.Message);
             return;
         }
 
         GeneratePanel.Visibility = Visibility.Collapsed;
         GenerateCandidates.Children.Clear();
+        UpdateGenerate();
         await OpenAsync(path).ConfigureAwait(true);
     }
 }

@@ -105,7 +105,7 @@
         { "locator": "Button#GenerateRun", "act": "invoke", "named": "Generate is pressed" },
         { "locator": "Button#GenerateSend", "act": "invoke", "named": "Send it is pressed" },
         { "locator": "Button#Candidate-1", "act": "invoke", "named": "the first candidate is chosen" },
-        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-1\\.png · ", "named": "it opens as a photo" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^a-red-ball-1(-\\d+)?\\.png · ", "named": "it opens as a photo, kept under the object's name and its seed (MOD95)" },
         { "locator": "Button#ObjectButton", "act": "invoke", "named": "Generate 3D object is pressed" },
         { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^3D Object: ", "named": "TripoSR runs on it" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^3D Object · \\d+\\.\\d s · CPU$", "named": "and finishes" },

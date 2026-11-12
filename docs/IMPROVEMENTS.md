@@ -347,20 +347,6 @@ translations include it.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD95 MOD95 — Keep every generated photo where the user can find it
-
-ShowCandidatesAsync keeps the candidates in memory only. OpenCandidateAsync writes only
-the pressed candidate, to %LOCALAPPDATA%\Modelado\generated, which the MSIX package
-virtualises under the package's LocalCache, and nothing in the window names that folder.
-Write every candidate as soon as the job returns, carrying its prompt and seed in the
-PNG as today, to Pictures\Modelado (the user's own library, visible outside the
-package), and name the files after the prompt and the seed. The drop zone gets a
-"Generated photos" strip of the most recent ones, which open as if dropped, plus a link
-that opens the folder in Explorer. A job that fails to save says where it tried to
-write, and the images stay in memory until the user saves or discards them. Cases check
-that all four candidates of a fixture job land on disk before any is pressed, and that
-the strip lists them.
-
 ### §MOD96 MOD96 — Where each cloud key comes from
 
 FillCloudServices in MainWindow.Cloud.cs prints "A key is stored." whenever

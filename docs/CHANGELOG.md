@@ -100,6 +100,7 @@
 - ✅ **MOD60** **The app crashes on start when a cloud key is already stored, so a key saved in About ends every later launch** — A window started with a cloud key already stored opens with the Cloud 3D card priced instead of crashing; a case starts one with meshy.key in place.
 - ✅ **MOD40** **A model's texture can only be upscaled; there is no way to make a new texture or material image from a prompt** — The Edit card draws a material with Ideogram after consent and puts the chosen one on the model as a version; a relief took stone and Undo restored its photo.
 - ✅ **MOD93** **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — While its panel is open the Ideogram button reads Hide the photo generator and closes it, and opening the panel puts the typing in its object field.
+- ✅ **MOD95** **Paid Ideogram images are lost: unchosen candidates are discarded, the chosen one lands in a folder the app hides** — Every Ideogram candidate is written to Pictures\Modelado under the object's name and seed as soon as the job returns, and the drop zone lists the latest with a link to the folder.
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

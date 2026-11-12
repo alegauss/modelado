@@ -197,7 +197,9 @@
       "name": "an empty window with Ideogram stood in by the fixture server",
       "files": ["cases/fixtures/notes.txt"],
       "arguments": ["--provider", "cpu", "--releases", "off", "--cloud-api", "ideogram=http://127.0.0.1:47631/ideogram/"],
-      "variables": { "LOCALAPPDATA": "{files}" },
+      // MOD95: generated photos kept in the case's own folder rather than the guest's Pictures
+      // (WW626: a fixture cannot point a Windows known folder elsewhere).
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_GENERATED": "{files}/generated" },
       "reaches": ["127.0.0.1:47631"],
       "shareable": false
     },
@@ -1197,8 +1199,14 @@
         { "locator": "Button#GenerateSend", "act": "invoke", "named": "Send it is pressed" },
         { "locator": "Text#GenerateStatus", "act": "read", "reads": "name", "expect": "4 candidates: press one to open it.", "named": "the candidates come back" },
         { "locator": "Button#Candidate-4", "act": "read", "reads": "name", "expect": "Candidate 4", "named": "side by side" },
+        { "file": "{files}/generated/a-wooden-chair-1.png", "act": "read", "image": "width 64, height 48", "named": "MOD95: the first candidate is on disk before any is pressed, named after the object and its seed" },
+        { "file": "{files}/generated/a-wooden-chair-2.png", "act": "read", "image": "width 64, height 48", "named": "the second" },
+        { "file": "{files}/generated/a-wooden-chair-3.png", "act": "read", "image": "width 64, height 48", "named": "the third" },
+        { "file": "{files}/generated/a-wooden-chair-4.png", "act": "read", "image": "width 64, height 48", "named": "and the fourth, all paid for and all kept" },
+        { "locator": "Button#Generated-4", "act": "read", "reads": "name", "matches": "^a-wooden-chair-[1-4]\\.png$", "named": "the drop zone's strip lists them" },
+        { "locator": "Button#GeneratedFolder", "act": "read", "reads": "name", "expect": "Open the folder", "named": "beside a link to their folder" },
         { "locator": "Button#Candidate-2", "act": "invoke", "named": "the second is chosen" },
-        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^ideogram-\\d{8}-\\d{6}-2\\.png · 64 × 48$", "named": "it opens as a photo, saved with its seed in the name" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "a-wooden-chair-2.png · 64 × 48", "named": "it opens as a photo from where it was kept" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the operations take it" }
       ]
     },

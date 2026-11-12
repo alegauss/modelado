@@ -53,6 +53,7 @@ public partial class MainWindow : Window, IDisposable
         InitializeComponent();
         ShowSliderLabels();
         FillRecent();
+        FillGenerated();
 
         // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
         foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton).Append(SaveViewButton))

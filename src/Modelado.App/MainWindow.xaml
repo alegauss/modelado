@@ -139,6 +139,15 @@
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0" />
             <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="{x:Static p:Strings.OpenButton}" Command="Open"
                     Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Center" Padding="24,8" Margin="0,14,0,0" />
+            <!-- MOD95: the latest photos a service drew, kept in Pictures\Modelado; each opens like a drop. -->
+            <StackPanel x:Name="GeneratedPanel" Margin="0,16,0,0" Visibility="Collapsed">
+              <DockPanel>
+                <Button x:Name="GeneratedFolderButton" AutomationProperties.AutomationId="GeneratedFolder" DockPanel.Dock="Right"
+                        Content="{x:Static p:Strings.OpenGeneratedFolder}" Padding="8,2" Click="OnOpenGeneratedFolder" />
+                <TextBlock Text="{x:Static p:Strings.GeneratedTitle}" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" />
+              </DockPanel>
+              <WrapPanel x:Name="GeneratedStrip" AutomationProperties.AutomationId="GeneratedStrip" Margin="0,4,0,0" />
+            </StackPanel>
             <!-- MOD94: what was opened or saved lately, newest first; a file no longer there is greyed
                  and can be taken off the list. -->
             <StackPanel x:Name="RecentPanel" Margin="0,16,0,0" Visibility="Collapsed">

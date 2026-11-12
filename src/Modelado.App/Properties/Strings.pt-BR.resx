@@ -844,9 +844,6 @@ Modelos 3D: {1}</value>
   <data name="CandidatesPress" xml:space="preserve">
     <value>{0} opções: clique em uma para abri-la.</value>
   </data>
-  <data name="ImageNotKept" xml:space="preserve">
-    <value>Não foi possível guardar a imagem: {0}</value>
-  </data>
   <data name="FromBlenderTitle" xml:space="preserve">
     <value>{0} do Blender · Modelado</value>
   </data>
@@ -1388,5 +1385,14 @@ Modelos 3D: {1}</value>
   </data>
   <data name="RecentNone" xml:space="preserve">
     <value>Nada aberto ainda</value>
+  </data>
+  <data name="GeneratedNotKept" xml:space="preserve">
+    <value>Não foi possível guardar as fotos em {0}: {1} Clique em uma para tentar de novo.</value>
+  </data>
+  <data name="GeneratedTitle" xml:space="preserve">
+    <value>Fotos geradas</value>
+  </data>
+  <data name="OpenGeneratedFolder" xml:space="preserve">
+    <value>Abrir a pasta</value>
   </data>
 </root>

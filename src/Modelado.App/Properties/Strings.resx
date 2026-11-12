@@ -844,9 +844,6 @@
   <data name="CandidatesPress" xml:space="preserve">
     <value>{0} candidates: press one to open it.</value>
   </data>
-  <data name="ImageNotKept" xml:space="preserve">
-    <value>The image could not be kept: {0}</value>
-  </data>
   <data name="FromBlenderTitle" xml:space="preserve">
     <value>{0} from Blender · Modelado</value>
   </data>
@@ -1388,5 +1385,14 @@
   </data>
   <data name="RecentNone" xml:space="preserve">
     <value>Nothing opened yet</value>
+  </data>
+  <data name="GeneratedNotKept" xml:space="preserve">
+    <value>The photos could not be kept in {0}: {1} Press one to try again.</value>
+  </data>
+  <data name="GeneratedTitle" xml:space="preserve">
+    <value>Generated photos</value>
+  </data>
+  <data name="OpenGeneratedFolder" xml:space="preserve">
+    <value>Open the folder</value>
   </data>
 </root>

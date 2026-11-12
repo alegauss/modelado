@@ -844,9 +844,6 @@
   <data name="CandidatesPress" xml:space="preserve">
     <value>{0} Vorschläge: zum Öffnen einen anklicken.</value>
   </data>
-  <data name="ImageNotKept" xml:space="preserve">
-    <value>Das Bild konnte nicht übernommen werden: {0}</value>
-  </data>
   <data name="FromBlenderTitle" xml:space="preserve">
     <value>{0} aus Blender · Modelado</value>
   </data>
@@ -1388,5 +1385,14 @@
   </data>
   <data name="RecentNone" xml:space="preserve">
     <value>Noch nichts geöffnet</value>
+  </data>
+  <data name="GeneratedNotKept" xml:space="preserve">
+    <value>Die Fotos konnten nicht in {0} gespeichert werden: {1} Zum erneuten Versuch eines anklicken.</value>
+  </data>
+  <data name="GeneratedTitle" xml:space="preserve">
+    <value>Erzeugte Fotos</value>
+  </data>
+  <data name="OpenGeneratedFolder" xml:space="preserve">
+    <value>Ordner öffnen</value>
   </data>
 </root>
