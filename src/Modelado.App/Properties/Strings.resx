@@ -1374,4 +1374,7 @@
   <data name="LanguageNextStart" xml:space="preserve">
     <value>The window will be in {0} the next time Modelado starts.</value>
   </data>
+  <data name="HideGenerate" xml:space="preserve">
+    <value>Hide the photo generator</value>
+  </data>
 </root>

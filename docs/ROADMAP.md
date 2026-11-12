@@ -34,7 +34,6 @@
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-- 📋 **MOD93** (deps: —) **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — A button that appears dead next to the panel it opened makes the user think the app hung and click again. → §MOD93
 - 📋 **MOD95** (deps: —) **Paid Ideogram images are lost: unchosen candidates are discarded, the chosen one lands in a folder the app hides** — Every candidate is paid for, so a photo used once and never found again is money spent twice when it is redrawn. → §MOD95
 - 📋 **MOD96** (deps: —) **About says a cloud key is stored yet shows an empty key box, without saying which key or where it came from** — An empty box beside "A key is stored" reads as a missing key, and a key set in the environment is not read at all. → §MOD96
 

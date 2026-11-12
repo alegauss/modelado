@@ -319,19 +319,6 @@ translations include it.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
-### §MOD93 MOD93 — The Ideogram button once its panel is open
-
-OnDropGenerate in MainWindow.Generate.cs only toggles GeneratePanel's visibility, and
-the button keeps the same text, "Generate a photo with Ideogram…", in both states. With
-the panel open, the button sits above the fields it already showed, and a second press
-either collapses them with no visible cue or, as the user saw, appears to do nothing.
-Reproduce this first on the guest, because the report says nothing happens, while a
-collapse should still be visible. While the panel is open, the button either hides or
-becomes an explicit "Hide" or "Cancel" toggle, and the panel takes focus on its first
-field ("The object"). A winwright case presses the button, finds the panel and the
-prompt field focused, presses the toggle, and finds the panel collapsed and the button
-restored.
-
 ### §MOD95 MOD95 — Keep every generated photo where the user can find it
 
 ShowCandidatesAsync keeps the candidates in memory only. OpenCandidateAsync writes only

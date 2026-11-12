@@ -1191,6 +1191,27 @@
     },
 
     {
+      "name": "the drop zone's Ideogram button says Hide while its panel is open, and the panel takes the typing",
+      "catches": "a button that keeps its opening caption beside the panel it opened and seems dead when pressed again, or a panel that opens without the focus on its first field",
+      "filed": "MOD93",
+      "tags": ["cloud", "drop"],
+      "fixture": "an empty window with Ideogram stood in by the fixture server",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Edit#CloudKey-ideogram", "act": "set value", "with": "case-ideogram-key", "named": "the Ideogram key is typed" },
+        { "locator": "Button#CloudSave-ideogram", "act": "invoke", "named": "and saved" },
+        { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "The key works.", "named": "once Ideogram's dry run accepts it" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#DropGenerate", "act": "invoke", "named": "Generate a photo is pressed" },
+        { "locator": "Edit#GeneratePrompt", "act": "read", "reads": "focused", "expect": "focused", "named": "the object field takes the typing" },
+        { "locator": "Button#DropGenerate", "act": "read", "reads": "name", "expect": "Hide the photo generator", "named": "the button now says what pressing it does" },
+        { "locator": "Button#DropGenerate", "act": "invoke", "named": "and is pressed again" },
+        { "locator": "Edit#GeneratePrompt", "act": "read", "absent": true, "named": "the panel is closed" },
+        { "locator": "Button#DropGenerate", "act": "read", "reads": "name", "expect": "Generate a photo with Ideogram…", "named": "and the button offers it again" }
+      ]
+    },
+
+    {
       "name": "with an Ideogram key the Edit card draws a material, and the texture chosen is a version Undo leaves",
       "catches": "a texture offered with no key, a description sent without consent, a chosen texture that does not reach the model, or one Undo cannot take back",
       "filed": "MOD40",

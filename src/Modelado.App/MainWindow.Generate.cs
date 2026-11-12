@@ -47,7 +47,11 @@ public partial class MainWindow
             return;
         }
 
-        DropGenerate.Content = Ui.Format(Strings.GeneratePhotoWith, service.DisplayName);
+        // MOD93: the button says what pressing it now does, so it never sits beside its own open
+        // panel looking as if it did nothing.
+        DropGenerate.Content = GeneratePanel.Visibility == Visibility.Visible
+            ? Strings.HideGenerate
+            : Ui.Format(Strings.GeneratePhotoWith, service.DisplayName);
         CloudJobRequest request = GenerateRequest();
         string count = ComboTag(GenerateCount);
         GenerateRun.Content = service.EstimateCost(request) is { } cost
@@ -68,8 +72,15 @@ public partial class MainWindow
 
     private void OnDropGenerate(object sender, RoutedEventArgs e)
     {
-        GeneratePanel.Visibility = GeneratePanel.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        bool opening = GeneratePanel.Visibility != Visibility.Visible;
+        GeneratePanel.Visibility = opening ? Visibility.Visible : Visibility.Collapsed;
         UpdateGenerate();
+
+        // The panel opened is where the typing goes, once it has been laid out to take the focus.
+        if (opening)
+        {
+            Dispatcher.BeginInvoke(() => GeneratePrompt.Focus(), System.Windows.Threading.DispatcherPriority.Input);
+        }
     }
 
     private void OnGenerateChanged(object sender, TextChangedEventArgs e) => UpdateGenerate();

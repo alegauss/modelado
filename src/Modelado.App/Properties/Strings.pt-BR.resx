@@ -1374,4 +1374,7 @@ Modelos 3D: {1}</value>
   <data name="LanguageNextStart" xml:space="preserve">
     <value>A janela estará em {0} na próxima vez que o Modelado iniciar.</value>
   </data>
+  <data name="HideGenerate" xml:space="preserve">
+    <value>Ocultar o gerador de fotos</value>
+  </data>
 </root>

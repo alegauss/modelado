@@ -1374,4 +1374,7 @@
   <data name="LanguageNextStart" xml:space="preserve">
     <value>下次启动 Modelado 时，窗口将显示为 {0}。</value>
   </data>
+  <data name="HideGenerate" xml:space="preserve">
+    <value>隐藏照片生成器</value>
+  </data>
 </root>
