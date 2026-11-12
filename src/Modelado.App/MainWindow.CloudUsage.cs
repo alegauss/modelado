@@ -64,17 +64,17 @@ public partial class MainWindow
             .Select(p => (Service: p, State: spending.StateOf(p.Id), Budget: spending.Budgets.GetValueOrDefault(p.Id)))
             .OrderByDescending(s => s.Budget is null ? -1 : s.State.Spent / s.Budget.Monthly)
             .First();
-        string unit = standing.Service.Prices?.Unit ?? "spent";
+        string unit = standing.Service.Prices?.Unit ?? Strings.SpentUnit;
         string spent = standing.Budget is { } budget
-            ? string.Create(CultureInfo.InvariantCulture, $"{standing.State.Spent:0.##} of {budget.Monthly:0.##} {unit} this month")
-            : string.Create(CultureInfo.InvariantCulture, $"{standing.State.Spent:0.##} {unit} this month");
-        string warning = standing.State.State switch
+            ? Ui.Format(Strings.ChipSpentOfBudget, standing.State.Spent, budget.Monthly, unit)
+            : Ui.Format(Strings.ChipSpent, standing.State.Spent, unit);
+        string chip = standing.State.State switch
         {
-            BudgetState.Warning => " · nearly spent",
-            BudgetState.Exceeded => " · spent",
-            _ => "",
+            BudgetState.Warning => Strings.ChipServiceNearlySpent,
+            BudgetState.Exceeded => Strings.ChipServiceSpent,
+            _ => Strings.ChipService,
         };
-        CloudChip.Content = $"{standing.Service.DisplayName} · {spent}{warning}";
+        CloudChip.Content = Ui.Format(chip, standing.Service.DisplayName, spent);
         CloudChip.Style = standing.State.State is BudgetState.Warning or BudgetState.Exceeded
             ? (Style)FindResource("AccentButtonStyle")
             : null;
@@ -97,9 +97,9 @@ public partial class MainWindow
         TextBlock spent = new() { Style = (Style)FindResource("StatCaption"), TextWrapping = TextWrapping.Wrap };
         AutomationProperties.SetAutomationId(spent, $"CloudUsage-{service.Id}");
         TextBox budget = new() { Width = 90, Margin = new Thickness(0, 0, 8, 0) };
-        Identify(budget, $"CloudBudget-{service.Id}", $"{service.DisplayName} monthly budget");
-        Button save = new() { Content = "Set the monthly budget", Padding = new Thickness(12, 2, 12, 2) };
-        Identify(save, $"CloudBudgetSave-{service.Id}", $"Set the {service.DisplayName} monthly budget");
+        Identify(budget, $"CloudBudget-{service.Id}", Ui.Format(Strings.MonthlyBudgetName, service.DisplayName));
+        Button save = new() { Content = Strings.SetMonthlyBudget, Padding = new Thickness(12, 2, 12, 2) };
+        Identify(save, $"CloudBudgetSave-{service.Id}", Ui.Format(Strings.SetMonthlyBudgetName, service.DisplayName));
         if (LoadBudgets().TryGetValue(service.Id, out CloudBudget? set))
         {
             budget.Text = set.Monthly.ToString(CultureInfo.InvariantCulture);
@@ -112,7 +112,7 @@ public partial class MainWindow
                 : double.TryParse(typed, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) && value > 0 ? value : -1;
             if (limit is < 0)
             {
-                spent.Text = "A budget is a number above 0, or empty for none.";
+                spent.Text = Strings.BudgetInvalid;
                 return;
             }
 
@@ -122,7 +122,7 @@ public partial class MainWindow
             }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             {
-                spent.Text = $"The budget could not be saved: {error.Message}";
+                spent.Text = Ui.Format(Strings.BudgetNotSaved, error.Message);
                 return;
             }
 
@@ -148,23 +148,27 @@ public partial class MainWindow
         double today = ledger.Spent(service.Id, new DateTimeOffset(now.Date, now.Offset));
         List<string> lines =
         [
-            string.Create(CultureInfo.InvariantCulture, $"This month {month:0.##} {unit} (today {today:0.##}, in all {ledger.Spent(service.Id):0.##}), as this app counts it."),
+            Ui.Format(Strings.UsageMonth, month, unit, today, ledger.Spent(service.Id)),
         ];
         if (LoadBudgets().TryGetValue(service.Id, out CloudBudget? budget))
         {
-            lines.Add(string.Create(CultureInfo.InvariantCulture, $"Budget {budget.Monthly:0.##} a month: {budget.StateFor(month) switch { BudgetState.Warning => "nearly spent", BudgetState.Exceeded => "spent", _ => "within it" }}."));
+            string state = budget.StateFor(month) switch
+            {
+                BudgetState.Warning => Strings.BudgetNearlySpent,
+                BudgetState.Exceeded => Strings.BudgetSpent,
+                _ => Strings.BudgetWithin,
+            };
+            lines.Add(Ui.Format(state, budget.Monthly));
         }
 
         foreach ((CloudCapability action, int jobs, double estimated, double actual) in ledger.Drift(service.Id))
         {
-            lines.Add(string.Create(CultureInfo.InvariantCulture, $"{CloudJobs.Label(service, action)}: {jobs} job(s), estimated {estimated:0.##}, charged {actual:0.##}."));
+            lines.Add(Ui.Format(Strings.UsageDrift, CloudJobs.Label(service, action), jobs, estimated, actual));
         }
 
         if (service.Prices is { } prices)
         {
-            lines.Add(prices.IsStale(DateOnly.FromDateTime(now.Date))
-                ? $"Its prices were read on {prices.Read:yyyy-MM-dd}, over 90 days ago, so the estimates may be off."
-                : $"Prices read on {prices.Read:yyyy-MM-dd}.");
+            lines.Add(Ui.Format(prices.IsStale(DateOnly.FromDateTime(now.Date)) ? Strings.PricesStale : Strings.PricesRead, prices.Read));
         }
 
         spent.Text = string.Join(Environment.NewLine, lines);
@@ -177,13 +181,13 @@ public partial class MainWindow
         {
             if (await service.UsageAsync(key, CancellationToken.None).ConfigureAwait(true) is { } usage)
             {
-                lines.Insert(1, $"{service.DisplayName} reports {usage.Summary} left.");
+                lines.Insert(1, Ui.Format(Strings.BalanceLeft, service.DisplayName, usage.Summary));
                 spent.Text = string.Join(Environment.NewLine, lines);
             }
         }
         catch (Exception error) when (error is HttpRequestException or TaskCanceledException or IOException or InvalidOperationException or InvalidDataException)
         {
-            lines.Insert(1, $"{service.DisplayName} could not be asked for its balance: {error.Message}");
+            lines.Insert(1, Ui.Format(Strings.BalanceUnavailable, service.DisplayName, error.Message));
             spent.Text = string.Join(Environment.NewLine, lines);
         }
     }

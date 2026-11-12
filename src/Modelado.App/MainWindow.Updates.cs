@@ -22,7 +22,7 @@ public partial class MainWindow
     // An automatic check that came due during an operation waits for it, a minute at a time.
     private readonly DispatcherTimer updateRetry = new() { Interval = TimeSpan.FromMinutes(1) };
     private AvailableRelease? newerRelease;
-    private string updateSaid = "Not checked yet.";
+    private string updateSaid = Strings.NotCheckedYet;
     private bool checkingUpdates;
 
     // --releases off stops the automatic check for this run; a URL stands in for GitHub's API.
@@ -64,7 +64,7 @@ public partial class MainWindow
         AboutCheckUpdates.IsEnabled = false;
         if (asked)
         {
-            AboutUpdateStatus.Text = "Checking…";
+            AboutUpdateStatus.Text = Strings.Checking;
         }
 
         try
@@ -74,12 +74,12 @@ public partial class MainWindow
             {
                 newerRelease = answer.Newer;
                 updateSaid = answer.Newer is { } newer
-                    ? $"Modelado {newer.Version} is available; this is {ReleaseCheck.ThisBuild}."
-                    : $"Modelado {ReleaseCheck.ThisBuild} is the latest release.";
+                    ? Ui.Format(Strings.UpdateAvailable, newer.Version, ReleaseCheck.ThisBuild)
+                    : Ui.Format(Strings.UpdateLatest, ReleaseCheck.ThisBuild);
             }
             else if (asked)
             {
-                updateSaid = "Could not reach GitHub to check for updates.";
+                updateSaid = Strings.UpdateUnreachable;
             }
 
             ShowUpdate();
@@ -95,7 +95,7 @@ public partial class MainWindow
     {
         if (PackageIdentity.IsPackaged)
         {
-            AboutUpdateStatus.Text = "Updates come from the Microsoft Store.";
+            AboutUpdateStatus.Text = Strings.UpdatesFromStore;
             UpdateChip.Visibility = Visibility.Collapsed;
             AboutCheckUpdates.Visibility = Visibility.Collapsed;
             AboutReleasePage.Visibility = Visibility.Collapsed;
@@ -105,7 +105,7 @@ public partial class MainWindow
             return;
         }
 
-        UpdateChip.Content = newerRelease is { } newer ? $"Update {newer.Version} available" : "";
+        UpdateChip.Content = newerRelease is { } newer ? Ui.Format(Strings.UpdateChipText, newer.Version) : "";
         UpdateChip.Visibility = newerRelease is null ? Visibility.Collapsed : Visibility.Visible;
         AboutUpdateStatus.Text = updateSaid;
         AboutReleasePage.Visibility = newerRelease?.PageUrl is null ? Visibility.Collapsed : Visibility.Visible;
@@ -130,7 +130,7 @@ public partial class MainWindow
 
         if (busy)
         {
-            updateSaid = $"{ProgressTitle.Text} is running: let it finish or cancel it, then update.";
+            updateSaid = Ui.Format(Strings.UpdateWhileBusy, ProgressTitle.Text);
             ShowUpdate();
             return;
         }
@@ -164,25 +164,25 @@ public partial class MainWindow
         Progress<DownloadProgress> progress = new(p =>
         {
             updateSaid = p.Stage == DownloadStage.Verifying
-                ? $"Checking Modelado {release.Version} against {ReleaseCheck.SumsAssetName}…"
-                : $"Downloading Modelado {release.Version}: {100 * p.Done / Math.Max(1, p.Total)}%";
+                ? Ui.Format(Strings.UpdateVerifying, release.Version, ReleaseCheck.SumsAssetName)
+                : Ui.Format(Strings.UpdateDownloading, release.Version, 100 * p.Done / Math.Max(1, p.Total));
             ShowUpdate();
         });
         try
         {
             string installer = await ReleaseUpdate.DownloadAsync(http, release, ReleaseUpdate.DefaultFolder, progress, CancellationToken.None).ConfigureAwait(true);
-            updateSaid = $"Installing Modelado {release.Version}; it starts again when done.";
+            updateSaid = Ui.Format(Strings.UpdateInstalling, release.Version);
             ShowUpdate();
             Process.Start(ReleaseUpdate.InstallerStart(installer));
             Application.Current.Shutdown();
         }
         catch (InvalidDataException refused)
         {
-            updateSaid = $"{refused.Message} Nothing was installed.";
+            updateSaid = Ui.Format(Strings.UpdateRefused, refused.Message);
         }
         catch (Exception error) when (error is HttpRequestException or IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
         {
-            updateSaid = $"The update could not be installed: {error.Message}";
+            updateSaid = Ui.Format(Strings.UpdateFailed, error.Message);
         }
         finally
         {
@@ -237,7 +237,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            updateSaid = $"The choice could not be saved: {error.Message}";
+            updateSaid = Ui.Format(Strings.ChoiceNotSaved, error.Message);
             ShowUpdate();
             return;
         }

@@ -6,7 +6,10 @@ namespace Modelado.Architecture.Tests;
 /// <summary>
 /// MOD85: every string the window shows lives in Properties/Strings.resx, the neutral English a
 /// translation fills, so a new string cannot skip the file. Read from the files, as the rest of
-/// these tests are.
+/// these tests are. Only the app's interface is held to it: the CLI, the Blender add-on, the site,
+/// the Store listing, logs, exception messages and CommandLine's refusals (which name flags for
+/// scripts) stay English. Code fills whole sentences through Ui.Format, never joined pieces.
+/// Strings is generated from the resx at build time; the csproj says how it reaches the XAML.
 /// </summary>
 public sealed partial class StringResourceTests
 {
@@ -60,6 +63,53 @@ public sealed partial class StringResourceTests
         Assert.Empty(missing);
     }
 
+    /// <summary>The app's own code files, each one a place a shown string could be written.</summary>
+    public static TheoryData<string> CodeFiles()
+    {
+        TheoryData<string> files = [];
+        foreach (string path in Directory.EnumerateFiles(App, "*.cs", SearchOption.TopDirectoryOnly))
+        {
+            files.Add(Path.GetFileName(path));
+        }
+
+        return files;
+    }
+
+    // A literal set on a shown property, or handed to a method that shows it, in the code-behind.
+    // An interpolated string counts only for the words outside its holes, so "{a}{Strings.X}{b}"
+    // passes and $"Saved {name}" does not.
+    [Theory]
+    [MemberData(nameof(CodeFiles))]
+    public void NoCodeShowsLiteralText(string file)
+    {
+        string source = File.ReadAllText(Path.Combine(App, file));
+        List<string> literals = [];
+        foreach (Match match in ShownInCode().Matches(source))
+        {
+            string words = Holes().Replace(match.Groups["value"].Value, "");
+            if (words.Count(char.IsLetter) >= 2)
+            {
+                literals.Add(match.Value);
+            }
+        }
+
+        Assert.True(literals.Count == 0,
+            $"{file} shows text that is not in Properties/Strings.resx; use Strings.<Key> or Ui.Format:\n  "
+            + string.Join("\n  ", literals));
+    }
+
+    [Fact]
+    public void EveryResourceIsUsed()
+    {
+        string sources = string.Concat(Directory.EnumerateFiles(App, "*.*", SearchOption.TopDirectoryOnly)
+            .Where(path => path.EndsWith(".cs", StringComparison.Ordinal) || path.EndsWith(".xaml", StringComparison.Ordinal))
+            .Select(File.ReadAllText));
+
+        string[] unused = [.. ResourceKeys().Where(key => !sources.Contains($"Strings.{key}", StringComparison.Ordinal)).Order(StringComparer.Ordinal)];
+
+        Assert.Empty(unused);
+    }
+
     [Fact]
     public void TheResourceFileIsTheNeutralCultureTheAssemblyDeclares()
     {
@@ -80,4 +130,10 @@ public sealed partial class StringResourceTests
 
     [GeneratedRegex("""\{x:Static p:Strings\.(?<key>\w+)\}""")]
     private static partial Regex StaticString();
+
+    [GeneratedRegex(@"(\b(Text|Content|ToolTip|Title|Header)\s*=\s*|\b(LastRunSaid|ShowSource|SaySource|SayRemoval|ShowOpenError|EditAsync|SetBusy|MessageBox\.Show)\((this,\s*)?)\$?""(?<value>(\\.|[^""\\])*)""")]
+    private static partial Regex ShownInCode();
+
+    [GeneratedRegex(@"\{[^{}]*\}")]
+    private static partial Regex Holes();
 }

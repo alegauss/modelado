@@ -485,27 +485,6 @@ and files the follow-up or the reason not to.
 
 ## Block K — Translated interface
 
-### §MOD85 MOD85 — English resource file as the base language
-
-Move every visible string in Modelado.App (MainWindow.xaml, Styles.xaml, the
-MainWindow.*.cs partials, DownloadText and the dialogs) into Properties/Strings.resx as
-the neutral English culture. XAML reads the strings through a markup extension or
-x:Static, and code reads them through the generated Strings class. Format strings take
-placeholders ({0}) rather than concatenation, because word order changes between
-languages. Only the app's interface is in scope. The CLI, the Blender add-on, the site,
-the Store listing, log text and exception messages stay English. An architecture test
-fails when a XAML Text, Content, Header, ToolTip or Title attribute holds a literal
-instead of a resource reference, so a new string cannot skip the file. Because the
-English text is unchanged, the winwright cases keep passing without edits.
-
-The XAML half landed: Strings is generated at build time into obj (the csproj runs
-CoreResGen before MarkupCompilePass1 and hands the file to the wpftmp build), XAML uses
-x:Static, and StringResourceTests holds it. Code fills format strings through Ui.Format;
-the slider labels once split into Runs are one sentence each, set from code.
-CommandLine's refusals name flags for scripts and stay English, like the CLI. Left: the
-remaining partials, then a code-side test, like the XAML one, refusing a literal passed
-to Text, Content or ToolTip.
-
 ### §MOD86 MOD86 — Interface language follows Windows, with a setting
 
 App.xaml.cs pins both culture and UI culture to en-US (MOD49, held by CultureTests).
@@ -562,6 +541,25 @@ and zh-SG must resolve to it. The font set in Styles.xaml needs a CJK fallback
 every custom font in the styles has that fallback. Chinese text is short but tall, so
 the case checks vertical clipping in rows of fixed height. A native speaker reviews the
 text before the task ships.
+
+### §MOD134 Library sentences in the window
+
+MOD85 moved every string Modelado.App writes into Properties/Strings.resx, but the
+window also shows sentences the libraries compose in English: CloudLedger's budget note
+on every consent line (CloudSpending.Note), CloudJobs.Label for a cloud job's title and
+the History step it leaves, ExecutionProviders.Label on the provider chip and the reason
+Resolve gives for falling back to the CPU, ModelRunner.Notice in the last-run tooltip,
+each provider's KeyCheck message, and MeshImport's notice about baked textures. Under a
+translation these read in English beside translated text.
+
+The libraries are shared with the CLI, which stays English, so they should not read the
+app's resources. Each one returns what happened as data (an enum or a record: the budget
+state and the amounts, the capability, the device name, the fallback cause), and the app
+turns it into a sentence from Strings.resx; the CLI keeps its own English wording. Where
+a service's own text arrives (a KeyCheck message from the API, an exception message), it
+is shown as the service wrote it, inside a translated frame. Done when
+StringResourceTests-style checks find no library sentence on the window's consent lines,
+chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

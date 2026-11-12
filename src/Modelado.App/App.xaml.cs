@@ -28,7 +28,7 @@ public partial class App : Application
         (AppOptions? options, string? error) = CommandLine.Parse(e.Args);
         if (options is null)
         {
-            MessageBox.Show(error, "Modelado", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(error, Strings.AppName, MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(BadCommandLine);
             return;
         }

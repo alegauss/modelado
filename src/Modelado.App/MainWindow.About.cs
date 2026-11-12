@@ -35,15 +35,14 @@ public partial class MainWindow
         AboutPanel.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
         ViewerFrame.Visibility = open ? Visibility.Collapsed : Visibility.Visible;
         Operations.Visibility = !open && (photo is not null || mesh is not null) ? Visibility.Visible : Visibility.Collapsed;
-        AboutButton.Content = open ? "Back" : "About and models";
+        AboutButton.Content = open ? Strings.Back : Strings.AboutButton;
     }
 
     private void FillAbout()
     {
-        string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "unknown";
-        AboutVersion.Text = $"Version {version}";
-        AboutInference.Text = "Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. " +
-            $"Inference runs in ONNX Runtime, {(provider == ExecutionProvider.DirectML ? "on the GPU with DirectML" : "on the CPU")}. No photo is uploaded anywhere.";
+        string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? Strings.VersionUnknown;
+        AboutVersion.Text = Ui.Format(Strings.VersionText, version);
+        AboutInference.Text = provider == ExecutionProvider.DirectML ? Strings.AboutInferenceGpu : Strings.AboutInferenceCpu;
         fillingProvider = true;
         (providerChoice switch
         {
@@ -52,31 +51,31 @@ public partial class MainWindow
             _ => ProviderAuto,
         }).IsChecked = true;
         fillingProvider = false;
-        string reason = providerReason ?? (options.Provider == providerChoice ? "Chosen by --provider for this run." : "");
+        string reason = providerReason ?? (options.Provider == providerChoice ? Strings.ChosenByFlag : "");
         AboutProviderReason.Text = reason;
         AboutProviderReason.Visibility = reason.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         FillUpdates();
         FillCloudServices();
 
-        AboutModelsFolder.Text = $"From {string.Join(" and ", library.Roots.Select(PackageIdentity.Visible))}";
+        AboutModelsFolder.Text = Ui.Format(Strings.ModelsFrom, string.Join(Strings.ListAnd, library.Roots.Select(PackageIdentity.Visible)));
 
         library.Refresh();
         IReadOnlyList<InstalledModel> installed = library.Installed();
         AboutModels.ItemsSource = installed.Count == 0
-            ? new[] { "None yet: each operation downloads its own on first use." }
+            ? new[] { Strings.NoModelsYet }
             : installed.Select(Describe).ToList();
 
-        string source = ModelDownloads.Embedded is null ? options.Manifest ?? ModelDownloads.LatestManifestUrl : "built into this version";
-        AboutManifest.Text = $"Models are downloaded from huggingface.co/alegauss/modelado-models; model list: {source}.";
+        string source = ModelDownloads.Embedded is null ? options.Manifest ?? ModelDownloads.LatestManifestUrl : Strings.ModelListBuiltIn;
+        AboutManifest.Text = Ui.Format(Strings.ModelsDownloadedFrom, source);
         FillSources();
 
         List<InstalledModel> downloads = [.. installed.Where(m => IsUnder(m.Root, library.DownloadRoot))];
         long downloaded = downloads.Sum(Bytes);
         AboutDownloadNote.Text = (downloaded > 0
-            ? $"Downloads go to {ShownDownloadRoot}, where they take {Size(downloaded)}."
-            : $"Downloads go to {ShownDownloadRoot}. Nothing is downloaded yet.") + RemovedWithTheApp;
+            ? Ui.Format(Strings.DownloadsGoTake, ShownDownloadRoot, Size(downloaded))
+            : Ui.Format(Strings.DownloadsGoNone, ShownDownloadRoot)) + RemovedWithTheApp;
         AboutDownloadedModels.ItemsSource = downloads
-            .Select(m => new DownloadedRow(m.Name, $"{m.Name} · {string.Join(", ", m.Variants)} · {Size(Bytes(m))}", $"Download-{m.Name}", $"Remove-{m.Name}", $"Remove {m.Name}"))
+            .Select(m => new DownloadedRow(m.Name, Ui.Format(Strings.DownloadedRow, m.Name, string.Join(Strings.ListComma, m.Variants), Size(Bytes(m))), $"Download-{m.Name}", $"Remove-{m.Name}", Ui.Format(Strings.RemoveNamed, m.Name)))
             .ToList();
         AboutRemoveAll.IsEnabled = downloads.Count > 0;
     }
@@ -92,14 +91,14 @@ public partial class MainWindow
     private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].Bytes);
 
     private static string Describe(InstalledModel model) =>
-        $"{model.Name} · {string.Join(", ", model.Variants)} · {Size(Bytes(model))} · {model.Meta.Task} · {model.Meta.Upstream.License} ({model.Meta.Upstream.LicenseUrl})";
+        Ui.Format(Strings.InstalledRow, model.Name, string.Join(Strings.ListComma, model.Variants), Size(Bytes(model)), model.Meta.Task, model.Meta.Upstream.License, model.Meta.Upstream.LicenseUrl);
 
     private static bool IsUnder(string path, string folder) =>
         Path.GetFullPath(path).StartsWith(Path.GetFullPath(folder), StringComparison.OrdinalIgnoreCase);
 
     private async void OnAboutDownloadAll(object sender, RoutedEventArgs e)
     {
-        await DownloadAsync("Working offline", "Download everything", [.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
+        await DownloadAsync(Strings.WorkingOffline, Strings.DownloadEverything, [.. ObjectReconstruction.Models.Concat(ReliefReconstruction.Models(true)).Append(Upscaling.Model).Distinct()]).ConfigureAwait(true);
         if (AboutOpen)
         {
             FillAbout();
@@ -123,7 +122,7 @@ public partial class MainWindow
     private string ShownDownloadRoot => PackageIdentity.Visible(library.DownloadRoot);
 
     private static string RemovedWithTheApp => PackageIdentity.IsPackaged && PackageIdentity.FamilyName is not null
-        ? " They are removed when Modelado is uninstalled."
+        ? Strings.RemovedOnUninstall
         : "";
 
     private void OnAboutOpenFolder(object sender, RoutedEventArgs e)
@@ -137,16 +136,16 @@ public partial class MainWindow
     {
         if (busy && runningModels.Contains(model, StringComparer.Ordinal))
         {
-            return $"{model} is in use by {ProgressTitle.Text}; remove it once that has finished.";
+            return Ui.Format(Strings.ModelInUse, model, ProgressTitle.Text);
         }
 
-        if (busy && work is not null && ProgressTitle.Text == "Downloading models")
+        if (busy && work is not null && ProgressTitle.Text == Strings.DownloadingModels)
         {
-            return "A download is running; remove models once it has finished or been cancelled.";
+            return Strings.DownloadRunningNoRemove;
         }
 
         return FirstUseCards.FirstOrDefault(card => card.Downloading is not null && card.Models().Contains(model, StringComparer.Ordinal)) is { } downloading
-            ? $"{model} is being downloaded for {downloading.Title}; cancel or finish that first."
+            ? Ui.Format(Strings.ModelBeingDownloaded, model, downloading.Title)
             : null;
     }
 
@@ -203,7 +202,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            unsaved = $"The choice is used until Modelado closes but could not be saved: {error.Message}";
+            unsaved = Ui.Format(Strings.ProviderNotSaved, error.Message);
         }
 
         FillAbout();
@@ -244,7 +243,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            SayRemoval($"{model} could not be removed: {error.Message}");
+            SayRemoval(Ui.Format(Strings.ModelNotRemoved, model, error.Message));
         }
 
         FillAbout();
@@ -253,7 +252,7 @@ public partial class MainWindow
 
     private void OnAboutRemoveAll(object sender, RoutedEventArgs e)
     {
-        AboutRemoveAllQuestion.Text = $"Delete everything downloaded to {ShownDownloadRoot}? Each operation offers its download again when next used.";
+        AboutRemoveAllQuestion.Text = Ui.Format(Strings.RemoveAllQuestion, ShownDownloadRoot);
         AboutRemoveAllConfirm.Visibility = Visibility.Visible;
     }
 
@@ -276,7 +275,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            SayRemoval($"The downloads could not all be removed: {error.Message}");
+            SayRemoval(Ui.Format(Strings.DownloadsNotRemoved, error.Message));
         }
 
         FillAbout();

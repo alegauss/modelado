@@ -38,11 +38,11 @@ public partial class MainWindow
 
     private void StartFirstUse()
     {
-        objectFirstUse = new("3D Object", "Download and generate the 3D object", () => ObjectModels(ObjectEnhancePhoto.IsChecked == true),
+        objectFirstUse = new(Strings.ObjectCardTitle, Strings.ObjectFirstUseAccept, () => ObjectModels(ObjectEnhancePhoto.IsChecked == true),
             ObjectFirstUse, ObjectFirstUseBadge, ObjectFirstUseDetail, ObjectFirstUseProgress, ObjectFirstUseAction, () => OnGenerateObject(this, new RoutedEventArgs()));
-        reliefFirstUse = new("Relief", "Download and generate the relief", () => ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true, DepthModel),
+        reliefFirstUse = new(Strings.ReliefCardTitle, Strings.ReliefFirstUseAccept, () => ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true, DepthModel),
             ReliefFirstUse, ReliefFirstUseBadge, ReliefFirstUseDetail, ReliefFirstUseProgress, ReliefFirstUseAction, () => OnGenerateRelief(this, new RoutedEventArgs()));
-        textureFirstUse = new("A sharper texture", "Download and sharpen the texture", () => [Upscaling.Model],
+        textureFirstUse = new(Strings.TextureFirstUseTitle, Strings.TextureFirstUseAccept, () => [Upscaling.Model],
             TextureFirstUse, TextureFirstUseBadge, TextureFirstUseDetail, TextureFirstUseProgress, TextureFirstUseAction, () => OnUpscaleTexture(this, new RoutedEventArgs()));
         Closed += (_, _) =>
         {
@@ -93,10 +93,10 @@ public partial class MainWindow
         card.Badge.Visibility = Visibility.Visible;
         if (listed is null || missing.Any(m => listed.Model(m.Model) is null))
         {
-            card.Badge.Text = "Models not installed";
+            card.Badge.Text = Strings.ModelsNotInstalled;
             card.Detail.Text = listed is null
-                ? $"The model list could not be read{(manifestError is null ? "" : $" ({manifestError})")}. Without internet, only models already downloaded work."
-                : $"The model list ({listed.Version}) does not include {string.Join(", ", missing.Where(m => listed.Model(m.Model) is null).Select(m => m.Model))}.";
+                ? manifestError is null ? Strings.ModelListUnreadableOffline : Ui.Format(Strings.ModelListUnreadableOfflineBecause, manifestError)
+                : Ui.Format(Strings.ModelListLacks, listed.Version, string.Join(Strings.ListComma, missing.Where(m => listed.Model(m.Model) is null).Select(m => m.Model)));
             return;
         }
 
@@ -105,36 +105,38 @@ public partial class MainWindow
         switch (card.Stage)
         {
             case FirstUseStage.Waiting:
-                card.Badge.Text = "Download queued";
-                card.Detail.Text = "It starts as soon as the other download finishes.";
-                ShowAction(card, "Cancel");
+                card.Badge.Text = Strings.DownloadQueued;
+                card.Detail.Text = Strings.DownloadQueuedDetail;
+                ShowAction(card, Strings.Cancel);
                 break;
             case FirstUseStage.Downloading:
                 DownloadProgress progress = card.Last ?? new DownloadProgress("", total - pending, total);
-                card.Badge.Text = $"Downloading · {DownloadText.Percent(progress)}%";
+                card.Badge.Text = Ui.Format(Strings.DownloadingPercent, DownloadText.Percent(progress));
                 card.Detail.Text = DownloadText.Line(progress);
                 card.Bar.Value = DownloadText.Percent(progress);
                 card.Bar.Visibility = Visibility.Visible;
-                ShowAction(card, "Pause");
+                ShowAction(card, Strings.PauseButton);
                 break;
             case FirstUseStage.Paused:
-                card.Badge.Text = $"Paused · {DownloadText.Percent(new DownloadProgress("", total - pending, total))}%";
-                card.Detail.Text = "Resume picks up where it stopped; nothing already downloaded is fetched again.";
+                card.Badge.Text = Ui.Format(Strings.PausedPercent, DownloadText.Percent(new DownloadProgress("", total - pending, total)));
+                card.Detail.Text = Strings.PausedDetail;
                 card.Bar.Value = total == 0 ? 0 : 100 * (total - pending) / total;
                 card.Bar.Visibility = Visibility.Visible;
-                ShowAction(card, "Resume download");
+                ShowAction(card, Strings.ResumeDownload);
                 break;
             case FirstUseStage.Failed:
-                card.Badge.Text = "Download stopped";
+                card.Badge.Text = Strings.DownloadStopped;
                 card.Detail.Text = card.Failure ?? "";
-                ShowAction(card, "Try again");
+                ShowAction(card, Strings.TryAgain);
                 break;
             default:
                 card.Badge.Text = pending < total
-                    ? $"One-time download · {DownloadText.Size(pending)} left"
-                    : $"One-time download · {DownloadText.Size(total)}";
-                card.Detail.Text = $"{string.Join(", ", missing.Select(m => m.Model))}, from {string.Join(" and ", missing.Select(m => SourceOf(listed.Model(m.Model)!.Variants[ModelDownloads.VariantOf(listed, m)!].Url)).Distinct(StringComparer.Ordinal))}. " +
-                    "Your photo is never uploaded.";
+                    ? Ui.Format(Strings.OneTimeDownloadLeft, DownloadText.Size(pending))
+                    : Ui.Format(Strings.OneTimeDownload, DownloadText.Size(total));
+                card.Detail.Text = Ui.Format(
+                    Strings.FirstUseDetail,
+                    string.Join(Strings.ListComma, missing.Select(m => m.Model)),
+                    string.Join(Strings.ListAnd, missing.Select(m => SourceOf(listed.Model(m.Model)!.Variants[ModelDownloads.VariantOf(listed, m)!].Url)).Distinct(StringComparer.Ordinal)));
                 break;
         }
     }
@@ -237,18 +239,18 @@ public partial class MainWindow
 
                 card.Shown.Restart();
                 ShowFirstUse(card, listed);
-                DownloadChipText.Text = $"{card.Title}: {DownloadText.Line(p)}";
+                DownloadChipText.Text = Ui.Format(Strings.CardDownloadStatus, card.Title, DownloadText.Line(p));
                 ProgressBar.Value = (double)p.Done / Math.Max(1, p.Total);
                 DownloadChip.Visibility = Visibility.Visible;
             });
             await ModelDownloads.DownloadAsync(http, listed, library.DownloadRoot, requests, progress, token, library.Roots).ConfigureAwait(true);
             library.Refresh();
             card.Stage = FirstUseStage.Offered;
-            card.Ready = $"Ready: {card.Title} now works offline.";
+            card.Ready = Ui.Format(Strings.ReadyOffline, card.Title);
             if (card.RunWhenReady)
             {
                 card.RunWhenReady = false;
-                card.Ready = $"Downloaded and verified. {card.Title} starts now; its progress is at the top.";
+                card.Ready = Ui.Format(Strings.ReadyStartsNow, card.Title);
                 pendingRun = card.Run;
             }
         }
@@ -259,8 +261,8 @@ public partial class MainWindow
         catch (Exception failure) when (failure is HttpRequestException or InvalidDataException or IOException or UnauthorizedAccessException)
         {
             card.Failure = failure is HttpRequestException { StatusCode: HttpStatusCode.NotFound }
-                ? "The download server no longer has this file (error 404). Update Modelado, which knows the current download locations, then try again."
-                : $"{failure.Message} What was already downloaded is kept; Try again resumes from there.";
+                ? Strings.DownloadGone
+                : Ui.Format(Strings.DownloadFailedKept, failure.Message);
             card.Stage = FirstUseStage.Failed;
         }
         finally

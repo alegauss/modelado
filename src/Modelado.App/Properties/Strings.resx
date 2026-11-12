@@ -978,4 +978,388 @@
   <data name="Pausing" xml:space="preserve">
     <value>Pausing…</value>
   </data>
+  <data name="ObjectFirstUseAccept" xml:space="preserve">
+    <value>Download and generate the 3D object</value>
+  </data>
+  <data name="ReliefFirstUseAccept" xml:space="preserve">
+    <value>Download and generate the relief</value>
+  </data>
+  <data name="TextureFirstUseTitle" xml:space="preserve">
+    <value>A sharper texture</value>
+  </data>
+  <data name="TextureFirstUseAccept" xml:space="preserve">
+    <value>Download and sharpen the texture</value>
+  </data>
+  <data name="ModelsNotInstalled" xml:space="preserve">
+    <value>Models not installed</value>
+  </data>
+  <data name="ModelListUnreadableOffline" xml:space="preserve">
+    <value>The model list could not be read. Without internet, only models already downloaded work.</value>
+  </data>
+  <data name="ModelListUnreadableOfflineBecause" xml:space="preserve">
+    <value>The model list could not be read ({0}). Without internet, only models already downloaded work.</value>
+  </data>
+  <data name="DownloadQueued" xml:space="preserve">
+    <value>Download queued</value>
+  </data>
+  <data name="DownloadQueuedDetail" xml:space="preserve">
+    <value>It starts as soon as the other download finishes.</value>
+  </data>
+  <data name="DownloadingPercent" xml:space="preserve">
+    <value>Downloading · {0}%</value>
+  </data>
+  <data name="PausedPercent" xml:space="preserve">
+    <value>Paused · {0}%</value>
+  </data>
+  <data name="PausedDetail" xml:space="preserve">
+    <value>Resume picks up where it stopped; nothing already downloaded is fetched again.</value>
+  </data>
+  <data name="ResumeDownload" xml:space="preserve">
+    <value>Resume download</value>
+  </data>
+  <data name="DownloadStopped" xml:space="preserve">
+    <value>Download stopped</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="OneTimeDownloadLeft" xml:space="preserve">
+    <value>One-time download · {0} left</value>
+  </data>
+  <data name="OneTimeDownload" xml:space="preserve">
+    <value>One-time download · {0}</value>
+  </data>
+  <data name="FirstUseDetail" xml:space="preserve">
+    <value>{0}, from {1}. Your photo is never uploaded.</value>
+  </data>
+  <data name="ListAnd" xml:space="preserve">
+    <value> and </value>
+  </data>
+  <data name="ListComma" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="ReadyOffline" xml:space="preserve">
+    <value>Ready: {0} now works offline.</value>
+  </data>
+  <data name="ReadyStartsNow" xml:space="preserve">
+    <value>Downloaded and verified. {0} starts now; its progress is at the top.</value>
+  </data>
+  <data name="DownloadGone" xml:space="preserve">
+    <value>The download server no longer has this file (error 404). Update Modelado, which knows the current download locations, then try again.</value>
+  </data>
+  <data name="DownloadFailedKept" xml:space="preserve">
+    <value>{0} What was already downloaded is kept; Try again resumes from there.</value>
+  </data>
+  <data name="SourcesUnreadable" xml:space="preserve">
+    <value>The added sources could not be read, so only the built-in models are offered: {0}</value>
+  </data>
+  <data name="BuiltInSource" xml:space="preserve">
+    <value>alegauss/modelado-models (built in)</value>
+  </data>
+  <data name="RemoveNamed" xml:space="preserve">
+    <value>Remove {0}</value>
+  </data>
+  <data name="ManifestOverride" xml:space="preserve">
+    <value>--manifest {0} is used for this run instead of the built-in models and the added sources.</value>
+  </data>
+  <data name="SourceTypeFirst" xml:space="preserve">
+    <value>Type a Hugging Face repository (owner/name) or a manifest URL first.</value>
+  </data>
+  <data name="SourceAlready" xml:space="preserve">
+    <value>{0} is already a source.</value>
+  </data>
+  <data name="BuiltInListUnreadable" xml:space="preserve">
+    <value>The built-in model list could not be read, so nothing can be checked against it. Check the connection and try again.</value>
+  </data>
+  <data name="SourceListsNone" xml:space="preserve">
+    <value>{0} lists no models.</value>
+  </data>
+  <data name="SourceListsOne" xml:space="preserve">
+    <value>{0} lists 1 model. Add it?</value>
+  </data>
+  <data name="SourceListsMany" xml:space="preserve">
+    <value>{0} lists {1} models. Add it?</value>
+  </data>
+  <data name="SourceModelLine" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3}</value>
+  </data>
+  <data name="SourcesNotSaved" xml:space="preserve">
+    <value>The sources are used until Modelado closes but could not be saved: {0}</value>
+  </data>
+  <data name="DepthBuiltIn" xml:space="preserve">
+    <value>Depth Anything V2 Small (built in)</value>
+  </data>
+  <data name="DepthFromSource" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotCheckedYet" xml:space="preserve">
+    <value>Not checked yet.</value>
+  </data>
+  <data name="Checking" xml:space="preserve">
+    <value>Checking…</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Modelado {0} is available; this is {1}.</value>
+  </data>
+  <data name="UpdateLatest" xml:space="preserve">
+    <value>Modelado {0} is the latest release.</value>
+  </data>
+  <data name="UpdateUnreachable" xml:space="preserve">
+    <value>Could not reach GitHub to check for updates.</value>
+  </data>
+  <data name="UpdatesFromStore" xml:space="preserve">
+    <value>Updates come from the Microsoft Store.</value>
+  </data>
+  <data name="UpdateChipText" xml:space="preserve">
+    <value>Update {0} available</value>
+  </data>
+  <data name="UpdateWhileBusy" xml:space="preserve">
+    <value>{0} is running: let it finish or cancel it, then update.</value>
+  </data>
+  <data name="UpdateVerifying" xml:space="preserve">
+    <value>Checking Modelado {0} against {1}…</value>
+  </data>
+  <data name="UpdateDownloading" xml:space="preserve">
+    <value>Downloading Modelado {0}: {1}%</value>
+  </data>
+  <data name="UpdateInstalling" xml:space="preserve">
+    <value>Installing Modelado {0}; it starts again when done.</value>
+  </data>
+  <data name="UpdateRefused" xml:space="preserve">
+    <value>{0} Nothing was installed.</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>The update could not be installed: {0}</value>
+  </data>
+  <data name="ChoiceNotSaved" xml:space="preserve">
+    <value>The choice could not be saved: {0}</value>
+  </data>
+  <data name="CardDownloadStatus" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="VersionUnknown" xml:space="preserve">
+    <value>unknown</value>
+  </data>
+  <data name="VersionText" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="AboutInferenceGpu" xml:space="preserve">
+    <value>Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. Inference runs in ONNX Runtime, on the GPU with DirectML. No photo is uploaded anywhere.</value>
+  </data>
+  <data name="AboutInferenceCpu" xml:space="preserve">
+    <value>Turns a photo into a 3D model on this computer: a whole object with TripoSR, or a relief with Depth Anything V2. Inference runs in ONNX Runtime, on the CPU. No photo is uploaded anywhere.</value>
+  </data>
+  <data name="ChosenByFlag" xml:space="preserve">
+    <value>Chosen by --provider for this run.</value>
+  </data>
+  <data name="ModelsFrom" xml:space="preserve">
+    <value>From {0}</value>
+  </data>
+  <data name="NoModelsYet" xml:space="preserve">
+    <value>None yet: each operation downloads its own on first use.</value>
+  </data>
+  <data name="ModelListBuiltIn" xml:space="preserve">
+    <value>built into this version</value>
+  </data>
+  <data name="ModelsDownloadedFrom" xml:space="preserve">
+    <value>Models are downloaded from huggingface.co/alegauss/modelado-models; model list: {0}.</value>
+  </data>
+  <data name="DownloadsGoTake" xml:space="preserve">
+    <value>Downloads go to {0}, where they take {1}.</value>
+  </data>
+  <data name="DownloadsGoNone" xml:space="preserve">
+    <value>Downloads go to {0}. Nothing is downloaded yet.</value>
+  </data>
+  <data name="DownloadedRow" xml:space="preserve">
+    <value>{0} · {1} · {2}</value>
+  </data>
+  <data name="InstalledRow" xml:space="preserve">
+    <value>{0} · {1} · {2} · {3} · {4} ({5})</value>
+  </data>
+  <data name="WorkingOffline" xml:space="preserve">
+    <value>Working offline</value>
+  </data>
+  <data name="DownloadEverything" xml:space="preserve">
+    <value>Download everything</value>
+  </data>
+  <data name="RemovedOnUninstall" xml:space="preserve">
+    <value> They are removed when Modelado is uninstalled.</value>
+  </data>
+  <data name="ModelInUse" xml:space="preserve">
+    <value>{0} is in use by {1}; remove it once that has finished.</value>
+  </data>
+  <data name="DownloadRunningNoRemove" xml:space="preserve">
+    <value>A download is running; remove models once it has finished or been cancelled.</value>
+  </data>
+  <data name="ModelBeingDownloaded" xml:space="preserve">
+    <value>{0} is being downloaded for {1}; cancel or finish that first.</value>
+  </data>
+  <data name="ProviderNotSaved" xml:space="preserve">
+    <value>The choice is used until Modelado closes but could not be saved: {0}</value>
+  </data>
+  <data name="ModelNotRemoved" xml:space="preserve">
+    <value>{0} could not be removed: {1}</value>
+  </data>
+  <data name="RemoveAllQuestion" xml:space="preserve">
+    <value>Delete everything downloaded to {0}? Each operation offers its download again when next used.</value>
+  </data>
+  <data name="DownloadsNotRemoved" xml:space="preserve">
+    <value>The downloads could not all be removed: {0}</value>
+  </data>
+  <data name="SpentUnit" xml:space="preserve">
+    <value>spent</value>
+  </data>
+  <data name="ChipSpentOfBudget" xml:space="preserve">
+    <value>{0:0.##} of {1:0.##} {2} this month</value>
+  </data>
+  <data name="ChipSpent" xml:space="preserve">
+    <value>{0:0.##} {1} this month</value>
+  </data>
+  <data name="ChipService" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="ChipServiceNearlySpent" xml:space="preserve">
+    <value>{0} · {1} · nearly spent</value>
+  </data>
+  <data name="ChipServiceSpent" xml:space="preserve">
+    <value>{0} · {1} · spent</value>
+  </data>
+  <data name="MonthlyBudgetName" xml:space="preserve">
+    <value>{0} monthly budget</value>
+  </data>
+  <data name="SetMonthlyBudget" xml:space="preserve">
+    <value>Set the monthly budget</value>
+  </data>
+  <data name="SetMonthlyBudgetName" xml:space="preserve">
+    <value>Set the {0} monthly budget</value>
+  </data>
+  <data name="BudgetInvalid" xml:space="preserve">
+    <value>A budget is a number above 0, or empty for none.</value>
+  </data>
+  <data name="BudgetNotSaved" xml:space="preserve">
+    <value>The budget could not be saved: {0}</value>
+  </data>
+  <data name="UsageMonth" xml:space="preserve">
+    <value>This month {0:0.##} {1} (today {2:0.##}, in all {3:0.##}), as this app counts it.</value>
+  </data>
+  <data name="BudgetNearlySpent" xml:space="preserve">
+    <value>Budget {0:0.##} a month: nearly spent.</value>
+  </data>
+  <data name="BudgetSpent" xml:space="preserve">
+    <value>Budget {0:0.##} a month: spent.</value>
+  </data>
+  <data name="BudgetWithin" xml:space="preserve">
+    <value>Budget {0:0.##} a month: within it.</value>
+  </data>
+  <data name="UsageDrift" xml:space="preserve">
+    <value>{0}: {1} job(s), estimated {2:0.##}, charged {3:0.##}.</value>
+  </data>
+  <data name="PricesStale" xml:space="preserve">
+    <value>Its prices were read on {0:yyyy-MM-dd}, over 90 days ago, so the estimates may be off.</value>
+  </data>
+  <data name="PricesRead" xml:space="preserve">
+    <value>Prices read on {0:yyyy-MM-dd}.</value>
+  </data>
+  <data name="BalanceLeft" xml:space="preserve">
+    <value>{0} reports {1} left.</value>
+  </data>
+  <data name="BalanceUnavailable" xml:space="preserve">
+    <value>{0} could not be asked for its balance: {1}</value>
+  </data>
+  <data name="KeyStored" xml:space="preserve">
+    <value>A key is stored.</value>
+  </data>
+  <data name="NoKey" xml:space="preserve">
+    <value>No key.</value>
+  </data>
+  <data name="SaveAndTest" xml:space="preserve">
+    <value>Save and test</value>
+  </data>
+  <data name="GetAKey" xml:space="preserve">
+    <value>Get a key</value>
+  </data>
+  <data name="ApiKeyName" xml:space="preserve">
+    <value>{0} API key</value>
+  </data>
+  <data name="SaveAndTestName" xml:space="preserve">
+    <value>Save and test the {0} key</value>
+  </data>
+  <data name="RemoveKeyName" xml:space="preserve">
+    <value>Remove the {0} key</value>
+  </data>
+  <data name="GetKeyName" xml:space="preserve">
+    <value>Get a {0} key</value>
+  </data>
+  <data name="TypeKeyFirst" xml:space="preserve">
+    <value>Type the key first.</value>
+  </data>
+  <data name="TestingKey" xml:space="preserve">
+    <value>Testing the key…</value>
+  </data>
+  <data name="KeyNotSaved" xml:space="preserve">
+    <value>{0} It was not saved.</value>
+  </data>
+  <data name="ServiceUnreachable" xml:space="preserve">
+    <value>{0} could not be reached: {1}</value>
+  </data>
+  <data name="GenerateWith" xml:space="preserve">
+    <value>Generate with {0}</value>
+  </data>
+  <data name="GenerateWithCost" xml:space="preserve">
+    <value>Generate with {0} · ~{1}</value>
+  </data>
+  <data name="ConsentPhoto" xml:space="preserve">
+    <value>This photo, {0}, goes to {1}.{2}</value>
+  </data>
+  <data name="ConsentPhotoCost" xml:space="preserve">
+    <value>This photo, {0}, goes to {1} for about {2}.{3}</value>
+  </data>
+  <data name="KeyUnreadable" xml:space="preserve">
+    <value>{0}: the {1} key could not be read; store it again in About.</value>
+  </data>
+  <data name="WithService" xml:space="preserve">
+    <value>With {0}</value>
+  </data>
+  <data name="Remesh" xml:space="preserve">
+    <value>Remesh</value>
+  </data>
+  <data name="RemeshCost" xml:space="preserve">
+    <value>Remesh · ~{0}</value>
+  </data>
+  <data name="Retexture" xml:space="preserve">
+    <value>Retexture</value>
+  </data>
+  <data name="RetextureCost" xml:space="preserve">
+    <value>Retexture · ~{0}</value>
+  </data>
+  <data name="ConsentModel" xml:space="preserve">
+    <value>This model, {0} triangles, {1} as a GLB, goes to {2}.{3}</value>
+  </data>
+  <data name="ConsentModelCost" xml:space="preserve">
+    <value>This model, {0} triangles, {1} as a GLB, goes to {2} for about {3}.{4}</value>
+  </data>
+  <data name="ResumedJob" xml:space="preserve">
+    <value>{0} (resumed)</value>
+  </data>
+  <data name="ResumedKeyGone" xml:space="preserve">
+    <value>{0}: its key is gone, so it was left at the service.</value>
+  </data>
+  <data name="WaitingAt" xml:space="preserve">
+    <value>Waiting at {0}</value>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>Working</value>
+  </data>
+  <data name="WorkingProgress" xml:space="preserve">
+    <value>{0} · {1:P0}</value>
+  </data>
+  <data name="FetchingModel" xml:space="preserve">
+    <value>Fetching the model</value>
+  </data>
+  <data name="CloudDone" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
 </root>

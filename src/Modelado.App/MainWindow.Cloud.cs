@@ -41,29 +41,29 @@ public partial class MainWindow
     {
         StackPanel row = new() { Margin = new Thickness(0, 0, 0, 10) };
         row.Children.Add(new TextBlock { Text = service.DisplayName, FontWeight = FontWeights.SemiBold });
-        TextBlock status = new() { Style = (Style)FindResource("StatCaption"), TextWrapping = TextWrapping.Wrap, Text = cloudKeys.Has(service.Id) ? "A key is stored." : "No key." };
+        TextBlock status = new() { Style = (Style)FindResource("StatCaption"), TextWrapping = TextWrapping.Wrap, Text = cloudKeys.Has(service.Id) ? Strings.KeyStored : Strings.NoKey };
         PasswordBox key = new() { Margin = new Thickness(0, 4, 0, 4) };
-        Button save = new() { Content = "Save and test", Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0) };
-        Button remove = new() { Content = "Remove", Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0), IsEnabled = cloudKeys.Has(service.Id) };
-        Button page = new() { Content = "Get a key", Padding = new Thickness(12, 2, 12, 2) };
+        Button save = new() { Content = Strings.SaveAndTest, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0) };
+        Button remove = new() { Content = Strings.Remove, Padding = new Thickness(12, 2, 12, 2), Margin = new Thickness(0, 0, 8, 0), IsEnabled = cloudKeys.Has(service.Id) };
+        Button page = new() { Content = Strings.GetAKey, Padding = new Thickness(12, 2, 12, 2) };
         // Named by its own text, which is what a screen reader should say.
         AutomationProperties.SetAutomationId(status, $"CloudStatus-{service.Id}");
-        Identify(key, $"CloudKey-{service.Id}", $"{service.DisplayName} API key");
-        Identify(save, $"CloudSave-{service.Id}", $"Save and test the {service.DisplayName} key");
-        Identify(remove, $"CloudRemove-{service.Id}", $"Remove the {service.DisplayName} key");
-        Identify(page, $"CloudKeyPage-{service.Id}", $"Get a {service.DisplayName} key");
+        Identify(key, $"CloudKey-{service.Id}", Ui.Format(Strings.ApiKeyName, service.DisplayName));
+        Identify(save, $"CloudSave-{service.Id}", Ui.Format(Strings.SaveAndTestName, service.DisplayName));
+        Identify(remove, $"CloudRemove-{service.Id}", Ui.Format(Strings.RemoveKeyName, service.DisplayName));
+        Identify(page, $"CloudKeyPage-{service.Id}", Ui.Format(Strings.GetKeyName, service.DisplayName));
 
         save.Click += async (_, _) =>
         {
             string typed = key.Password.Trim();
             if (typed.Length == 0)
             {
-                status.Text = "Type the key first.";
+                status.Text = Strings.TypeKeyFirst;
                 return;
             }
 
             save.IsEnabled = false;
-            status.Text = "Testing the key…";
+            status.Text = Strings.TestingKey;
             try
             {
                 KeyCheck check = await service.ValidateKeyAsync(typed, CancellationToken.None).ConfigureAwait(true);
@@ -73,11 +73,11 @@ public partial class MainWindow
                     key.Clear();
                 }
 
-                status.Text = check.Valid ? check.Message : $"{check.Message} It was not saved.";
+                status.Text = check.Valid ? check.Message : Ui.Format(Strings.KeyNotSaved, check.Message);
             }
             catch (Exception error) when (error is HttpRequestException or TaskCanceledException or IOException or InvalidDataException or JsonException or InvalidOperationException)
             {
-                status.Text = $"{service.DisplayName} could not be reached: {error.Message}";
+                status.Text = Ui.Format(Strings.ServiceUnreachable, service.DisplayName, error.Message);
             }
             finally
             {
@@ -89,7 +89,7 @@ public partial class MainWindow
         remove.Click += (_, _) =>
         {
             cloudKeys.Remove(service.Id);
-            status.Text = "No key.";
+            status.Text = Strings.NoKey;
             remove.IsEnabled = false;
             UpdateCloudCard();
         };
@@ -150,8 +150,9 @@ public partial class MainWindow
         }
 
         CloudJobRequest request = CloudRequest(withImage: false);
-        string estimate = service.EstimateCost(request) is { } cost ? $" · ~{cost}" : "";
-        CloudGenerate.Content = $"Generate with {service.DisplayName}{estimate}";
+        CloudGenerate.Content = service.EstimateCost(request) is { } cost
+            ? Ui.Format(Strings.GenerateWithCost, service.DisplayName, cost)
+            : Ui.Format(Strings.GenerateWith, service.DisplayName);
         CloudGenerate.IsEnabled = !busy && (service.Capabilities & request.Action) == request.Action
             && (request.Action == CloudCapability.ImageTo3D ? photo is not null : !string.IsNullOrWhiteSpace(CloudPrompt.Text));
     }
@@ -185,10 +186,15 @@ public partial class MainWindow
         }
 
         CloudJobRequest request = CloudRequest(withImage: true);
-        string what = request.Image is { } image ? $"This photo, {Size(image.Length)}," : "This description";
-        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
+        CloudCost? estimate = service.EstimateCost(request);
         (string note, bool blocked) = BudgetNote(service, request);
-        CloudConsentText.Text = $"{what} goes to {service.DisplayName}{cost}.{note}";
+        CloudConsentText.Text = (request.Image, estimate) switch
+        {
+            ({ } image, null) => Ui.Format(Strings.ConsentPhoto, Size(image.Length), service.DisplayName, note),
+            ({ } image, _) => Ui.Format(Strings.ConsentPhotoCost, Size(image.Length), service.DisplayName, estimate, note),
+            (null, null) => Ui.Format(Strings.ConsentDescription, service.DisplayName, note),
+            _ => Ui.Format(Strings.ConsentDescriptionCost, service.DisplayName, estimate, note),
+        };
         CloudConsentSend.IsEnabled = !blocked;
         pendingCloud = request;
         CloudConsent.Visibility = Visibility.Visible;
@@ -222,7 +228,7 @@ public partial class MainWindow
         string title = CloudJobs.Label(service, request.Action);
         if (cloudKeys.Load(service.Id) is not { } key)
         {
-            LastRunSaid($"{title}: the {service.DisplayName} key could not be read; store it again in About.");
+            LastRunSaid(Ui.Format(Strings.KeyUnreadable, title, service.DisplayName));
             return;
         }
 
@@ -269,16 +275,17 @@ public partial class MainWindow
             return;
         }
 
-        CloudEditTitle.Text = $"With {service.DisplayName}";
+        CloudEditTitle.Text = Ui.Format(Strings.WithService, service.DisplayName);
         CloudKeepUv.IsEnabled = mesh.TexCoords is not null;
-        CloudRemesh.Content = $"Remesh{Estimate(service, CloudCapability.Remesh)}";
-        CloudRetexture.Content = $"Retexture{Estimate(service, CloudCapability.Retexture)}";
+        CloudRemesh.Content = Priced(service, CloudCapability.Remesh, Strings.Remesh, Strings.RemeshCost);
+        CloudRetexture.Content = Priced(service, CloudCapability.Retexture, Strings.Retexture, Strings.RetextureCost);
         CloudRemesh.IsEnabled = !busy && (service.Capabilities & CloudCapability.Remesh) != 0 && RemeshPolycount is not null;
         CloudRetexture.IsEnabled = !busy && (service.Capabilities & CloudCapability.Retexture) != 0 && !string.IsNullOrWhiteSpace(CloudRetexturePrompt.Text);
     }
 
-    private static string Estimate(ICloudProvider service, CloudCapability action) =>
-        service.EstimateCost(new CloudJobRequest(action)) is { } cost ? $" · ~{cost}" : "";
+    // The action's label, with its estimate where the service gives one.
+    private static string Priced(ICloudProvider service, CloudCapability action, string label, string labelWithCost) =>
+        service.EstimateCost(new CloudJobRequest(action)) is { } cost ? Ui.Format(labelWithCost, cost) : label;
 
     private CloudJobRequest CloudEditRequest(CloudCapability action, byte[] model) => action == CloudCapability.Remesh
         ? CloudRequests.Remesh(model, RemeshPolycount!.Value, CloudRemeshQuads.IsChecked == true)
@@ -300,9 +307,10 @@ public partial class MainWindow
         using MemoryStream glb = new();
         MeshExport.WriteGlb(mesh, glb);
         CloudJobRequest request = CloudEditRequest(action, glb.ToArray());
-        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
         (string note, bool blocked) = BudgetNote(service, request);
-        CloudEditConsentText.Text = string.Create(CultureInfo.InvariantCulture, $"This model, {mesh.TriangleCount} triangles, {Size(glb.Length)} as a GLB, goes to {service.DisplayName}{cost}.{note}");
+        CloudEditConsentText.Text = service.EstimateCost(request) is { } estimate
+            ? Ui.Format(Strings.ConsentModelCost, mesh.TriangleCount, Size(glb.Length), service.DisplayName, estimate, note)
+            : Ui.Format(Strings.ConsentModel, mesh.TriangleCount, Size(glb.Length), service.DisplayName, note);
         CloudEditSend.IsEnabled = !blocked;
         pendingCloud = request;
         CloudEditConsent.Visibility = Visibility.Visible;
@@ -338,11 +346,11 @@ public partial class MainWindow
             return;
         }
 
-        string title = $"{(CloudServices.FirstOrDefault(p => p.Id == id) is { } found ? CloudJobs.Label(found, action) : id)} (resumed)";
+        string title = Ui.Format(Strings.ResumedJob, CloudServices.FirstOrDefault(p => p.Id == id) is { } found ? CloudJobs.Label(found, action) : id);
         if (CloudServices.FirstOrDefault(p => p.Id == id) is not { } service || cloudKeys.Load(id) is not { } key)
         {
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
-            LastRunSaid($"{title}: its key is gone, so it was left at the service.");
+            LastRunSaid(Ui.Format(Strings.ResumedKeyGone, title));
             return;
         }
 
@@ -371,9 +379,9 @@ public partial class MainWindow
         {
             ProgressText.Text = status.State switch
             {
-                CloudJobState.Queued => $"Waiting at {service.DisplayName}",
-                CloudJobState.Running => string.Create(CultureInfo.CurrentCulture, $"{status.Message ?? "Working"} · {status.Progress:P0}"),
-                _ => "Fetching the model",
+                CloudJobState.Queued => Ui.Format(Strings.WaitingAt, service.DisplayName),
+                CloudJobState.Running => Ui.Format(Strings.WorkingProgress, status.Message ?? Strings.Working, status.Progress),
+                _ => Strings.FetchingModel,
             };
             ProgressBar.Value = status.Progress;
         });
@@ -389,18 +397,17 @@ public partial class MainWindow
             CloudResult result = await follow(Spending(), progress, Keep, cancel.Token).ConfigureAwait(true);
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
             await land(result).ConfigureAwait(true);
-            string spent = result.Actual is { } actual ? $" · {actual}" : "";
-            LastRunSaid($"{title}{spent}");
+            LastRunSaid(result.Actual is { } actual ? Ui.Format(Strings.CloudDone, title, actual) : title);
         }
         catch (OperationCanceledException)
         {
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
-            LastRunSaid($"{title}: cancelled");
+            LastRunSaid(Ui.Format(Strings.StepCancelled, title));
         }
         catch (Exception error) when (error is InvalidOperationException or HttpRequestException or InvalidDataException or IOException or JsonException)
         {
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);
-            LastRunSaid($"{title}: failed", error.Message);
+            LastRunSaid(Ui.Format(Strings.StepFailed, title), error.Message);
         }
         finally
         {

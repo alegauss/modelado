@@ -48,7 +48,7 @@ public partial class MainWindow
         catch (Exception error) when (error is HttpRequestException or InvalidDataException or TaskCanceledException)
         {
             // The built-in models still work; About says why the added ones are missing.
-            sourcesError = $"The added sources could not be read, so only the built-in models are offered: {error.Message}";
+            sourcesError = Ui.Format(Strings.SourcesUnreadable, error.Message);
             return loaded;
         }
     }
@@ -62,12 +62,12 @@ public partial class MainWindow
 
     private void FillSources()
     {
-        List<SourceRow> rows = [new(-1, "alegauss/modelado-models (built in)", "Source-0", "RemoveSource-0", "", Visibility.Collapsed)];
-        rows.AddRange(Sources.Select((s, i) => new SourceRow(i, s.Given == s.ManifestUrl ? s.Given : $"{s.Given} · {s.ManifestUrl}", $"Source-{i + 1}", $"RemoveSource-{i + 1}", $"Remove {s.Given}", Visibility.Visible)));
+        List<SourceRow> rows = [new(-1, Strings.BuiltInSource, "Source-0", "RemoveSource-0", "", Visibility.Collapsed)];
+        rows.AddRange(Sources.Select((s, i) => new SourceRow(i, s.Given == s.ManifestUrl ? s.Given : $"{s.Given}{Strings.ListSeparator}{s.ManifestUrl}", $"Source-{i + 1}", $"RemoveSource-{i + 1}", Ui.Format(Strings.RemoveNamed, s.Given), Visibility.Visible)));
         AboutSources.ItemsSource = rows;
         if (options.Manifest is not null)
         {
-            SaySource($"--manifest {options.Manifest} is used for this run instead of the built-in models and the added sources.");
+            SaySource(Ui.Format(Strings.ManifestOverride, options.Manifest));
         }
         else
         {
@@ -80,13 +80,13 @@ public partial class MainWindow
         string given = AboutSourceInput.Text.Trim();
         if (given.Length == 0)
         {
-            SaySource("Type a Hugging Face repository (owner/name) or a manifest URL first.");
+            SaySource(Strings.SourceTypeFirst);
             return;
         }
 
         if (Sources.Any(s => string.Equals(s.Given, given, StringComparison.OrdinalIgnoreCase)))
         {
-            SaySource($"{given} is already a source.");
+            SaySource(Ui.Format(Strings.SourceAlready, given));
             return;
         }
 
@@ -97,7 +97,7 @@ public partial class MainWindow
         {
             if (await ManifestAsync().ConfigureAwait(true) is null || builtInManifest is null)
             {
-                SaySource("The built-in model list could not be read, so nothing can be checked against it. Check the connection and try again.");
+                SaySource(Strings.BuiltInListUnreadable);
                 return;
             }
 
@@ -106,11 +106,14 @@ public partial class MainWindow
             ModelManifest listed = ModelManifest.Parse(await http.GetStringAsync(url).ConfigureAwait(true), loopback: url.IsLoopback);
             _ = ModelSources.Merge(builtInManifest, [.. await ReadSourcesAsync().ConfigureAwait(true), (source, listed)]);
             proposed = (source, listed);
-            AboutSourcePreviewTitle.Text = listed.Models.Count == 0
-                ? $"{source.Given} lists no models."
-                : $"{source.Given} lists {listed.Models.Count} model{(listed.Models.Count == 1 ? "" : "s")}. Add it?";
+            AboutSourcePreviewTitle.Text = listed.Models.Count switch
+            {
+                0 => Ui.Format(Strings.SourceListsNone, source.Given),
+                1 => Ui.Format(Strings.SourceListsOne, source.Given),
+                _ => Ui.Format(Strings.SourceListsMany, source.Given, listed.Models.Count),
+            };
             AboutSourcePreviewModels.ItemsSource = listed.Models
-                .Select(m => $"{m.Name} · {m.Task} · {Size(m.Variants.Values.Max(v => v.Bytes))} · {m.License}")
+                .Select(m => Ui.Format(Strings.SourceModelLine, m.Name, m.Task, Size(m.Variants.Values.Max(v => v.Bytes)), m.License))
                 .ToList();
             AboutSourceKeep.IsEnabled = listed.Models.Count > 0;
             AboutSourcePreview.Visibility = Visibility.Visible;
@@ -174,7 +177,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            sourcesError = $"The sources are used until Modelado closes but could not be saved: {error.Message}";
+            sourcesError = Ui.Format(Strings.SourcesNotSaved, error.Message);
         }
 
         // Read again with the sources as they now are, so the cards offer what they list.
@@ -203,8 +206,8 @@ public partial class MainWindow
     private void FillDepthChoices(ModelManifest? listed)
     {
         IReadOnlyList<string> names = listed is null ? [] : ModelSources.ForTask(listed, ReliefReconstruction.DepthTask);
-        List<DepthChoice> choices = [new(ReliefReconstruction.Depth, "Depth Anything V2 Small (built in)")];
-        choices.AddRange(names.Where(sourceOfModel.ContainsKey).Select(n => new DepthChoice(n, $"{n} ({sourceOfModel[n]})")));
+        List<DepthChoice> choices = [new(ReliefReconstruction.Depth, Strings.DepthBuiltIn)];
+        choices.AddRange(names.Where(sourceOfModel.ContainsKey).Select(n => new DepthChoice(n, Ui.Format(Strings.DepthFromSource, n, sourceOfModel[n]))));
         string keep = DepthModel;
         fillingDepth = true;
         ReliefDepthModel.ItemsSource = choices;
