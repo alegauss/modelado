@@ -1362,4 +1362,16 @@
   <data name="CloudDone" xml:space="preserve">
     <value>{0} · {1}</value>
   </data>
+  <data name="LanguageTitle" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LanguageWindows" xml:space="preserve">
+    <value>Windows display language ({0})</value>
+  </data>
+  <data name="LanguageNow" xml:space="preserve">
+    <value>The window is in {0}.</value>
+  </data>
+  <data name="LanguageNextStart" xml:space="preserve">
+    <value>The window will be in {0} the next time Modelado starts.</value>
+  </data>
 </root>

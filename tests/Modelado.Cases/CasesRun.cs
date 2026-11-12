@@ -23,6 +23,9 @@ namespace Modelado.Cases;
 /// </summary>
 public sealed class CasesRun
 {
+    // Modelado.Inference's LanguageSetting.Variable; this project does not reference the app's libraries.
+    private const string LanguageVariable = "MODELADO_LANGUAGE";
+
     private static bool Live => Environment.GetEnvironmentVariable("MODELADO_LIVE") == "1";
 
     // MOD78: MODELADO_PACKAGED=1 runs cases-packaged, whose fixtures start the registered Store
@@ -56,6 +59,11 @@ public sealed class CasesRun
         }
 
         ProjectDeclaration project = ForThisBuild(Repository.Root, Live ? "winwright.live.json" : "winwright.json");
+
+        // MOD86: the cases read English text, so every window they start is in English, whatever
+        // the desk's display language or the language a case chooses in About. Inherited by each
+        // process winwright starts.
+        Environment.SetEnvironmentVariable(LanguageVariable, "en");
 
         // MOD11: what the download cases fetch, through --manifest, from this machine.
         using FixtureServer downloads = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));

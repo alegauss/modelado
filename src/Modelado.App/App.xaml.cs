@@ -16,12 +16,14 @@ public partial class App : Application
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        // MOD49: the window speaks English, its text in Properties/Strings.resx (MOD85), so it
-        // formats in one culture too: 980,000 triangles and 0.8 s on every machine, set before any
-        // window or thread exists.
-        CultureInfo english = CultureInfo.GetCultureInfo("en-US");
-        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = english;
-        CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = english;
+        // MOD49: numbers are formatted in one culture on every machine, 980,000 triangles and 0.8 s,
+        // which the files and the cloud requests written from them depend on. MOD86: the text is in
+        // the language About chose, Windows' own otherwise, where a translation of Strings.resx
+        // (MOD85) ships for it. Both are set before any window or thread exists.
+        CultureInfo numbers = CultureInfo.GetCultureInfo("en-US");
+        CultureInfo language = InterfaceLanguage.ForThisRun();
+        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CurrentCulture = numbers;
+        CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CurrentUICulture = language;
         base.OnStartup(e);
         AddBrandBrushes();
 

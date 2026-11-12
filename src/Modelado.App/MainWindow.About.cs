@@ -55,6 +55,7 @@ public partial class MainWindow
         AboutProviderReason.Text = reason;
         AboutProviderReason.Visibility = reason.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
         FillUpdates();
+        FillLanguage();
         FillCloudServices();
 
         AboutModelsFolder.Text = Ui.Format(Strings.ModelsFrom, string.Join(Strings.ListAnd, library.Roots.Select(PackageIdentity.Visible)));

@@ -110,6 +110,21 @@ public sealed partial class StringResourceTests
         Assert.Empty(unused);
     }
 
+    // MOD86: the Store lists the languages the package declares, so each translation the app ships
+    // (Strings.<language>.resx) is declared beside English, and nothing else is.
+    [Fact]
+    public void EveryShippedTranslationIsDeclaredToTheStore()
+    {
+        string manifest = File.ReadAllText(Path.Combine(Repository.Root, "build", "msix", "AppxManifest.xml"));
+        string[] declared = [.. DeclaredLanguage().Matches(manifest).Select(m => m.Groups["language"].Value.ToLowerInvariant()).Order(StringComparer.Ordinal)];
+        string[] shipped = [.. Directory.EnumerateFiles(Path.Combine(App, "Properties"), "Strings.*.resx")
+            .Select(path => Path.GetFileNameWithoutExtension(path)["Strings.".Length..].ToLowerInvariant())
+            .Append("en-us")
+            .Order(StringComparer.Ordinal)];
+
+        Assert.Equal(shipped, declared);
+    }
+
     [Fact]
     public void TheResourceFileIsTheNeutralCultureTheAssemblyDeclares()
     {
@@ -136,4 +151,7 @@ public sealed partial class StringResourceTests
 
     [GeneratedRegex(@"\{[^{}]*\}")]
     private static partial Regex Holes();
+
+    [GeneratedRegex(@"<Resource Language=""(?<language>[^""]+)""")]
+    private static partial Regex DeclaredLanguage();
 }

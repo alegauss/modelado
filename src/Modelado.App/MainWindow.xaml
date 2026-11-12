@@ -623,6 +623,13 @@
                      Text="{x:Static p:Strings.CloudServicesCaption}" />
           <StackPanel x:Name="AboutCloudServices" AutomationProperties.AutomationId="AboutCloudServices" Margin="0,0,0,16" />
 
+          <!-- MOD86: the interface language, saved per user and applied at the next start; Windows'
+               own display language until one is chosen. -->
+          <TextBlock Text="{x:Static p:Strings.LanguageTitle}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <ComboBox x:Name="AboutLanguage" AutomationProperties.AutomationId="AboutLanguage" AutomationProperties.Name="{x:Static p:Strings.LanguageTitle}"
+                    HorizontalAlignment="Left" MinWidth="260" SelectionChanged="OnLanguageChanged" />
+          <TextBlock x:Name="AboutLanguageNote" AutomationProperties.AutomationId="AboutLanguageNote" Style="{StaticResource StatCaption}" Margin="0,6,0,16" />
+
           <!-- MOD18: what the provider flag sets, chosen here, saved per user and applied to the next operation. -->
           <TextBlock Text="{x:Static p:Strings.WhereInferenceRuns}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <RadioButton x:Name="ProviderAuto" AutomationProperties.AutomationId="ProviderAuto" GroupName="Provider" Checked="OnProviderChanged"

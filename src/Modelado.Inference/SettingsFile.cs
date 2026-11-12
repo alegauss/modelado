@@ -119,3 +119,89 @@ public static class UpdateSetting
     /// <param name="on">On.</param>
     public static void Save(string path, bool on) => SettingsFile.Write(path, Key, JsonValue.Create(on));
 }
+
+/// <summary>
+/// The language the window's text is in (MOD86): the one chosen in About, or Windows' display
+/// language where none is. Only the interface follows it; numbers keep one format (MOD49).
+/// </summary>
+public static class LanguageSetting
+{
+    private const string Key = "language";
+
+    /// <summary>The variable that overrides every other choice for one run, as the UI cases set it to "en".</summary>
+    public const string Variable = "MODELADO_LANGUAGE";
+
+    /// <summary>English, the text the app is written in and the fallback for any other.</summary>
+    public const string English = "en";
+
+    /// <summary>Every language the interface is meant to be translated into, English first (MOD87 to MOD91).</summary>
+    public static IReadOnlyList<string> Planned { get; } = [English, "pt-BR", "de", "fr", "es", "zh-Hans"];
+
+    /// <summary>The language chosen in About.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <returns>Its name, e.g. pt-BR, or null to follow Windows.</returns>
+    public static string? Load(string path)
+    {
+        try
+        {
+            return SettingsFile.Read(path, Key)?.GetValue<string>() is { Length: > 0 } name ? name : null;
+        }
+        catch (Exception error) when (error is InvalidOperationException or FormatException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Keeps the choice, or forgets it to follow Windows again.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="language">A language's name, or null for Windows' own.</param>
+    public static void Save(string path, string? language)
+    {
+        if (language is null)
+        {
+            SettingsFile.Remove(path, Key);
+        }
+        else
+        {
+            SettingsFile.Write(path, Key, JsonValue.Create(language));
+        }
+    }
+
+    /// <summary>
+    /// The language the interface shows: the variable's, then the one chosen, then Windows' display
+    /// language, each only where a translation into it is available, matched by name and then by
+    /// its parents (zh-CN finds zh-Hans, pt-PT finds pt-BR); English when none is.
+    /// </summary>
+    /// <param name="pinned">The variable's value, or null.</param>
+    /// <param name="chosen">The language chosen in About, or null.</param>
+    /// <param name="windows">Windows' display language.</param>
+    /// <param name="available">The languages a translation exists for; English is always one.</param>
+    /// <returns>The language's name.</returns>
+    public static string Resolve(string? pinned, string? chosen, System.Globalization.CultureInfo windows, IReadOnlyCollection<string> available)
+    {
+        ArgumentNullException.ThrowIfNull(windows);
+        ArgumentNullException.ThrowIfNull(available);
+        foreach (string? asked in (string?[])[pinned, chosen])
+        {
+            if (asked is not null && available.FirstOrDefault(name => string.Equals(name, asked, StringComparison.OrdinalIgnoreCase)) is { } exact)
+            {
+                return exact;
+            }
+        }
+
+        for (System.Globalization.CultureInfo culture = windows; culture.Name.Length > 0; culture = culture.Parent)
+        {
+            if (available.FirstOrDefault(name => Related(name, culture.Name)) is { } match)
+            {
+                return match;
+            }
+        }
+
+        return English;
+    }
+
+    // pt-PT and pt-BR are one language to a reader who has no other; zh-Hans and zh-CN too.
+    private static bool Related(string available, string windows) =>
+        string.Equals(available, windows, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(System.Globalization.CultureInfo.GetCultureInfo(available).TwoLetterISOLanguageName, windows, StringComparison.OrdinalIgnoreCase);
+}

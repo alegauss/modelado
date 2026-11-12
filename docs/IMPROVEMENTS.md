@@ -485,20 +485,6 @@ and files the follow-up or the reason not to.
 
 ## Block K — Translated interface
 
-### §MOD86 MOD86 — Interface language follows Windows, with a setting
-
-App.xaml.cs pins both culture and UI culture to en-US (MOD49, held by CultureTests).
-Split the two. CurrentCulture stays invariant-safe for numbers written to files, the
-formats MeshExport and the cloud requests depend on. CurrentUICulture takes the language
-chosen in settings, which defaults to the Windows display language when a satellite
-assembly exists for it, and to English otherwise. The supported list is en, pt-BR, de,
-fr, es and zh-Hans. A language change asks for a restart rather than re-binding the live
-window. CultureTests is rewritten to hold the split. The winwright cases pin English
-through a command-line switch or environment variable, so they keep asserting on English
-text whatever the guest's display language. One case changes the setting and checks that
-the choice persists. The MSIX manifest declares the shipped languages in Resources so
-the Store lists them.
-
 ### §MOD87 MOD87 — Brazilian Portuguese (pt-BR)
 
 Add Strings.pt-BR.resx with every key from the English file. Terms of the trade (mesh,

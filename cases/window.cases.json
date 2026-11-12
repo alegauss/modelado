@@ -103,6 +103,14 @@
       "shareable": false
     },
     {
+      // MOD86: LOCALAPPDATA staged empty, so the language About saves is this run's own.
+      "name": "a window with no saved settings, to choose the interface language",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -822,6 +830,27 @@
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "and opened again" },
         { "locator": "CheckBox#AboutAutoUpdate", "act": "read", "reads": "toggle", "expect": "Off", "named": "the choice was kept" }
+      ]
+    },
+
+    {
+      "name": "the interface language chosen in About is saved and read back",
+      "catches": "a language list that offers nothing, a choice that is not saved, or About that does not read it back when opened again",
+      "filed": "MOD86",
+      "tags": ["about", "language"],
+      "fixture": "a window with no saved settings, to choose the interface language",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "The window is in English.", "named": "the cases pin English, so the window is in English" },
+        { "locator": "ComboBox#AboutLanguage", "act": "expand", "named": "the language list is opened" },
+        { "locator": "ComboBox#AboutLanguage > ListItem[order=top]", "act": "read", "reads": "name", "matches": "^Windows display language \\(.+\\)$", "named": "Windows' own language comes first, naming the one it gives" },
+        { "locator": "ComboBox#AboutLanguage > ListItem[order=top]", "act": "read", "reads": "selected", "expect": "selected", "named": "and is the choice with nothing saved" },
+        { "locator": "ComboBox#AboutLanguage > ListItem[name=\"English\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "English, named in its own words, is chosen" },
+        { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "and opened again" },
+        { "locator": "ComboBox#AboutLanguage", "act": "expand", "named": "the list is opened again" },
+        { "locator": "ComboBox#AboutLanguage > ListItem[name=\"English\"]", "act": "read", "reads": "selected", "expect": "selected", "named": "the saved choice is read back" },
+        { "locator": "ComboBox#AboutLanguage", "act": "collapse", "named": "the list is closed" }
       ]
     },
 
