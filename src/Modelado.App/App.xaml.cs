@@ -16,7 +16,7 @@ public partial class App : Application
     {
         ArgumentNullException.ThrowIfNull(e);
 
-        // MOD49: the window speaks English only (a multilingual interface is a non-goal), so it
+        // MOD49: the window speaks English, its text in Properties/Strings.resx (MOD85), so it
         // formats in one culture too: 980,000 triangles and 0.8 s on every machine, set before any
         // window or thread exists.
         CultureInfo english = CultureInfo.GetCultureInfo("en-US");

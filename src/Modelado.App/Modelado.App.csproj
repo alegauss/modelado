@@ -24,6 +24,28 @@
     <Resource Include="Modelado.ico" />
   </ItemGroup>
 
+  <!-- MOD85: every string the interface shows, in English, the neutral culture a translation's
+       Strings.<culture>.resx fills. The Strings class is generated from it at build time, into
+       obj, so the file and the class cannot drift apart; XAML reads it through x:Static. -->
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Strings.resx">
+      <Generator>MSBuild:Compile</Generator>
+      <StronglyTypedFileName>$(IntermediateOutputPath)Strings.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedNamespace>Modelado.App.Properties</StronglyTypedNamespace>
+      <StronglyTypedClassName>Strings</StronglyTypedClassName>
+      <PublicClass>true</PublicClass>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- The class has to exist before the XAML is compiled, and WPF's temporary markup assembly
+       (the *_wpftmp project, the one build that sets _TargetAssemblyProjectName) runs no resource
+       generation of its own: so it is generated first and handed to that build by path. -->
+  <Target Name="GenerateStringsBeforeMarkup" BeforeTargets="MarkupCompilePass1" DependsOnTargets="PrepareResourceNames;CoreResGen" />
+  <ItemGroup Condition="'$(_TargetAssemblyProjectName)' != ''">
+    <Compile Include="$(IntermediateOutputPath)Strings.Designer.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Modelado.Imaging\Modelado.Imaging.csproj" />
     <ProjectReference Include="..\Modelado.Geometry\Modelado.Geometry.csproj" />

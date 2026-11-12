@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppName" xml:space="preserve">
+    <value>Modelado</value>
+  </data>
+  <data name="ViewLabel" xml:space="preserve">
+    <value>View:</value>
+  </data>
+  <data name="ModelInColour" xml:space="preserve">
+    <value>Model in colour</value>
+  </data>
+  <data name="ModelInClay" xml:space="preserve">
+    <value>Model in clay</value>
+  </data>
+  <data name="MeshEdges" xml:space="preserve">
+    <value>Mesh (edges)</value>
+  </data>
+  <data name="InputPhoto" xml:space="preserve">
+    <value>Input photo</value>
+  </data>
+  <data name="ResetViewButtonTip" xml:space="preserve">
+    <value>Front view (Home). Double-clicking the model does the same.</value>
+  </data>
+  <data name="SaveViewButtonTip" xml:space="preserve">
+    <value>Save view as image: this camera and view style as a PNG, 1024 to 4096 px on the long side, on a transparent background</value>
+  </data>
+  <data name="ToolbarOpenTip" xml:space="preserve">
+    <value>Open a photo of an object (PNG, JPEG, WebP) to make a model from, or a 3D model (GLB, OBJ, PLY, STL) to edit. You can also drop the file on the window. (Ctrl+O)</value>
+  </data>
+  <data name="ToolbarSaveAsTip" xml:space="preserve">
+    <value>Save the model as GLB, OBJ, PLY or STL (Ctrl+S)</value>
+  </data>
+  <data name="SendToBlenderButtonTip" xml:space="preserve">
+    <value>Send to Blender: put the version shown on the object it came from, as one step of Blender's undo</value>
+  </data>
+  <data name="SendToBlender" xml:space="preserve">
+    <value>Send to Blender</value>
+  </data>
+  <data name="UndoButtonTip" xml:space="preserve">
+    <value>Undo: back to the previous version of the model (Ctrl+Z)</value>
+  </data>
+  <data name="RedoButtonTip" xml:space="preserve">
+    <value>Redo (Ctrl+Y or Ctrl+Shift+Z)</value>
+  </data>
+  <data name="RotateXButtonTip" xml:space="preserve">
+    <value>Turn 90° about the X axis, for a model lying down</value>
+  </data>
+  <data name="RotateYButtonTip" xml:space="preserve">
+    <value>Turn 90° about the vertical axis</value>
+  </data>
+  <data name="RotateZButtonTip" xml:space="preserve">
+    <value>Turn 90° about the Z axis</value>
+  </data>
+  <data name="MirrorButtonTip" xml:space="preserve">
+    <value>Mirror left to right</value>
+  </data>
+  <data name="DropTitle" xml:space="preserve">
+    <value>Drop a photo or a 3D model here</value>
+  </data>
+  <data name="OpenButton" xml:space="preserve">
+    <value>Open…</value>
+  </data>
+  <data name="DropAdvice" xml:space="preserve">
+    <value>Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it.</value>
+  </data>
+  <data name="TheObject" xml:space="preserve">
+    <value>The object</value>
+  </data>
+  <data name="GeneratePromptTip" xml:space="preserve">
+    <value>What to draw, e.g. a wooden chair.</value>
+  </data>
+  <data name="AskedAs" xml:space="preserve">
+    <value>Asked as</value>
+  </data>
+  <data name="GenerateTemplate" xml:space="preserve">
+    <value>{object}, one whole object, centred, three-quarter view from slightly above, soft even studio light, plain light grey background, no text, nothing else in the picture</value>
+  </data>
+  <data name="GenerateTemplateTip" xml:space="preserve">
+    <value>{object} is replaced by the object; the rest asks for what a 3D reconstruction works best from.</value>
+  </data>
+  <data name="GenerateAspectSquare" xml:space="preserve">
+    <value>Square</value>
+  </data>
+  <data name="GenerateSpeedQuick" xml:space="preserve">
+    <value>Quick</value>
+  </data>
+  <data name="GenerateSpeedDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="GenerateSpeedBest" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="GenerateCountOne" xml:space="preserve">
+    <value>1 image</value>
+  </data>
+  <data name="GenerateCountTwo" xml:space="preserve">
+    <value>2 images</value>
+  </data>
+  <data name="GenerateCountThree" xml:space="preserve">
+    <value>3 images</value>
+  </data>
+  <data name="GenerateCountFour" xml:space="preserve">
+    <value>4 images</value>
+  </data>
+  <data name="SendIt" xml:space="preserve">
+    <value>Send it</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="ViewerHint" xml:space="preserve">
+    <value>Drag to turn · mouse wheel to zoom · double-click to recentre</value>
+  </data>
+  <data name="OperationsTitle" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="PauseButton" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="ObjectCardTitle" xml:space="preserve">
+    <value>3D Object</value>
+  </data>
+  <data name="ObjectCardCaption" xml:space="preserve">
+    <value>A whole model, with the front, sides and back TripoSR infers from a single photo. Coloured per vertex.</value>
+  </data>
+  <data name="MeshResolution" xml:space="preserve">
+    <value>Mesh resolution</value>
+  </data>
+  <data name="ObjectResolution128" xml:space="preserve">
+    <value>128 · quick draft</value>
+  </data>
+  <data name="ObjectResolution256" xml:space="preserve">
+    <value>256 · TripoSR default</value>
+  </data>
+  <data name="ObjectResolution384" xml:space="preserve">
+    <value>384 · fine</value>
+  </data>
+  <data name="ObjectThresholdLabel" xml:space="preserve">
+    <value>Thickness (density threshold): </value>
+  </data>
+  <data name="ObjectThresholdTip" xml:space="preserve">
+    <value>Lower fattens the object and closes holes; higher thins it and separates parts. 25 is TripoSR's own.</value>
+  </data>
+  <data name="ObjectRemoveBackground" xml:space="preserve">
+    <value>Remove the photo's background (U²-Net)</value>
+  </data>
+  <data name="ObjectRemoveBackgroundTip" xml:space="preserve">
+    <value>Turn off only for a PNG already cut out, with transparency: that one is used as it is.</value>
+  </data>
+  <data name="ObjectProjectPhoto" xml:space="preserve">
+    <value>Sharp photo colours on the front</value>
+  </data>
+  <data name="ObjectProjectPhotoTip" xml:space="preserve">
+    <value>TripoSR colours from a 64 × 64 grid; this lays the photo's own colours back on the side it shows.</value>
+  </data>
+  <data name="ObjectEnhancePhoto" xml:space="preserve">
+    <value>Enhance a small photo first (Real-ESRGAN)</value>
+  </data>
+  <data name="ObjectEnhancePhotoTip" xml:space="preserve">
+    <value>For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing.</value>
+  </data>
+  <data name="ObjectAdvancedHeader" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="ObjectEveryPoint" xml:space="preserve">
+    <value>Sample every grid point (slower, catches thin parts)</value>
+  </data>
+  <data name="ObjectEveryPointTip" xml:space="preserve">
+    <value>Evaluates all of the grid instead of about a quarter of it, so sampling takes about 4× as long; thin legs and handles the coarse pass skips are kept.</value>
+  </data>
+  <data name="ObjectSmoothingLabel" xml:space="preserve">
+    <value>Smoothing passes: </value>
+  </data>
+  <data name="ObjectSmoothingTip" xml:space="preserve">
+    <value>Taubin passes after the surface is drawn; 0 keeps the raw mesh to sculpt from. Each pass is a small share of a run at 256.</value>
+  </data>
+  <data name="ObjectPiecesLabel" xml:space="preserve">
+    <value>Drop loose pieces under </value>
+  </data>
+  <data name="ObjectPiecesTip" xml:space="preserve">
+    <value>Fragments smaller than this share of the largest part are dropped; 0 keeps every piece. It adds next to nothing to the run's time.</value>
+  </data>
+  <data name="ObjectButton" xml:space="preserve">
+    <value>Generate 3D object</value>
+  </data>
+  <data name="ReliefCardTitle" xml:space="preserve">
+    <value>Relief</value>
+  </data>
+  <data name="ReliefCardCaption" xml:space="preserve">
+    <value>Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings.</value>
+  </data>
+  <data name="DepthModel" xml:space="preserve">
+    <value>Depth model</value>
+  </data>
+  <data name="ReliefResolution256" xml:space="preserve">
+    <value>256 · default</value>
+  </data>
+  <data name="ReliefResolution512" xml:space="preserve">
+    <value>512 · fine</value>
+  </data>
+  <data name="ReliefDepthLabel" xml:space="preserve">
+    <value>Relief height: </value>
+  </data>
+  <data name="ReliefDepthTip" xml:space="preserve">
+    <value>How far the nearest point stands out, as a share of the width.</value>
+  </data>
+  <data name="ReliefBaseLabel" xml:space="preserve">
+    <value>Solid base: </value>
+  </data>
+  <data name="BaseText" xml:space="preserve">
+    <value>no base</value>
+  </data>
+  <data name="ReliefBaseTip" xml:space="preserve">
+    <value>With a base the mesh is closed (solid) and can go to a 3D printer. Without one it is only the surface.</value>
+  </data>
+  <data name="ReliefRemoveBackground" xml:space="preserve">
+    <value>Object only (remove the background)</value>
+  </data>
+  <data name="ReliefButton" xml:space="preserve">
+    <value>Generate relief</value>
+  </data>
+  <data name="CloudCardTitle" xml:space="preserve">
+    <value>Cloud 3D</value>
+  </data>
+  <data name="CloudCardCaption" xml:space="preserve">
+    <value>A textured model from a cloud service, from the open photo or a description. What is sent, and what it costs, is said before it goes.</value>
+  </data>
+  <data name="CloudServiceLabel" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="CloudFromPhoto" xml:space="preserve">
+    <value>From the photo</value>
+  </data>
+  <data name="CloudFromText" xml:space="preserve">
+    <value>From a description</value>
+  </data>
+  <data name="CloudTexture" xml:space="preserve">
+    <value>Textured</value>
+  </data>
+  <data name="CloudTextureTip" xml:space="preserve">
+    <value>Off gives the bare shape, for less.</value>
+  </data>
+  <data name="CloudPbr" xml:space="preserve">
+    <value>PBR maps (metal, roughness, normals)</value>
+  </data>
+  <data name="QuadTopology" xml:space="preserve">
+    <value>Quad topology</value>
+  </data>
+  <data name="CloudQuadsTip" xml:space="preserve">
+    <value>Quads rather than triangles, for editing in Blender.</value>
+  </data>
+  <data name="EditCardTitle" xml:space="preserve">
+    <value>Edit and improve</value>
+  </data>
+  <data name="EditCardCaption" xml:space="preserve">
+    <value>For the generated model or an opened 3D model. Every step can be undone.</value>
+  </data>
+  <data name="SimplifyLabelBefore" xml:space="preserve">
+    <value>Simplify to </value>
+  </data>
+  <data name="SimplifyLabelAfter" xml:space="preserve">
+    <value> of the triangles</value>
+  </data>
+  <data name="SimplifyAmountTip" xml:space="preserve">
+    <value>Fewer triangles: a smaller, lighter file for games, the web and slicers, with the shape kept.</value>
+  </data>
+  <data name="SimplifyButton" xml:space="preserve">
+    <value>Simplify</value>
+  </data>
+  <data name="SubdivideButton" xml:space="preserve">
+    <value>Subdivide</value>
+  </data>
+  <data name="SubdivideButtonTip" xml:space="preserve">
+    <value>4× the triangles, rounded off: a smoother surface for printing large.</value>
+  </data>
+  <data name="FillHolesButton" xml:space="preserve">
+    <value>Fill holes</value>
+  </data>
+  <data name="FillHolesButtonTip" xml:space="preserve">
+    <value>Closes the holes in the mesh, so it is solid (watertight) for printing.</value>
+  </data>
+  <data name="PiecesButton" xml:space="preserve">
+    <value>Remove loose pieces</value>
+  </data>
+  <data name="PiecesButtonTip" xml:space="preserve">
+    <value>Deletes the loose fragments smaller than this share of the largest part.</value>
+  </data>
+  <data name="PiecesText" xml:space="preserve">
+    <value>under 5%</value>
+  </data>
+  <data name="SmoothButton" xml:space="preserve">
+    <value>Smooth</value>
+  </data>
+  <data name="SmoothButtonTip" xml:space="preserve">
+    <value>Removes jagged edges and noise without shrinking the model (Taubin), in this many passes.</value>
+  </data>
+  <data name="SmoothText" xml:space="preserve">
+    <value>3 passes</value>
+  </data>
+  <data name="FlattenButton" xml:space="preserve">
+    <value>Flat base</value>
+  </data>
+  <data name="FlattenButtonTip" xml:space="preserve">
+    <value>Flattens this share of the model's height from the bottom, so it stands on the printer bed.</value>
+  </data>
+  <data name="WithAI" xml:space="preserve">
+    <value>With AI</value>
+  </data>
+  <data name="UpscaleTextureButton" xml:space="preserve">
+    <value>4× sharper texture (Real-ESRGAN)</value>
+  </data>
+  <data name="UpscaleTextureButtonTip" xml:space="preserve">
+    <value>For textured models (reliefs, opened OBJ and GLB): upscales and cleans the texture image, up to 4096 px.</value>
+  </data>
+  <data name="NewTextureButtonTip" xml:space="preserve">
+    <value>Draws a seamless material (wood, stone, painted metal) and puts it on the model's surface.</value>
+  </data>
+  <data name="Material" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="NewTexturePromptTip" xml:space="preserve">
+    <value>For example: weathered grey stone, oak planks, red painted metal.</value>
+  </data>
+  <data name="ReprojectButton" xml:space="preserve">
+    <value>Reapply the photo's colours</value>
+  </data>
+  <data name="ReprojectButtonTip" xml:space="preserve">
+    <value>Puts the photo's sharp colours back on the front of the object, for example after subdividing.</value>
+  </data>
+  <data name="Triangles" xml:space="preserve">
+    <value>triangles</value>
+  </data>
+  <data name="CloudRemeshPolycountTip" xml:space="preserve">
+    <value>100 to 300,000: the clean mesh's triangle count.</value>
+  </data>
+  <data name="CloudRetexturePromptTip" xml:space="preserve">
+    <value>What the new surface looks like, e.g. weathered oak, painted steel.</value>
+  </data>
+  <data name="CloudKeepUv" xml:space="preserve">
+    <value>Keep the model's UVs</value>
+  </data>
+  <data name="ExportCardTitle" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ExportFormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="ExportFormatGlb" xml:space="preserve">
+    <value>GLB · Windows, Blender, the web</value>
+  </data>
+  <data name="ExportFormatObj" xml:space="preserve">
+    <value>OBJ · with its texture or colours</value>
+  </data>
+  <data name="ExportFormatPly" xml:space="preserve">
+    <value>PLY · with colours, MeshLab</value>
+  </data>
+  <data name="ExportFormatStl" xml:space="preserve">
+    <value>STL · 3D printing</value>
+  </data>
+  <data name="ExportObjTexture" xml:space="preserve">
+    <value>Texture, as an .mtl and a .png beside it</value>
+  </data>
+  <data name="ExportObjVertexColours" xml:space="preserve">
+    <value>Colours per vertex, in the .obj alone</value>
+  </data>
+  <data name="ExportGlbStandard" xml:space="preserve">
+    <value>Standard, opens in every viewer</value>
+  </data>
+  <data name="ExportGlbCompact" xml:space="preserve">
+    <value>Compact, about half the size: the web, Blender</value>
+  </data>
+  <data name="ExportPlyBinary" xml:space="preserve">
+    <value>Binary, smaller and faster</value>
+  </data>
+  <data name="ExportPlyAscii" xml:space="preserve">
+    <value>ASCII, readable as text</value>
+  </data>
+  <data name="LongestSide" xml:space="preserve">
+    <value>Longest side</value>
+  </data>
+  <data name="ExportSaveAs" xml:space="preserve">
+    <value>Save as…</value>
+  </data>
+  <data name="OpenInBlender" xml:space="preserve">
+    <value>Open in Blender</value>
+  </data>
+  <data name="OpenInBlenderTip" xml:space="preserve">
+    <value>Start Blender with this model imported into an empty scene</value>
+  </data>
+  <data name="HistoryCardTitle" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="QualityCardTitle" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="QualityStandard" xml:space="preserve">
+    <value>Standard (FP16 on the GPU, half the download)</value>
+  </data>
+  <data name="QualityHigh" xml:space="preserve">
+    <value>High quality (FP32 throughout)</value>
+  </data>
+  <data name="QualityCaption" xml:space="preserve">
+    <value>On the CPU, FP32 is always used because it is faster there. Models are downloaded from Hugging Face on first use and checked by SHA-256.</value>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="UpdatesTitle" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="AboutCheckUpdates" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="AboutReleasePage" xml:space="preserve">
+    <value>Open the release page</value>
+  </data>
+  <data name="AboutInstallUpdate" xml:space="preserve">
+    <value>Update and restart</value>
+  </data>
+  <data name="AboutUpdateUnsaved" xml:space="preserve">
+    <value>The model shown has not been saved, and restarting loses it and its history. Save it with Save as first, or update anyway.</value>
+  </data>
+  <data name="AboutUpdateAnyway" xml:space="preserve">
+    <value>Update and lose it</value>
+  </data>
+  <data name="AboutUpdateKeep" xml:space="preserve">
+    <value>Keep it</value>
+  </data>
+  <data name="AboutAutoUpdate" xml:space="preserve">
+    <value>Check for updates by itself, once a day</value>
+  </data>
+  <data name="AboutAutoUpdateTip" xml:space="preserve">
+    <value>Asks api.github.com for the latest release, sending only Modelado's name and version.</value>
+  </data>
+  <data name="CloudServices" xml:space="preserve">
+    <value>Cloud services</value>
+  </data>
+  <data name="CloudServicesCaption" xml:space="preserve">
+    <value>Optional. With a key, the service's actions appear beside the local ones, and nothing is sent until you agree to it each time.</value>
+  </data>
+  <data name="WhereInferenceRuns" xml:space="preserve">
+    <value>Where inference runs</value>
+  </data>
+  <data name="ProviderAuto" xml:space="preserve">
+    <value>Automatic (the GPU with DirectML when it works, the CPU otherwise)</value>
+  </data>
+  <data name="ProviderDirectML" xml:space="preserve">
+    <value>GPU (DirectML)</value>
+  </data>
+  <data name="ProviderCpu" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="ProviderCpuTip" xml:space="preserve">
+    <value>For a GPU that fails or is slower than the CPU for a model.</value>
+  </data>
+  <data name="ProviderCaption" xml:space="preserve">
+    <value>The choice applies to the next operation and is kept for the next start; --provider on the command line still wins for that run.</value>
+  </data>
+  <data name="ModelsTitle" xml:space="preserve">
+    <value>Models</value>
+  </data>
+  <data name="ModelSources" xml:space="preserve">
+    <value>Model sources</value>
+  </data>
+  <data name="ModelSourcesCaption" xml:space="preserve">
+    <value>The built-in models come first. Add a Hugging Face repository (owner/name) or a manifest URL, and a model it lists for an operation becomes a choice on that operation's card.</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="AboutAddSource" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AboutSourceInputTip" xml:space="preserve">
+    <value>owner/name on Hugging Face, or the https address of a manifest.json</value>
+  </data>
+  <data name="AboutSourceKeep" xml:space="preserve">
+    <value>Add this source</value>
+  </data>
+  <data name="DownloadsTitle" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="AboutDownloadAll" xml:space="preserve">
+    <value>Download everything (offline use)</value>
+  </data>
+  <data name="AboutOpenFolder" xml:space="preserve">
+    <value>Open the models folder</value>
+  </data>
+  <data name="AboutRemoveAll" xml:space="preserve">
+    <value>Remove all downloads…</value>
+  </data>
+  <data name="AboutRemoveAllDelete" xml:space="preserve">
+    <value>Delete them</value>
+  </data>
+  <data name="AboutRemoveAllKeep" xml:space="preserve">
+    <value>Keep them</value>
+  </data>
+  <data name="ThirdPartySoftware" xml:space="preserve">
+    <value>Third-party software</value>
+  </data>
+  <data name="AboutNotices" xml:space="preserve">
+    <value>ONNX Runtime (MIT) with DirectML (Microsoft software license terms), and SkiaSharp (MIT).</value>
+  </data>
+  <data name="WhatIsDownloaded" xml:space="preserve">
+    <value>What is downloaded</value>
+  </data>
+  <data name="GoodToKnow" xml:space="preserve">
+    <value>Good to know</value>
+  </data>
+  <data name="LicenseTitle" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="AboutButton" xml:space="preserve">
+    <value>About and models</value>
+  </data>
+  <data name="CloudChipTip" xml:space="preserve">
+    <value>What the cloud services have cost this month, and their budgets</value>
+  </data>
+  <data name="UpdateChipTip" xml:space="preserve">
+    <value>See what is new and how to install it</value>
+  </data>
+</root>

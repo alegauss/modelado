@@ -26,7 +26,10 @@
 
     <Version>0.2.0</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <NeutralLanguage>pt-BR</NeutralLanguage>
+    <!-- MOD85: the text every assembly carries is English, the language a satellite translates
+         from; a neutral language other than the resources' own stops ResourceManager looking
+         for a satellite in that language. -->
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
 </Project>

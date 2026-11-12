@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Modelado.App"
-        Title="Modelado"
+        xmlns:p="clr-namespace:Modelado.App.Properties"
+        Title="{x:Static p:Strings.AppName}"
         Icon="pack://application:,,,/Modelado.ico"
         Width="1280" Height="820" MinWidth="900" MinHeight="600"
         FontFamily="{StaticResource AppFont}"
@@ -30,23 +31,23 @@
          ToolBar moves what does not fit into its overflow menu rather than clipping it. -->
     <DockPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="12,8,12,6">
       <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-        <TextBlock Text="View:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        <TextBlock Text="{x:Static p:Strings.ViewLabel}" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
         <ComboBox x:Name="ViewChoice" AutomationProperties.AutomationId="ViewChoice" AutomationProperties.Name="View"
                   Width="150" SelectedIndex="0" SelectionChanged="OnViewChanged" IsEnabled="False">
-          <ComboBoxItem Content="Model in colour" />
-          <ComboBoxItem Content="Model in clay" />
-          <ComboBoxItem Content="Mesh (edges)" />
-          <ComboBoxItem Content="Input photo" />
+          <ComboBoxItem Content="{x:Static p:Strings.ModelInColour}" />
+          <ComboBoxItem Content="{x:Static p:Strings.ModelInClay}" />
+          <ComboBoxItem Content="{x:Static p:Strings.MeshEdges}" />
+          <ComboBoxItem Content="{x:Static p:Strings.InputPhoto}" />
         </ComboBox>
         <Button x:Name="ResetViewButton" AutomationProperties.AutomationId="ResetViewButton" AutomationProperties.Name="Front view"
                 Command="{x:Static local:MainWindow.ResetViewCommand}" Margin="6,0,0,0" Padding="8,4"
-                ToolTip="Front view (Home). Double-clicking the model does the same.">
+                ToolTip="{x:Static p:Strings.ResetViewButtonTip}">
           <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE80F;" />
         </Button>
         <!-- MOD19: the view shown, drawn again at the size the dialog's file type names. -->
         <Button x:Name="SaveViewButton" AutomationProperties.AutomationId="SaveViewButton" AutomationProperties.Name="Save view as image"
                 Command="{x:Static local:MainWindow.SaveViewCommand}" Margin="2,0,0,0" Padding="8,4"
-                ToolTip="Save view as image: this camera and view style as a PNG, 1024 to 4096 px on the long side, on a transparent background">
+                ToolTip="{x:Static p:Strings.SaveViewButtonTip}">
           <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE722;" />
         </Button>
       </StackPanel>
@@ -55,56 +56,56 @@
                  Background="Transparent">
           <Button x:Name="ToolbarOpen" AutomationProperties.AutomationId="ToolbarOpen" AutomationProperties.Name="Open"
                   Command="Open"
-                  ToolTip="Open a photo of an object (PNG, JPEG, WebP) to make a model from, or a 3D model (GLB, OBJ, PLY, STL) to edit. You can also drop the file on the window. (Ctrl+O)">
+                  ToolTip="{x:Static p:Strings.ToolbarOpenTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE8E5;" />
           </Button>
           <Button x:Name="ToolbarSaveAs" AutomationProperties.AutomationId="ToolbarSaveAs" AutomationProperties.Name="Save as"
-                  Command="SaveAs" ToolTip="Save the model as GLB, OBJ, PLY or STL (Ctrl+S)">
+                  Command="SaveAs" ToolTip="{x:Static p:Strings.ToolbarSaveAsTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE792;" />
           </Button>
           <!-- MOD46: shown only when the Blender add-on opened this window on one of its objects. -->
           <Button x:Name="SendToBlenderButton" AutomationProperties.AutomationId="SendToBlenderButton" AutomationProperties.Name="Send to Blender"
                   Visibility="Collapsed" Click="OnSendToBlender"
-                  ToolTip="Send to Blender: put the version shown on the object it came from, as one step of Blender's undo">
+                  ToolTip="{x:Static p:Strings.SendToBlenderButtonTip}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE72A;" Margin="4,2,2,2" />
-              <TextBlock Text="Send to Blender" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
+              <TextBlock Text="{x:Static p:Strings.SendToBlender}" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
             </StackPanel>
           </Button>
           <Separator />
           <Button x:Name="UndoButton" AutomationProperties.AutomationId="UndoButton" AutomationProperties.Name="Undo"
-                  Command="Undo" ToolTip="Undo: back to the previous version of the model (Ctrl+Z)">
+                  Command="Undo" ToolTip="{x:Static p:Strings.UndoButtonTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7A7;" />
           </Button>
           <Button x:Name="RedoButton" AutomationProperties.AutomationId="RedoButton" AutomationProperties.Name="Redo"
-                  Command="Redo" ToolTip="Redo (Ctrl+Y or Ctrl+Shift+Z)">
+                  Command="Redo" ToolTip="{x:Static p:Strings.RedoButtonTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7A6;" />
           </Button>
           <Separator />
           <!-- The font has one rotate glyph; the axis it turns about is written beside it. -->
           <Button x:Name="RotateXButton" AutomationProperties.AutomationId="RotateXButton" AutomationProperties.Name="Turn about X"
-                  Command="{x:Static local:MainWindow.RotateXCommand}" ToolTip="Turn 90° about the X axis, for a model lying down">
+                  Command="{x:Static local:MainWindow.RotateXCommand}" ToolTip="{x:Static p:Strings.RotateXButtonTip}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
               <TextBlock Text="X" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
             </StackPanel>
           </Button>
           <Button x:Name="RotateYButton" AutomationProperties.AutomationId="RotateYButton" AutomationProperties.Name="Turn about Y"
-                  Command="{x:Static local:MainWindow.RotateYCommand}" ToolTip="Turn 90° about the vertical axis">
+                  Command="{x:Static local:MainWindow.RotateYCommand}" ToolTip="{x:Static p:Strings.RotateYButtonTip}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
               <TextBlock Text="Y" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
             </StackPanel>
           </Button>
           <Button x:Name="RotateZButton" AutomationProperties.AutomationId="RotateZButton" AutomationProperties.Name="Turn about Z"
-                  Command="{x:Static local:MainWindow.RotateZCommand}" ToolTip="Turn 90° about the Z axis">
+                  Command="{x:Static local:MainWindow.RotateZCommand}" ToolTip="{x:Static p:Strings.RotateZButtonTip}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7AD;" Margin="4,2,1,2" />
               <TextBlock Text="Z" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
             </StackPanel>
           </Button>
           <Button x:Name="MirrorButton" AutomationProperties.AutomationId="MirrorButton" AutomationProperties.Name="Mirror"
-                  Command="{x:Static local:MainWindow.MirrorCommand}" ToolTip="Mirror left to right">
+                  Command="{x:Static local:MainWindow.MirrorCommand}" ToolTip="{x:Static p:Strings.MirrorButtonTip}">
             <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE8AB;" />
           </Button>
         </ToolBar>
@@ -124,14 +125,14 @@
         <Border x:Name="EmptyHint" AutomationProperties.AutomationId="DropZone" Style="{StaticResource GroupCard}"
                 VerticalAlignment="Center" HorizontalAlignment="Center" Width="460" Padding="28,24" Margin="0">
           <StackPanel>
-            <TextBlock x:Name="DropTitle" AutomationProperties.AutomationId="DropTitle" Text="Drop a photo or a 3D model here"
+            <TextBlock x:Name="DropTitle" AutomationProperties.AutomationId="DropTitle" Text="{x:Static p:Strings.DropTitle}"
                        FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
             <TextBlock x:Name="DropFormats" AutomationProperties.AutomationId="DropFormats" Style="{StaticResource StatCaption}"
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0" />
-            <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="Open…" Command="Open"
+            <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="{x:Static p:Strings.OpenButton}" Command="Open"
                     Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Center" Padding="24,8" Margin="0,14,0,0" />
             <TextBlock Style="{StaticResource StatCaption}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,16,0,0"
-                       Text="Works best with one whole object, centred, on a plain background. Everything runs on this computer; no photo leaves it." />
+                       Text="{x:Static p:Strings.DropAdvice}" />
             <TextBlock x:Name="OpenError" AutomationProperties.AutomationId="OpenError" TextWrapping="Wrap" TextAlignment="Center"
                        HorizontalAlignment="Center" Margin="0,12,0,0" Visibility="Collapsed"
                        Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
@@ -140,33 +141,33 @@
             <Button x:Name="DropGenerate" AutomationProperties.AutomationId="DropGenerate" HorizontalAlignment="Center" Margin="0,12,0,0"
                     Padding="16,4" Click="OnDropGenerate" Visibility="Collapsed" />
             <StackPanel x:Name="GeneratePanel" AutomationProperties.AutomationId="GeneratePanel" Margin="0,12,0,0" Visibility="Collapsed">
-              <TextBlock Text="The object" Style="{StaticResource FieldLabel}" />
+              <TextBlock Text="{x:Static p:Strings.TheObject}" Style="{StaticResource FieldLabel}" />
               <TextBox x:Name="GeneratePrompt" AutomationProperties.AutomationId="GeneratePrompt" AutomationProperties.Name="The object"
-                       MaxLength="300" TextChanged="OnGenerateChanged" ToolTip="What to draw, e.g. a wooden chair." />
-              <TextBlock Text="Asked as" Style="{StaticResource FieldLabel}" />
+                       MaxLength="300" TextChanged="OnGenerateChanged" ToolTip="{x:Static p:Strings.GeneratePromptTip}" />
+              <TextBlock Text="{x:Static p:Strings.AskedAs}" Style="{StaticResource FieldLabel}" />
               <TextBox x:Name="GenerateTemplate" AutomationProperties.AutomationId="GenerateTemplate" AutomationProperties.Name="Asked as"
                        TextWrapping="Wrap" AcceptsReturn="False" TextChanged="OnGenerateChanged"
-                       Text="{}{object}, one whole object, centred, three-quarter view from slightly above, soft even studio light, plain light grey background, no text, nothing else in the picture"
-                       ToolTip="{}{object} is replaced by the object; the rest asks for what a 3D reconstruction works best from." />
+                       Text="{x:Static p:Strings.GenerateTemplate}"
+                       ToolTip="{x:Static p:Strings.GenerateTemplateTip}" />
               <UniformGrid Columns="3" Margin="0,8,0,0">
                 <ComboBox x:Name="GenerateAspect" AutomationProperties.AutomationId="GenerateAspect" AutomationProperties.Name="Shape" Margin="0,0,4,0"
                           SelectedIndex="0" SelectionChanged="OnGenerateOptionChanged">
-                  <ComboBoxItem Content="Square" Tag="1x1" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateAspectSquare}" Tag="1x1" />
                   <ComboBoxItem Content="4:3" Tag="4x3" />
                   <ComboBoxItem Content="3:4" Tag="3x4" />
                 </ComboBox>
                 <ComboBox x:Name="GenerateSpeed" AutomationProperties.AutomationId="GenerateSpeed" AutomationProperties.Name="Quality" Margin="2,0,2,0"
                           SelectedIndex="0" SelectionChanged="OnGenerateOptionChanged">
-                  <ComboBoxItem Content="Quick" Tag="turbo" />
-                  <ComboBoxItem Content="Default" Tag="default" />
-                  <ComboBoxItem Content="Best" Tag="quality" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateSpeedQuick}" Tag="turbo" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateSpeedDefault}" Tag="default" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateSpeedBest}" Tag="quality" />
                 </ComboBox>
                 <ComboBox x:Name="GenerateCount" AutomationProperties.AutomationId="GenerateCount" AutomationProperties.Name="Candidates" Margin="4,0,0,0"
                           SelectedIndex="3" SelectionChanged="OnGenerateOptionChanged">
-                  <ComboBoxItem Content="1 image" Tag="1" />
-                  <ComboBoxItem Content="2 images" Tag="2" />
-                  <ComboBoxItem Content="3 images" Tag="3" />
-                  <ComboBoxItem Content="4 images" Tag="4" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateCountOne}" Tag="1" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateCountTwo}" Tag="2" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateCountThree}" Tag="3" />
+                  <ComboBoxItem Content="{x:Static p:Strings.GenerateCountFour}" Tag="4" />
                 </ComboBox>
               </UniformGrid>
               <Button x:Name="GenerateRun" AutomationProperties.AutomationId="GenerateRun" Margin="0,10,0,0" Padding="0,6" HorizontalAlignment="Stretch"
@@ -176,8 +177,8 @@
                 <StackPanel>
                   <TextBlock x:Name="GenerateConsentText" AutomationProperties.AutomationId="GenerateConsentText" TextWrapping="Wrap" />
                   <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <Button x:Name="GenerateSend" AutomationProperties.AutomationId="GenerateSend" Content="Send it" Padding="12,2" Click="OnGenerateSend" />
-                    <Button x:Name="GenerateCancel" AutomationProperties.AutomationId="GenerateCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                    <Button x:Name="GenerateSend" AutomationProperties.AutomationId="GenerateSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnGenerateSend" />
+                    <Button x:Name="GenerateCancel" AutomationProperties.AutomationId="GenerateCancel" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0"
                             Click="OnGenerateNotNow" />
                   </StackPanel>
                 </StackPanel>
@@ -198,7 +199,7 @@
                      Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
         </Border>
         <TextBlock x:Name="ViewerHint" AutomationProperties.AutomationId="ViewerHint" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="12,0,0,10" Visibility="Collapsed"
-                   Foreground="{DynamicResource HintTextBrush}" FontSize="12" Text="Drag to turn · mouse wheel to zoom · double-click to recentre" />
+                   Foreground="{DynamicResource HintTextBrush}" FontSize="12" Text="{x:Static p:Strings.ViewerHint}" />
       </Grid>
     </Border>
 
@@ -206,15 +207,15 @@
          outside their scrolling, so its progress, its Cancel and its end are seen however far the
          cards have scrolled. Pause shows for a download only, which is what it is for. -->
     <DockPanel x:Name="Operations" Grid.Row="1" Grid.Column="1" Width="340" Margin="6,0,12,0" Visibility="Collapsed">
-      <TextBlock DockPanel.Dock="Top" Text="Operations" Style="{StaticResource SectionHeader}" Margin="2,0,0,8" />
+      <TextBlock DockPanel.Dock="Top" Text="{x:Static p:Strings.OperationsTitle}" Style="{StaticResource SectionHeader}" Margin="2,0,0,8" />
       <Border x:Name="ProgressCard" AutomationProperties.AutomationId="JobPanel" DockPanel.Dock="Top"
               Style="{StaticResource GroupCard}" Visibility="Collapsed">
         <StackPanel>
           <DockPanel>
             <Button x:Name="CancelButton" AutomationProperties.AutomationId="CancelButton" DockPanel.Dock="Right"
-                    Content="Cancel" Padding="12,2" Click="OnCancel" />
+                    Content="{x:Static p:Strings.Cancel}" Padding="12,2" Click="OnCancel" />
             <Button x:Name="PauseButton" AutomationProperties.AutomationId="PauseButton" DockPanel.Dock="Right"
-                    Content="Pause" Padding="12,2" Margin="0,0,8,0" Click="OnPauseDownload" Visibility="Collapsed" />
+                    Content="{x:Static p:Strings.PauseButton}" Padding="12,2" Margin="0,0,8,0" Click="OnPauseDownload" Visibility="Collapsed" />
             <TextBlock x:Name="ProgressTitle" AutomationProperties.AutomationId="JobTitle" FontSize="15" FontWeight="SemiBold"
                        VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
           </DockPanel>
@@ -227,51 +228,51 @@
 
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="3D Object" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.ObjectCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
-                       Text="A whole model, with the front, sides and back TripoSR infers from a single photo. Coloured per vertex." />
-            <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
+                       Text="{x:Static p:Strings.ObjectCardCaption}" />
+            <TextBlock Text="{x:Static p:Strings.MeshResolution}" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ObjectResolution" AutomationProperties.AutomationId="ObjectResolution" SelectedIndex="2">
-              <ComboBoxItem Content="128 · quick draft" Tag="128" />
+              <ComboBoxItem Content="{x:Static p:Strings.ObjectResolution128}" Tag="128" />
               <ComboBoxItem Content="192" Tag="192" />
-              <ComboBoxItem Content="256 · TripoSR default" Tag="256" />
+              <ComboBoxItem Content="{x:Static p:Strings.ObjectResolution256}" Tag="256" />
               <ComboBoxItem Content="320" Tag="320" />
-              <ComboBoxItem Content="384 · fine" Tag="384" />
+              <ComboBoxItem Content="{x:Static p:Strings.ObjectResolution384}" Tag="384" />
             </ComboBox>
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Thickness (density threshold): " /><Run x:Name="ThresholdText" Text="25" />
+              <Run Text="{x:Static p:Strings.ObjectThresholdLabel}" /><Run x:Name="ThresholdText" Text="25" />
             </TextBlock>
             <Slider x:Name="ObjectThreshold" AutomationProperties.AutomationId="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
                     ValueChanged="OnThresholdChanged"
-                    ToolTip="Lower fattens the object and closes holes; higher thins it and separates parts. 25 is TripoSR's own." />
-            <CheckBox x:Name="ObjectRemoveBackground" AutomationProperties.AutomationId="ObjectRemoveBackground" Content="Remove the photo's background (U²-Net)" IsChecked="True" Margin="0,8,0,0"
-                      ToolTip="Turn off only for a PNG already cut out, with transparency: that one is used as it is." />
-            <CheckBox x:Name="ObjectProjectPhoto" AutomationProperties.AutomationId="ObjectProjectPhoto" Content="Sharp photo colours on the front" IsChecked="True" Margin="0,4,0,0"
-                      ToolTip="TripoSR colours from a 64 × 64 grid; this lays the photo's own colours back on the side it shows." />
-            <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="Enhance a small photo first (Real-ESRGAN)" Margin="0,4,0,0" Click="OnEnhanceChanged"
-                      ToolTip="For photos under 1024 px or with noise: upscales 4× with AI before cutting out and reconstructing." />
+                    ToolTip="{x:Static p:Strings.ObjectThresholdTip}" />
+            <CheckBox x:Name="ObjectRemoveBackground" AutomationProperties.AutomationId="ObjectRemoveBackground" Content="{x:Static p:Strings.ObjectRemoveBackground}" IsChecked="True" Margin="0,8,0,0"
+                      ToolTip="{x:Static p:Strings.ObjectRemoveBackgroundTip}" />
+            <CheckBox x:Name="ObjectProjectPhoto" AutomationProperties.AutomationId="ObjectProjectPhoto" Content="{x:Static p:Strings.ObjectProjectPhoto}" IsChecked="True" Margin="0,4,0,0"
+                      ToolTip="{x:Static p:Strings.ObjectProjectPhotoTip}" />
+            <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="{x:Static p:Strings.ObjectEnhancePhoto}" Margin="0,4,0,0" Click="OnEnhanceChanged"
+                      ToolTip="{x:Static p:Strings.ObjectEnhancePhotoTip}" />
             <!-- MOD17: the CLI's -\-step and -\-smooth, and the loose-piece share it fixes, closed by default. -->
-            <Expander x:Name="ObjectAdvanced" AutomationProperties.AutomationId="ObjectAdvanced" Header="Advanced" Margin="0,8,0,0" IsExpanded="False">
+            <Expander x:Name="ObjectAdvanced" AutomationProperties.AutomationId="ObjectAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
               <StackPanel Margin="0,4,0,0">
-                <CheckBox x:Name="ObjectEveryPoint" AutomationProperties.AutomationId="ObjectEveryPoint" Content="Sample every grid point (slower, catches thin parts)"
-                          ToolTip="Evaluates all of the grid instead of about a quarter of it, so sampling takes about 4× as long; thin legs and handles the coarse pass skips are kept." />
+                <CheckBox x:Name="ObjectEveryPoint" AutomationProperties.AutomationId="ObjectEveryPoint" Content="{x:Static p:Strings.ObjectEveryPoint}"
+                          ToolTip="{x:Static p:Strings.ObjectEveryPointTip}" />
                 <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectSmoothingLabel">
-                  <Run Text="Smoothing passes: " /><Run x:Name="ObjectSmoothingText" Text="2" />
+                  <Run Text="{x:Static p:Strings.ObjectSmoothingLabel}" /><Run x:Name="ObjectSmoothingText" Text="2" />
                 </TextBlock>
                 <Slider x:Name="ObjectSmoothing" AutomationProperties.AutomationId="ObjectSmoothing" AutomationProperties.Name="Smoothing passes"
                         Minimum="0" Maximum="6" Value="2" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="1"
                         ValueChanged="OnObjectAdvancedChanged"
-                        ToolTip="Taubin passes after the surface is drawn; 0 keeps the raw mesh to sculpt from. Each pass is a small share of a run at 256." />
+                        ToolTip="{x:Static p:Strings.ObjectSmoothingTip}" />
                 <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectPiecesLabel">
-                  <Run Text="Drop loose pieces under " /><Run x:Name="ObjectPiecesText" Text="5%" />
+                  <Run Text="{x:Static p:Strings.ObjectPiecesLabel}" /><Run x:Name="ObjectPiecesText" Text="5%" />
                 </TextBlock>
                 <Slider x:Name="ObjectPieces" AutomationProperties.AutomationId="ObjectPieces" AutomationProperties.Name="Drop loose pieces under"
                         Minimum="0" Maximum="20" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
                         ValueChanged="OnObjectAdvancedChanged"
-                        ToolTip="Fragments smaller than this share of the largest part are dropped; 0 keeps every piece. It adds next to nothing to the run's time." />
+                        ToolTip="{x:Static p:Strings.ObjectPiecesTip}" />
               </StackPanel>
             </Expander>
-            <Button x:Name="ObjectButton" AutomationProperties.AutomationId="ObjectButton" Content="Generate 3D object" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+            <Button x:Name="ObjectButton" AutomationProperties.AutomationId="ObjectButton" Content="{x:Static p:Strings.ObjectButton}" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnGenerateObject" IsEnabled="False" />
             <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
                  large, its progress, and Pause, Resume or Try again. -->
@@ -290,34 +291,34 @@
 
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Relief" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.ReliefCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
-                       Text="Each pixel's depth (Depth Anything V2) becomes height: a bas-relief textured with the photo. Works with any image: faces, landscapes, buildings." />
+                       Text="{x:Static p:Strings.ReliefCardCaption}" />
             <!-- MOD27: shown only when an added source lists a depth model of its own. -->
             <StackPanel x:Name="ReliefDepthModelPanel" Visibility="Collapsed">
-              <TextBlock Text="Depth model" Style="{StaticResource FieldLabel}" />
+              <TextBlock Text="{x:Static p:Strings.DepthModel}" Style="{StaticResource FieldLabel}" />
               <ComboBox x:Name="ReliefDepthModel" AutomationProperties.AutomationId="ReliefDepthModel" AutomationProperties.Name="Depth model"
                         DisplayMemberPath="Label" SelectionChanged="OnReliefDepthModelChanged" />
             </StackPanel>
-            <TextBlock Text="Mesh resolution" Style="{StaticResource FieldLabel}" />
+            <TextBlock Text="{x:Static p:Strings.MeshResolution}" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ReliefResolution" AutomationProperties.AutomationId="ReliefResolution" SelectedIndex="1">
               <ComboBoxItem Content="128" Tag="128" />
-              <ComboBoxItem Content="256 · default" Tag="256" />
+              <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution256}" Tag="256" />
               <ComboBoxItem Content="384" Tag="384" />
-              <ComboBoxItem Content="512 · fine" Tag="512" />
+              <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
             </ComboBox>
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Relief height: " /><Run x:Name="DepthText" Text="25%" />
+              <Run Text="{x:Static p:Strings.ReliefDepthLabel}" /><Run x:Name="DepthText" Text="25%" />
             </TextBlock>
             <Slider x:Name="ReliefDepth" AutomationProperties.AutomationId="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="How far the nearest point stands out, as a share of the width." />
+                    ToolTip="{x:Static p:Strings.ReliefDepthTip}" />
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Solid base: " /><Run x:Name="BaseText" Text="no base" />
+              <Run Text="{x:Static p:Strings.ReliefBaseLabel}" /><Run x:Name="BaseText" Text="{x:Static p:Strings.BaseText}" />
             </TextBlock>
             <Slider x:Name="ReliefBase" AutomationProperties.AutomationId="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="With a base the mesh is closed (solid) and can go to a 3D printer. Without one it is only the surface." />
-            <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="Object only (remove the background)" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
-            <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="Generate relief" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
+                    ToolTip="{x:Static p:Strings.ReliefBaseTip}" />
+            <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+            <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="{x:Static p:Strings.ReliefButton}" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
             <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
                  large, its progress, and Pause, Resume or Try again. -->
@@ -339,26 +340,26 @@
              API and prices them, so the button carries the estimate before anything is sent. -->
         <Border x:Name="CloudCard" AutomationProperties.AutomationId="CloudCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
           <StackPanel>
-            <TextBlock Text="Cloud 3D" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.CloudCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
-                       Text="A textured model from a cloud service, from the open photo or a description. What is sent, and what it costs, is said before it goes." />
-            <TextBlock Text="Service" Style="{StaticResource FieldLabel}" />
+                       Text="{x:Static p:Strings.CloudCardCaption}" />
+            <TextBlock Text="{x:Static p:Strings.CloudServiceLabel}" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="CloudService" AutomationProperties.AutomationId="CloudService" AutomationProperties.Name="Service"
                       DisplayMemberPath="DisplayName" SelectionChanged="OnCloudOptionChanged" />
             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
               <RadioButton x:Name="CloudFromPhoto" AutomationProperties.AutomationId="CloudFromPhoto" GroupName="CloudSource"
-                           Content="From the photo" IsChecked="True" Checked="OnCloudOptionChanged" />
+                           Content="{x:Static p:Strings.CloudFromPhoto}" IsChecked="True" Checked="OnCloudOptionChanged" />
               <RadioButton x:Name="CloudFromText" AutomationProperties.AutomationId="CloudFromText" GroupName="CloudSource"
-                           Content="From a description" Margin="12,0,0,0" Checked="OnCloudOptionChanged" />
+                           Content="{x:Static p:Strings.CloudFromText}" Margin="12,0,0,0" Checked="OnCloudOptionChanged" />
             </StackPanel>
             <TextBox x:Name="CloudPrompt" AutomationProperties.AutomationId="CloudPrompt" AutomationProperties.Name="Description"
                      Margin="0,6,0,0" Visibility="Collapsed" TextWrapping="Wrap" MaxLength="800" TextChanged="OnCloudPromptChanged" />
-            <CheckBox x:Name="CloudTexture" AutomationProperties.AutomationId="CloudTexture" Content="Textured" IsChecked="True" Margin="0,8,0,0"
-                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="Off gives the bare shape, for less." />
-            <CheckBox x:Name="CloudPbr" AutomationProperties.AutomationId="CloudPbr" Content="PBR maps (metal, roughness, normals)" Margin="0,4,0,0"
+            <CheckBox x:Name="CloudTexture" AutomationProperties.AutomationId="CloudTexture" Content="{x:Static p:Strings.CloudTexture}" IsChecked="True" Margin="0,8,0,0"
+                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudTextureTip}" />
+            <CheckBox x:Name="CloudPbr" AutomationProperties.AutomationId="CloudPbr" Content="{x:Static p:Strings.CloudPbr}" Margin="0,4,0,0"
                       Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" />
-            <CheckBox x:Name="CloudQuads" AutomationProperties.AutomationId="CloudQuads" Content="Quad topology" Margin="0,4,0,0"
-                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="Quads rather than triangles, for editing in Blender." />
+            <CheckBox x:Name="CloudQuads" AutomationProperties.AutomationId="CloudQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0"
+                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudQuadsTip}" />
             <Button x:Name="CloudGenerate" AutomationProperties.AutomationId="CloudGenerate" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnCloudGenerate" />
             <!-- Nothing leaves the PC before this is agreed to, each time. -->
@@ -367,8 +368,8 @@
               <StackPanel>
                 <TextBlock x:Name="CloudConsentText" AutomationProperties.AutomationId="CloudConsentText" TextWrapping="Wrap" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                  <Button x:Name="CloudConsentSend" AutomationProperties.AutomationId="CloudConsentSend" Content="Send it" Padding="12,2" Click="OnCloudSend" />
-                  <Button x:Name="CloudConsentCancel" AutomationProperties.AutomationId="CloudConsentCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                  <Button x:Name="CloudConsentSend" AutomationProperties.AutomationId="CloudConsentSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnCloudSend" />
+                  <Button x:Name="CloudConsentCancel" AutomationProperties.AutomationId="CloudConsentCancel" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0"
                           Click="OnCloudNotNow" />
                 </StackPanel>
               </StackPanel>
@@ -378,20 +379,20 @@
 
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Edit and improve" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.EditCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
-                       Text="For the generated model or an opened 3D model. Every step can be undone." />
+                       Text="{x:Static p:Strings.EditCardCaption}" />
             <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="Simplify to " /><Run x:Name="SimplifyText" Text="25%" /><Run Text=" of the triangles" />
+              <Run Text="{x:Static p:Strings.SimplifyLabelBefore}" /><Run x:Name="SimplifyText" Text="25%" /><Run Text="{x:Static p:Strings.SimplifyLabelAfter}" />
             </TextBlock>
             <Slider x:Name="SimplifyAmount" AutomationProperties.AutomationId="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
-                    ToolTip="Fewer triangles: a smaller, lighter file for games, the web and slicers, with the shape kept." />
+                    ToolTip="{x:Static p:Strings.SimplifyAmountTip}" />
             <UniformGrid Columns="3" Margin="0,6,0,0">
-              <Button x:Name="SimplifyButton" AutomationProperties.AutomationId="SimplifyButton" Content="Simplify" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
-              <Button x:Name="SubdivideButton" AutomationProperties.AutomationId="SubdivideButton" Content="Subdivide" Margin="2,0,2,4" Click="OnSubdivide" IsEnabled="False"
-                      ToolTip="4× the triangles, rounded off: a smoother surface for printing large." />
-              <Button x:Name="FillHolesButton" AutomationProperties.AutomationId="FillHolesButton" Content="Fill holes" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
-                      ToolTip="Closes the holes in the mesh, so it is solid (watertight) for printing." />
+              <Button x:Name="SimplifyButton" AutomationProperties.AutomationId="SimplifyButton" Content="{x:Static p:Strings.SimplifyButton}" Margin="0,0,4,4" Click="OnSimplify" IsEnabled="False" />
+              <Button x:Name="SubdivideButton" AutomationProperties.AutomationId="SubdivideButton" Content="{x:Static p:Strings.SubdivideButton}" Margin="2,0,2,4" Click="OnSubdivide" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.SubdivideButtonTip}" />
+              <Button x:Name="FillHolesButton" AutomationProperties.AutomationId="FillHolesButton" Content="{x:Static p:Strings.FillHolesButton}" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.FillHolesButtonTip}" />
             </UniformGrid>
             <!-- MOD16: the amounts the CLI's -\-smooth, -\-remove-pieces and -\-flatten take, each beside its
                  button, in whole steps so the window passes the CLI's exact values. -->
@@ -406,30 +407,30 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
-              <Button x:Name="PiecesButton" AutomationProperties.AutomationId="PiecesButton" Content="Remove loose pieces" Margin="0,0,8,4" Click="OnRemovePieces" IsEnabled="False"
-                      ToolTip="Deletes the loose fragments smaller than this share of the largest part." />
+              <Button x:Name="PiecesButton" AutomationProperties.AutomationId="PiecesButton" Content="{x:Static p:Strings.PiecesButton}" Margin="0,0,8,4" Click="OnRemovePieces" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.PiecesButtonTip}" />
               <Slider x:Name="PiecesAmount" Grid.Column="1" AutomationProperties.AutomationId="PiecesAmount" AutomationProperties.Name="Loose pieces under"
                       Minimum="1" Maximum="50" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
                       VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
-              <TextBlock x:Name="PiecesText" Grid.Column="2" AutomationProperties.AutomationId="PiecesText" Text="under 5%" VerticalAlignment="Center" Margin="8,0,0,0" />
+              <TextBlock x:Name="PiecesText" Grid.Column="2" AutomationProperties.AutomationId="PiecesText" Text="{x:Static p:Strings.PiecesText}" VerticalAlignment="Center" Margin="8,0,0,0" />
 
-              <Button x:Name="SmoothButton" Grid.Row="1" AutomationProperties.AutomationId="SmoothButton" Content="Smooth" Margin="0,0,8,4" Click="OnSmooth" IsEnabled="False"
-                      ToolTip="Removes jagged edges and noise without shrinking the model (Taubin), in this many passes." />
+              <Button x:Name="SmoothButton" Grid.Row="1" AutomationProperties.AutomationId="SmoothButton" Content="{x:Static p:Strings.SmoothButton}" Margin="0,0,8,4" Click="OnSmooth" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.SmoothButtonTip}" />
               <Slider x:Name="SmoothAmount" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SmoothAmount" AutomationProperties.Name="Smoothing passes"
                       Minimum="1" Maximum="10" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="2"
                       VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
-              <TextBlock x:Name="SmoothText" Grid.Row="1" Grid.Column="2" AutomationProperties.AutomationId="SmoothText" Text="3 passes" VerticalAlignment="Center" Margin="8,0,0,0" />
+              <TextBlock x:Name="SmoothText" Grid.Row="1" Grid.Column="2" AutomationProperties.AutomationId="SmoothText" Text="{x:Static p:Strings.SmoothText}" VerticalAlignment="Center" Margin="8,0,0,0" />
 
-              <Button x:Name="FlattenButton" Grid.Row="2" AutomationProperties.AutomationId="FlattenButton" Content="Flat base" Margin="0,0,8,4" Click="OnFlatten" IsEnabled="False"
-                      ToolTip="Flattens this share of the model's height from the bottom, so it stands on the printer bed." />
+              <Button x:Name="FlattenButton" Grid.Row="2" AutomationProperties.AutomationId="FlattenButton" Content="{x:Static p:Strings.FlattenButton}" Margin="0,0,8,4" Click="OnFlatten" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.FlattenButtonTip}" />
               <Slider x:Name="FlattenAmount" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="FlattenAmount" AutomationProperties.Name="Flat base height"
                       Minimum="1" Maximum="20" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
                       VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
               <TextBlock x:Name="FlattenText" Grid.Row="2" Grid.Column="2" AutomationProperties.AutomationId="FlattenText" Text="3%" VerticalAlignment="Center" Margin="8,0,0,0" />
             </Grid>
-            <TextBlock Text="With AI" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
-            <Button x:Name="UpscaleTextureButton" AutomationProperties.AutomationId="UpscaleTextureButton" Content="4× sharper texture (Real-ESRGAN)" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
-                    ToolTip="For textured models (reliefs, opened OBJ and GLB): upscales and cleans the texture image, up to 4096 px." />
+            <TextBlock Text="{x:Static p:Strings.WithAI}" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
+            <Button x:Name="UpscaleTextureButton" AutomationProperties.AutomationId="UpscaleTextureButton" Content="{x:Static p:Strings.UpscaleTextureButton}" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
+                    ToolTip="{x:Static p:Strings.UpscaleTextureButtonTip}" />
             <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
                  large, its progress, and Pause, Resume or Try again. -->
             <Border x:Name="TextureFirstUse" AutomationProperties.AutomationId="TextureFirstUse" Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
@@ -445,21 +446,21 @@
             <!-- MOD40: a material drawn from a description by the image service holding a key, made
                  to tile and put on the model as a new version, so Undo returns to the old surface. -->
             <Button x:Name="NewTextureButton" AutomationProperties.AutomationId="NewTextureButton" Margin="0,0,0,4" Click="OnNewTexture" Visibility="Collapsed"
-                    ToolTip="Draws a seamless material (wood, stone, painted metal) and puts it on the model's surface." />
+                    ToolTip="{x:Static p:Strings.NewTextureButtonTip}" />
             <Border x:Name="NewTexturePanel" AutomationProperties.AutomationId="NewTexturePanel" Margin="0,0,0,6" Padding="10,8" CornerRadius="6"
                     Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
               <StackPanel>
-                <TextBlock Text="Material" Style="{StaticResource FieldLabel}" Margin="0,0,0,4" />
+                <TextBlock Text="{x:Static p:Strings.Material}" Style="{StaticResource FieldLabel}" Margin="0,0,0,4" />
                 <TextBox x:Name="NewTexturePrompt" AutomationProperties.AutomationId="NewTexturePrompt" AutomationProperties.Name="Material"
-                         TextChanged="OnNewTextureChanged" ToolTip="For example: weathered grey stone, oak planks, red painted metal." />
+                         TextChanged="OnNewTextureChanged" ToolTip="{x:Static p:Strings.NewTexturePromptTip}" />
                 <TextBlock x:Name="NewTextureAsked" AutomationProperties.AutomationId="NewTextureAsked" Style="{StaticResource StatCaption}" Margin="0,4,0,6" TextWrapping="Wrap" />
                 <Button x:Name="NewTextureRun" AutomationProperties.AutomationId="NewTextureRun" Click="OnNewTextureRun" IsEnabled="False" />
                 <Border x:Name="NewTextureConsent" AutomationProperties.AutomationId="NewTextureConsent" Margin="0,8,0,0" Visibility="Collapsed">
                   <StackPanel>
                     <TextBlock x:Name="NewTextureConsentText" AutomationProperties.AutomationId="NewTextureConsentText" TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                      <Button x:Name="NewTextureSend" AutomationProperties.AutomationId="NewTextureSend" Content="Send it" Padding="12,2" Click="OnNewTextureSend" />
-                      <Button x:Name="NewTextureNotNow" AutomationProperties.AutomationId="NewTextureNotNow" Content="Not now" Padding="12,2" Margin="8,0,0,0" Click="OnNewTextureNotNow" />
+                      <Button x:Name="NewTextureSend" AutomationProperties.AutomationId="NewTextureSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnNewTextureSend" />
+                      <Button x:Name="NewTextureNotNow" AutomationProperties.AutomationId="NewTextureNotNow" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0" Click="OnNewTextureNotNow" />
                     </StackPanel>
                   </StackPanel>
                 </Border>
@@ -467,32 +468,32 @@
                 <WrapPanel x:Name="NewTextureCandidates" AutomationProperties.AutomationId="NewTextureCandidates" />
               </StackPanel>
             </Border>
-            <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="Reapply the photo's colours" Click="OnReproject" IsEnabled="False"
-                    ToolTip="Puts the photo's sharp colours back on the front of the object, for example after subdividing." />
+            <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="{x:Static p:Strings.ReprojectButton}" Click="OnReproject" IsEnabled="False"
+                    ToolTip="{x:Static p:Strings.ReprojectButtonTip}" />
             <!-- MOD38: the open model remeshed or retextured by a cloud service holding a key, as a
                  new version, so Undo returns to the local one. What goes, and for how much, is
                  said first. -->
             <StackPanel x:Name="CloudEditGroup" Visibility="Collapsed">
               <TextBlock x:Name="CloudEditTitle" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
               <DockPanel>
-                <TextBlock Text="triangles" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0" />
+                <TextBlock Text="{x:Static p:Strings.Triangles}" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0" />
                 <TextBox x:Name="CloudRemeshPolycount" AutomationProperties.AutomationId="CloudRemeshPolycount" AutomationProperties.Name="Remesh to"
-                         Text="30000" TextChanged="OnCloudEditChanged" ToolTip="100 to 300,000: the clean mesh's triangle count." />
+                         Text="30000" TextChanged="OnCloudEditChanged" ToolTip="{x:Static p:Strings.CloudRemeshPolycountTip}" />
               </DockPanel>
-              <CheckBox x:Name="CloudRemeshQuads" AutomationProperties.AutomationId="CloudRemeshQuads" Content="Quad topology" Margin="0,4,0,0" />
+              <CheckBox x:Name="CloudRemeshQuads" AutomationProperties.AutomationId="CloudRemeshQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0" />
               <Button x:Name="CloudRemesh" AutomationProperties.AutomationId="CloudRemesh" Margin="0,6,0,0" Click="OnCloudRemesh" />
               <TextBox x:Name="CloudRetexturePrompt" AutomationProperties.AutomationId="CloudRetexturePrompt" AutomationProperties.Name="New texture"
                        Margin="0,10,0,0" MaxLength="800" TextWrapping="Wrap" TextChanged="OnCloudEditChanged"
-                       ToolTip="What the new surface looks like, e.g. weathered oak, painted steel." />
-              <CheckBox x:Name="CloudKeepUv" AutomationProperties.AutomationId="CloudKeepUv" Content="Keep the model's UVs" Margin="0,4,0,0" />
+                       ToolTip="{x:Static p:Strings.CloudRetexturePromptTip}" />
+              <CheckBox x:Name="CloudKeepUv" AutomationProperties.AutomationId="CloudKeepUv" Content="{x:Static p:Strings.CloudKeepUv}" Margin="0,4,0,0" />
               <Button x:Name="CloudRetexture" AutomationProperties.AutomationId="CloudRetexture" Margin="0,6,0,0" Click="OnCloudRetexture" />
               <Border x:Name="CloudEditConsent" AutomationProperties.AutomationId="CloudEditConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
                       Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
                 <StackPanel>
                   <TextBlock x:Name="CloudEditConsentText" AutomationProperties.AutomationId="CloudEditConsentText" TextWrapping="Wrap" />
                   <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <Button x:Name="CloudEditSend" AutomationProperties.AutomationId="CloudEditSend" Content="Send it" Padding="12,2" Click="OnCloudEditSend" />
-                    <Button x:Name="CloudEditCancel" AutomationProperties.AutomationId="CloudEditCancel" Content="Not now" Padding="12,2" Margin="8,0,0,0"
+                    <Button x:Name="CloudEditSend" AutomationProperties.AutomationId="CloudEditSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnCloudEditSend" />
+                    <Button x:Name="CloudEditCancel" AutomationProperties.AutomationId="CloudEditCancel" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0"
                             Click="OnCloudEditNotNow" />
                   </StackPanel>
                 </StackPanel>
@@ -505,36 +506,36 @@
              what the model will lose in it, then Save as, which the toolbar's button shares. -->
         <Border x:Name="ExportCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
           <StackPanel>
-            <TextBlock Text="Export" Style="{StaticResource SectionHeader}" />
-            <TextBlock Text="Format" Style="{StaticResource FieldLabel}" />
+            <TextBlock Text="{x:Static p:Strings.ExportCardTitle}" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.ExportFormatLabel}" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ExportFormat" AutomationProperties.AutomationId="ExportFormat" AutomationProperties.Name="Format"
                       SelectedIndex="0" SelectionChanged="OnExportFormatChanged">
-              <ComboBoxItem Content="GLB · Windows, Blender, the web" Tag="glb" />
-              <ComboBoxItem Content="OBJ · with its texture or colours" Tag="obj" />
-              <ComboBoxItem Content="PLY · with colours, MeshLab" Tag="ply" />
-              <ComboBoxItem Content="STL · 3D printing" Tag="stl" />
+              <ComboBoxItem Content="{x:Static p:Strings.ExportFormatGlb}" Tag="glb" />
+              <ComboBoxItem Content="{x:Static p:Strings.ExportFormatObj}" Tag="obj" />
+              <ComboBoxItem Content="{x:Static p:Strings.ExportFormatPly}" Tag="ply" />
+              <ComboBoxItem Content="{x:Static p:Strings.ExportFormatStl}" Tag="stl" />
             </ComboBox>
             <StackPanel x:Name="ExportObjOptions" Visibility="Collapsed" Margin="0,8,0,0">
               <RadioButton x:Name="ExportObjTexture" AutomationProperties.AutomationId="ExportObjTexture" GroupName="ObjColours"
-                           Content="Texture, as an .mtl and a .png beside it" IsChecked="True" Checked="OnExportOptionChanged" />
+                           Content="{x:Static p:Strings.ExportObjTexture}" IsChecked="True" Checked="OnExportOptionChanged" />
               <RadioButton x:Name="ExportObjVertexColours" AutomationProperties.AutomationId="ExportObjVertexColours" GroupName="ObjColours"
-                           Content="Colours per vertex, in the .obj alone" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
+                           Content="{x:Static p:Strings.ExportObjVertexColours}" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
             </StackPanel>
             <!-- MOD66: quantized geometry, about half the bytes, for viewers that read KHR_mesh_quantization. -->
             <StackPanel x:Name="ExportGlbOptions" Visibility="Collapsed" Margin="0,8,0,0">
               <RadioButton x:Name="ExportGlbStandard" AutomationProperties.AutomationId="ExportGlbStandard" GroupName="GlbGeometry"
-                           Content="Standard, opens in every viewer" IsChecked="True" />
+                           Content="{x:Static p:Strings.ExportGlbStandard}" IsChecked="True" />
               <RadioButton x:Name="ExportGlbCompact" AutomationProperties.AutomationId="ExportGlbCompact" GroupName="GlbGeometry"
-                           Content="Compact, about half the size: the web, Blender" Margin="0,4,0,0" />
+                           Content="{x:Static p:Strings.ExportGlbCompact}" Margin="0,4,0,0" />
             </StackPanel>
             <StackPanel x:Name="ExportPlyOptions" Visibility="Collapsed" Margin="0,8,0,0">
               <RadioButton x:Name="ExportPlyBinary" AutomationProperties.AutomationId="ExportPlyBinary" GroupName="PlyEncoding"
-                           Content="Binary, smaller and faster" IsChecked="True" />
+                           Content="{x:Static p:Strings.ExportPlyBinary}" IsChecked="True" />
               <RadioButton x:Name="ExportPlyAscii" AutomationProperties.AutomationId="ExportPlyAscii" GroupName="PlyEncoding"
-                           Content="ASCII, readable as text" Margin="0,4,0,0" />
+                           Content="{x:Static p:Strings.ExportPlyAscii}" Margin="0,4,0,0" />
             </StackPanel>
             <!-- MOD15: the size the CLI's -\-size takes, in the format's unit, and the box it gives. -->
-            <TextBlock Text="Longest side" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+            <TextBlock Text="{x:Static p:Strings.LongestSide}" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
             <DockPanel>
               <TextBlock x:Name="ExportSizeUnit" AutomationProperties.AutomationId="ExportSizeUnit" DockPanel.Dock="Right"
                          VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="36" />
@@ -544,12 +545,12 @@
             <TextBlock x:Name="ExportDimensions" AutomationProperties.AutomationId="ExportDimensions" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
             <TextBlock x:Name="ExportNote" AutomationProperties.AutomationId="ExportNote" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
-            <Button x:Name="ExportSaveAs" AutomationProperties.AutomationId="ExportSaveAs" Content="Save as…" Command="SaveAs"
+            <Button x:Name="ExportSaveAs" AutomationProperties.AutomationId="ExportSaveAs" Content="{x:Static p:Strings.ExportSaveAs}" Command="SaveAs"
                     Margin="0,10,0,0" Padding="0,6" HorizontalAlignment="Stretch" />
             <!-- MOD46: shown only where Blender is found. -->
-            <Button x:Name="OpenInBlender" AutomationProperties.AutomationId="OpenInBlender" Content="Open in Blender"
+            <Button x:Name="OpenInBlender" AutomationProperties.AutomationId="OpenInBlender" Content="{x:Static p:Strings.OpenInBlender}"
                     Margin="0,6,0,0" Padding="0,6" HorizontalAlignment="Stretch" Visibility="Collapsed" Click="OnOpenInBlender"
-                    ToolTip="Start Blender with this model imported into an empty scene" />
+                    ToolTip="{x:Static p:Strings.OpenInBlenderTip}" />
             <TextBlock x:Name="ExportStatus" AutomationProperties.AutomationId="ExportStatus" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
           </StackPanel>
@@ -559,7 +560,7 @@
              one shown selected, so how far Undo goes is seen before it is pressed. Read, not clicked. -->
         <Border x:Name="HistoryCard" Style="{StaticResource GroupCard}" Visibility="Collapsed">
           <StackPanel>
-            <TextBlock Text="History" Style="{StaticResource SectionHeader}" />
+            <TextBlock Text="{x:Static p:Strings.HistoryCardTitle}" Style="{StaticResource SectionHeader}" />
             <ListBox x:Name="HistoryList" AutomationProperties.AutomationId="History" AutomationProperties.Name="History"
                      MaxHeight="160" IsHitTestVisible="False" Focusable="False" BorderThickness="0" Background="Transparent"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
@@ -568,11 +569,11 @@
 
         <Border Style="{StaticResource GroupCard}">
           <StackPanel>
-            <TextBlock Text="Quality" Style="{StaticResource SectionHeader}" />
-            <RadioButton x:Name="QualityStandard" AutomationProperties.AutomationId="QualityStandard" Content="Standard (FP16 on the GPU, half the download)" IsChecked="True" Checked="OnQualityChanged" />
-            <RadioButton x:Name="QualityHigh" AutomationProperties.AutomationId="QualityHigh" Content="High quality (FP32 throughout)" Margin="0,4,0,0" Checked="OnQualityChanged" />
+            <TextBlock Text="{x:Static p:Strings.QualityCardTitle}" Style="{StaticResource SectionHeader}" />
+            <RadioButton x:Name="QualityStandard" AutomationProperties.AutomationId="QualityStandard" Content="{x:Static p:Strings.QualityStandard}" IsChecked="True" Checked="OnQualityChanged" />
+            <RadioButton x:Name="QualityHigh" AutomationProperties.AutomationId="QualityHigh" Content="{x:Static p:Strings.QualityHigh}" Margin="0,4,0,0" Checked="OnQualityChanged" />
             <TextBlock Style="{StaticResource StatCaption}" Margin="0,8,0,0"
-                       Text="On the CPU, FP32 is always used because it is faster there. Models are downloaded from Hugging Face on first use and checked by SHA-256." />
+                       Text="{x:Static p:Strings.QualityCaption}" />
           </StackPanel>
         </Border>
 
@@ -588,22 +589,22 @@
         <StackPanel>
           <DockPanel Margin="0,0,0,4">
             <Button x:Name="AboutClose" AutomationProperties.AutomationId="AboutClose" DockPanel.Dock="Right"
-                    Content="Close" Padding="12,4" Click="OnAbout" />
-            <TextBlock Text="Modelado" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    Content="{x:Static p:Strings.AboutClose}" Padding="12,4" Click="OnAbout" />
+            <TextBlock Text="{x:Static p:Strings.AppName}" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center" />
           </DockPanel>
           <TextBlock x:Name="AboutVersion" AutomationProperties.AutomationId="AboutVersion" Style="{StaticResource StatCaption}" />
           <TextBlock x:Name="AboutInference" AutomationProperties.AutomationId="AboutInference" Style="{StaticResource StatCaption}" Margin="0,2,0,16" />
 
           <!-- MOD30: whether a newer release exists, asked of GitHub's release API. -->
-          <TextBlock x:Name="AboutUpdatesHeader" Text="Updates" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock x:Name="AboutUpdatesHeader" Text="{x:Static p:Strings.UpdatesTitle}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutUpdateStatus" AutomationProperties.AutomationId="AboutUpdateStatus" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
           <WrapPanel>
-            <Button x:Name="AboutCheckUpdates" AutomationProperties.AutomationId="AboutCheckUpdates" Content="Check for updates"
+            <Button x:Name="AboutCheckUpdates" AutomationProperties.AutomationId="AboutCheckUpdates" Content="{x:Static p:Strings.AboutCheckUpdates}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnCheckForUpdates" />
-            <Button x:Name="AboutReleasePage" AutomationProperties.AutomationId="AboutReleasePage" Content="Open the release page"
+            <Button x:Name="AboutReleasePage" AutomationProperties.AutomationId="AboutReleasePage" Content="{x:Static p:Strings.AboutReleasePage}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnOpenReleasePage" Visibility="Collapsed" />
             <!-- MOD31: downloads the installer, checks it against SHA256SUMS, runs it and restarts. -->
-            <Button x:Name="AboutInstallUpdate" AutomationProperties.AutomationId="AboutInstallUpdate" Content="Update and restart"
+            <Button x:Name="AboutInstallUpdate" AutomationProperties.AutomationId="AboutInstallUpdate" Content="{x:Static p:Strings.AboutInstallUpdate}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnInstallUpdate" Visibility="Collapsed"
                     Style="{DynamicResource AccentButtonStyle}" />
           </WrapPanel>
@@ -612,42 +613,42 @@
                   Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
             <StackPanel>
               <TextBlock x:Name="AboutUpdateUnsaved" AutomationProperties.AutomationId="AboutUpdateUnsaved" TextWrapping="Wrap"
-                         Text="The model shown has not been saved, and restarting loses it and its history. Save it with Save as first, or update anyway." />
+                         Text="{x:Static p:Strings.AboutUpdateUnsaved}" />
               <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <Button x:Name="AboutUpdateAnyway" AutomationProperties.AutomationId="AboutUpdateAnyway" Content="Update and lose it" Padding="12,2"
+                <Button x:Name="AboutUpdateAnyway" AutomationProperties.AutomationId="AboutUpdateAnyway" Content="{x:Static p:Strings.AboutUpdateAnyway}" Padding="12,2"
                         Click="OnUpdateAnyway" />
-                <Button x:Name="AboutUpdateKeep" AutomationProperties.AutomationId="AboutUpdateKeep" Content="Keep it" Padding="12,2" Margin="8,0,0,0"
+                <Button x:Name="AboutUpdateKeep" AutomationProperties.AutomationId="AboutUpdateKeep" Content="{x:Static p:Strings.AboutUpdateKeep}" Padding="12,2" Margin="8,0,0,0"
                         Click="OnUpdateKeep" />
               </StackPanel>
             </StackPanel>
           </Border>
-          <CheckBox x:Name="AboutAutoUpdate" AutomationProperties.AutomationId="AboutAutoUpdate" Content="Check for updates by itself, once a day"
+          <CheckBox x:Name="AboutAutoUpdate" AutomationProperties.AutomationId="AboutAutoUpdate" Content="{x:Static p:Strings.AboutAutoUpdate}"
                     Margin="0,0,0,16" Checked="OnAutoUpdateChanged" Unchecked="OnAutoUpdateChanged"
-                    ToolTip="Asks api.github.com for the latest release, sending only Modelado's name and version." />
+                    ToolTip="{x:Static p:Strings.AboutAutoUpdateTip}" />
 
           <!-- MOD37: one row per cloud service the build knows, filled in code from
                CloudProviders, so a new service is a class behind the provider interface and no new
                screen. A key is kept encrypted for this Windows user; nothing reaches a service
                without one. -->
-          <TextBlock Text="Cloud services" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.CloudServices}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock Style="{StaticResource StatCaption}" Margin="0,0,0,6" TextWrapping="Wrap"
-                     Text="Optional. With a key, the service's actions appear beside the local ones, and nothing is sent until you agree to it each time." />
+                     Text="{x:Static p:Strings.CloudServicesCaption}" />
           <StackPanel x:Name="AboutCloudServices" AutomationProperties.AutomationId="AboutCloudServices" Margin="0,0,0,16" />
 
           <!-- MOD18: what the provider flag sets, chosen here, saved per user and applied to the next operation. -->
-          <TextBlock Text="Where inference runs" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.WhereInferenceRuns}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <RadioButton x:Name="ProviderAuto" AutomationProperties.AutomationId="ProviderAuto" GroupName="Provider" Checked="OnProviderChanged"
-                       Content="Automatic (the GPU with DirectML when it works, the CPU otherwise)" />
+                       Content="{x:Static p:Strings.ProviderAuto}" />
           <RadioButton x:Name="ProviderDirectML" AutomationProperties.AutomationId="ProviderDirectML" GroupName="Provider" Checked="OnProviderChanged"
-                       Content="GPU (DirectML)" Margin="0,4,0,0" />
+                       Content="{x:Static p:Strings.ProviderDirectML}" Margin="0,4,0,0" />
           <RadioButton x:Name="ProviderCpu" AutomationProperties.AutomationId="ProviderCpu" GroupName="Provider" Checked="OnProviderChanged"
-                       Content="CPU" Margin="0,4,0,0"
-                       ToolTip="For a GPU that fails or is slower than the CPU for a model." />
+                       Content="{x:Static p:Strings.ProviderCpu}" Margin="0,4,0,0"
+                       ToolTip="{x:Static p:Strings.ProviderCpuTip}" />
           <TextBlock x:Name="AboutProviderReason" AutomationProperties.AutomationId="AboutProviderReason" Style="{StaticResource StatCaption}" Margin="0,6,0,0" />
           <TextBlock Style="{StaticResource StatCaption}" Margin="0,2,0,16"
-                     Text="The choice applies to the next operation and is kept for the next start; --provider on the command line still wins for that run." />
+                     Text="{x:Static p:Strings.ProviderCaption}" />
 
-          <TextBlock Text="Models" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.ModelsTitle}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutModelsFolder" AutomationProperties.AutomationId="AboutModelsFolder" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
           <ListBox x:Name="AboutModels" AutomationProperties.AutomationId="AboutModels" AutomationProperties.Name="Models"
                    IsHitTestVisible="False" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -661,14 +662,14 @@
 
           <!-- MOD27: repositories read after the built-in one, kept per user. Adding one shows what it
                lists before it is kept, here and not in a dialog. -->
-          <TextBlock Text="Model sources" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.ModelSources}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock Style="{StaticResource StatCaption}" Margin="0,0,0,6" TextWrapping="Wrap"
-                     Text="The built-in models come first. Add a Hugging Face repository (owner/name) or a manifest URL, and a model it lists for an operation becomes a choice on that operation's card." />
+                     Text="{x:Static p:Strings.ModelSourcesCaption}" />
           <ItemsControl x:Name="AboutSources" AutomationProperties.AutomationId="AboutSources" Margin="0,0,0,6">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <DockPanel Margin="0,2">
-                  <Button DockPanel.Dock="Right" Content="Remove" Padding="10,2" Tag="{Binding Index}" Visibility="{Binding RemoveVisibility}"
+                  <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.Remove}" Padding="10,2" Tag="{Binding Index}" Visibility="{Binding RemoveVisibility}"
                           AutomationProperties.AutomationId="{Binding RemoveId}" AutomationProperties.Name="{Binding RemoveName}"
                           Click="OnRemoveSource" />
                   <TextBlock Text="{Binding Label}" AutomationProperties.AutomationId="{Binding LabelId}" TextWrapping="Wrap" VerticalAlignment="Center" />
@@ -677,10 +678,10 @@
             </ItemsControl.ItemTemplate>
           </ItemsControl>
           <DockPanel Margin="0,0,0,6">
-            <Button x:Name="AboutAddSource" AutomationProperties.AutomationId="AboutAddSource" DockPanel.Dock="Right" Content="Add"
+            <Button x:Name="AboutAddSource" AutomationProperties.AutomationId="AboutAddSource" DockPanel.Dock="Right" Content="{x:Static p:Strings.AboutAddSource}"
                     Padding="12,4" Margin="8,0,0,0" Click="OnAddSource" />
             <TextBox x:Name="AboutSourceInput" AutomationProperties.AutomationId="AboutSourceInput" AutomationProperties.Name="Repository or manifest URL"
-                     ToolTip="owner/name on Hugging Face, or the https address of a manifest.json" />
+                     ToolTip="{x:Static p:Strings.AboutSourceInputTip}" />
           </DockPanel>
           <Border x:Name="AboutSourcePreview" AutomationProperties.AutomationId="AboutSourcePreview" Padding="12,10" Margin="0,0,0,6" CornerRadius="6"
                   Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
@@ -695,9 +696,9 @@
                 </ListBox.ItemTemplate>
               </ListBox>
               <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <Button x:Name="AboutSourceKeep" AutomationProperties.AutomationId="AboutSourceKeep" Content="Add this source" Padding="12,2"
+                <Button x:Name="AboutSourceKeep" AutomationProperties.AutomationId="AboutSourceKeep" Content="{x:Static p:Strings.AboutSourceKeep}" Padding="12,2"
                         Click="OnKeepSource" />
-                <Button x:Name="AboutSourceCancel" AutomationProperties.AutomationId="AboutSourceCancel" Content="Cancel" Padding="12,2" Margin="8,0,0,0"
+                <Button x:Name="AboutSourceCancel" AutomationProperties.AutomationId="AboutSourceCancel" Content="{x:Static p:Strings.Cancel}" Padding="12,2" Margin="8,0,0,0"
                         Click="OnCancelSource" />
               </StackPanel>
             </StackPanel>
@@ -706,7 +707,7 @@
                      Margin="0,0,0,6" Visibility="Collapsed" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
           <Border Height="10" />
 
-          <TextBlock Text="Downloads" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.DownloadsTitle}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutDownloadNote" AutomationProperties.AutomationId="AboutDownloadNote" Style="{StaticResource StatCaption}" Margin="0,0,0,6" />
           <!-- MOD23, after PhotoBoost's DownloadedModels (PB13, PB58): each download, its size, and a
                Remove of its own whose AutomationId names the model. -->
@@ -714,7 +715,7 @@
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <DockPanel Margin="0,2">
-                  <Button DockPanel.Dock="Right" Content="Remove" Padding="10,2" Tag="{Binding Name}"
+                  <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.Remove}" Padding="10,2" Tag="{Binding Name}"
                           AutomationProperties.AutomationId="{Binding RemoveId}" AutomationProperties.Name="{Binding RemoveName}"
                           Click="OnAboutRemoveModel" />
                   <TextBlock Text="{Binding Label}" AutomationProperties.AutomationId="{Binding LabelId}" TextWrapping="Wrap" VerticalAlignment="Center" />
@@ -725,11 +726,11 @@
           <TextBlock x:Name="AboutRemoveNote" AutomationProperties.AutomationId="AboutRemoveNote" Style="{StaticResource StatCaption}"
                      Margin="0,0,0,6" Visibility="Collapsed" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
           <WrapPanel Margin="0,0,0,6">
-            <Button x:Name="AboutDownloadAll" AutomationProperties.AutomationId="AboutDownloadAll" Content="Download everything (offline use)"
+            <Button x:Name="AboutDownloadAll" AutomationProperties.AutomationId="AboutDownloadAll" Content="{x:Static p:Strings.AboutDownloadAll}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnAboutDownloadAll" />
-            <Button x:Name="AboutOpenFolder" AutomationProperties.AutomationId="AboutOpenFolder" Content="Open the models folder"
+            <Button x:Name="AboutOpenFolder" AutomationProperties.AutomationId="AboutOpenFolder" Content="{x:Static p:Strings.AboutOpenFolder}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnAboutOpenFolder" />
-            <Button x:Name="AboutRemoveAll" AutomationProperties.AutomationId="AboutRemoveAll" Content="Remove all downloads…"
+            <Button x:Name="AboutRemoveAll" AutomationProperties.AutomationId="AboutRemoveAll" Content="{x:Static p:Strings.AboutRemoveAll}"
                     Padding="12,4" Margin="0,0,8,6" Click="OnAboutRemoveAll" />
           </WrapPanel>
           <!-- Remove all asks here, in the panel, not in a dialog. -->
@@ -738,9 +739,9 @@
             <StackPanel>
               <TextBlock x:Name="AboutRemoveAllQuestion" AutomationProperties.AutomationId="AboutRemoveAllQuestion" TextWrapping="Wrap" />
               <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <Button x:Name="AboutRemoveAllDelete" AutomationProperties.AutomationId="AboutRemoveAllDelete" Content="Delete them" Padding="12,2"
+                <Button x:Name="AboutRemoveAllDelete" AutomationProperties.AutomationId="AboutRemoveAllDelete" Content="{x:Static p:Strings.AboutRemoveAllDelete}" Padding="12,2"
                         Click="OnAboutRemoveAllDelete" />
-                <Button x:Name="AboutRemoveAllKeep" AutomationProperties.AutomationId="AboutRemoveAllKeep" Content="Keep them" Padding="12,2" Margin="8,0,0,0"
+                <Button x:Name="AboutRemoveAllKeep" AutomationProperties.AutomationId="AboutRemoveAllKeep" Content="{x:Static p:Strings.AboutRemoveAllKeep}" Padding="12,2" Margin="8,0,0,0"
                         Click="OnAboutRemoveAllKeep" />
               </StackPanel>
             </StackPanel>
@@ -750,15 +751,15 @@
             <ProgressBar Height="6" Minimum="0" Maximum="1" Value="{Binding Value, ElementName=ProgressBar}" Margin="0,0,0,6" />
             <DockPanel>
               <Button x:Name="AboutCancelDownload" AutomationProperties.AutomationId="AboutCancelDownload" DockPanel.Dock="Right"
-                      Content="Cancel" Padding="12,2" Click="OnAboutCancelDownload" />
+                      Content="{x:Static p:Strings.Cancel}" Padding="12,2" Click="OnAboutCancelDownload" />
               <TextBlock x:Name="AboutDownloadStatus" AutomationProperties.AutomationId="AboutDownloadStatus" Style="{StaticResource StatCaption}"
                          VerticalAlignment="Center" Margin="0" Text="{Binding Text, ElementName=DownloadChipText}" />
             </DockPanel>
           </StackPanel>
 
-          <TextBlock Text="Third-party software" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.ThirdPartySoftware}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="AboutNotices" AutomationProperties.AutomationId="AboutNotices" Style="{StaticResource StatCaption}"
-                     Text="ONNX Runtime (MIT) with DirectML (Microsoft software license terms), and SkiaSharp (MIT)." />
+                     Text="{x:Static p:Strings.AboutNotices}" />
         </StackPanel>
       </Border>
     </ScrollViewer>
@@ -773,7 +774,7 @@
           <TextBlock x:Name="ConsentTitle" AutomationProperties.AutomationId="ConsentTitle" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" />
           <TextBlock x:Name="ConsentLead" AutomationProperties.AutomationId="ConsentLead" TextWrapping="Wrap" Margin="0,8,0,16" />
 
-          <TextBlock Text="What is downloaded" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.WhatIsDownloaded}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <ListBox x:Name="ConsentFiles" AutomationProperties.AutomationId="ConsentFiles" AutomationProperties.Name="What is downloaded"
                    IsHitTestVisible="False" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
@@ -784,16 +785,16 @@
           </ListBox>
           <TextBlock x:Name="ConsentTotal" AutomationProperties.AutomationId="ConsentTotal" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,6,0,16" />
 
-          <TextBlock Text="Good to know" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.GoodToKnow}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="ConsentFacts" AutomationProperties.AutomationId="ConsentFacts" Style="{StaticResource StatCaption}" Margin="0,0,0,16" />
 
-          <TextBlock Text="License" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
+          <TextBlock Text="{x:Static p:Strings.LicenseTitle}" Style="{StaticResource SectionHeader}" Margin="0,0,0,6" />
           <TextBlock x:Name="ConsentLicense" AutomationProperties.AutomationId="ConsentLicense" Style="{StaticResource StatCaption}" />
 
           <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
             <Button x:Name="ConsentAccept" AutomationProperties.AutomationId="ConsentAccept" Padding="16,6" IsDefault="True"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnConsentAccept" />
-            <Button x:Name="ConsentDecline" AutomationProperties.AutomationId="ConsentDecline" Content="Not now" Padding="16,6" Margin="8,0,0,0"
+            <Button x:Name="ConsentDecline" AutomationProperties.AutomationId="ConsentDecline" Content="{x:Static p:Strings.NotNow}" Padding="16,6" Margin="8,0,0,0"
                     IsCancel="True" Click="OnConsentDecline" />
           </StackPanel>
         </StackPanel>
@@ -806,16 +807,16 @@
          progress; and what the last run, edit, save or download came to. About sits on the right. -->
     <DockPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="12,6,12,8" LastChildFill="True">
       <Button x:Name="AboutButton" AutomationProperties.AutomationId="AboutButton" DockPanel.Dock="Right"
-              Content="About and models" Padding="10,2" Margin="6,0,0,0" Click="OnAbout" />
+              Content="{x:Static p:Strings.AboutButton}" Padding="10,2" Margin="6,0,0,0" Click="OnAbout" />
       <!-- MOD55: once a cloud key is stored, the service closest to its budget and what it has cost
            this month; it says when a budget is nearly spent, and opens About at Cloud services. -->
       <Button x:Name="CloudChip" AutomationProperties.AutomationId="CloudChip" DockPanel.Dock="Right"
               Padding="10,2" Margin="6,0,0,0" Click="OnCloudChip" Visibility="Collapsed"
-              ToolTip="What the cloud services have cost this month, and their budgets" />
+              ToolTip="{x:Static p:Strings.CloudChipTip}" />
       <!-- MOD30: a newer release, found by the check; it opens About at its Updates section. -->
       <Button x:Name="UpdateChip" AutomationProperties.AutomationId="UpdateChip" DockPanel.Dock="Right"
               Padding="10,2" Margin="6,0,0,0" Click="OnUpdateChip" Visibility="Collapsed"
-              Style="{DynamicResource AccentButtonStyle}" ToolTip="See what is new and how to install it" />
+              Style="{DynamicResource AccentButtonStyle}" ToolTip="{x:Static p:Strings.UpdateChipTip}" />
       <Border x:Name="ProviderChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left">
         <TextBlock x:Name="ProviderStatus" AutomationProperties.AutomationId="ProviderStatus" FontSize="12" Text="…" />
       </Border>

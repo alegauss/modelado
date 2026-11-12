@@ -498,6 +498,13 @@ fails when a XAML Text, Content, Header, ToolTip or Title attribute holds a lite
 instead of a resource reference, so a new string cannot skip the file. Because the
 English text is unchanged, the winwright cases keep passing without edits.
 
+The XAML half landed: Strings is generated at build time into obj (the csproj runs
+CoreResGen before MarkupCompilePass1 and hands the file to the wpftmp build), XAML uses
+x:Static, and StringResourceTests holds it. Left: the code-behind, and the labels split
+into Runs ("Simplify to " 25% " of the triangles"), which become one format string set
+from code. A code-side test, like the XAML one, can then refuse a literal passed to
+Text, Content or ToolTip in the partials.
+
 ### §MOD86 MOD86 — Interface language follows Windows, with a setting
 
 App.xaml.cs pins both culture and UI culture to en-US (MOD49, held by CultureTests).
