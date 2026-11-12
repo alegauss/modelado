@@ -4,6 +4,8 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
+- ⏸ **MOD94** (deps: —) **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — set aside (No case reads it; MSIX host check.): Still to come: the same paths in the taskbar Jump List, checked on the packaged build as well as the installed one. → §MOD94
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
