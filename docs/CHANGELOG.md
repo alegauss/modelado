@@ -115,3 +115,7 @@
 
 ## Block K — Translated interface
 
+## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
+
+## Block M — The CPU and integrated-GPU path
+
