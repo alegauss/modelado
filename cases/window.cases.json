@@ -181,6 +181,22 @@
       "shareable": false
     },
     {
+      // MOD98: the photo open with nothing saved, so the rail's choice is this run's own.
+      "name": "a window with the photo open and no card chosen on the rail",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
+      // MOD98: the settings.json an earlier run left with the Relief card chosen on the rail.
+      "name": "a window started after the Relief card was chosen on the rail",
+      "files": ["cases/fixtures/photo.png", { "from": "cases/fixtures/settings-relief-card.json", "to": "Modelado/settings.json" }],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -1313,6 +1329,35 @@
         { "locator": "Edit#CloudKey-ideogram", "act": "read", "reads": "focused", "expect": "focused", "named": "the box opens, ready for the new key" },
         { "locator": "Button#CloudRemove-ideogram", "act": "invoke", "named": "Remove forgets the stored key" },
         { "locator": "Text#CloudStatus-ideogram", "act": "read", "reads": "name", "expect": "No key.", "named": "and About says so" }
+      ]
+    },
+
+    {
+      "name": "choosing a card on the Operations rail brings it into view, and the cards with nothing to show have no icon",
+      "catches": "a rail icon that does not reach its card, a card still below the fold once chosen, or an icon for a card that is not shown",
+      "filed": "MOD98",
+      "tags": ["operations", "rail"],
+      "fixture": "a window with the photo open and no card chosen on the rail",
+      "steps": [
+        { "locator": "ListItem#Rail-Object", "act": "read", "reads": "name", "expect": "3D Object", "named": "the rail names its cards" },
+        { "locator": "ListItem#Rail-Export", "act": "read", "absent": true, "named": "with no model yet, Export has no icon" },
+        { "locator": "ListItem#Rail-Cloud", "act": "read", "absent": true, "named": "nor Cloud 3D with no key" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "Relief is chosen" },
+        { "locator": "Button#ReliefButton", "act": "read", "within": "Pane#OperationsScroll", "named": "its Generate button is brought into the panel's view" },
+        { "locator": "ListItem#Rail-Quality", "act": "select", "reads": "selected", "expect": "selected", "named": "Quality is chosen" },
+        { "locator": "RadioButton#QualityHigh", "act": "read", "within": "Pane#OperationsScroll", "named": "and the last card comes into view too" }
+      ]
+    },
+
+    {
+      "name": "a start after a card was chosen on the rail opens the panel on that card",
+      "catches": "a rail choice that is not kept, or kept and not shown at the next start",
+      "filed": "MOD98",
+      "tags": ["operations", "rail"],
+      "fixture": "a window started after the Relief card was chosen on the rail",
+      "steps": [
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "selected", "expect": "selected", "named": "the rail starts on Relief" },
+        { "locator": "Button#ReliefButton", "act": "read", "within": "Pane#OperationsScroll", "named": "with the Relief card in view" }
       ]
     },
 

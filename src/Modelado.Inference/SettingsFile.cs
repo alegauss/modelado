@@ -120,6 +120,32 @@ public static class UpdateSetting
     public static void Save(string path, bool on) => SettingsFile.Write(path, Key, JsonValue.Create(on));
 }
 
+/// <summary>The operation card chosen on the Operations rail (MOD98), kept for the next start.</summary>
+public static class CardSetting
+{
+    private const string Key = "operationsCard";
+
+    /// <summary>The card chosen last.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <returns>Its name, e.g. Relief, or null where none was chosen.</returns>
+    public static string? Load(string path)
+    {
+        try
+        {
+            return SettingsFile.Read(path, Key)?.GetValue<string>() is { Length: > 0 } card ? card : null;
+        }
+        catch (Exception error) when (error is InvalidOperationException or FormatException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Keeps the card chosen.</summary>
+    /// <param name="path">The settings file.</param>
+    /// <param name="card">Its name.</param>
+    public static void Save(string path, string card) => SettingsFile.Write(path, Key, JsonValue.Create(card));
+}
+
 /// <summary>
 /// The photos and models opened or saved lately (MOD94), newest first, kept in settings.json rather
 /// than the registry so the Store package and the installed build keep them alike.

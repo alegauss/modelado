@@ -201,7 +201,12 @@ public partial class MainWindow : Window, IDisposable
         OpenError.Visibility = Visibility.Collapsed;
         ViewerOpenErrorBar.Visibility = Visibility.Collapsed;
         EmptyHint.Visibility = Visibility.Collapsed;
+        bool first = Operations.Visibility != Visibility.Visible;
         Operations.Visibility = Visibility.Visible;
+        if (first)
+        {
+            RestoreRail();
+        }
         LastRunSaid(null);
         UpdateCloudCard();
     }
