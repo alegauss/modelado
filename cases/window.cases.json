@@ -79,6 +79,14 @@
       "shareable": false
     },
     {
+      // MOD97: a models folder of its own and empty, so About lists every model as missing.
+      "name": "a window with a fresh models folder, to download one model from About",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--models", "{files}/about-models", "--manifest", "http://127.0.0.1:47631/files/manifest.json", "--provider", "cpu", "--releases", "off"],
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD23: a models folder of its own, which the case fills by downloading and then empties.
       "name": "a window with a photo open, to download and remove a model",
       "files": ["cases/fixtures/photo.png"],
@@ -479,6 +487,29 @@
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "the Relief card offers its download again" },
         { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "and the 3D Object card is as it was" }
+      ]
+    },
+
+    {
+      "name": "About lists a model not downloaded with what uses it and a Download of its own, and it turns to downloaded in place",
+      "catches": "a missing model that About does not list, a Download everything that does not say what it fetches, or a row that stays missing after its download",
+      "filed": "MOD97",
+      "tags": ["about", "download"],
+      "fixture": "a window with a fresh models folder, to download one model from About",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#Download-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · not downloaded · 1 MB, used by Relief", "named": "a model never fetched is listed as missing, with what uses it" },
+        { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "absent": true, "named": "with nothing to remove" },
+        { "locator": "Button#AboutDownloadAll", "act": "read", "reads": "name", "expect": "Download 5 missing, 6 MB", "named": "Download everything says what it would fetch" },
+        { "locator": "Button#DownloadModel-depth-anything-v2-small", "act": "invoke", "named": "its own Download is pressed" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "and agreed to" },
+        { "locator": "Button#AboutCancelDownload", "act": "invoke", "named": "the slow first fetch is cancelled, keeping what arrived" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Download cancelled", "named": "and said to be cancelled" },
+        { "locator": "Button#DownloadModel-depth-anything-v2-small", "act": "invoke", "named": "Download is pressed again" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "and agreed to, the rest resuming at once" },
+        { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "Remove depth-anything-v2-small", "named": "the row turns to downloaded, with Remove" },
+        { "locator": "Text#Download-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · fp32 · 1 MB", "named": "and its variant and size" },
+        { "locator": "Button#AboutDownloadAll", "act": "read", "reads": "name", "expect": "Download 4 missing, 5 MB", "named": "Download everything counts one fewer" }
       ]
     },
 

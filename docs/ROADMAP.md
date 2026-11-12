@@ -15,7 +15,6 @@
 
 ## Block D — Model downloads
 
-- 📋 **MOD97** (deps: —) **About lists only the models already downloaded, so a missing or removed model vanishes instead of showing as missing** — Download everything gives no clue what it would fetch, and after a Remove the user cannot see what is gone or get it back alone. → §MOD97
 - 📋 **MOD124** (deps: —) **A model over 2 GB cannot be published or downloaded: the manifest and downloader ignore ONNX external data** — TripoSG's transformer alone exceeds protobuf's 2 GB limit, so MOD80 cannot start until large models can be stored in parts. → §MOD124
 - 📋 **MOD122** (deps: —) **Only freely downloadable models can be offered; one behind a licence click, login or registration cannot be fetched** — The Stability models SF3D and SPAR3D, accepted on 12/11/2026, are gated on Hugging Face; a spike settles how a wizard can guide that. → §MOD122
 - 📋 **MOD123** (deps: MOD122) **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model with conditions needs informed consent and a guided login, which a Download button that just fetches files cannot give. → §MOD123

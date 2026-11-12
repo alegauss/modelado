@@ -52,6 +52,7 @@
 - ✅ **MOD23** **Downloaded models can only be removed all at once; About lists no per-model size and no Remove for each** — About lists each download with its size and its own Remove; Remove all asks in the panel; a model in use is not removed.
 - ✅ **MOD57** **CI on Linux fails since MOD23: removing a downloaded model accepts a name with a backslash there** — Removing a downloaded model refuses a name with either separator on every system, so the ModelLibrary test holds on Linux CI as on Windows.
 - ✅ **MOD20** **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Five models are on alegauss/modelado-models, pinned to their upload commit; a clean guest fetched all ten files by SHA-256 and ran 3D Object, Relief and upscale on the robot photo.
+- ✅ **MOD97** **About lists only the models already downloaded, so a missing or removed model vanishes instead of showing as missing** — About lists every model the operations and sources use, a missing one with what uses it and a Download, and Download everything names its count and size.
 
 ## Block E — Publishing custom models to Hugging Face
 

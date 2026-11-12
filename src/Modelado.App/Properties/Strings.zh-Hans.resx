@@ -1404,4 +1404,22 @@
   <data name="ReplaceKeyName" xml:space="preserve">
     <value>替换 {0} 密钥</value>
   </data>
+  <data name="ModelMissing" xml:space="preserve">
+    <value>{0} · 未下载 · {1}，由 {2} 使用</value>
+  </data>
+  <data name="ModelMissingNoSize" xml:space="preserve">
+    <value>{0} · 未下载，由 {1} 使用</value>
+  </data>
+  <data name="DownloadMissing" xml:space="preserve">
+    <value>下载缺少的 {0} 个，{1}</value>
+  </data>
+  <data name="DownloadMissingNoSize" xml:space="preserve">
+    <value>下载缺少的 {0} 个</value>
+  </data>
+  <data name="DownloadModel" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="DownloadModelName" xml:space="preserve">
+    <value>下载 {0}</value>
+  </data>
 </root>

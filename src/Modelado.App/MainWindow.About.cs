@@ -75,19 +75,103 @@ public partial class MainWindow
         AboutDownloadNote.Text = (downloaded > 0
             ? Ui.Format(Strings.DownloadsGoTake, ShownDownloadRoot, Size(downloaded))
             : Ui.Format(Strings.DownloadsGoNone, ShownDownloadRoot)) + RemovedWithTheApp;
+        // MOD97: every model the operations use, and each an added source lists, downloaded or not.
+        List<(string Name, string UsedBy, long? Bytes)> missing = MissingModels();
         AboutDownloadedModels.ItemsSource = downloads
-            .Select(m => new DownloadedRow(m.Name, Ui.Format(Strings.DownloadedRow, m.Name, string.Join(Strings.ListComma, m.Variants), Size(Bytes(m))), $"Download-{m.Name}", $"Remove-{m.Name}", Ui.Format(Strings.RemoveNamed, m.Name)))
+            .Select(m => new ModelRow(m.Name, Ui.Format(Strings.DownloadedRow, m.Name, string.Join(Strings.ListComma, m.Variants), Size(Bytes(m))), Downloaded: true))
+            .Concat(missing.Select(m => new ModelRow(m.Name, m.Bytes is { } bytes
+                ? Ui.Format(Strings.ModelMissing, m.Name, Size(bytes), m.UsedBy)
+                : Ui.Format(Strings.ModelMissingNoSize, m.Name, m.UsedBy), Downloaded: false)))
             .ToList();
         AboutRemoveAll.IsEnabled = downloads.Count > 0;
+
+        // Download everything says what it would fetch, and greys itself when there is nothing.
+        long? total = missing.All(m => m.Bytes is not null) ? missing.Sum(m => m.Bytes!.Value) : null;
+        AboutDownloadAll.Content = (missing.Count, total) switch
+        {
+            (0, _) => Strings.AboutDownloadAll,
+            (_, { } bytes) => Ui.Format(Strings.DownloadMissing, missing.Count, Size(bytes)),
+            _ => Ui.Format(Strings.DownloadMissingNoSize, missing.Count),
+        };
+        AboutDownloadAll.IsEnabled = missing.Count > 0;
     }
 
-    /// <summary>One downloaded model, as About's list shows it (MOD23).</summary>
+    /// <summary>The models every operation needs, then those the added sources list.</summary>
+    private IEnumerable<(string Name, string UsedBy)> KnownModels() =>
+        ObjectReconstruction.Models.Select(m => (m, Strings.ObjectCardTitle))
+            .Concat(ReliefReconstruction.Models(true).Select(m => (m, Strings.ReliefCardTitle)))
+            .Append((Upscaling.Model, Strings.TextureFirstUseTitle))
+            .Concat(sourceOfModel.Select(pair => (pair.Key, pair.Value)))
+            .DistinctBy(model => model.Item1, StringComparer.Ordinal);
+
+    // What this provider and quality would download for each model not on disk, sized from the
+    // model list where it has been read.
+    private List<(string Name, string UsedBy, long? Bytes)> MissingModels()
+    {
+        List<(string, string, long?)> missing = [];
+        foreach ((string name, string usedBy) in KnownModels())
+        {
+            IReadOnlyList<ModelRequest> requests = runner.Missing([name]);
+            if (requests.Count == 0)
+            {
+                continue;
+            }
+
+            long? bytes = manifest is { } listed && requests.All(r => listed.Model(r.Model) is not null)
+                ? ModelDownloads.PendingBytes(listed, library.DownloadRoot, requests, library.Roots)
+                : null;
+            missing.Add((name, usedBy, bytes));
+        }
+
+        return missing;
+    }
+
+    /// <summary>
+    /// One model as About's Downloads list shows it (MOD23, MOD97): downloaded, with Remove, or
+    /// missing, with Download. Equal only to itself, as a list rebuilt equal by value would hand
+    /// its new entries the old ones' automation peers (MOD94).
+    /// </summary>
     /// <param name="Name">The model's folder name.</param>
-    /// <param name="Label">Its name, variants and size.</param>
-    /// <param name="LabelId">The label's AutomationId.</param>
-    /// <param name="RemoveId">Its Remove button's AutomationId.</param>
-    /// <param name="RemoveName">Its Remove button's accessible name.</param>
-    private sealed record DownloadedRow(string Name, string Label, string LabelId, string RemoveId, string RemoveName);
+    /// <param name="Label">What it is, its size, and whether it is here.</param>
+    /// <param name="Downloaded">Whether it is on disk.</param>
+    private sealed record ModelRow(string Name, string Label, bool Downloaded)
+    {
+        public string LabelId => $"Download-{Name}";
+
+        public string RemoveId => $"Remove-{Name}";
+
+        public string RemoveName => Ui.Format(Strings.RemoveNamed, Name);
+
+        public string DownloadId => $"DownloadModel-{Name}";
+
+        public string DownloadName => Ui.Format(Strings.DownloadModelName, Name);
+
+        public Visibility RemoveVisibility => Downloaded ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility DownloadVisibility => Downloaded ? Visibility.Collapsed : Visibility.Visible;
+
+        /// <inheritdoc/>
+        public bool Equals(ModelRow? other) => ReferenceEquals(this, other);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+    }
+
+    private async void OnAboutDownloadModel(object sender, RoutedEventArgs e)
+    {
+        if (((FrameworkElement)sender).Tag is not string model)
+        {
+            return;
+        }
+
+        await DownloadAsync(model, Ui.Format(Strings.DownloadModelName, model), [model]).ConfigureAwait(true);
+        if (AboutOpen)
+        {
+            FillAbout();
+        }
+
+        await RefreshModelStatusAsync().ConfigureAwait(true);
+    }
 
     private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].Bytes);
 

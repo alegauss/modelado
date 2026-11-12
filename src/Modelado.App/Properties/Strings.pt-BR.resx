@@ -1404,4 +1404,22 @@ Modelos 3D: {1}</value>
   <data name="ReplaceKeyName" xml:space="preserve">
     <value>Substituir a chave do {0}</value>
   </data>
+  <data name="ModelMissing" xml:space="preserve">
+    <value>{0} · não baixado · {1}, usado por {2}</value>
+  </data>
+  <data name="ModelMissingNoSize" xml:space="preserve">
+    <value>{0} · não baixado, usado por {1}</value>
+  </data>
+  <data name="DownloadMissing" xml:space="preserve">
+    <value>Baixar {0} ausentes, {1}</value>
+  </data>
+  <data name="DownloadMissingNoSize" xml:space="preserve">
+    <value>Baixar {0} ausentes</value>
+  </data>
+  <data name="DownloadModel" xml:space="preserve">
+    <value>Baixar</value>
+  </data>
+  <data name="DownloadModelName" xml:space="preserve">
+    <value>Baixar {0}</value>
+  </data>
 </root>

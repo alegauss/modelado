@@ -757,9 +757,15 @@
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <DockPanel Margin="0,2">
+                  <!-- MOD97: a model downloaded has Remove; one missing has Download. -->
                   <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.Remove}" Padding="10,2" Tag="{Binding Name}"
+                          Visibility="{Binding RemoveVisibility}"
                           AutomationProperties.AutomationId="{Binding RemoveId}" AutomationProperties.Name="{Binding RemoveName}"
                           Click="OnAboutRemoveModel" />
+                  <Button DockPanel.Dock="Right" Content="{x:Static p:Strings.DownloadModel}" Padding="10,2" Tag="{Binding Name}"
+                          Visibility="{Binding DownloadVisibility}"
+                          AutomationProperties.AutomationId="{Binding DownloadId}" AutomationProperties.Name="{Binding DownloadName}"
+                          Click="OnAboutDownloadModel" />
                   <TextBlock Text="{Binding Label}" AutomationProperties.AutomationId="{Binding LabelId}" TextWrapping="Wrap" VerticalAlignment="Center" />
                 </DockPanel>
               </DataTemplate>

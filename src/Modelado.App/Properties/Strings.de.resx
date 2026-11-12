@@ -1404,4 +1404,22 @@
   <data name="ReplaceKeyName" xml:space="preserve">
     <value>{0}-Schlüssel ersetzen</value>
   </data>
+  <data name="ModelMissing" xml:space="preserve">
+    <value>{0} · nicht heruntergeladen · {1}, verwendet von {2}</value>
+  </data>
+  <data name="ModelMissingNoSize" xml:space="preserve">
+    <value>{0} · nicht heruntergeladen, verwendet von {1}</value>
+  </data>
+  <data name="DownloadMissing" xml:space="preserve">
+    <value>{0} fehlende herunterladen, {1}</value>
+  </data>
+  <data name="DownloadMissingNoSize" xml:space="preserve">
+    <value>{0} fehlende herunterladen</value>
+  </data>
+  <data name="DownloadModel" xml:space="preserve">
+    <value>Herunterladen</value>
+  </data>
+  <data name="DownloadModelName" xml:space="preserve">
+    <value>{0} herunterladen</value>
+  </data>
 </root>

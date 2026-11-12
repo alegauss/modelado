@@ -82,36 +82,21 @@ vanishes from the accessibility tree while it still shows on screen. Recent file
 the moment the thumbnails swapped the list in: Button#Recent-1 stopped resolving though
 it was drawn.
 
-About builds its rows the same way, as positional records rebuilt on every FillAbout:
-SourceRow (model sources, MainWindow.Sources.cs) and DownloadedRow (downloads,
-MainWindow.About.cs). Opening About a second time, or removing one source or model,
-rebuilds the rows equal by value to the ones before, so a screen reader and a winwright
-case can lose the Remove buttons they had. The current cases pass because each step's
-list differs from the last.
+About's downloads list was built the same way; MOD97 replaced DownloadedRow with
+ModelRow, equal only to itself. Left: SourceRow (model sources, MainWindow.Sources.cs),
+a positional record rebuilt on every FillAbout, so opening About again or removing one
+source rebuilds rows equal by value to the ones before, and a screen reader or a
+winwright case can lose the Remove buttons it had. The current cases pass because each
+step's list differs from the last.
 
-Give both records reference equality, as RecentRow now does (Equals by ReferenceEquals,
-GetHashCode by RuntimeHelpers), or make them classes. An architecture test can hold
-every record used as an ItemsSource row in Modelado.App to that, and a case reopens
-About after a removal and invokes a Remove that was there before.
+Give SourceRow reference equality as RecentRow and ModelRow have it (Equals by
+ReferenceEquals, GetHashCode by RuntimeHelpers). An architecture test can hold every
+record used as an ItemsSource row in Modelado.App to that, and a case reopens About
+after a source is removed and invokes a Remove that was there before.
 
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
-
-### §MOD97 MOD97 — Every model About knows of, downloaded or not
-
-FillAbout in MainWindow.About.cs builds both the Models list and the Downloads list from
-library.Installed(), so a model that was never fetched, or was removed, is simply
-absent. Meanwhile, OnAboutDownloadAll fetches ObjectReconstruction.Models,
-ReliefReconstruction.Models(true) and Upscaling.Model without saying which ones are
-missing. Build the Downloads list from that same set, together with any model from an
-added source, and give each row its state: "Downloaded · 800 MB" with Remove, or "Not
-downloaded · 800 MB, used by Make 3D" with Download. Rows flip in place while a download
-runs. The Download everything button names what it will fetch and its total size
-("Download 2 missing, 847 MB") and disables itself when nothing is missing. The Models
-list above keeps describing licences, and also shows a missing model as missing. A case
-removes one fixture model, finds its row marked as not downloaded with a Download
-button, downloads it, and finds the row back to downloaded.
 
 ### §MOD124 ONNX external data in the manifest
 

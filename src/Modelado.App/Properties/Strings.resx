@@ -1404,4 +1404,22 @@
   <data name="ReplaceKeyName" xml:space="preserve">
     <value>Replace the {0} key</value>
   </data>
+  <data name="ModelMissing" xml:space="preserve">
+    <value>{0} · not downloaded · {1}, used by {2}</value>
+  </data>
+  <data name="ModelMissingNoSize" xml:space="preserve">
+    <value>{0} · not downloaded, used by {1}</value>
+  </data>
+  <data name="DownloadMissing" xml:space="preserve">
+    <value>Download {0} missing, {1}</value>
+  </data>
+  <data name="DownloadMissingNoSize" xml:space="preserve">
+    <value>Download {0} missing</value>
+  </data>
+  <data name="DownloadModel" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DownloadModelName" xml:space="preserve">
+    <value>Download {0}</value>
+  </data>
 </root>
