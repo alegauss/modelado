@@ -35,8 +35,8 @@ public partial class MainWindow
         }
 
         SendToBlenderButton.Visibility = Visibility.Visible;
-        Title = $"{blenderSession.ObjectName} from Blender · Modelado";
-        ShowSource($"{blenderSession.ObjectName} from Blender");
+        Title = Ui.Format(Strings.FromBlenderTitle, blenderSession.ObjectName);
+        ShowSource(Ui.Format(Strings.FromBlender, blenderSession.ObjectName));
     }
 
     // Looked for once: Blender does not come and go while the window is open.
@@ -52,15 +52,15 @@ public partial class MainWindow
             return;
         }
 
-        string name = Path.GetFileNameWithoutExtension(blenderSession?.ObjectName ?? photoPath ?? "model");
+        string name = Path.GetFileNameWithoutExtension(blenderSession?.ObjectName ?? photoPath ?? Strings.DefaultModelName);
         try
         {
             string glb = BlenderLauncher.Open(program, mesh, name);
-            ExportStatus.Text = $"Opened in Blender: {Path.GetFileName(glb)}";
+            ExportStatus.Text = Ui.Format(Strings.OpenedInBlender, Path.GetFileName(glb));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
         {
-            ExportStatus.Text = $"Blender could not be started: {error.Message}";
+            ExportStatus.Text = Ui.Format(Strings.BlenderNotStarted, error.Message);
         }
 
         ExportStatus.Visibility = Visibility.Visible;
@@ -75,12 +75,12 @@ public partial class MainWindow
 
         try
         {
-            int sequence = blenderSession.Send(mesh, history.CurrentLabel ?? "Edited in Modelado");
-            LastRunSaid($"Sent to Blender: {blenderSession.ObjectName}, version {sequence}");
+            int sequence = blenderSession.Send(mesh, history.CurrentLabel ?? Strings.EditedInModelado);
+            LastRunSaid(Ui.Format(Strings.SentToBlender, blenderSession.ObjectName, sequence));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            LastRunSaid("Not sent to Blender", error.Message);
+            LastRunSaid(Strings.NotSentToBlender, error.Message);
         }
     }
 }

@@ -47,11 +47,12 @@ public partial class MainWindow
             return;
         }
 
-        DropGenerate.Content = $"Generate a photo with {service.DisplayName}…";
+        DropGenerate.Content = Ui.Format(Strings.GeneratePhotoWith, service.DisplayName);
         CloudJobRequest request = GenerateRequest();
-        string estimate = service.EstimateCost(request) is { } cost ? $" · ~{cost}" : "";
         string count = ComboTag(GenerateCount);
-        GenerateRun.Content = $"Generate {count} with {service.DisplayName}{estimate}";
+        GenerateRun.Content = service.EstimateCost(request) is { } cost
+            ? Ui.Format(Strings.GenerateCountWithCost, count, service.DisplayName, cost)
+            : Ui.Format(Strings.GenerateCountWith, count, service.DisplayName);
         GenerateRun.IsEnabled = !busy && GeneratePrompt.Text.Trim().Length > 0 && GenerateTemplate.Text.Contains("{object}", StringComparison.Ordinal);
     }
 
@@ -84,9 +85,10 @@ public partial class MainWindow
         }
 
         CloudJobRequest request = GenerateRequest();
-        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
         (string note, bool blocked) = BudgetNote(service, request);
-        GenerateConsentText.Text = $"This description goes to {service.DisplayName}{cost}.{note}";
+        GenerateConsentText.Text = service.EstimateCost(request) is { } estimate
+            ? Ui.Format(Strings.ConsentDescriptionCost, service.DisplayName, estimate, note)
+            : Ui.Format(Strings.ConsentDescription, service.DisplayName, note);
         GenerateSend.IsEnabled = !blocked;
         pendingCloud = request;
         GenerateConsent.Visibility = Visibility.Visible;
@@ -106,7 +108,7 @@ public partial class MainWindow
             pendingCloud = null;
             generatePrompt = request.Prompt ?? "";
             GenerateCandidates.Children.Clear();
-            GenerateStatus.Text = $"Drawing with {service.DisplayName}…";
+            GenerateStatus.Text = Ui.Format(Strings.DrawingWith, service.DisplayName);
             await RunCloudAsync(service, request).ConfigureAwait(true);
             if (GenerateCandidates.Children.Count == 0)
             {
@@ -135,16 +137,16 @@ public partial class MainWindow
                 Content = new Image { Source = picture, Width = 96, Height = 96, Stretch = System.Windows.Media.Stretch.Uniform },
                 Margin = new Thickness(0, 0, 6, 6),
                 Padding = new Thickness(2),
-                ToolTip = "Open this one",
+                ToolTip = Strings.OpenThisOne,
             };
             int place = i + 1;
             AutomationProperties.SetAutomationId(choose, $"Candidate-{place}");
-            AutomationProperties.SetName(choose, $"Candidate {place}");
+            AutomationProperties.SetName(choose, Ui.Format(Strings.CandidateName, place));
             choose.Click += async (_, _) => await OpenCandidateAsync(candidate).ConfigureAwait(true);
             GenerateCandidates.Children.Add(choose);
         }
 
-        GenerateStatus.Text = images.Count == 1 ? "Press it to open it." : $"{images.Count} candidates: press one to open it.";
+        GenerateStatus.Text = images.Count == 1 ? Strings.PressToOpen : Ui.Format(Strings.CandidatesPress, images.Count);
         return Task.CompletedTask;
     }
 
@@ -172,7 +174,7 @@ public partial class MainWindow
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidDataException)
         {
-            GenerateStatus.Text = $"The image could not be kept: {error.Message}";
+            GenerateStatus.Text = Ui.Format(Strings.ImageNotKept, error.Message);
             return;
         }
 

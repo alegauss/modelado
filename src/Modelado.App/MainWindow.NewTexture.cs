@@ -37,12 +37,13 @@ public partial class MainWindow
             return;
         }
 
-        NewTextureButton.Content = $"New texture with {service.DisplayName}…";
+        NewTextureButton.Content = Ui.Format(Strings.NewTextureWith, service.DisplayName);
         NewTextureButton.IsEnabled = !busy;
-        string estimate = service.EstimateCost(NewTextureRequest()) is { } cost ? $" · ~{cost}" : "";
-        NewTextureRun.Content = $"Draw {TextureCandidates} with {service.DisplayName}{estimate}";
+        NewTextureRun.Content = service.EstimateCost(NewTextureRequest()) is { } cost
+            ? Ui.Format(Strings.DrawCountWithCost, TextureCandidates, service.DisplayName, cost)
+            : Ui.Format(Strings.DrawCountWith, TextureCandidates, service.DisplayName);
         NewTextureRun.IsEnabled = !busy && NewTexturePrompt.Text.Trim().Length > 0;
-        NewTextureAsked.Text = $"Asked as: {TextureTemplate}";
+        NewTextureAsked.Text = Ui.Format(Strings.AskedAsTemplate, TextureTemplate);
     }
 
     // Before anything is typed it is priced on a placeholder, as the estimate does not read the words.
@@ -66,9 +67,10 @@ public partial class MainWindow
         }
 
         CloudJobRequest request = NewTextureRequest();
-        string cost = service.EstimateCost(request) is { } estimate ? $" for about {estimate}" : "";
         (string note, bool blocked) = BudgetNote(service, request);
-        NewTextureConsentText.Text = $"This description goes to {service.DisplayName}{cost}; the model stays here.{note}";
+        NewTextureConsentText.Text = service.EstimateCost(request) is { } estimate
+            ? Ui.Format(Strings.ConsentTextureCost, service.DisplayName, estimate, note)
+            : Ui.Format(Strings.ConsentTexture, service.DisplayName, note);
         NewTextureSend.IsEnabled = !blocked;
         pendingCloud = request;
         NewTextureConsent.Visibility = Visibility.Visible;
@@ -91,7 +93,7 @@ public partial class MainWindow
         pendingCloud = null;
         textureMaterial = NewTexturePrompt.Text.Trim();
         NewTextureCandidates.Children.Clear();
-        NewTextureStatus.Text = $"Drawing with {service.DisplayName}…";
+        NewTextureStatus.Text = Ui.Format(Strings.DrawingWith, service.DisplayName);
         drawingTexture = true;
         try
         {
@@ -128,16 +130,16 @@ public partial class MainWindow
                 Content = new Image { Source = picture, Width = 72, Height = 72, Stretch = System.Windows.Media.Stretch.UniformToFill },
                 Margin = new Thickness(0, 0, 6, 6),
                 Padding = new Thickness(2),
-                ToolTip = "Put this one on the model",
+                ToolTip = Strings.PutThisOnModel,
             };
             int place = i + 1;
             AutomationProperties.SetAutomationId(choose, $"TextureCandidate-{place}");
-            AutomationProperties.SetName(choose, $"Texture {place}");
+            AutomationProperties.SetName(choose, Ui.Format(Strings.TextureName, place));
             choose.Click += async (_, _) => await ApplyTextureAsync(candidate).ConfigureAwait(true);
             NewTextureCandidates.Children.Add(choose);
         }
 
-        NewTextureStatus.Text = images.Count == 1 ? "Press it to put it on the model." : $"{images.Count} textures: press one to put it on the model.";
+        NewTextureStatus.Text = images.Count == 1 ? Strings.PressToPutOn : Ui.Format(Strings.TexturesPress, images.Count);
         return Task.CompletedTask;
     }
 
@@ -151,12 +153,12 @@ public partial class MainWindow
         }
         catch (InvalidDataException error)
         {
-            NewTextureStatus.Text = $"The texture could not be read: {error.Message}";
+            NewTextureStatus.Text = Ui.Format(Strings.TextureNotRead, error.Message);
             return;
         }
 
         NewTexturePanel.Visibility = Visibility.Collapsed;
         NewTextureCandidates.Children.Clear();
-        await EditAsync($"New texture: {textureMaterial}", (m, _, _) => MaterialTexture.Apply(m, tile)).ConfigureAwait(true);
+        await EditAsync(Ui.Format(Strings.NewTextureStep, textureMaterial), (m, _, _) => MaterialTexture.Apply(m, tile)).ConfigureAwait(true);
     }
 }

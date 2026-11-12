@@ -23,21 +23,20 @@ public partial class MainWindow
         List<(ManifestModel Model, string Variant)> needed = [.. requests.Select(r => (listed.Model(r.Model)!, ModelDownloads.VariantOf(listed, r)!))];
         long total = ModelDownloads.TotalBytes(listed, requests);
 
-        ConsentTitle.Text = $"{purpose} needs a one-time download";
-        ConsentLead.Text = $"{purpose} uses AI {(needed.Count == 1 ? "a model" : "models")} that {(needed.Count == 1 ? "is" : "are")} downloaded the first time: " +
-            $"{Size(missing)}. After that {(needed.Count == 1 ? "it works" : "they work")} offline, for every photo and model you open.";
+        ConsentTitle.Text = Ui.Format(Strings.ConsentTitleText, purpose);
+        ConsentLead.Text = Ui.Format(needed.Count == 1 ? Strings.ConsentLeadOne : Strings.ConsentLeadMany, purpose, Size(missing));
         ConsentFiles.ItemsSource = needed
-            .Select(n => $"{n.Model.Name} · {n.Variant.ToUpperInvariant()} · {Size(n.Model.Meta.Bytes + n.Model.Variants[n.Variant].Bytes)} · from {SourceOf(n.Model.Variants[n.Variant].Url)}")
+            .Select(n => Ui.Format(Strings.ConsentFile, n.Model.Name, n.Variant.ToUpperInvariant(), Size(n.Model.Meta.Bytes + n.Model.Variants[n.Variant].Bytes), SourceOf(n.Model.Variants[n.Variant].Url)))
             .ToList();
         ConsentTotal.Text = missing < total
-            ? $"Total: {Size(missing)}, since {Size(total - missing)} of it is already here."
-            : $"Total: {Size(total)}.";
+            ? Ui.Format(Strings.ConsentTotalPartial, Size(missing), Size(total - missing))
+            : Ui.Format(Strings.ConsentTotalAll, Size(total));
         ConsentFacts.Text = string.Join(Environment.NewLine,
-            "• Only the models are downloaded. Your photo stays on this computer and is never uploaded.",
-            $"• They are saved in {ShownDownloadRoot}, and About can remove them at any time.{RemovedWithTheApp}",
-            "• Each file is checked by SHA-256 before it is used.",
-            "• Modelado keeps working while it downloads. A cancelled download resumes where it stopped.");
-        ConsentLicense.Text = string.Join(Environment.NewLine, needed.Select(n => $"{n.Model.Name}: {n.Model.License} ({n.Model.LicenseUrl})."));
+            Strings.ConsentFactPhoto,
+            Ui.Format(Strings.ConsentFactFolder, ShownDownloadRoot, RemovedWithTheApp),
+            Strings.ConsentFactChecked,
+            Strings.ConsentFactResume);
+        ConsentLicense.Text = string.Join(Environment.NewLine, needed.Select(n => Ui.Format(Strings.ConsentLicenseLine, n.Model.Name, n.Model.License, n.Model.LicenseUrl)));
         ConsentAccept.Content = accept;
 
         aboutBeforeConsent = AboutOpen;

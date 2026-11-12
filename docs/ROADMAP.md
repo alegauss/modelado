@@ -50,7 +50,7 @@
 
 ## Block K — Translated interface
 
-- 🛠 **MOD85** (deps: —) **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — Still literal: the About, cloud, consent, first-use, export, generate, texture, sources, updates and Blender partials, then a code-side literal test. → §MOD85
+- 🛠 **MOD85** (deps: —) **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — Still literal: the About, cloud, cloud usage, first-use, sources and updates partials, then a code-side literal test. → §MOD85
 - 📋 **MOD86** (deps: MOD85 🛠) **The app forces en-US on every thread and has no way to show its interface in another language** — Translations are useless until the app follows the Windows display language and lets the user choose one in settings. → §MOD86
 - 📋 **MOD87** (deps: MOD85 🛠, MOD86) **The interface has no Brazilian Portuguese (pt-BR) translation** — Brazilian Portuguese is the author's own language and a large Store market. → §MOD87
 - 📋 **MOD88** (deps: MOD85 🛠, MOD86, MOD87) **The interface has no German (de) translation** — German is a large Store market, and its long compound words are the first test of whether the layout holds longer text. → §MOD88

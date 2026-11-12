@@ -115,7 +115,7 @@
 
 ## Block K — Translated interface
 
-- ✅ **MOD85 (XAML, opening, edits and runs)** **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — The XAML and what opening, editing and running a model say (history steps, status chips, downloads, slider labels) read from Strings.resx as format strings.
+- ✅ **MOD85 (all but About, cloud, first use, updates)** **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — The XAML and the opening, edit, run, export, generate, texture, Blender, consent and download text read from Strings.resx as format strings.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

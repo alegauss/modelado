@@ -754,4 +754,228 @@
   <data name="Cancelling" xml:space="preserve">
     <value>Cancelling…</value>
   </data>
+  <data name="ExportSizeInvalid" xml:space="preserve">
+    <value>Enter a size above 0.</value>
+  </data>
+  <data name="ExportBox" xml:space="preserve">
+    <value>{0:0.##} × {1:0.##} × {2:0.##} {3} (width × height × depth)</value>
+  </data>
+  <data name="UnitMillimetres" xml:space="preserve">
+    <value>mm</value>
+  </data>
+  <data name="UnitUnits" xml:space="preserve">
+    <value>units</value>
+  </data>
+  <data name="ExportNoteStlScale" xml:space="preserve">
+    <value>STL is read in millimetres, so the size above is the print's.</value>
+  </data>
+  <data name="ExportNoteStlColours" xml:space="preserve">
+    <value>STL keeps the shape alone, so the colours are dropped.</value>
+  </data>
+  <data name="ExportNoteStlOpen" xml:space="preserve">
+    <value>The mesh has open edges, so it is not watertight for printing: Fill holes closes them.</value>
+  </data>
+  <data name="ExportNotePlyTexture" xml:space="preserve">
+    <value>PLY has no texture, so its colours are sampled at each vertex.</value>
+  </data>
+  <data name="ExportNoteGrey" xml:space="preserve">
+    <value>The model has no colours, so it is saved grey.</value>
+  </data>
+  <data name="SaveModelDialogTitle" xml:space="preserve">
+    <value>Save the 3D model</value>
+  </data>
+  <data name="SaveFilterObj" xml:space="preserve">
+    <value>OBJ|*.obj</value>
+  </data>
+  <data name="SaveFilterPly" xml:space="preserve">
+    <value>PLY|*.ply</value>
+  </data>
+  <data name="SaveFilterStl" xml:space="preserve">
+    <value>STL, in millimetres|*.stl</value>
+  </data>
+  <data name="SaveFilterGlb" xml:space="preserve">
+    <value>GLB, binary glTF|*.glb</value>
+  </data>
+  <data name="ExportSaved" xml:space="preserve">
+    <value>Saved {0}</value>
+  </data>
+  <data name="ExportSavedCompact" xml:space="preserve">
+    <value>Saved {0} · compact</value>
+  </data>
+  <data name="ExportSavedTexture" xml:space="preserve">
+    <value>Saved {0} · texture as {1}</value>
+  </data>
+  <data name="ExportSavedCompactTexture" xml:space="preserve">
+    <value>Saved {0} · compact · texture as {1}</value>
+  </data>
+  <data name="ExportSavedSize" xml:space="preserve">
+    <value>Saved {0} · {1:0.##} {2} on the longest side</value>
+  </data>
+  <data name="NotSavedBecause" xml:space="preserve">
+    <value>{0} could not be saved: {1}</value>
+  </data>
+  <data name="GeneratePhotoWith" xml:space="preserve">
+    <value>Generate a photo with {0}…</value>
+  </data>
+  <data name="GenerateCountWith" xml:space="preserve">
+    <value>Generate {0} with {1}</value>
+  </data>
+  <data name="GenerateCountWithCost" xml:space="preserve">
+    <value>Generate {0} with {1} · ~{2}</value>
+  </data>
+  <data name="ConsentDescription" xml:space="preserve">
+    <value>This description goes to {0}.{1}</value>
+  </data>
+  <data name="ConsentDescriptionCost" xml:space="preserve">
+    <value>This description goes to {0} for about {1}.{2}</value>
+  </data>
+  <data name="DrawingWith" xml:space="preserve">
+    <value>Drawing with {0}…</value>
+  </data>
+  <data name="OpenThisOne" xml:space="preserve">
+    <value>Open this one</value>
+  </data>
+  <data name="CandidateName" xml:space="preserve">
+    <value>Candidate {0}</value>
+  </data>
+  <data name="PressToOpen" xml:space="preserve">
+    <value>Press it to open it.</value>
+  </data>
+  <data name="CandidatesPress" xml:space="preserve">
+    <value>{0} candidates: press one to open it.</value>
+  </data>
+  <data name="ImageNotKept" xml:space="preserve">
+    <value>The image could not be kept: {0}</value>
+  </data>
+  <data name="FromBlenderTitle" xml:space="preserve">
+    <value>{0} from Blender · Modelado</value>
+  </data>
+  <data name="FromBlender" xml:space="preserve">
+    <value>{0} from Blender</value>
+  </data>
+  <data name="OpenedInBlender" xml:space="preserve">
+    <value>Opened in Blender: {0}</value>
+  </data>
+  <data name="BlenderNotStarted" xml:space="preserve">
+    <value>Blender could not be started: {0}</value>
+  </data>
+  <data name="EditedInModelado" xml:space="preserve">
+    <value>Edited in Modelado</value>
+  </data>
+  <data name="SentToBlender" xml:space="preserve">
+    <value>Sent to Blender: {0}, version {1}</value>
+  </data>
+  <data name="NotSentToBlender" xml:space="preserve">
+    <value>Not sent to Blender</value>
+  </data>
+  <data name="NewTextureWith" xml:space="preserve">
+    <value>New texture with {0}…</value>
+  </data>
+  <data name="DrawCountWith" xml:space="preserve">
+    <value>Draw {0} with {1}</value>
+  </data>
+  <data name="DrawCountWithCost" xml:space="preserve">
+    <value>Draw {0} with {1} · ~{2}</value>
+  </data>
+  <data name="AskedAsTemplate" xml:space="preserve">
+    <value>Asked as: {0}</value>
+  </data>
+  <data name="ConsentTexture" xml:space="preserve">
+    <value>This description goes to {0}; the model stays here.{1}</value>
+  </data>
+  <data name="ConsentTextureCost" xml:space="preserve">
+    <value>This description goes to {0} for about {1}; the model stays here.{2}</value>
+  </data>
+  <data name="PutThisOnModel" xml:space="preserve">
+    <value>Put this one on the model</value>
+  </data>
+  <data name="TextureName" xml:space="preserve">
+    <value>Texture {0}</value>
+  </data>
+  <data name="PressToPutOn" xml:space="preserve">
+    <value>Press it to put it on the model.</value>
+  </data>
+  <data name="TexturesPress" xml:space="preserve">
+    <value>{0} textures: press one to put it on the model.</value>
+  </data>
+  <data name="TextureNotRead" xml:space="preserve">
+    <value>The texture could not be read: {0}</value>
+  </data>
+  <data name="NewTextureStep" xml:space="preserve">
+    <value>New texture: {0}</value>
+  </data>
+  <data name="ConsentTitleText" xml:space="preserve">
+    <value>{0} needs a one-time download</value>
+  </data>
+  <data name="ConsentLeadOne" xml:space="preserve">
+    <value>{0} uses an AI model that is downloaded the first time: {1}. After that it works offline, for every photo and model you open.</value>
+  </data>
+  <data name="ConsentLeadMany" xml:space="preserve">
+    <value>{0} uses AI models that are downloaded the first time: {1}. After that they work offline, for every photo and model you open.</value>
+  </data>
+  <data name="ConsentFile" xml:space="preserve">
+    <value>{0} · {1} · {2} · from {3}</value>
+  </data>
+  <data name="ConsentTotalPartial" xml:space="preserve">
+    <value>Total: {0}, since {1} of it is already here.</value>
+  </data>
+  <data name="ConsentTotalAll" xml:space="preserve">
+    <value>Total: {0}.</value>
+  </data>
+  <data name="ConsentFactPhoto" xml:space="preserve">
+    <value>• Only the models are downloaded. Your photo stays on this computer and is never uploaded.</value>
+  </data>
+  <data name="ConsentFactFolder" xml:space="preserve">
+    <value>• They are saved in {0}, and About can remove them at any time.{1}</value>
+  </data>
+  <data name="ConsentFactChecked" xml:space="preserve">
+    <value>• Each file is checked by SHA-256 before it is used.</value>
+  </data>
+  <data name="ConsentFactResume" xml:space="preserve">
+    <value>• Modelado keeps working while it downloads. A cancelled download resumes where it stopped.</value>
+  </data>
+  <data name="ConsentLicenseLine" xml:space="preserve">
+    <value>{0}: {1} ({2}).</value>
+  </data>
+  <data name="ModelListUnreadable" xml:space="preserve">
+    <value>The model list could not be read from Hugging Face. Check the connection and try again.</value>
+  </data>
+  <data name="ModelListLacks" xml:space="preserve">
+    <value>The model list ({0}) does not include {1}.</value>
+  </data>
+  <data name="DownloadingModels" xml:space="preserve">
+    <value>Downloading models</value>
+  </data>
+  <data name="DownloadingModelsStatus" xml:space="preserve">
+    <value>Downloading models: {0}</value>
+  </data>
+  <data name="ModelsReady" xml:space="preserve">
+    <value>Models ready · {0} file(s) downloaded</value>
+  </data>
+  <data name="EachFileChecked" xml:space="preserve">
+    <value>Each file was checked by SHA-256.</value>
+  </data>
+  <data name="DownloadPausedContinue" xml:space="preserve">
+    <value>Download paused. Continue now?</value>
+  </data>
+  <data name="DownloadModelsTitle" xml:space="preserve">
+    <value>Download models</value>
+  </data>
+  <data name="DownloadPaused" xml:space="preserve">
+    <value>Download paused</value>
+  </data>
+  <data name="ResumesNextTime" xml:space="preserve">
+    <value>It resumes where it stopped next time.</value>
+  </data>
+  <data name="DownloadCancelled" xml:space="preserve">
+    <value>Download cancelled</value>
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
+    <value>The download failed.
+
+{0}</value>
+  </data>
+  <data name="Pausing" xml:space="preserve">
+    <value>Pausing…</value>
+  </data>
 </root>

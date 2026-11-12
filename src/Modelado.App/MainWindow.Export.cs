@@ -69,7 +69,7 @@ public partial class MainWindow
         ExportSizeUnit.Text = unit;
         if (ExportSizeValue is not { } size)
         {
-            ExportDimensions.Text = "Enter a size above 0.";
+            ExportDimensions.Text = Strings.ExportSizeInvalid;
             return;
         }
 
@@ -81,7 +81,7 @@ public partial class MainWindow
 
         (System.Numerics.Vector3 min, System.Numerics.Vector3 max) = mesh.Placed(size).Bounds();
         System.Numerics.Vector3 box = max - min;
-        ExportDimensions.Text = string.Create(CultureInfo.CurrentCulture, $"{box.X:0.##} × {box.Y:0.##} × {box.Z:0.##} {unit} (width × height × depth)");
+        ExportDimensions.Text = Ui.Format(Strings.ExportBox, box.X, box.Y, box.Z, unit);
     }
 
     // Shows the options the chosen format has and what the model shown would lose in it.
@@ -97,34 +97,37 @@ public partial class MainWindow
         ExportPlyOptions.Visibility = format == "ply" ? Visibility.Visible : Visibility.Collapsed;
         ExportGlbOptions.Visibility = format == "glb" ? Visibility.Visible : Visibility.Collapsed;
 
-        ShowExportDimensions(format == "stl" ? "mm" : "units");
+        ShowExportDimensions(SizeUnit(format));
         List<string> notes = [];
         bool coloured = mesh is not null && (mesh.Colors is not null || mesh.Texture is not null);
         if (format == "stl")
         {
-            notes.Add("STL is read in millimetres, so the size above is the print's.");
+            notes.Add(Strings.ExportNoteStlScale);
             if (coloured)
             {
-                notes.Add("STL keeps the shape alone, so the colours are dropped.");
+                notes.Add(Strings.ExportNoteStlColours);
             }
 
             if (mesh is { DoubleSided: true })
             {
-                notes.Add("The mesh has open edges, so it is not watertight for printing: Fill holes closes them.");
+                notes.Add(Strings.ExportNoteStlOpen);
             }
         }
         else if (format == "ply" && mesh?.Texture is not null)
         {
-            notes.Add("PLY has no texture, so its colours are sampled at each vertex.");
+            notes.Add(Strings.ExportNotePlyTexture);
         }
         else if (mesh is not null && !coloured)
         {
-            notes.Add("The model has no colours, so it is saved grey.");
+            notes.Add(Strings.ExportNoteGrey);
         }
 
         ExportNote.Text = string.Join(" ", notes);
         ExportNote.Visibility = notes.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     }
+
+    // The unit the longest side is typed in: millimetres for STL, the format's own units otherwise.
+    private static string SizeUnit(string format) => format == "stl" ? Strings.UnitMillimetres : Strings.UnitUnits;
 
     private void OnExport(object sender, ExecutedRoutedEventArgs e)
     {
@@ -136,14 +139,14 @@ public partial class MainWindow
         string format = ExportExtension;
         SaveFileDialog dialog = new()
         {
-            Title = "Save the 3D model",
-            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "model"),
+            Title = Strings.SaveModelDialogTitle,
+            FileName = Path.GetFileNameWithoutExtension(photoPath ?? Strings.DefaultModelName),
             Filter = format switch
             {
-                "obj" => "OBJ|*.obj",
-                "ply" => "PLY|*.ply",
-                "stl" => "STL, in millimetres|*.stl",
-                _ => "GLB, binary glTF|*.glb",
+                "obj" => Strings.SaveFilterObj,
+                "ply" => Strings.SaveFilterPly,
+                "stl" => Strings.SaveFilterStl,
+                _ => Strings.SaveFilterGlb,
             },
             DefaultExt = "." + format,
             AddExtension = true,
@@ -163,14 +166,20 @@ public partial class MainWindow
             IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(size), path, choices);
             string names = string.Join(", ", written.Select(Path.GetFileName));
             string? texture = format == "glb" ? MeshExport.GlbTextureFormat(mesh) : null;
-            string compact = format == "glb" && choices.GlbCompact ? " · compact" : "";
-            ExportStatus.Text = texture is null ? $"Saved {names}{compact}" : $"Saved {names}{compact} · texture as {texture}";
+            bool compact = format == "glb" && choices.GlbCompact;
+            ExportStatus.Text = (texture, compact) switch
+            {
+                (null, false) => Ui.Format(Strings.ExportSaved, names),
+                (null, true) => Ui.Format(Strings.ExportSavedCompact, names),
+                (_, false) => Ui.Format(Strings.ExportSavedTexture, names, texture),
+                _ => Ui.Format(Strings.ExportSavedCompactTexture, names, texture),
+            };
             savedVersion = shownVersion;
-            LastRunSaid(string.Create(CultureInfo.CurrentCulture, $"Saved {names} · {size:0.##} {(format == "stl" ? "mm" : "units")} on the longest side"));
+            LastRunSaid(Ui.Format(Strings.ExportSavedSize, names, size, SizeUnit(format)));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException)
         {
-            ExportStatus.Text = $"{Path.GetFileName(path)} could not be saved: {error.Message}";
+            ExportStatus.Text = Ui.Format(Strings.NotSavedBecause, Path.GetFileName(path), error.Message);
         }
 
         ExportStatus.Visibility = Visibility.Visible;

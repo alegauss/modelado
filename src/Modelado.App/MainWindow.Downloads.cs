@@ -64,7 +64,7 @@ public partial class MainWindow
         ModelManifest? listed = await ManifestAsync().ConfigureAwait(true);
         if (listed is null)
         {
-            MessageBox.Show(this, "The model list could not be read from Hugging Face. Check the connection and try again.", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Strings.ModelListUnreadable, Strings.AppName, MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
@@ -72,7 +72,7 @@ public partial class MainWindow
         ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
         if (requests.FirstOrDefault(r => listed.Model(r.Model) is null) is { Model: not null } absent)
         {
-            MessageBox.Show(this, $"The model list ({listed.Version}) does not include {absent.Model}.", "Modelado", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Ui.Format(Strings.ModelListLacks, listed.Version, absent.Model), Strings.AppName, MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
 
@@ -101,39 +101,39 @@ public partial class MainWindow
             using CancellationTokenSource cancel = new();
             work = cancel;
             pausing = false;
-            SetBusy(true, "Downloading models", download: true);
+            SetBusy(true, Strings.DownloadingModels, download: true);
             Progress<DownloadProgress> progress = new(p =>
             {
                 ProgressBar.Value = (double)p.Done / Math.Max(1, p.Total);
                 ProgressText.Text = DownloadText.Line(p);
-                DownloadChipText.Text = $"Downloading models: {ProgressText.Text}";
+                DownloadChipText.Text = Ui.Format(Strings.DownloadingModelsStatus, ProgressText.Text);
             });
 
             try
             {
                 DownloadResult result = await ModelDownloads.DownloadAsync(http, listed, library.DownloadRoot, requests, progress, cancel.Token, library.Roots).ConfigureAwait(true);
                 library.Refresh();
-                LastRunSaid($"Models ready · {result.Fetched} file(s) downloaded", "Each file was checked by SHA-256.");
+                LastRunSaid(Ui.Format(Strings.ModelsReady, result.Fetched), Strings.EachFileChecked);
                 return true;
             }
             catch (OperationCanceledException) when (pausing)
             {
                 // Paused: the .part files stay; Continue picks up where it stopped.
                 SetBusy(false, "", download: false);
-                if (MessageBox.Show(this, "Download paused. Continue now?", "Download models", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                if (MessageBox.Show(this, Strings.DownloadPausedContinue, Strings.DownloadModelsTitle, MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 {
-                    LastRunSaid("Download paused", "It resumes where it stopped next time.");
+                    LastRunSaid(Strings.DownloadPaused, Strings.ResumesNextTime);
                     return false;
                 }
             }
             catch (OperationCanceledException)
             {
-                LastRunSaid("Download cancelled", "It resumes where it stopped next time.");
+                LastRunSaid(Strings.DownloadCancelled, Strings.ResumesNextTime);
                 return false;
             }
             catch (Exception error) when (error is HttpRequestException or IOException or InvalidDataException)
             {
-                MessageBox.Show(this, $"The download failed.\n\n{error.Message}", "Download models", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(this, Ui.Format(Strings.DownloadFailed, error.Message), Strings.DownloadModelsTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
             finally
@@ -148,7 +148,7 @@ public partial class MainWindow
     private void OnPauseDownload(object sender, RoutedEventArgs e)
     {
         pausing = true;
-        ProgressText.Text = "Pausing…";
+        ProgressText.Text = Strings.Pausing;
         work?.Cancel();
     }
 }
