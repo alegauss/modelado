@@ -50,7 +50,7 @@
 
 ## Block K — Translated interface
 
-- 📋 **MOD88** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no German (de) translation** — German is a large Store market, and its long compound words are the first test of whether the layout holds longer text. → §MOD88
+- 🛠 **MOD88** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no German (de) translation** — German is a large Store market, and its long compound words are the first test of whether the layout holds longer text. → §MOD88
 - 📋 **MOD89** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no French (fr) translation** — French covers France, Canada and much of Africa in the Store. → §MOD89
 - 📋 **MOD90** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Spanish (es) translation** — Spanish reaches Spain and Latin America with one neutral resource file. → §MOD90
 - 📋 **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Simplified Chinese (zh-Hans) translation** — Simplified Chinese is the largest language market left, and the only one here that tests a non-Latin script and font fallback. → §MOD91

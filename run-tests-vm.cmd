@@ -21,5 +21,6 @@ if not exist "%WINWRIGHT%\run-tests-vm.cmd" (
 set "CONFIG=%MODELADO_CONFIG%"
 if "%CONFIG%"=="" set "CONFIG=Debug"
 
-call "%WINWRIGHT%\run-tests-vm.cmd" -Tree "%~dp0." -Run "run-tests.cmd %CONFIG%" -ResultsIn "TestResults\reports" %*
+rem MOD135: MODELADO_CASES=tag,tag runs only the UI cases with those tags on the guest.
+call "%WINWRIGHT%\run-tests-vm.cmd" -Tree "%~dp0." -Run "run-tests.cmd %CONFIG% %MODELADO_CASES%" -ResultsIn "TestResults\reports" %*
 exit /b %ERRORLEVEL%

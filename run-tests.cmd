@@ -8,14 +8,19 @@ rem
 rem It is run on the VMware guest, not on the desk you work at: run-tests-vm.cmd carries this tree
 rem there (MOD14), since the UI cases take real windows and the foreground.
 rem
-rem Usage:  run-tests.cmd [Configuration]        default Debug
+rem Usage:  run-tests.cmd [Configuration] [tag,tag]        default Debug, every UI case
+rem
+rem MOD135: the second argument runs only the UI cases carrying one of those tags (CasesRun reads
+rem MODELADO_CASES); the unit suites always run whole. The full UI suite runs without it.
 
 set "CONFIG=%~1"
 if "%CONFIG%"=="" set "CONFIG=Debug"
+if not "%~2"=="" set "MODELADO_CASES=%~2"
 
 rem How long one test may run before it is taken as hung, ended and named. The UI cases are one
-rem test that runs every case, past ten minutes on the guest (MOD58).
-if "%MODELADO_HANG%"=="" set "MODELADO_HANG=20m"
+rem test that runs every case, past ten minutes on the guest (MOD58) and near twenty by MOD88,
+rem when the language cases made a full run cross the old 20m limit (MOD135).
+if "%MODELADO_HANG%"=="" set "MODELADO_HANG=35m"
 
 pushd "%~dp0"
 

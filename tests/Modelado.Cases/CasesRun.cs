@@ -49,8 +49,14 @@ public sealed class CasesRun
     [Fact]
     public void EveryUiCaseInThisRepositoryRuns()
     {
-        IReadOnlyList<CaseDeclaration> declared = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, CasesFolder)));
-        Assert.NotEmpty(declared);
+        IReadOnlyList<CaseDeclaration> all = ScenarioFile.Across(ScenarioFile.LoadAll(Path.Combine(Repository.Root, CasesFolder)));
+        Assert.NotEmpty(all);
+
+        // MOD135: MODELADO_CASES=tag,tag runs only the cases carrying one of those tags, for a task
+        // that touched them; the whole suite still runs every few tasks, and on any run without it.
+        string[] tags = Environment.GetEnvironmentVariable("MODELADO_CASES")?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        IReadOnlyList<CaseDeclaration> declared = tags.Length == 0 ? all : [.. all.Where(one => tags.Any(one.Tagged))];
+        Assert.True(declared.Count > 0, $"no case carries any of the tags {string.Join(", ", tags)}");
 
         Desk desk = Desk.Read();
         if (!desk.CanObserve)
@@ -68,9 +74,11 @@ public sealed class CasesRun
         // MOD11: what the download cases fetch, through --manifest, from this machine.
         using FixtureServer downloads = new(Path.Combine(Repository.Root, "cases", "fixtures", "download"));
         using ProcessRegister register = ProcessRegister.For(project);
-        SuiteVerdict verdict = Suite.Launch(declared, Selection.All, register, project);
+        SuiteVerdict verdict = Suite.Launch(declared, tags.Length == 0 ? Selection.All : Selection.Of(null, tags), register, project);
 
-        string ran = $"UI cases: {verdict.Ran.Count} of {declared.Count} declared ran";
+        string ran = tags.Length == 0
+            ? $"UI cases: {verdict.Ran.Count} of {declared.Count} declared ran"
+            : $"UI cases tagged {string.Join(", ", tags)}: {verdict.Ran.Count} of {declared.Count} ran, {all.Count - declared.Count} others left for the full suite";
         TestContext.Current.TestOutputHelper?.WriteLine(ran);
         TestContext.Current.TestOutputHelper?.WriteLine(Read(verdict));
 
