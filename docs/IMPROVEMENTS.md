@@ -530,6 +530,15 @@ that end in those characters carry the space in the resource rather than relying
 layout. A winwright case launches in French and checks the main window for clipped text.
 A native speaker reviews the text before the task ships.
 
+Landed: the file (non-breaking spaces before : ? ! ; and %, « » quotes, typographic
+apostrophes, "vous"), fr in the MSIX manifest, and a case reading the French captions
+with the 3D Object button inside the side panel. For the review: quads as "quadrangles";
+maillage/sommet/arête and "étanche"; "Remplir les trous"; "Remailler"/"Retexturer";
+Mirror as "Miroir" (or "Symétrie"); Best as "Optimal"; Candidate as "Proposition";
+"cloud" against "en ligne"; "slicers" left in English; and "{0} : annulé" assuming a
+masculine step name. The symbol-only values "{0}: {1}" keep no space before the colon.
+The caption-fit check waits on winwright (WW624).
+
 ### §MOD90 MOD90 — Spanish (es)
 
 Add Strings.es.resx as neutral Spanish, held by the key and placeholder parity test from

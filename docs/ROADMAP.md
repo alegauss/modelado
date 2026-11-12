@@ -50,7 +50,6 @@
 
 ## Block K — Translated interface
 
-- 📋 **MOD89** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no French (fr) translation** — French covers France, Canada and much of Africa in the Store. → §MOD89
 - 📋 **MOD90** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Spanish (es) translation** — Spanish reaches Spain and Latin America with one neutral resource file. → §MOD90
 - 📋 **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Simplified Chinese (zh-Hans) translation** — Simplified Chinese is the largest language market left, and the only one here that tests a non-Latin script and font fallback. → §MOD91
 - 📋 **MOD134** (deps: MOD85 ✅) **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Budget notes, cloud job titles, the provider chip and its fallback reason stay English beside translated text. → §MOD134
@@ -135,6 +134,12 @@
 
 - **A native speaker has reviewed the German interface text** A German reader goes
   through Strings.de.resx in the running window and settles the terminology questions
+  the design section lists; the translation was written without a native reading.
+
+## Done when — MOD89
+
+- **A native speaker has reviewed the French interface text** A French reader goes
+  through Strings.fr.resx in the running window and settles the terminology questions
   the design section lists; the translation was written without a native reading.
 
 ## Non-goals

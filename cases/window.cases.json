@@ -127,6 +127,14 @@
       "shareable": false
     },
     {
+      // MOD89: the photo open in French.
+      "name": "a window in French with the photo open",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_LANGUAGE": "fr" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -903,6 +911,24 @@
         { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Info und Modelle", "named": "the status bar's About button" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
         { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "Sprache des Fensters: Deutsch.", "named": "About names the window's language" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
+      ]
+    },
+
+    {
+      // WW624: "within" is the strongest claim on the layout; a caption cut off inside its button still passes.
+      "name": "the window reads in French and its buttons stay in the side panel",
+      "catches": "a French translation that does not load, typographic apostrophes or accents lost on the way, or a caption that pushes a button out of the side panel",
+      "filed": "MOD89",
+      "tags": ["language"],
+      "fixture": "a window in French with the photo open",
+      "steps": [
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "Générer l’objet 3D", "named": "the 3D Object card's button is in French, its apostrophe typographic" },
+        { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Générer le relief", "named": "the Relief card's button too" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "À propos et modèles", "named": "the status bar's About button" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "La fenêtre est en français.", "named": "About says the window is in French" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
       ]
     },
