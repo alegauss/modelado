@@ -26,8 +26,6 @@
 
 ## Block F — Installer, releases and auto update
 
-- ⏳ **MOD92** (deps: MOD81 ✅) **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — The five new languages wait to be added in Partner Center, their CSV imported and screenshots uploaded in the next submission. → §MOD92
-
 ## Block G — Public site for 3D modelling
 
 - 📋 **MOD101** (deps: —) **Someone without an NVIDIA GPU can't tell from the README, site or Store page that Modelado runs on AMD, Intel or CPU** — ChatGPT ranks Modelado first only for non-NVIDIA PCs, yet marks its CPU support Check build, since no first screen states it. → §MOD101

@@ -16,6 +16,7 @@
 - ⏸ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — set aside (The upload publishes to the Store; the user runs it.): The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 - ⏸ **MOD82** (deps: —) **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — set aside (The upload publishes to the Store; the user runs it.): The hero art waits to be uploaded with the screenshots in the next submission. → §MOD82
 - ⏸ **MOD84** (deps: MOD81 ✅, MOD82 ✅) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — set aside (The upload publishes to the Store; the user runs it.): The six trailers and thumbnails wait to be uploaded with the hero art in the next submission. → §MOD84
+- ⏸ **MOD92** (deps: MOD81 ✅) **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — set aside (Partner Center steps, the user's.): The five new languages wait to be added in Partner Center, their CSV imported and screenshots uploaded in the next submission. → §MOD92
 
 ## Block G — Public site for 3D modelling
 
