@@ -495,6 +495,16 @@ One winwright case launches in pt-BR and confirms that the window title and the 
 buttons render without clipping. A native speaker reviews the text before the task
 ships.
 
+Landed: the file, the parity test (StringResourceTests), pt-br in the MSIX manifest, and
+a case reading the Portuguese names. GenerateTemplate stays English, being the prompt
+the image service reads. For the review, the choices worth a second look: View as
+"Visualização" (or "Vista"); Remesh/Retexture as "Remalhar"/"Retexturizar"; passes as
+"passadas" (or "iterações"); watertight as "fechada (estanque)"; Candidate as "Opção";
+"Salvo: {0}"; built-in as "embutido" (or "integrado"); budget "quase
+esgotado"/"esgotado"; release as "versão" (or "lançamento"); job(s) as "tarefa(s)". The
+caption-fit check waits on winwright (WW624): "within" holds only that a button stays
+inside its panel.
+
 ### §MOD88 MOD88 — German (de)
 
 Add Strings.de.resx, held by the key and placeholder parity test from MOD87. German

@@ -110,6 +110,41 @@ public sealed partial class StringResourceTests
         Assert.Empty(unused);
     }
 
+    /// <summary>The translations of Strings.resx, by file name (MOD87 to MOD91).</summary>
+    public static TheoryData<string> Translations()
+    {
+        TheoryData<string> files = [];
+        foreach (string path in Directory.EnumerateFiles(Path.Combine(App, "Properties"), "Strings.*.resx"))
+        {
+            files.Add(Path.GetFileName(path));
+        }
+
+        return files;
+    }
+
+    // MOD87: a translation has every key the English has and no other, and each value the same
+    // placeholders, format included, in whatever order its language puts them; a missing one would
+    // fall back to English mid-sentence, and a lost {0} throws or drops a value.
+    [Theory]
+    [MemberData(nameof(Translations))]
+    public void ATranslationHasTheEnglishKeysAndPlaceholders(string file)
+    {
+        Dictionary<string, string> english = Values(Path.Combine(App, "Properties", "Strings.resx"));
+        Dictionary<string, string> translated = Values(Path.Combine(App, "Properties", file));
+
+        Assert.Equal(english.Keys.Order(StringComparer.Ordinal), translated.Keys.Order(StringComparer.Ordinal));
+        string[] differ = [.. english
+            .Where(pair => !Placeholders(pair.Value).SequenceEqual(Placeholders(translated[pair.Key])))
+            .Select(pair => $"{pair.Key}: \"{pair.Value}\" against \"{translated[pair.Key]}\"")];
+        Assert.True(differ.Length == 0, $"{file} changes placeholders:\n  " + string.Join("\n  ", differ));
+    }
+
+    private static Dictionary<string, string> Values(string path) =>
+        XDocument.Load(path).Root!.Elements("data").ToDictionary(d => (string)d.Attribute("name")!, d => (string)d.Element("value")!, StringComparer.Ordinal);
+
+    private static IEnumerable<string> Placeholders(string value) =>
+        Placeholder().Matches(value).Select(m => m.Value).Order(StringComparer.Ordinal);
+
     // MOD86: the Store lists the languages the package declares, so each translation the app ships
     // (Strings.<language>.resx) is declared beside English, and nothing else is.
     [Fact]
@@ -151,6 +186,9 @@ public sealed partial class StringResourceTests
 
     [GeneratedRegex(@"\{[^{}]*\}")]
     private static partial Regex Holes();
+
+    [GeneratedRegex(@"\{\d+(:[^{}]*)?\}")]
+    private static partial Regex Placeholder();
 
     [GeneratedRegex(@"<Resource Language=""(?<language>[^""]+)""")]
     private static partial Regex DeclaredLanguage();

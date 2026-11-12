@@ -117,6 +117,7 @@
 
 - ✅ **MOD85** **Interface text is hard-coded in XAML and code-behind, with no English resource file for translations to fill** — Every string the window shows comes from Strings.resx; tests refuse a literal in XAML or code (design recorded in `tests/Modelado.Architecture.Tests/StringResourceTests.cs`).
 - ✅ **MOD86** **The app forces en-US on every thread and has no way to show its interface in another language** — Text follows the language chosen in About, else Windows', where a translation ships; numbers stay en-US (design recorded in `src/Modelado.App/InterfaceLanguage.cs`).
+- ✅ **MOD87 (translation written)** **The interface has no Brazilian Portuguese (pt-BR) translation** — The window reads in Brazilian Portuguese from Strings.pt-BR.resx, held key for key and placeholder for placeholder to the English.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

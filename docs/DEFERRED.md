@@ -32,6 +32,8 @@
 
 ## Block K — Translated interface
 
+- ⏸ **MOD87** (deps: MOD85 ✅, MOD86 ✅) **The interface has no Brazilian Portuguese (pt-BR) translation** — set aside (Needs the author's native review.): A native speaker reviews the pt-BR text, and a case checks captions fit their buttons once winwright can say it (WW624). → §MOD87
+
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 ## Block M — The CPU and integrated-GPU path

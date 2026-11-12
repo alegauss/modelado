@@ -111,6 +111,14 @@
       "shareable": false
     },
     {
+      // MOD87: the photo open in Brazilian Portuguese; the variable outranks the "en" CasesRun pins.
+      "name": "a window in Brazilian Portuguese with the photo open",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_LANGUAGE": "pt-BR" },
+      "shareable": false
+    },
+    {
       // MOD30: the fixture server's release.json stands in for GitHub's API and names v99.0.0, and
       // LOCALAPPDATA is staged empty, so the automatic check is on whatever this desk saved.
       "name": "a window offered a newer release by the fixture server",
@@ -851,6 +859,25 @@
         { "locator": "ComboBox#AboutLanguage", "act": "expand", "named": "the list is opened again" },
         { "locator": "ComboBox#AboutLanguage > ListItem[name=\"English\"]", "act": "read", "reads": "selected", "expect": "selected", "named": "the saved choice is read back" },
         { "locator": "ComboBox#AboutLanguage", "act": "collapse", "named": "the list is closed" }
+      ]
+    },
+
+    {
+      // WW624: no reading says a caption fits its button, so "within" (inside the panel) is the
+      // strongest claim here; a caption cut off inside a stretched button still passes.
+      "name": "the window reads in Brazilian Portuguese and its main buttons stay in their panel",
+      "catches": "a pt-BR translation that does not load, a key left in English, or a longer caption that pushes a button out of the side panel",
+      "filed": "MOD87",
+      "tags": ["language"],
+      "fixture": "a window in Brazilian Portuguese with the photo open",
+      "steps": [
+        { "locator": "Button#ObjectButton", "act": "read", "reads": "name", "expect": "Gerar objeto 3D", "named": "the 3D Object card's button is in Portuguese" },
+        { "locator": "Button#ObjectButton", "act": "read", "within": "Pane#OperationsScroll", "named": "and drawn inside the side panel" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "name", "expect": "Gerar relevo", "named": "the Relief card's button too, scrolled below the fold at this size" },
+        { "locator": "Button#AboutButton", "act": "read", "reads": "name", "expect": "Sobre e modelos", "named": "the status bar's About button" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Text#AboutLanguageNote", "act": "read", "reads": "name", "expect": "A janela está em português (Brasil).", "named": "About says the window is in Brazilian Portuguese" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" }
       ]
     },
 

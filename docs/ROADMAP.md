@@ -50,11 +50,10 @@
 
 ## Block K — Translated interface
 
-- 📋 **MOD87** (deps: MOD85 ✅, MOD86 ✅) **The interface has no Brazilian Portuguese (pt-BR) translation** — Brazilian Portuguese is the author's own language and a large Store market. → §MOD87
-- 📋 **MOD88** (deps: MOD85 ✅, MOD86 ✅, MOD87) **The interface has no German (de) translation** — German is a large Store market, and its long compound words are the first test of whether the layout holds longer text. → §MOD88
-- 📋 **MOD89** (deps: MOD85 ✅, MOD86 ✅, MOD87) **The interface has no French (fr) translation** — French covers France, Canada and much of Africa in the Store. → §MOD89
-- 📋 **MOD90** (deps: MOD85 ✅, MOD86 ✅, MOD87) **The interface has no Spanish (es) translation** — Spanish reaches Spain and Latin America with one neutral resource file. → §MOD90
-- 📋 **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87) **The interface has no Simplified Chinese (zh-Hans) translation** — Simplified Chinese is the largest language market left, and the only one here that tests a non-Latin script and font fallback. → §MOD91
+- 📋 **MOD88** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no German (de) translation** — German is a large Store market, and its long compound words are the first test of whether the layout holds longer text. → §MOD88
+- 📋 **MOD89** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no French (fr) translation** — French covers France, Canada and much of Africa in the Store. → §MOD89
+- 📋 **MOD90** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Spanish (es) translation** — Spanish reaches Spain and Latin America with one neutral resource file. → §MOD90
+- 📋 **MOD91** (deps: MOD85 ✅, MOD86 ✅, MOD87 ✅) **The interface has no Simplified Chinese (zh-Hans) translation** — Simplified Chinese is the largest language market left, and the only one here that tests a non-Latin script and font fallback. → §MOD91
 - 📋 **MOD134** (deps: MOD85 ✅) **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Budget notes, cloud job titles, the provider chip and its fallback reason stay English beside translated text. → §MOD134
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
@@ -126,5 +125,11 @@
   apps.microsoft.com/detail/9PB86WW5NRR2 after the submission carrying
   artifacts\store-trailer\<language>\trailer.mp4, its thumbnail and the hero art passes
   certification.
+
+## Done when — MOD87
+
+- **A native speaker has reviewed the pt-BR interface text** The author reads
+  Strings.pt-BR.resx in the running window and settles the terminology questions the
+  design section lists; the translation was written without a native reading.
 
 ## Non-goals
