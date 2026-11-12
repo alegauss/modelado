@@ -1,4 +1,3 @@
-using System.Globalization;
 using Modelado.Inference;
 
 namespace Modelado.App;
@@ -14,25 +13,25 @@ public static class DownloadText
     /// <param name="bytes">The size.</param>
     /// <returns>e.g. 325 MB or 1.2 GB.</returns>
     public static string Size(long bytes) => bytes >= 1L << 30
-        ? string.Create(CultureInfo.CurrentCulture, $"{bytes / (double)(1L << 30):0.0} GB")
-        : string.Create(CultureInfo.CurrentCulture, $"{Math.Max(1, (bytes + (1 << 19)) >> 20)} MB");
+        ? Ui.Format(Strings.SizeGigabytes, bytes / (double)(1L << 30))
+        : Ui.Format(Strings.SizeMegabytes, Math.Max(1, (bytes + (1 << 19)) >> 20));
 
     /// <summary>The time left, rounded the way a person reads it.</summary>
     /// <param name="left">The estimate.</param>
     /// <returns>e.g. about 40 s left, about 3 min left.</returns>
     public static string Left(TimeSpan left) => left.TotalSeconds < 60
-        ? string.Create(CultureInfo.CurrentCulture, $"about {Math.Max(5, Math.Ceiling(left.TotalSeconds / 5) * 5):0} s left")
-        : string.Create(CultureInfo.CurrentCulture, $"about {Math.Ceiling(left.TotalMinutes):0} min left");
+        ? Ui.Format(Strings.SecondsLeft, Math.Max(5, Math.Ceiling(left.TotalSeconds / 5) * 5))
+        : Ui.Format(Strings.MinutesLeft, Math.Ceiling(left.TotalMinutes));
 
     /// <summary>One line for a download in progress.</summary>
     /// <param name="progress">Where it is.</param>
     /// <returns>e.g. 120 of 325 MB · 8.4 MB/s · about 25 s left, or Verifying… once the bytes are in.</returns>
     public static string Line(DownloadProgress progress) => progress.Stage switch
     {
-        DownloadStage.Verifying => "Verifying…",
-        DownloadStage.Retrying => $"{Done(progress)} · connection lost, trying again…",
-        _ when progress.BytesPerSecond <= 0 => $"{Done(progress)} · starting…",
-        _ => string.Create(CultureInfo.CurrentCulture, $"{Done(progress)} · {progress.BytesPerSecond / (1 << 20):0.0} MB/s · {Left(progress.Remaining!.Value)}"),
+        DownloadStage.Verifying => Strings.DownloadVerifying,
+        DownloadStage.Retrying => Ui.Format(Strings.DownloadRetrying, Done(progress)),
+        _ when progress.BytesPerSecond <= 0 => Ui.Format(Strings.DownloadStarting, Done(progress)),
+        _ => Ui.Format(Strings.DownloadRunning, Done(progress), progress.BytesPerSecond / (1 << 20), Left(progress.Remaining!.Value)),
     };
 
     /// <summary>How much of the download is done, as a percentage.</summary>
@@ -42,5 +41,5 @@ public static class DownloadText
         progress.Total <= 0 ? 0 : (int)Math.Clamp(100 * progress.Done / progress.Total, 0, 100);
 
     private static string Done(DownloadProgress progress) =>
-        string.Create(CultureInfo.CurrentCulture, $"{progress.Done >> 20} of {Size(progress.Total)}");
+        Ui.Format(Strings.DownloadDone, progress.Done >> 20, Size(progress.Total));
 }

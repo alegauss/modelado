@@ -500,10 +500,11 @@ English text is unchanged, the winwright cases keep passing without edits.
 
 The XAML half landed: Strings is generated at build time into obj (the csproj runs
 CoreResGen before MarkupCompilePass1 and hands the file to the wpftmp build), XAML uses
-x:Static, and StringResourceTests holds it. Left: the code-behind, and the labels split
-into Runs ("Simplify to " 25% " of the triangles"), which become one format string set
-from code. A code-side test, like the XAML one, can then refuse a literal passed to
-Text, Content or ToolTip in the partials.
+x:Static, and StringResourceTests holds it. Code fills format strings through Ui.Format;
+the slider labels once split into Runs are one sentence each, set from code.
+CommandLine's refusals name flags for scripts and stay English, like the CLI. Left: the
+remaining partials, then a code-side test, like the XAML one, refusing a literal passed
+to Text, Content or ToolTip.
 
 ### §MOD86 MOD86 — Interface language follows Windows, with a setting
 

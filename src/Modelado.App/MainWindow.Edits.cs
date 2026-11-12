@@ -16,16 +16,16 @@ namespace Modelado.App;
 public partial class MainWindow
 {
     /// <summary>A quarter turn about the X axis, for a model lying down (MOD5).</summary>
-    public static readonly RoutedUICommand RotateXCommand = new("Turn about X", "RotateX", typeof(MainWindow));
+    public static readonly RoutedUICommand RotateXCommand = new(Strings.TurnAboutX, "RotateX", typeof(MainWindow));
 
     /// <summary>A quarter turn about the vertical axis.</summary>
-    public static readonly RoutedUICommand RotateYCommand = new("Turn about Y", "RotateY", typeof(MainWindow));
+    public static readonly RoutedUICommand RotateYCommand = new(Strings.TurnAboutY, "RotateY", typeof(MainWindow));
 
     /// <summary>A quarter turn about the Z axis.</summary>
-    public static readonly RoutedUICommand RotateZCommand = new("Turn about Z", "RotateZ", typeof(MainWindow));
+    public static readonly RoutedUICommand RotateZCommand = new(Strings.TurnAboutZ, "RotateZ", typeof(MainWindow));
 
     /// <summary>A mirror left to right; no shortcut, as in most editors.</summary>
-    public static readonly RoutedUICommand MirrorCommand = new("Mirror", "Mirror", typeof(MainWindow));
+    public static readonly RoutedUICommand MirrorCommand = new(Strings.Mirror, "Mirror", typeof(MainWindow));
 
     private void UpdateEditButtons()
     {
@@ -52,7 +52,7 @@ public partial class MainWindow
     {
         if (SimplifyText is not null)
         {
-            SimplifyText.Text = $"{e.NewValue:P0}";
+            SimplifyText.Text = Ui.Format(Strings.SimplifyLabel, e.NewValue);
         }
     }
 
@@ -71,64 +71,64 @@ public partial class MainWindow
             return;
         }
 
-        SmoothText.Text = SmoothPasses == 1 ? "1 pass" : $"{SmoothPasses} passes";
-        PiecesText.Text = $"under {PiecesPercent}%";
+        SmoothText.Text = SmoothPasses == 1 ? Strings.PassOne : Ui.Format(Strings.PassMany, SmoothPasses);
+        PiecesText.Text = Ui.Format(Strings.PiecesUnder, PiecesPercent);
         FlattenText.Text = $"{FlattenPercent}%";
     }
 
     private async void OnSimplify(object sender, RoutedEventArgs e)
     {
         double share = SimplifyAmount.Value;
-        await EditAsync($"Simplify to {share:P0}", (m, _, token) => MeshEdit.Simplify(m, Math.Max(4, (int)(m.TriangleCount * share)), token)).ConfigureAwait(true);
+        await EditAsync(Ui.Format(Strings.SimplifyStep, share), (m, _, token) => MeshEdit.Simplify(m, Math.Max(4, (int)(m.TriangleCount * share)), token)).ConfigureAwait(true);
     }
 
     private async void OnSubdivide(object sender, RoutedEventArgs e)
     {
         if (mesh is { TriangleCount: > 1_000_000 }
-            && MessageBox.Show(this, $"The model would grow to {mesh.TriangleCount * 4:N0} triangles, heavy to view and save. Continue?", "Subdivide", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
+            && MessageBox.Show(this, Ui.Format(Strings.SubdivideConfirm, mesh.TriangleCount * 4), Strings.SubdivideStep, MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
         {
             return;
         }
 
-        await EditAsync("Subdivide", (m, _, _) => MeshEdit.Subdivide(m)).ConfigureAwait(true);
+        await EditAsync(Strings.SubdivideStep, (m, _, _) => MeshEdit.Subdivide(m)).ConfigureAwait(true);
     }
 
     private async void OnSmooth(object sender, RoutedEventArgs e)
     {
         int passes = SmoothPasses;
-        await EditAsync(passes == 1 ? "Smooth, 1 pass" : $"Smooth, {passes} passes", (m, _, _) => MeshCleanup.Smooth(m, passes)).ConfigureAwait(true);
+        await EditAsync(passes == 1 ? Strings.SmoothStepOne : Ui.Format(Strings.SmoothStepMany, passes), (m, _, _) => MeshCleanup.Smooth(m, passes)).ConfigureAwait(true);
     }
 
     private async void OnFillHoles(object sender, RoutedEventArgs e)
     {
         int filled = 0;
-        await EditAsync("Fill holes", (m, _, _) =>
+        await EditAsync(Strings.FillHolesStep, (m, _, _) =>
         {
             (Mesh closed, filled) = MeshEdit.FillHoles(m);
             return closed;
         }).ConfigureAwait(true);
-        LastRunSaid(filled == 0 ? "Fill holes · no holes to fill" : $"Fill holes · {filled} hole(s) filled{(mesh!.DoubleSided ? " · some open edges remain" : " · the mesh is closed")}");
+        LastRunSaid(filled == 0 ? Strings.FillHolesNone : Ui.Format(mesh!.DoubleSided ? Strings.FillHolesOpen : Strings.FillHolesClosed, filled));
     }
 
     private async void OnRemovePieces(object sender, RoutedEventArgs e)
     {
         int percent = PiecesPercent;
-        await EditAsync($"Remove pieces under {percent}%", (m, _, _) => MeshCleanup.RemoveSmallPieces(m, percent / 100.0)).ConfigureAwait(true);
+        await EditAsync(Ui.Format(Strings.RemovePiecesStep, percent), (m, _, _) => MeshCleanup.RemoveSmallPieces(m, percent / 100.0)).ConfigureAwait(true);
     }
 
     private async void OnFlatten(object sender, RoutedEventArgs e)
     {
         int percent = FlattenPercent;
-        await EditAsync($"Flat base at {percent}%", (m, _, _) => MeshEdit.FlattenBase(m, percent / 100f)).ConfigureAwait(true);
+        await EditAsync(Ui.Format(Strings.FlatBaseStep, percent), (m, _, _) => MeshEdit.FlattenBase(m, percent / 100f)).ConfigureAwait(true);
     }
 
     private async void OnMirror(object sender, ExecutedRoutedEventArgs e) =>
-        await EditAsync("Mirror", (m, _, _) => MeshEdit.Mirror(m)).ConfigureAwait(true);
+        await EditAsync(Strings.Mirror, (m, _, _) => MeshEdit.Mirror(m)).ConfigureAwait(true);
 
     private async void OnRotate(object sender, ExecutedRoutedEventArgs e)
     {
         Axis axis = e.Command == RotateXCommand ? Axis.X : e.Command == RotateYCommand ? Axis.Y : Axis.Z;
-        await EditAsync($"Turn 90° about {axis}", (m, _, _) => MeshEdit.Rotate(m, axis, 90)).ConfigureAwait(true);
+        await EditAsync(Ui.Format(Strings.TurnStep, axis), (m, _, _) => MeshEdit.Rotate(m, axis, 90)).ConfigureAwait(true);
     }
 
     private async void OnUpscaleTexture(object sender, RoutedEventArgs e)
@@ -140,7 +140,7 @@ public partial class MainWindow
 
         runningModels = [Upscaling.Model];
 
-        await EditAsync("Sharper texture", (m, progress, token) => Upscaling.UpscaleTexture(runner, m, progress, token)).ConfigureAwait(true);
+        await EditAsync(Strings.SharperTextureStep, (m, progress, token) => Upscaling.UpscaleTexture(runner, m, progress, token)).ConfigureAwait(true);
     }
 
     private async void OnReproject(object sender, RoutedEventArgs e)
@@ -151,7 +151,7 @@ public partial class MainWindow
             return;
         }
 
-        await EditAsync("Photo colours", (m, _, _) => ColorProjection.Project(m, from.Image).Mesh).ConfigureAwait(true);
+        await EditAsync(Strings.PhotoColoursStep, (m, _, _) => ColorProjection.Project(m, from.Image).Mesh).ConfigureAwait(true);
     }
 
     private void OnUndo(object sender, ExecutedRoutedEventArgs e)
@@ -159,7 +159,7 @@ public partial class MainWindow
         if (!busy && history.Undo() is { } previous)
         {
             Display(previous);
-            LastRunSaid($"Undone: back to \"{history.CurrentLabel}\"");
+            LastRunSaid(Ui.Format(Strings.UndoneTo, history.CurrentLabel));
         }
     }
 
@@ -168,7 +168,7 @@ public partial class MainWindow
         if (!busy && history.Redo() is { } next)
         {
             Display(next);
-            LastRunSaid($"Redone: {history.CurrentLabel}");
+            LastRunSaid(Ui.Format(Strings.RedoneTo, history.CurrentLabel));
         }
     }
 
@@ -184,7 +184,7 @@ public partial class MainWindow
         using CancellationTokenSource cancel = new();
         work = cancel;
         SetBusy(true, label, download: false);
-        ProgressText.Text = $"{before.TriangleCount:N0} triangles";
+        ProgressText.Text = Ui.Format(Strings.TrianglesCount, before.TriangleCount);
         Progress<double> progress = new(f => ProgressBar.Value = f);
         Stopwatch clock = Stopwatch.StartNew();
         try
@@ -196,15 +196,15 @@ public partial class MainWindow
                 Display(after);
             }
 
-            LastRunSaid($"{label} · {before.TriangleCount:N0} → {after.TriangleCount:N0} triangles · {clock.Elapsed.TotalSeconds:0.0} s", "Ctrl+Z undoes it.");
+            LastRunSaid(Ui.Format(Strings.EditDone, label, before.TriangleCount, after.TriangleCount, clock.Elapsed.TotalSeconds), Strings.UndoHint);
         }
         catch (OperationCanceledException)
         {
-            LastRunSaid($"{label}: cancelled");
+            LastRunSaid(Ui.Format(Strings.StepCancelled, label));
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
-            LastRunSaid($"{label}: failed", error.Message);
+            LastRunSaid(Ui.Format(Strings.StepFailed, label), error.Message);
             MessageBox.Show(this, error.Message, label, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally

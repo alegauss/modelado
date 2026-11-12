@@ -239,9 +239,7 @@
               <ComboBoxItem Content="320" Tag="320" />
               <ComboBoxItem Content="{x:Static p:Strings.ObjectResolution384}" Tag="384" />
             </ComboBox>
-            <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="{x:Static p:Strings.ObjectThresholdLabel}" /><Run x:Name="ThresholdText" Text="25" />
-            </TextBlock>
+            <TextBlock x:Name="ThresholdText" Style="{StaticResource FieldLabel}" />
             <Slider x:Name="ObjectThreshold" AutomationProperties.AutomationId="ObjectThreshold" Minimum="5" Maximum="50" Value="25" TickFrequency="5" IsSnapToTickEnabled="False"
                     ValueChanged="OnThresholdChanged"
                     ToolTip="{x:Static p:Strings.ObjectThresholdTip}" />
@@ -256,16 +254,12 @@
               <StackPanel Margin="0,4,0,0">
                 <CheckBox x:Name="ObjectEveryPoint" AutomationProperties.AutomationId="ObjectEveryPoint" Content="{x:Static p:Strings.ObjectEveryPoint}"
                           ToolTip="{x:Static p:Strings.ObjectEveryPointTip}" />
-                <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectSmoothingLabel">
-                  <Run Text="{x:Static p:Strings.ObjectSmoothingLabel}" /><Run x:Name="ObjectSmoothingText" Text="2" />
-                </TextBlock>
+                <TextBlock x:Name="ObjectSmoothingText" Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectSmoothingLabel" />
                 <Slider x:Name="ObjectSmoothing" AutomationProperties.AutomationId="ObjectSmoothing" AutomationProperties.Name="Smoothing passes"
                         Minimum="0" Maximum="6" Value="2" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="1"
                         ValueChanged="OnObjectAdvancedChanged"
                         ToolTip="{x:Static p:Strings.ObjectSmoothingTip}" />
-                <TextBlock Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectPiecesLabel">
-                  <Run Text="{x:Static p:Strings.ObjectPiecesLabel}" /><Run x:Name="ObjectPiecesText" Text="5%" />
-                </TextBlock>
+                <TextBlock x:Name="ObjectPiecesText" Style="{StaticResource FieldLabel}" AutomationProperties.AutomationId="ObjectPiecesLabel" />
                 <Slider x:Name="ObjectPieces" AutomationProperties.AutomationId="ObjectPieces" AutomationProperties.Name="Drop loose pieces under"
                         Minimum="0" Maximum="20" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
                         ValueChanged="OnObjectAdvancedChanged"
@@ -307,14 +301,10 @@
               <ComboBoxItem Content="384" Tag="384" />
               <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
             </ComboBox>
-            <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="{x:Static p:Strings.ReliefDepthLabel}" /><Run x:Name="DepthText" Text="25%" />
-            </TextBlock>
+            <TextBlock x:Name="DepthText" Style="{StaticResource FieldLabel}" />
             <Slider x:Name="ReliefDepth" AutomationProperties.AutomationId="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
                     ToolTip="{x:Static p:Strings.ReliefDepthTip}" />
-            <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="{x:Static p:Strings.ReliefBaseLabel}" /><Run x:Name="BaseText" Text="{x:Static p:Strings.BaseText}" />
-            </TextBlock>
+            <TextBlock x:Name="BaseText" Style="{StaticResource FieldLabel}" />
             <Slider x:Name="ReliefBase" AutomationProperties.AutomationId="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
                     ToolTip="{x:Static p:Strings.ReliefBaseTip}" />
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
@@ -382,9 +372,7 @@
             <TextBlock Text="{x:Static p:Strings.EditCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
                        Text="{x:Static p:Strings.EditCardCaption}" />
-            <TextBlock Style="{StaticResource FieldLabel}">
-              <Run Text="{x:Static p:Strings.SimplifyLabelBefore}" /><Run x:Name="SimplifyText" Text="25%" /><Run Text="{x:Static p:Strings.SimplifyLabelAfter}" />
-            </TextBlock>
+            <TextBlock x:Name="SimplifyText" Style="{StaticResource FieldLabel}" />
             <Slider x:Name="SimplifyAmount" AutomationProperties.AutomationId="SimplifyAmount" Minimum="0.02" Maximum="0.9" Value="0.25" ValueChanged="OnSimplifyAmountChanged"
                     ToolTip="{x:Static p:Strings.SimplifyAmountTip}" />
             <UniformGrid Columns="3" Margin="0,6,0,0">

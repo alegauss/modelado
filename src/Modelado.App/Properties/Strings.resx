@@ -151,7 +151,7 @@
     <value>384 · fine</value>
   </data>
   <data name="ObjectThresholdLabel" xml:space="preserve">
-    <value>Thickness (density threshold): </value>
+    <value>Thickness (density threshold): {0:0}</value>
   </data>
   <data name="ObjectThresholdTip" xml:space="preserve">
     <value>Lower fattens the object and closes holes; higher thins it and separates parts. 25 is TripoSR's own.</value>
@@ -184,13 +184,13 @@
     <value>Evaluates all of the grid instead of about a quarter of it, so sampling takes about 4× as long; thin legs and handles the coarse pass skips are kept.</value>
   </data>
   <data name="ObjectSmoothingLabel" xml:space="preserve">
-    <value>Smoothing passes: </value>
+    <value>Smoothing passes: {0}</value>
   </data>
   <data name="ObjectSmoothingTip" xml:space="preserve">
     <value>Taubin passes after the surface is drawn; 0 keeps the raw mesh to sculpt from. Each pass is a small share of a run at 256.</value>
   </data>
   <data name="ObjectPiecesLabel" xml:space="preserve">
-    <value>Drop loose pieces under </value>
+    <value>Drop loose pieces under {0}%</value>
   </data>
   <data name="ObjectPiecesTip" xml:space="preserve">
     <value>Fragments smaller than this share of the largest part are dropped; 0 keeps every piece. It adds next to nothing to the run's time.</value>
@@ -214,16 +214,13 @@
     <value>512 · fine</value>
   </data>
   <data name="ReliefDepthLabel" xml:space="preserve">
-    <value>Relief height: </value>
+    <value>Relief height: {0:P0}</value>
   </data>
   <data name="ReliefDepthTip" xml:space="preserve">
     <value>How far the nearest point stands out, as a share of the width.</value>
   </data>
   <data name="ReliefBaseLabel" xml:space="preserve">
-    <value>Solid base: </value>
-  </data>
-  <data name="BaseText" xml:space="preserve">
-    <value>no base</value>
+    <value>Solid base: {0}</value>
   </data>
   <data name="ReliefBaseTip" xml:space="preserve">
     <value>With a base the mesh is closed (solid) and can go to a 3D printer. Without one it is only the surface.</value>
@@ -269,12 +266,6 @@
   </data>
   <data name="EditCardCaption" xml:space="preserve">
     <value>For the generated model or an opened 3D model. Every step can be undone.</value>
-  </data>
-  <data name="SimplifyLabelBefore" xml:space="preserve">
-    <value>Simplify to </value>
-  </data>
-  <data name="SimplifyLabelAfter" xml:space="preserve">
-    <value> of the triangles</value>
   </data>
   <data name="SimplifyAmountTip" xml:space="preserve">
     <value>Fewer triangles: a smaller, lighter file for games, the web and slicers, with the shape kept.</value>
@@ -533,5 +524,234 @@
   </data>
   <data name="UpdateChipTip" xml:space="preserve">
     <value>See what is new and how to install it</value>
+  </data>
+  <data name="SizeGigabytes" xml:space="preserve">
+    <value>{0:0.0} GB</value>
+  </data>
+  <data name="SizeMegabytes" xml:space="preserve">
+    <value>{0} MB</value>
+  </data>
+  <data name="SecondsLeft" xml:space="preserve">
+    <value>about {0:0} s left</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>about {0:0} min left</value>
+  </data>
+  <data name="DownloadVerifying" xml:space="preserve">
+    <value>Verifying…</value>
+  </data>
+  <data name="DownloadRetrying" xml:space="preserve">
+    <value>{0} · connection lost, trying again…</value>
+  </data>
+  <data name="DownloadStarting" xml:space="preserve">
+    <value>{0} · starting…</value>
+  </data>
+  <data name="DownloadRunning" xml:space="preserve">
+    <value>{0} · {1:0.0} MB/s · {2}</value>
+  </data>
+  <data name="DownloadDone" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="DropFormatsText" xml:space="preserve">
+    <value>Photos: {0}
+3D models: {1}</value>
+  </data>
+  <data name="FrontView" xml:space="preserve">
+    <value>Front view</value>
+  </data>
+  <data name="SaveViewAsImage" xml:space="preserve">
+    <value>Save view as image</value>
+  </data>
+  <data name="OpenDialogTitle" xml:space="preserve">
+    <value>Open a photo or a 3D model</value>
+  </data>
+  <data name="OpenDialogFilter" xml:space="preserve">
+    <value>Photos and 3D models|{0};{1}|Photos|{0}|3D models (GLB, OBJ, PLY, STL)|{1}|All files|*.*</value>
+  </data>
+  <data name="NotOpenable" xml:space="preserve">
+    <value>{0} is not a photo or a 3D model Modelado can open.</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>{0} was not found.</value>
+  </data>
+  <data name="FileNotOpened" xml:space="preserve">
+    <value>{0} could not be opened: {1}</value>
+  </data>
+  <data name="OpeningFile" xml:space="preserve">
+    <value>Opening {0}…</value>
+  </data>
+  <data name="WindowTitleWithFile" xml:space="preserve">
+    <value>{0} · Modelado</value>
+  </data>
+  <data name="HistoryOpened" xml:space="preserve">
+    <value>Opened</value>
+  </data>
+  <data name="PhotoSource" xml:space="preserve">
+    <value>{0} · {1} × {2}</value>
+  </data>
+  <data name="PhotoSourceCutOut" xml:space="preserve">
+    <value>{0} · {1} × {2} · cut out</value>
+  </data>
+  <data name="HistoryItem" xml:space="preserve">
+    <value>{0}. {1}</value>
+  </data>
+  <data name="MeshCounts" xml:space="preserve">
+    <value>{0:N0} vertices · {1:N0} triangles</value>
+  </data>
+  <data name="MeshTexture" xml:space="preserve">
+    <value>texture {0} × {1}</value>
+  </data>
+  <data name="MeshOpen" xml:space="preserve">
+    <value>open</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="SaveViewDialogTitle" xml:space="preserve">
+    <value>Save the view as an image</value>
+  </data>
+  <data name="DefaultModelName" xml:space="preserve">
+    <value>model</value>
+  </data>
+  <data name="SaveViewFileName" xml:space="preserve">
+    <value>{0} view</value>
+  </data>
+  <data name="SaveViewFilter" xml:space="preserve">
+    <value>PNG, {0} px on the long side|*.png</value>
+  </data>
+  <data name="SavedView" xml:space="preserve">
+    <value>Saved {0} · {1} × {2} px</value>
+  </data>
+  <data name="NotSaved" xml:space="preserve">
+    <value>{0} could not be saved</value>
+  </data>
+  <data name="SimplifyLabel" xml:space="preserve">
+    <value>Simplify to {0:P0} of the triangles</value>
+  </data>
+  <data name="BaseNone" xml:space="preserve">
+    <value>no base</value>
+  </data>
+  <data name="BaseShare" xml:space="preserve">
+    <value>{0:P0} of the width</value>
+  </data>
+  <data name="TurnAboutX" xml:space="preserve">
+    <value>Turn about X</value>
+  </data>
+  <data name="TurnAboutY" xml:space="preserve">
+    <value>Turn about Y</value>
+  </data>
+  <data name="TurnAboutZ" xml:space="preserve">
+    <value>Turn about Z</value>
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="PassOne" xml:space="preserve">
+    <value>1 pass</value>
+  </data>
+  <data name="PassMany" xml:space="preserve">
+    <value>{0} passes</value>
+  </data>
+  <data name="PiecesUnder" xml:space="preserve">
+    <value>under {0}%</value>
+  </data>
+  <data name="SimplifyStep" xml:space="preserve">
+    <value>Simplify to {0:P0}</value>
+  </data>
+  <data name="SubdivideConfirm" xml:space="preserve">
+    <value>The model would grow to {0:N0} triangles, heavy to view and save. Continue?</value>
+  </data>
+  <data name="SubdivideStep" xml:space="preserve">
+    <value>Subdivide</value>
+  </data>
+  <data name="SmoothStepOne" xml:space="preserve">
+    <value>Smooth, 1 pass</value>
+  </data>
+  <data name="SmoothStepMany" xml:space="preserve">
+    <value>Smooth, {0} passes</value>
+  </data>
+  <data name="FillHolesStep" xml:space="preserve">
+    <value>Fill holes</value>
+  </data>
+  <data name="FillHolesNone" xml:space="preserve">
+    <value>Fill holes · no holes to fill</value>
+  </data>
+  <data name="FillHolesOpen" xml:space="preserve">
+    <value>Fill holes · {0} hole(s) filled · some open edges remain</value>
+  </data>
+  <data name="FillHolesClosed" xml:space="preserve">
+    <value>Fill holes · {0} hole(s) filled · the mesh is closed</value>
+  </data>
+  <data name="RemovePiecesStep" xml:space="preserve">
+    <value>Remove pieces under {0}%</value>
+  </data>
+  <data name="FlatBaseStep" xml:space="preserve">
+    <value>Flat base at {0}%</value>
+  </data>
+  <data name="TurnStep" xml:space="preserve">
+    <value>Turn 90° about {0}</value>
+  </data>
+  <data name="SharperTextureStep" xml:space="preserve">
+    <value>Sharper texture</value>
+  </data>
+  <data name="PhotoColoursStep" xml:space="preserve">
+    <value>Photo colours</value>
+  </data>
+  <data name="UndoneTo" xml:space="preserve">
+    <value>Undone: back to "{0}"</value>
+  </data>
+  <data name="RedoneTo" xml:space="preserve">
+    <value>Redone: {0}</value>
+  </data>
+  <data name="TrianglesCount" xml:space="preserve">
+    <value>{0:N0} triangles</value>
+  </data>
+  <data name="EditDone" xml:space="preserve">
+    <value>{0} · {1:N0} → {2:N0} triangles · {3:0.0} s</value>
+  </data>
+  <data name="UndoHint" xml:space="preserve">
+    <value>Ctrl+Z undoes it.</value>
+  </data>
+  <data name="StepCancelled" xml:space="preserve">
+    <value>{0}: cancelled</value>
+  </data>
+  <data name="StepFailed" xml:space="preserve">
+    <value>{0}: failed</value>
+  </data>
+  <data name="StageRemovingBackground" xml:space="preserve">
+    <value>Removing the background</value>
+  </data>
+  <data name="StageEncoding" xml:space="preserve">
+    <value>Reading the photo (TripoSR)</value>
+  </data>
+  <data name="StageSamplingDensity" xml:space="preserve">
+    <value>Working out the shape</value>
+  </data>
+  <data name="StageExtractingSurface" xml:space="preserve">
+    <value>Extracting the surface</value>
+  </data>
+  <data name="StageColouring" xml:space="preserve">
+    <value>Colouring</value>
+  </data>
+  <data name="StageEnhancingPhoto" xml:space="preserve">
+    <value>Enhancing the photo (Real-ESRGAN)</value>
+  </data>
+  <data name="StageProjectingPhoto" xml:space="preserve">
+    <value>Laying on the photo's colours</value>
+  </data>
+  <data name="StageEstimatingDepth" xml:space="preserve">
+    <value>Estimating the depth</value>
+  </data>
+  <data name="StageBuildingRelief" xml:space="preserve">
+    <value>Building the relief</value>
+  </data>
+  <data name="StageTook" xml:space="preserve">
+    <value>{0} {1:0.0} s</value>
+  </data>
+  <data name="RunDone" xml:space="preserve">
+    <value>{0} · {1:0.0} s · {2}</value>
+  </data>
+  <data name="Cancelling" xml:space="preserve">
+    <value>Cancelling…</value>
   </data>
 </root>

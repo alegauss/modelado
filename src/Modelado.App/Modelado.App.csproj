@@ -28,6 +28,7 @@
        Strings.<culture>.resx fills. The Strings class is generated from it at build time, into
        obj, so the file and the class cannot drift apart; XAML reads it through x:Static. -->
   <ItemGroup>
+    <Using Include="Modelado.App.Properties" />
     <EmbeddedResource Update="Properties\Strings.resx">
       <Generator>MSBuild:Compile</Generator>
       <StronglyTypedFileName>$(IntermediateOutputPath)Strings.Designer.cs</StronglyTypedFileName>

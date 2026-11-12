@@ -51,6 +51,7 @@ public partial class MainWindow : Window, IDisposable
         this.options = options;
         ThemeMode = Theme.Mode(Appearance.Default.Theme);
         InitializeComponent();
+        ShowSliderLabels();
 
         // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
         foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton).Append(SaveViewButton))
@@ -65,7 +66,7 @@ public partial class MainWindow : Window, IDisposable
         StartFirstUse();
 
         // MOD10: the formats the drop zone lists are the ones the codecs read, not a copy of them.
-        DropFormats.Text = $"Photos: {Formats(ImageCodec.Extensions)}\n3D models: {Formats(MeshImport.Extensions)}";
+        DropFormats.Text = Ui.Format(Strings.DropFormatsText, Formats(ImageCodec.Extensions), Formats(MeshImport.Extensions));
 
         QualityHigh.IsChecked = options.HighQuality;
         runner = new ModelRunner(library, provider, options.HighQuality);
@@ -118,10 +119,10 @@ public partial class MainWindow : Window, IDisposable
 
     /// <summary>Back to the front view, Home; the toolbar's button and a double-click on the model (MOD5).</summary>
     public static readonly RoutedUICommand ResetViewCommand = new(
-        "Front view", "ResetView", typeof(MainWindow), [new KeyGesture(Key.Home)]);
+        Strings.FrontView, "ResetView", typeof(MainWindow), [new KeyGesture(Key.Home)]);
 
     /// <summary>The view shown, saved as a PNG; the toolbar's camera button (MOD19).</summary>
-    public static readonly RoutedUICommand SaveViewCommand = new("Save view as image", "SaveView", typeof(MainWindow));
+    public static readonly RoutedUICommand SaveViewCommand = new(Strings.SaveViewAsImage, "SaveView", typeof(MainWindow));
 
     // MOD19: the long sides the Save dialog offers, one per file type, in the order it lists them.
     private static readonly int[] ViewSides = [MeshRenderer.MinViewSide, 2048, MeshRenderer.MaxViewSide];
@@ -138,8 +139,8 @@ public partial class MainWindow : Window, IDisposable
         string models = string.Join(';', MeshImport.Extensions.Select(x => "*" + x));
         OpenFileDialog dialog = new()
         {
-            Title = "Open a photo or a 3D model",
-            Filter = $"Photos and 3D models|{photos};{models}|Photos|{photos}|3D models (GLB, OBJ, PLY, STL)|{models}|All files|*.*",
+            Title = Strings.OpenDialogTitle,
+            Filter = Ui.Format(Strings.OpenDialogFilter, photos, models),
         };
         if (dialog.ShowDialog(this) == true)
         {
@@ -168,7 +169,7 @@ public partial class MainWindow : Window, IDisposable
         }
         else
         {
-            ShowOpenError($"{Path.GetFileName(path)} is not a photo or a 3D model Modelado can open.");
+            ShowOpenError(Ui.Format(Strings.NotOpenable, Path.GetFileName(path)));
         }
     }
 
@@ -184,8 +185,8 @@ public partial class MainWindow : Window, IDisposable
     }
 
     private static string WhyNotOpened(string path, Exception error) => error is FileNotFoundException or DirectoryNotFoundException
-        ? $"{Path.GetFileName(path)} was not found."
-        : $"{Path.GetFileName(path)} could not be opened: {error.Message}";
+        ? Ui.Format(Strings.FileNotFound, Path.GetFileName(path))
+        : Ui.Format(Strings.FileNotOpened, Path.GetFileName(path), error.Message);
 
     // A file is open: the errors about earlier ones go, and the operations panel appears.
     private void Opened()
@@ -216,7 +217,7 @@ public partial class MainWindow : Window, IDisposable
         string? shown = SourceChip.Visibility == Visibility.Visible ? SourceText.Text : null;
         try
         {
-            ShowSource($"Opening {Path.GetFileName(path)}…");
+            ShowSource(Ui.Format(Strings.OpeningFile, Path.GetFileName(path)));
             loaded = await Task.Run(() => MeshImport.Load(path, out notice)).ConfigureAwait(true);
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
@@ -228,9 +229,9 @@ public partial class MainWindow : Window, IDisposable
 
         photo = null;
         photoPath = path;
-        Title = $"{Path.GetFileName(path)} · Modelado";
+        Title = Ui.Format(Strings.WindowTitleWithFile, Path.GetFileName(path));
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
-        ShowMesh(loaded, null, null, "Opened");
+        ShowMesh(loaded, null, null, Strings.HistoryOpened);
         savedVersion = shownVersion;
         ShowSource(Path.GetFileName(path));
         Opened();
@@ -267,7 +268,7 @@ public partial class MainWindow : Window, IDisposable
         modelInput = null;
         reference = null;
         UpdateEditButtons();
-        Title = $"{Path.GetFileName(path)} · Modelado";
+        Title = Ui.Format(Strings.WindowTitleWithFile, Path.GetFileName(path));
         MeshChip.Visibility = Visibility.Collapsed;
         HistoryCard.Visibility = Visibility.Collapsed;
         ExportCard.Visibility = Visibility.Collapsed;
@@ -276,7 +277,7 @@ public partial class MainWindow : Window, IDisposable
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
         ShowImage(photo);
-        ShowSource($"{Path.GetFileName(path)} · {photo.Width} × {photo.Height}{(photo.HasTransparency ? " · cut out" : "")}");
+        ShowSource(Ui.Format(photo.HasTransparency ? Strings.PhotoSourceCutOut : Strings.PhotoSource, Path.GetFileName(path), photo.Width, photo.Height));
         Opened();
     }
 
@@ -300,7 +301,7 @@ public partial class MainWindow : Window, IDisposable
         ViewChoice.IsEnabled = true;
         ViewerHint.Visibility = Visibility.Visible;
         MeshChip.Visibility = Visibility.Visible;
-        HistoryList.ItemsSource = history.Labels.Select((label, i) => $"{i + 1}. {label}").ToList();
+        HistoryList.ItemsSource = history.Labels.Select((label, i) => Ui.Format(Strings.HistoryItem, i + 1, label)).ToList();
         HistoryList.SelectedIndex = history.Position;
         HistoryList.ScrollIntoView(HistoryList.SelectedItem);
         HistoryCard.Visibility = Visibility.Visible;
@@ -308,8 +309,18 @@ public partial class MainWindow : Window, IDisposable
         UpdateExportCard();
         UpdateOpenInBlender();
         _ = RefreshFirstUseAsync();
-        MeshText.Text = $"{result.VertexCount:N0} vertices · {result.TriangleCount:N0} triangles" +
-            $"{(result.Texture is null ? "" : $" · texture {result.Texture.Width} × {result.Texture.Height}")}{(result.DoubleSided ? " · open" : "")}";
+        List<string> facts = [Ui.Format(Strings.MeshCounts, result.VertexCount, result.TriangleCount)];
+        if (result.Texture is { } texture)
+        {
+            facts.Add(Ui.Format(Strings.MeshTexture, texture.Width, texture.Height));
+        }
+
+        if (result.DoubleSided)
+        {
+            facts.Add(Strings.MeshOpen);
+        }
+
+        MeshText.Text = string.Join(Strings.ListSeparator, facts);
         UpdateEditButtons();
         UpdateCloudCard();
         RequestRender();
@@ -360,9 +371,9 @@ public partial class MainWindow : Window, IDisposable
 
         SaveFileDialog dialog = new()
         {
-            Title = "Save the view as an image",
-            FileName = Path.GetFileNameWithoutExtension(photoPath ?? "model") + " view",
-            Filter = string.Join('|', ViewSides.Select(side => $"PNG, {side} px on the long side|*.png")),
+            Title = Strings.SaveViewDialogTitle,
+            FileName = Ui.Format(Strings.SaveViewFileName, Path.GetFileNameWithoutExtension(photoPath ?? Strings.DefaultModelName)),
+            Filter = string.Join('|', ViewSides.Select(side => Ui.Format(Strings.SaveViewFilter, side))),
             FilterIndex = 2,
             DefaultExt = ".png",
             AddExtension = true,
@@ -380,11 +391,11 @@ public partial class MainWindow : Window, IDisposable
         try
         {
             await Task.Run(() => shown.SaveView(path, width, height, from, style)).ConfigureAwait(true);
-            LastRunSaid($"Saved {Path.GetFileName(path)} · {width} × {height} px");
+            LastRunSaid(Ui.Format(Strings.SavedView, Path.GetFileName(path), width, height));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException)
         {
-            LastRunSaid($"{Path.GetFileName(path)} could not be saved", error.Message);
+            LastRunSaid(Ui.Format(Strings.NotSaved, Path.GetFileName(path)), error.Message);
         }
     }
 

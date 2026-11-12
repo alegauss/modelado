@@ -18,15 +18,15 @@ public partial class MainWindow
 
     private static string Describe(ReconstructionStage stage) => stage switch
     {
-        ReconstructionStage.RemovingBackground => "Removing the background",
-        ReconstructionStage.Encoding => "Reading the photo (TripoSR)",
-        ReconstructionStage.SamplingDensity => "Working out the shape",
-        ReconstructionStage.ExtractingSurface => "Extracting the surface",
-        ReconstructionStage.Colouring => "Colouring",
-        ReconstructionStage.EnhancingPhoto => "Enhancing the photo (Real-ESRGAN)",
-        ReconstructionStage.ProjectingPhoto => "Laying on the photo's colours",
-        ReconstructionStage.EstimatingDepth => "Estimating the depth",
-        _ => "Building the relief",
+        ReconstructionStage.RemovingBackground => Strings.StageRemovingBackground,
+        ReconstructionStage.Encoding => Strings.StageEncoding,
+        ReconstructionStage.SamplingDensity => Strings.StageSamplingDensity,
+        ReconstructionStage.ExtractingSurface => Strings.StageExtractingSurface,
+        ReconstructionStage.Colouring => Strings.StageColouring,
+        ReconstructionStage.EnhancingPhoto => Strings.StageEnhancingPhoto,
+        ReconstructionStage.ProjectingPhoto => Strings.StageProjectingPhoto,
+        ReconstructionStage.EstimatingDepth => Strings.StageEstimatingDepth,
+        _ => Strings.StageBuildingRelief,
     };
 
     private static int TagOf(ComboBox box) => int.Parse((string)((ComboBoxItem)box.SelectedItem).Tag, System.Globalization.CultureInfo.InvariantCulture);
@@ -53,8 +53,18 @@ public partial class MainWindow
             return;
         }
 
-        ObjectSmoothingText.Text = $"{(int)ObjectSmoothing.Value}";
-        ObjectPiecesText.Text = $"{(int)ObjectPieces.Value}%";
+        ObjectSmoothingText.Text = Ui.Format(Strings.ObjectSmoothingLabel, (int)ObjectSmoothing.Value);
+        ObjectPiecesText.Text = Ui.Format(Strings.ObjectPiecesLabel, (int)ObjectPieces.Value);
+    }
+
+    // MOD85: each slider's label is one sentence with its value in it, written here rather than in
+    // XAML, so it reads right from the start and not only after the first change.
+    private void ShowSliderLabels()
+    {
+        ThresholdText.Text = Ui.Format(Strings.ObjectThresholdLabel, ObjectThreshold.Value);
+        OnObjectAdvancedChanged(this, new RoutedPropertyChangedEventArgs<double>(0, 0));
+        OnReliefSliderChanged(this, new RoutedPropertyChangedEventArgs<double>(0, 0));
+        SimplifyText.Text = Ui.Format(Strings.SimplifyLabel, SimplifyAmount.Value);
     }
 
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
@@ -97,19 +107,19 @@ public partial class MainWindow
             ReconstructionResult result = await Task.Run(() => operation(input, progress, cancel.Token), cancel.Token).ConfigureAwait(true);
             ShowMesh(result.Mesh, result.Input, result.Reference, title);
             TimeSpan total = TimeSpan.FromTicks(result.Timings.Sum(t => t.Took.Ticks));
-            string steps = string.Join(" · ", result.Timings.Select(t => $"{Describe(t.Stage)} {t.Took.TotalSeconds:0.0} s"));
+            string steps = string.Join(Strings.ListSeparator, result.Timings.Select(t => Ui.Format(Strings.StageTook, Describe(t.Stage), t.Took.TotalSeconds)));
 
             // The provider it ran on: a model the GPU refused was run again on the CPU (Notice).
             string where = runner.Notice is null ? ProviderLabel : "CPU";
-            LastRunSaid($"{title} · {total.TotalSeconds:0.0} s · {where}", runner.Notice is { } notice ? $"{steps}{Environment.NewLine}{notice}" : steps);
+            LastRunSaid(Ui.Format(Strings.RunDone, title, total.TotalSeconds, where), runner.Notice is { } notice ? $"{steps}{Environment.NewLine}{notice}" : steps);
         }
         catch (OperationCanceledException)
         {
-            LastRunSaid($"{title}: cancelled");
+            LastRunSaid(Ui.Format(Strings.StepCancelled, title));
         }
         catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
-            LastRunSaid($"{title}: failed", error.Message);
+            LastRunSaid(Ui.Format(Strings.StepFailed, title), error.Message);
             MessageBox.Show(this, error.Message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally
@@ -131,7 +141,7 @@ public partial class MainWindow
         ProgressText.Text = "";
         ProgressBar.Value = 0;
         PauseButton.Visibility = download ? Visibility.Visible : Visibility.Collapsed;
-        PauseButton.Content = "Pause";
+        PauseButton.Content = Strings.PauseButton;
         CancelButton.IsEnabled = true;
         bool idle = !on && photo is not null;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
@@ -148,7 +158,7 @@ public partial class MainWindow
     private void OnCancel(object sender, RoutedEventArgs e)
     {
         CancelButton.IsEnabled = false;
-        ProgressText.Text = "Cancelling…";
+        ProgressText.Text = Strings.Cancelling;
         pausing = false;
         work?.Cancel();
     }
@@ -157,7 +167,7 @@ public partial class MainWindow
     {
         if (ThresholdText is not null)
         {
-            ThresholdText.Text = $"{e.NewValue:0}";
+            ThresholdText.Text = Ui.Format(Strings.ObjectThresholdLabel, e.NewValue);
         }
     }
 
@@ -168,8 +178,8 @@ public partial class MainWindow
             return;
         }
 
-        DepthText.Text = $"{ReliefDepth.Value:P0}";
-        BaseText.Text = ReliefBase.Value < 0.005 ? "no base" : $"{ReliefBase.Value:P0} of the width";
+        DepthText.Text = Ui.Format(Strings.ReliefDepthLabel, ReliefDepth.Value);
+        BaseText.Text = Ui.Format(Strings.ReliefBaseLabel, ReliefBase.Value < 0.005 ? Strings.BaseNone : Ui.Format(Strings.BaseShare, ReliefBase.Value));
     }
 
     private static IReadOnlyList<string> ObjectModels(bool enhance) =>
