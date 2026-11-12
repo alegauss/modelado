@@ -191,6 +191,28 @@ Done when the six listings are live on the Store page.
 
 ## Block G — Public site for 3D modelling
 
+### §MOD101 Running without NVIDIA is why Modelado is found
+
+Modelado's audience arrived on its own from 03/11/2026, mostly without a referrer; the
+site's main named source is chatgpt.com. A test on 12/11/2026 found the question behind
+it: asked for a "free offline app photo to 3D model Windows without NVIDIA GPU / AMD /
+CPU only", ChatGPT puts Modelado first as the "best fit", for TripoSR and Depth Anything
+V2 over DirectML. Asked the same without the GPU clause, it recommends Modly first,
+which needs an NVIDIA card with 8 GB or more, and never names Modelado.
+
+So running without NVIDIA is the reason Modelado is found, and the public text hides it.
+The same answer marks Modelado "Check build" in its CPU-only column, while Presidium
+Shape Studio, which states CPU-only operation in plain words, gets "Yes" and is the one
+ChatGPT tells a CPU-only machine to test first. The facts are already measured, but
+buried: line 96 of the README, and mid-page on the site.
+
+What changes is where it is said: the first screen of the README, the site's title,
+description and hero, the Store listing's first lines, and an llms.txt for the site,
+each stating that no NVIDIA GPU is needed, that AMD and Intel graphics run through
+DirectML, and that a CPU-only PC works, more slowly, with the measured time. Done when
+ChatGPT, asked the CPU-only question again, can answer "Yes" in that column from the
+page itself.
+
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ### §MOD93 MOD93 — The Ideogram button once its panel is open

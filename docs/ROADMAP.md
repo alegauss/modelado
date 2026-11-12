@@ -28,6 +28,8 @@
 
 ## Block G — Public site for 3D modelling
 
+- 📋 **MOD101** (deps: —) **Someone without an NVIDIA GPU can't tell from the README, site or Store page that Modelado runs on AMD, Intel or CPU** — ChatGPT ranks Modelado first only for non-NVIDIA PCs, yet marks its CPU support Check build, since no first screen states it. → §MOD101
+
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 - 📋 **MOD93** (deps: —) **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — A button that appears dead next to the panel it opened makes the user think the app hung and click again. → §MOD93
