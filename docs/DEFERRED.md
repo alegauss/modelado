@@ -15,6 +15,7 @@
 - ⏸ **MOD77** (deps: MOD73 ✅, MOD74 ✅) **Under a package About would open an empty models folder, since writes to %LOCALAPPDATA%\Modelado are redirected** — set aside (Guest Developer Mode): On the registered layout a model downloads, About opens its folder, and keys decrypt after a restart. → §MOD77
 - ⏸ **MOD81** (deps: —) **At the Store's thumbnail size the screenshots look alike and nothing on them says what each one shows** — set aside (The upload publishes to the Store; the user runs it.): The four composed screenshots wait to be uploaded in a new submission, by the Partner Center page or the API. → §MOD81
 - ⏸ **MOD82** (deps: —) **The Store listing has no 16:9 Super hero art, without which it shows no trailer** — set aside (The upload publishes to the Store; the user runs it.): The hero art waits to be uploaded with the screenshots in the next submission. → §MOD82
+- ⏸ **MOD84** (deps: MOD81 ✅, MOD82 ✅) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — set aside (The upload publishes to the Store; the user runs it.): The six trailers and thumbnails wait to be uploaded with the hero art in the next submission. → §MOD84
 
 ## Block G — Public site for 3D modelling
 

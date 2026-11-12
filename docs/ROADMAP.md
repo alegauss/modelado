@@ -26,7 +26,6 @@
 
 ## Block F — Installer, releases and auto update
 
-- ⏳ **MOD84** (deps: MOD81 ✅, MOD82 ✅) **The listing shows a 3D modeller only in still pictures, with no model seen turning** — The six trailers and thumbnails wait to be uploaded with the hero art in the next submission. → §MOD84
 - ⏳ **MOD92** (deps: MOD81 ✅) **The Store listing is in English only, with no page in Portuguese, German, French, Spanish or Chinese** — The five new languages wait to be added in Partner Center, their CSV imported and screenshots uploaded in the next submission. → §MOD92
 
 ## Block G — Public site for 3D modelling
