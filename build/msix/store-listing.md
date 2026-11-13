@@ -54,9 +54,9 @@ The art is drawn by `dotnet run --project tools\Modelado.Icon -c Release -- --st
 
 **Category:** Multimedia design.
 
-**Privacy policy URL:** https://alegauss.github.io/modelado/privacy/
+**Privacy policy URL:** https://alegauss.com/modelado/privacy/
 
-**Website:** https://alegauss.github.io/modelado/
+**Website:** https://alegauss.com/modelado/
 
 **Support contact:** https://github.com/alegauss/modelado/issues
 

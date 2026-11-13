@@ -9,7 +9,7 @@ name = "Modelado"
 tagline = "Edit meshes and turn photos into 3D with the Modelado app"
 maintainer = "Alexandre Oliveira"
 type = "add-on"
-website = "https://alegauss.github.io/modelado/"
+website = "https://alegauss.com/modelado/"
 tags = ["Mesh", "Modeling"]
 blender_version_min = "4.2.0"
 

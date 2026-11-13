@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { siteThemeScript } from "@viglet/viglet-design-system/site";
 
 // GitHub Pages serves a project site under the repository's name, so the site lives at
-// https://alegauss.github.io/modelado/ and every asset path carries the prefix. Written here
+// https://alegauss.com/modelado/ and every asset path carries the prefix. Written here
 // and in src/content.ts, and nowhere else.
 export const BASE = "/modelado/";
 

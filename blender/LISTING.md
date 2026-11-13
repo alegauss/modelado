@@ -17,7 +17,7 @@ The first runs in `blender\tests\run-blender-tests.cmd` on every gate. The secon
 ## Description
 
 Modelado's mesh tools and photo-to-3D inside Blender. The add-on is a front end to
-[Modelado](https://alegauss.github.io/modelado/), a free Windows app that runs AI models on
+[Modelado](https://alegauss.com/modelado/), a free Windows app that runs AI models on
 your own PC, so **Modelado must be installed** and the add-on works on **Windows x64 only**.
 The add-on finds an installed Modelado by itself; its preferences take another
 `modelado-cli.exe` and `Modelado.exe`.

@@ -1,5 +1,5 @@
 # MOD35: the site (site\), built on every change to it and published to GitHub Pages at
-# https://alegauss.github.io/modelado/, the base vite.config.ts names. After freewilly's site.yml.
+# https://alegauss.com/modelado/, the base vite.config.ts names. After freewilly's site.yml.
 #
 # The gate is the build: `npm run build` runs tsc, the client build, the models' packing, the
 # SSR build, the social card and the prerender, whose replace-or-throw head patch fails on a

@@ -40,7 +40,7 @@ class BlenderManifestTests(unittest.TestCase):
         self.assertEqual(self.manifest["platforms"], ["windows-x64"])
 
     def test_website_is_the_site(self):
-        self.assertEqual(self.manifest["website"], "https://alegauss.github.io/modelado/")
+        self.assertEqual(self.manifest["website"], "https://alegauss.com/modelado/")
 
     def test_licence_is_spdx_gpl(self):
         self.assertEqual(self.manifest["license"], ["SPDX:GPL-3.0-or-later"])

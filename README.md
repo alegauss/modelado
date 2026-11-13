@@ -10,7 +10,7 @@ the Store, updated by it, and installed without a SmartScreen warning. The
 `Modelado-Setup-<version>.exe`, which installs per user without administrator rights; it is not
 code-signed, so SmartScreen warns the first time (**More info**, then **Run anyway**), and the
 release's `SHA256SUMS` is what to check it against. The site,
-[alegauss.github.io/modelado](https://alegauss.github.io/modelado/), shows what it makes.
+[alegauss.com/modelado](https://alegauss.com/modelado/), shows what it makes.
 
 Modelado is a sibling of [Revelei](https://github.com/alegauss/revelei), which improves photos:
 AI on your PC, nothing leaves it. Both share one architecture (models converted to ONNX by
