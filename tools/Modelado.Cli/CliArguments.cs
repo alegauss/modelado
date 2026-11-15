@@ -21,7 +21,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
         "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json", "--dry-run",
-        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv", "--compact",
+        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv", "--compact", "--stand",
     };
 
     // MOD106: the relief's text and how it is sized and placed.
@@ -32,7 +32,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--text", "--text-mm", "--text-raise-mm", "--text-on", "--remove-background", "--depth-model"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--text", "--text-mm", "--text-raise-mm", "--text-on", "--stand", "--stand-tilt", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
@@ -119,6 +119,19 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         if (!millimetres && TextOptions.Any(options.ContainsKey))
         {
             return "--text sizes its letters in millimetres: give the relief's width as --width-mm.";
+        }
+
+        // MOD107: the stand's slot is cut to the relief's thickness in millimetres, so the relief is
+        // sized in them, and saved at that size: --size would rescale it out of the slot.
+        bool stand = options.ContainsKey("--stand") || options.ContainsKey("--stand-tilt");
+        if (stand && (!millimetres || options.ContainsKey("--size")))
+        {
+            return "--stand cuts its slot to the relief's thickness: give its width as --width-mm, and no --size.";
+        }
+
+        if (options.ContainsKey("--stand-tilt") && !options.ContainsKey("--stand"))
+        {
+            return "--stand-tilt is the stand's lean: give --stand too.";
         }
 
         // MOD104: a keychain's hole is sized in millimetres, so the tag is too.

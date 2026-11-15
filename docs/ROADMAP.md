@@ -48,7 +48,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- 📋 **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
+- ⏳ **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — Still to come: the stand on the Relief card, saved beside the relief from the window. → §MOD107
 - 📋 **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
 - 📋 **MOD109** (deps: MOD103 ✅) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
 - 📋 **MOD110** (deps: MOD103 ✅) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The step after export is always the slicer, and Bambu Studio now offers MakerLab's tools inside it, one click away. → §MOD110
@@ -150,5 +150,11 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
+
+## Done when — MOD107
+
+- **The Relief card offers a stand and saves it beside the relief** A UI case ticks the
+  stand on the Relief card in millimetres, and saving the relief also writes its -stand
+  file, as relief --stand does.
 
 ## Non-goals

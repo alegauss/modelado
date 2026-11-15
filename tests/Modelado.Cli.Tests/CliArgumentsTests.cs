@@ -70,7 +70,7 @@ public sealed class CliArgumentsTests
         string[] reliefRun = ["relief", "p.png", "-o", "r.glb", "--grid", "256", "--depth", "0.25", "--base", "0.1", "--remove-background"];
         string[] printedRun = ["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--depth-mm", "3", "--base-mm", "2"];
         string[] keychainRun = ["relief", "p.png", "-o", "k.3mf", "--width-mm", "45", "--keychain", "circle", "--hole-mm", "5"];
-        string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval", "--border-mm", "3", "--border-height-mm", "5", "--text", "ANA", "--text-mm", "5", "--text-raise-mm", "1", "--text-on", "arc"];
+        string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval", "--border-mm", "3", "--border-height-mm", "5", "--text", "ANA", "--text-mm", "5", "--text-raise-mm", "1", "--text-on", "arc", "--stand", "--stand-tilt", "12"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
         string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
@@ -91,6 +91,7 @@ public sealed class CliArgumentsTests
     [InlineData("--hole-mm", "4", "--width-mm", "50")]
     [InlineData("--border-mm", "3", "--grid", "256")]
     [InlineData("--text", "ANA", "--grid", "256")]
+    [InlineData("--stand-tilt", "12", "--grid", "256")]
     public void A_relief_is_sized_in_shares_or_in_millimetres_never_both(string first, string firstValue, string second, string secondValue)
     {
         // MOD102: --depth 0.25 read as millimetres, or --depth-mm 3 as a share, would make another object.
@@ -99,6 +100,16 @@ public sealed class CliArgumentsTests
         Assert.Null(parsed);
         Assert.Contains("mm", error, StringComparison.Ordinal);
         Assert.Equal(CliArguments.Unknown, code);
+    }
+
+    [Fact]
+    public void A_stand_needs_millimetres_and_no_size_since_its_slot_is_cut_to_the_relief()
+    {
+        // MOD107: --size would rescale the relief out of the slot its thickness was cut for.
+        Assert.Contains("--width-mm", CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--stand"]).Error, StringComparison.Ordinal);
+        Assert.Contains("--size", CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--stand", "--size", "100"]).Error, StringComparison.Ordinal);
+        Assert.Contains("--stand too", CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--stand-tilt", "12"]).Error, StringComparison.Ordinal);
+        Assert.Null(CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--stand"]).Error);
     }
 
     [Fact]

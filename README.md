@@ -238,7 +238,9 @@ along its outline; the back stays flat, for a magnet or glue. The Relief card ha
 and the border with the other millimetres. `--text "ANA 2026"` raises a name or a date along the
 bottom, or with `--text-on arc` around a medallion (`--text-mm` sets the letters' height), in a
 built-in font of capitals and digits; the Relief card takes the text, its height and where it runs
-with the other millimetres, and says before a run when the text will not fit. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+with the other millimetres, and says before a run when the text will not fit. `--stand` also
+writes `<output>-stand`, a block that prints flat with a slot cut to the relief's thickness, so
+the plaque stands on a shelf leaning back `--stand-tilt` degrees (15 by default). Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

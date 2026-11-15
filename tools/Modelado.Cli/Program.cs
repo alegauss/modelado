@@ -36,6 +36,8 @@ const string Usage = """
         --text "WORDS"       with --width-mm, letters and digits raised on the relief
         --text-mm H          a capital's height; default 6     --text-raise-mm R   above the relief; default 1
         --text-on line|arc   along the bottom (default), or around a medallion's bottom arc
+        --stand              with --width-mm, also writes <output>-stand: a block with a slot the
+                             relief stands in, leaning back --stand-tilt degrees (default 15)
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -221,6 +223,19 @@ try
             }
 
             Save(result.Mesh, output, total);
+
+            // MOD107: the stand prints on its own, its slot cut to the relief's thickness.
+            if (args[0] == "relief" && options.ContainsKey("--stand"))
+            {
+                Mesh stand = Stand.For(result.Mesh, new StandOptions(Tilt: (float)Number("--stand-tilt", Stand.TiltDefault)));
+                IReadOnlyList<string> beside = MeshExport.Save(stand, Stand.PathBeside(output), new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
+                Console.WriteLine($"stand, {stand.TriangleCount:N0} triangles -> {string.Join(", ", beside)}");
+                foreach (string path in beside)
+                {
+                    ((JsonArray)report["written"]!).Add(JsonValue.Create(Path.GetFullPath(path)));
+                }
+            }
+
             if (runner.Notice is { } notice)
             {
                 Console.WriteLine(notice);
