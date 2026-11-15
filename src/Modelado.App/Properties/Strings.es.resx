@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>El vóxel y el tamaño de impresión de Exportar necesitan más de 0 mm.</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>Apoyar plano</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>Gira el modelo sobre su mayor cara plana, en la que el STL o 3MF se apoya en el laminador, sin soportes debajo.</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>Apoyado en su mayor cara</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>El modelo no tiene cara plana donde apoyarse; quedó como estaba.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

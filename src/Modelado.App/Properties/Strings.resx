@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>The voxel and the print size on the Export card need a size above 0 mm.</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>Lay flat</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>Turns the model onto its largest flat face, which an STL or a 3MF then rests on in the slicer, so nothing under it needs supports.</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>Lay flat on its largest face</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>The model has no flat face to rest on; it was left as it was.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

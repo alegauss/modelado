@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>体素和“导出”中的打印尺寸须大于 0 mm。</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>平放</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>将模型转到最大的平面朝下，STL 或 3MF 在切片软件中就以此面着床，下方无需支撑。</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>平放在最大的面上</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>模型没有可着床的平面，保持原样。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

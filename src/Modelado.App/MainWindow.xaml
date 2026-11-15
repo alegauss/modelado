@@ -593,6 +593,9 @@
                       ToolTip="{x:Static p:Strings.SubdivideButtonTip}" />
               <Button x:Name="FillHolesButton" AutomationProperties.AutomationId="FillHolesButton" Content="{x:Static p:Strings.FillHolesButton}" Margin="4,0,0,4" Click="OnFillHoles" IsEnabled="False"
                       ToolTip="{x:Static p:Strings.FillHolesButtonTip}" />
+              <!-- MOD112: onto its largest flat face, for the slicer. -->
+              <Button x:Name="LayFlatButton" AutomationProperties.AutomationId="LayFlatButton" Content="{x:Static p:Strings.LayFlatButton}" Margin="0,0,4,4" Click="OnLayFlat" IsEnabled="False"
+                      ToolTip="{x:Static p:Strings.LayFlatButtonTip}" />
             </UniformGrid>
             <!-- MOD16: the amounts the CLI's -\-smooth, -\-remove-pieces and -\-flatten take, each beside its
                  button, in whole steps so the window passes the CLI's exact values. -->

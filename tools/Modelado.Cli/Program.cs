@@ -47,6 +47,7 @@ const string Usage = """
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
         --rotate x:90        turns about x, y or z (degrees)
         --mirror             mirrors left to right
+        --lay-flat           turns it onto its largest flat face, down the slicer's -Z
         --remove-pieces F    removes pieces smaller than F of the largest (e.g. 0.05)
         --fill-holes         fills the holes
         --make-printable MM  rebuilds it closed and manifold on a voxel grid MM wide (0.4 is a
@@ -284,6 +285,7 @@ try
                 return MeshEdit.Rotate(model, axis, float.Parse(parts[1], CultureInfo.InvariantCulture));
             });
             model = Edit(model, "--mirror", _ => MeshEdit.Mirror(model));
+            model = Edit(model, "--lay-flat", _ => LayFlat.Apply(model).Mesh); // MOD112
             model = Edit(model, "--remove-pieces", value => MeshCleanup.RemoveSmallPieces(model, double.Parse(value, CultureInfo.InvariantCulture)));
             model = Edit(model, "--fill-holes", _ => MeshEdit.FillHoles(model).Mesh);
 

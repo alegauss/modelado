@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>O voxel e o tamanho de impressão no cartão Exportar precisam ser maiores que 0 mm.</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>Deitar</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>Gira o modelo para a sua maior face plana, sobre a qual o STL ou 3MF fica apoiado no fatiador, sem suportes embaixo.</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>Deitado na maior face</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>O modelo não tem face plana para apoiar; ficou como estava.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

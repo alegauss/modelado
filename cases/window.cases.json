@@ -1096,6 +1096,23 @@
     },
 
     {
+      "name": "the Edit card lays the model flat on a face as one step, its mesh only turned",
+      "catches": "a Lay flat the card does not offer, that is not a version, or that changes the mesh rather than turning it",
+      "filed": "MOD112",
+      "tags": ["edit", "print"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Button#LayFlatButton", "act": "invoke", "named": "Lay flat is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Lay flat on its largest face · ", "named": "it runs" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "the cube is turned, not rebuilt" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Lay flat on its largest face", "named": "the step is a version that can be undone" }
+      ]
+    },
+
+    {
       "name": "the Edit card's amounts give the mesh the CLI gives for the same values",
       "catches": "a slider the edit ignores, a label that names another amount than the one applied, or a window that edits differently from modelado-cli",
       "filed": "MOD16",

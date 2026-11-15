@@ -145,6 +145,7 @@
 - ✅ **MOD109** **A relief is not exported in the orientation it prints best, face up and flat on the plate** — STL and 3MF from the window and the CLI are laid on the plate, centred with the lowest point on Z = 0, so a relief opens face up with its back down.
 - ✅ **MOD110 (Open in slicer on the Export card)** **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The Export card finds Bambu Studio, OrcaSlicer, PrusaSlicer or Cura and opens the model in the one picked as a 3MF at the print size.
 - ✅ **MOD111** **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — The Edit card's Make printable rebuilds the model shown on a voxel in mm at the print size, one undoable step giving the CLI's mesh.
+- ✅ **MOD112** **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — Lay flat on the Edit card and edit --lay-flat turn a model onto its largest face nothing crosses, so it rests on the slicer's plate (design superseded: thickness check: MOD146).
 
 ## Block M — The CPU and integrated-GPU path
 

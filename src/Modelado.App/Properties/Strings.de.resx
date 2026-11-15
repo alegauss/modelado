@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>Voxel und Druckgröße im Export brauchen mehr als 0 mm.</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>Flach legen</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>Dreht das Modell auf seine größte ebene Fläche, auf der ein STL oder 3MF dann im Slicer aufliegt, ohne Stützen darunter.</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>Auf die größte Fläche gelegt</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>Das Modell hat keine ebene Fläche zum Aufliegen; es bleibt, wie es war.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

@@ -49,13 +49,13 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- 📋 **MOD112** (deps: MOD111 ✅) **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — A thin ear or tail breaks off or vanishes in the slicer, and choosing a face to rest on is done by hand in every slicer. → §MOD112
 - 📋 **MOD113** (deps: —) **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — The window and the mesh disagree, so a user who set no base exports a solid and one who wants a thin base cannot trust the label. → §MOD113
 - 📋 **MOD114** (deps: —) **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — Object only is the relief most keychains and medallions will use, and an irregular mask is where pinched vertices break a closed mesh. → §MOD114
 - 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
 - 📋 **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — MOD106 raises text in a stroke font only, so a lower-case name or a script face still needs another program. → §MOD142
 - 📋 **MOD143** (deps: MOD106 ✅) **Text on a relief can only be raised, never engraved into the surface** — MOD106 stamps letters above the relief, while a plaque band or a keychain back often wants the name cut in. → §MOD143
 - 📋 **MOD145** (deps: MOD108 ✅) **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — Curved and cylinder lithophanes are what the other tools offer beside flat, and a thin unframed panel warps. → §MOD145
+- 📋 **MOD146** (deps: MOD112 ✅) **Nothing shows which parts of a model are too thin to print, so an ear or a tail breaks off or vanishes in the slicer** — MOD112 lays a model flat and MOD111 closes it, but neither measures wall thickness, the last check before a print fails. → §MOD146
 
 ## Block M — The CPU and integrated-GPU path
 

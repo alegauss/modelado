@@ -30,7 +30,7 @@ public partial class MainWindow
     private void UpdateEditButtons()
     {
         bool can = !busy && mesh is not null;
-        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton])
+        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton, LayFlatButton])
         {
             button.IsEnabled = can;
         }
@@ -132,6 +132,21 @@ public partial class MainWindow
         if (made is not null)
         {
             LastRunSaid(Ui.Format(Strings.MadePrintable, made.OpenEdgesBefore, made.TangledEdgesBefore));
+        }
+    }
+
+    // MOD112: onto its largest flat face, down the slicer's -Z, which STL and 3MF are written in.
+    private async void OnLayFlat(object sender, RoutedEventArgs e)
+    {
+        float area = 0;
+        await EditAsync(Strings.LayFlatStep, (m, _, _) =>
+        {
+            (Mesh laid, area) = LayFlat.Apply(m);
+            return laid;
+        }).ConfigureAwait(true);
+        if (area <= 0)
+        {
+            LastRunSaid(Strings.LayFlatNone);
         }
     }
 

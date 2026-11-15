@@ -366,6 +366,18 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>Le voxel et la taille d'impression de l'export doivent dépasser 0 mm.</value>
   </data>
+  <data name="LayFlatButton" xml:space="preserve">
+    <value>Poser à plat</value>
+  </data>
+  <data name="LayFlatButtonTip" xml:space="preserve">
+    <value>Tourne le modèle sur sa plus grande face plane, sur laquelle le STL ou le 3MF repose dans le trancheur, sans supports dessous.</value>
+  </data>
+  <data name="LayFlatStep" xml:space="preserve">
+    <value>Posé sur sa plus grande face</value>
+  </data>
+  <data name="LayFlatNone" xml:space="preserve">
+    <value>Le modèle n'a pas de face plane où reposer ; il est resté tel quel.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

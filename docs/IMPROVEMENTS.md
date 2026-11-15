@@ -581,20 +581,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD112 Thickness check and lay flat
-
-After Make printable, two problems remain: parts thinner than the nozzle can print
-(ears, tails, handles) and an orientation that needs supports. Modly's print epic lists
-a printability check and lay flat for the same reason.
-
-A thickness check marks, on the model, the regions thinner than a chosen minimum in mm
-(default 1.2 mm), with an option to thicken them. Lay flat picks the largest flat face
-as the base, or lets the user click one, and the flat base action can then cut the model
-there.
-
-Done when thin regions show in colour on a test model and lay flat puts each test model
-on a face that slices without supports under its base.
-
 ### §MOD113 A base below 0.5% is not no base
 
 MainWindow.Operations.cs shows no base for a value below 0.5% but passes the value
@@ -690,6 +676,31 @@ CLI: `--shape flat|curve|cylinder`, `--arc DEG`, `--frame-mm W`.
 
 Done when a curved and a cylindrical lithophane with a frame export as one closed mesh,
 and the curve stands on a table on its own.
+
+### §MOD146 Thickness check
+
+After Make printable (MOD111) and Lay flat (MOD112, `src/Modelado.Geometry/LayFlat.cs`),
+the problem left is parts thinner than the nozzle can print: ears, tails, handles. They
+break off or vanish in the slicer, and nothing in Modelado says where they are. Modly's
+print epic lists a printability check for the same reason.
+
+A thickness check measures, at each vertex, how far a ray cast inward along the reversed
+vertex normal travels before it leaves the model again (the local wall thickness), in mm
+at the print size Export uses (the STL size, as Make printable reads its voxel).
+Vertices under a chosen minimum (default 1.2 mm, three 0.4 mm lines) are coloured red in
+the view, and the Edit card says how many and how much of the surface that is. A
+brute-force cast is vertices × triangles, far too slow for a 100k-triangle model, so the
+triangles go into a uniform grid or a small BVH first.
+
+An option to thicken them can follow: Make printable with a dilated inside field
+(MOD111's voxel votes, grown by half the missing thickness before marching cubes) is the
+cheapest way.
+
+CLI: `edit --check-thickness MM` prints the count and writes the colours into the
+output.
+
+Done when a test model with a 0.5 mm fin shows the fin red and nothing else at 1.2 mm,
+in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
