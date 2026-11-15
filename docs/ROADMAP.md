@@ -48,7 +48,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- 📋 **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
+- ⏳ **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Still to come: the Lithophane mode on the Relief card, with its thicknesses in mm; curved shapes and a frame are MOD145. → §MOD108
 - 📋 **MOD109** (deps: MOD103 ✅) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
 - 📋 **MOD110** (deps: MOD103 ✅) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The step after export is always the slicer, and Bambu Studio now offers MakerLab's tools inside it, one click away. → §MOD110
 - 📋 **MOD111** (deps: —) **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — Users of MakerLab's image to 3D report unprintable files with empty layers, fixed by hand with a voxel remesh in Blender. → §MOD111
@@ -58,6 +58,7 @@
 - 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
 - 📋 **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — MOD106 raises text in a stroke font only, so a lower-case name or a script face still needs another program. → §MOD142
 - 📋 **MOD143** (deps: MOD106 ✅) **Text on a relief can only be raised, never engraved into the surface** — MOD106 stamps letters above the relief, while a plaque band or a keychain back often wants the name cut in. → §MOD143
+- 📋 **MOD145** (deps: MOD108 ⏳) **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — Curved and cylinder lithophanes are what the other tools offer beside flat, and a thin unframed panel warps. → §MOD145
 
 ## Block M — The CPU and integrated-GPU path
 
@@ -149,5 +150,11 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
+
+## Done when — MOD108
+
+- **The Relief card makes a lithophane, sized in mm, without a model** A UI case chooses
+  Lithophane on the Relief card with a photo and no models, makes the panel, and the
+  Export card offers it at the width and thickness typed.
 
 ## Non-goals

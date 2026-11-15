@@ -710,6 +710,28 @@ Done when a plaque with an engraved date exports as one closed mesh whose letter
 below the surface around them, and a cut deeper than the relief allows is refused in
 words.
 
+### §MOD145 Curved and framed lithophanes
+
+`Lithophane.Build` in `src/Modelado.Geometry/Lithophane.cs` (MOD108) makes a flat panel
+only: the relief mesher's height grid over a flat solid base. Curved lithophanes, bent
+around a vertical axis so they stand on their own, and cylinders that go over a tea
+light, are the shapes most lithophane tools offer next to flat. Neither has a frame, and
+a thin panel with no rim warps and has fragile edges.
+
+Bend the finished flat panel rather than build a second mesher: map each vertex's x to
+an angle around a vertical axis (x / radius), and push it out along that angle by its z,
+so the back becomes the inner wall and the thickness stays radial. A curve takes an arc
+in degrees (default 120); a cylinder is 360, which needs the panel's left and right
+edges welded into one seam, so the grid's first and last columns must share vertices
+before solidifying. A frame is a raised rim at the maximum thickness, a few mm wide,
+stamped into the height grid the way `Relief`'s border (MOD105) is, which also gives a
+curved panel a flat bottom edge to stand on.
+
+CLI: `--shape flat|curve|cylinder`, `--arc DEG`, `--frame-mm W`.
+
+Done when a curved and a cylindrical lithophane with a frame export as one closed mesh,
+and the curve stands on a table on its own.
+
 ## Block M — The CPU and integrated-GPU path
 
 ### §MOD117 State the real download size for the CPU

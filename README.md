@@ -241,7 +241,9 @@ built-in font of capitals and digits; the Relief card takes the text, its height
 with the other millimetres, and says before a run when the text will not fit. `--stand` also
 writes `<output>-stand`, a block that prints flat with a slot cut to the relief's thickness, so
 the plaque stands on a shelf leaning back `--stand-tilt` degrees (15 by default); on the Relief
-card, **Also save a stand** makes Save as write it beside an STL or 3MF. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+card, **Also save a stand** makes Save as write it beside an STL or 3MF. `lithophane` needs no
+model: the panel is thin where the photo is bright and thick where it is dark (`--min-mm` 0.8 and
+`--max-mm` 3 by default, `--width-mm` 100), so the photo shows when it is lit from behind. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

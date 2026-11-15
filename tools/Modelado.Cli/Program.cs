@@ -40,6 +40,10 @@ const string Usage = """
                              relief stands in, leaning back --stand-tilt degrees (default 15)
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
+    modelado-cli lithophane <photo> -o <output.stl|3mf> [options]
+        --width-mm W         the panel's width; default 100, its height follows the photo
+        --min-mm T           its thickness where the photo is brightest; default 0.8
+        --max-mm T           where it is darkest; default 3. Light it from behind to see the photo
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
         --rotate x:90        turns about x, y or z (degrees)
         --mirror             mirrors left to right
@@ -243,6 +247,21 @@ try
             }
 
             return Done(0);
+
+        case "lithophane":
+        {
+            // MOD108: thickness from the photo's darkness, no model needed.
+            string photoFile = positional.FirstOrDefault() ?? throw new ArgumentException("Which photo? " + Usage);
+            string panel = Get("--out", null) ?? throw new ArgumentException("-o <output.stl> is required.");
+            MeshExport.FormatOf(panel);
+            Stopwatch made = Stopwatch.StartNew();
+            Mesh lithophane = Lithophane.Build(ImageCodec.Load(photoFile), new LithophaneOptions(
+                Width: (float)Number("--width-mm", Lithophane.WidthDefault),
+                MinThickness: (float)Number("--min-mm", Lithophane.MinThicknessDefault),
+                MaxThickness: (float)Number("--max-mm", Lithophane.MaxThicknessDefault)));
+            Save(lithophane, panel, made);
+            return Done(0);
+        }
 
         case "edit":
             string modelPath = positional.FirstOrDefault() ?? throw new ArgumentException("Which model? " + Usage);

@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Numerics;
 using System.Text.Json.Nodes;
+using Modelado.Geometry;
 
 namespace Modelado.Cli.Tests;
 
@@ -168,6 +170,24 @@ public sealed class CliJsonTests : IDisposable
         Assert.Equal(["--subdivide", "--smooth"], report["edits"]!.AsArray().Select(e => e!["edit"]!.GetValue<string>()));
         Assert.True(File.Exists(written));
         Assert.Contains("cube.obj: 8 vertices", error, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_photo_becomes_a_lithophane_sized_in_millimetres_without_a_model()
+    {
+        // MOD108: brightness, not depth, so no model is downloaded or run.
+        string photo = Path.Combine(Repository.Root, "cases", "fixtures", "photo.png");
+        string written = Path.Combine(folder, "panel.stl");
+
+        (int code, string output, _) = Run("lithophane", photo, "-o", written, "--width-mm", "80", "--min-mm", "0.6", "--max-mm", "2.4", "--json", "--provider", "cpu", "--models", Path.Combine(folder, "no-models"));
+
+        Assert.Equal(0, code);
+        JsonObject report = Assert.IsType<JsonObject>(JsonNode.Parse(output));
+        Assert.Equal("lithophane", report["command"]!.GetValue<string>());
+        (Vector3 min, Vector3 max) = MeshImport.Load(written).Bounds();
+        Assert.Equal(80, max.X - min.X, 1);
+        Assert.InRange(max.Y - min.Y, 59.5f, 60.5f); // the 64 × 48 photo's proportions
+        Assert.InRange(max.Z - min.Z, 2.3f, 2.41f);
     }
 
     [Fact]

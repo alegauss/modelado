@@ -71,12 +71,13 @@ public sealed class CliArgumentsTests
         string[] printedRun = ["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--depth-mm", "3", "--base-mm", "2"];
         string[] keychainRun = ["relief", "p.png", "-o", "k.3mf", "--width-mm", "45", "--keychain", "circle", "--hole-mm", "5"];
         string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval", "--border-mm", "3", "--border-height-mm", "5", "--text", "ANA", "--text-mm", "5", "--text-raise-mm", "1", "--text-on", "arc", "--stand", "--stand-tilt", "12"];
+        string[] lithophaneRun = ["lithophane", "p.png", "-o", "l.stl", "--width-mm", "100", "--min-mm", "0.8", "--max-mm", "3"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
         string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
         string[] retextureRun = ["cloud", "retexture", "m.glb", "-o", "c.glb", "--prompt", "rust", "--keep-uv", "--no-texture", "--pbr"];
 
-        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, keychainRun, medallionRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
+        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, keychainRun, medallionRun, lithophaneRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
         {
             Assert.Null(CliArguments.Parse(run).Error);
         }
