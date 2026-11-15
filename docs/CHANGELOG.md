@@ -104,6 +104,7 @@
 - ✅ **MOD93** **With the Ideogram panel open, its opening button stays on the drop zone and pressing it again seems to do nothing** — While its panel is open the Ideogram button reads Hide the photo generator and closes it, and opening the panel puts the typing in its object field.
 - ✅ **MOD95** **Paid Ideogram images are lost: unchosen candidates are discarded, the chosen one lands in a folder the app hides** — Every Ideogram candidate is written to Pictures\Modelado under the object's name and seed as soon as the job returns, and the drop zone lists the latest with a link to the folder.
 - ✅ **MOD96** **About says a cloud key is stored yet shows an empty key box, without saying which key or where it came from** — A key in MESHY_API_KEY or IDEOGRAM_API_KEY wins over a stored one, and About names its source and last four characters (design recorded in `src/Modelado.Cloud/CloudKeys.cs`).
+- ✅ **MOD137** **The gate fails on a PC holding MESHY_API_KEY or IDEOGRAM_API_KEY, which its cloud tests and UI cases read** — The gate clears every *_API_KEY before its suites, so a PC holding real cloud keys runs the stand-in tests and keyless cases green (design recorded in `run-tests.cmd`).
 
 ## Block I — Blender integration: AI tools for existing Blender models
 

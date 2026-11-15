@@ -13,6 +13,12 @@ rem
 rem MOD135: the second argument runs only the UI cases carrying one of those tags (CasesRun reads
 rem MODELADO_CASES); the unit suites always run whole. The full UI suite runs without it.
 
+rem MOD137: the gate is the stand-in world. A cloud key set on the PC (MESHY_API_KEY,
+rem IDEOGRAM_API_KEY, any <PROVIDER>_API_KEY) outranks a stored one since MOD96, so it would reach
+rem the unit suites, the CLI they start and the window the cases launch, all of which inherit this
+rem environment. Cleared here, inside setlocal, so the PC's own environment is untouched.
+for /f "delims==" %%V in ('set 2^>nul ^| findstr /r /c:"^[A-Za-z0-9]*_API_KEY="') do set "%%V="
+
 set "CONFIG=%~1"
 if "%CONFIG%"=="" set "CONFIG=Debug"
 if not "%~2"=="" set "MODELADO_CASES=%~2"
