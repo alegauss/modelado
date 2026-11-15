@@ -30,7 +30,7 @@ public partial class MainWindow
     private void UpdateEditButtons()
     {
         bool can = !busy && mesh is not null;
-        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton])
+        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton])
         {
             button.IsEnabled = can;
         }
@@ -108,6 +108,31 @@ public partial class MainWindow
             return closed;
         }).ConfigureAwait(true);
         LastRunSaid(filled == 0 ? Strings.FillHolesNone : Ui.Format(mesh!.DoubleSided ? Strings.FillHolesOpen : Strings.FillHolesClosed, filled));
+    }
+
+    // MOD111: the voxel is millimetres at the size Export prints at (the STL size), as the CLI's
+    // --make-printable is at --size, so the two give the same mesh for the same values.
+    private async void OnMakePrintable(object sender, RoutedEventArgs e)
+    {
+        if (Typed(PrintableVoxelMm.Text) is not { } voxelMm || voxelMm <= 0 || Typed(stlSize) is not { } printSize || printSize <= 0)
+        {
+            LastRunSaid(Strings.PrintableVoxelInvalid);
+            return;
+        }
+
+        PrintableResult? made = null;
+        await EditAsync(Ui.Format(Strings.MakePrintableStep, voxelMm), (m, _, _) =>
+        {
+            (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = m.Bounds();
+            System.Numerics.Vector3 span = high - low;
+            float longest = MathF.Max(span.X, MathF.Max(span.Y, span.Z));
+            made = Printable.Make(m, voxelMm * longest / printSize);
+            return made.Mesh;
+        }).ConfigureAwait(true);
+        if (made is not null)
+        {
+            LastRunSaid(Ui.Format(Strings.MadePrintable, made.OpenEdgesBefore, made.TangledEdgesBefore));
+        }
     }
 
     private async void OnRemovePieces(object sender, RoutedEventArgs e)

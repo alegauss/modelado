@@ -348,6 +348,24 @@
   <data name="SlicerNotStarted" xml:space="preserve">
     <value>{0} 未能启动：{1}</value>
   </data>
+  <data name="MakePrintableButton" xml:space="preserve">
+    <value>修复为可打印</value>
+  </data>
+  <data name="MakePrintableButtonTip" xml:space="preserve">
+    <value>按“导出”的打印尺寸，在这一毫米宽度的体素网格上重建模型，使其封闭且流形，可直接切片。颜色保留；纹理转为顶点颜色。</value>
+  </data>
+  <data name="PrintableVoxelMm" xml:space="preserve">
+    <value>体素大小</value>
+  </data>
+  <data name="MakePrintableStep" xml:space="preserve">
+    <value>已按 {0} mm 修复为可打印</value>
+  </data>
+  <data name="MadePrintable" xml:space="preserve">
+    <value>已可打印：之前有 {0} 条开放边和 {1} 条缠结边，现已封闭。</value>
+  </data>
+  <data name="PrintableVoxelInvalid" xml:space="preserve">
+    <value>体素和“导出”中的打印尺寸须大于 0 mm。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

@@ -348,6 +348,24 @@
   <data name="SlicerNotStarted" xml:space="preserve">
     <value>{0} n'a pas démarré : {1}</value>
   </data>
+  <data name="MakePrintableButton" xml:space="preserve">
+    <value>Rendre imprimable</value>
+  </data>
+  <data name="MakePrintableButtonTip" xml:space="preserve">
+    <value>Reconstruit le modèle sur une grille de voxels de cette largeur en millimètres, à la taille d'impression de l'export, pour qu'il arrive fermé et manifold dans le trancheur. Les couleurs restent ; la texture devient couleur par sommet.</value>
+  </data>
+  <data name="PrintableVoxelMm" xml:space="preserve">
+    <value>Taille du voxel</value>
+  </data>
+  <data name="MakePrintableStep" xml:space="preserve">
+    <value>Rendu imprimable à {0} mm</value>
+  </data>
+  <data name="MadePrintable" xml:space="preserve">
+    <value>Imprimable : {0} arêtes ouvertes et {1} emmêlées avant, fermé maintenant.</value>
+  </data>
+  <data name="PrintableVoxelInvalid" xml:space="preserve">
+    <value>Le voxel et la taille d'impression de l'export doivent dépasser 0 mm.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

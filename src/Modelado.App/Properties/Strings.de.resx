@@ -348,6 +348,24 @@
   <data name="SlicerNotStarted" xml:space="preserve">
     <value>{0} ist nicht gestartet: {1}</value>
   </data>
+  <data name="MakePrintableButton" xml:space="preserve">
+    <value>Druckbar machen</value>
+  </data>
+  <data name="MakePrintableButtonTip" xml:space="preserve">
+    <value>Baut das Modell auf einem Voxelgitter dieser Breite in Millimetern neu auf, in der Druckgröße des Exports, damit es geschlossen und mannigfaltig im Slicer ankommt. Die Farben bleiben; die Textur wird zu Vertexfarbe.</value>
+  </data>
+  <data name="PrintableVoxelMm" xml:space="preserve">
+    <value>Voxelgröße</value>
+  </data>
+  <data name="MakePrintableStep" xml:space="preserve">
+    <value>Druckbar gemacht mit {0} mm</value>
+  </data>
+  <data name="MadePrintable" xml:space="preserve">
+    <value>Druckbar: vorher {0} offene und {1} verworrene Kanten, jetzt geschlossen.</value>
+  </data>
+  <data name="PrintableVoxelInvalid" xml:space="preserve">
+    <value>Voxel und Druckgröße im Export brauchen mehr als 0 mm.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

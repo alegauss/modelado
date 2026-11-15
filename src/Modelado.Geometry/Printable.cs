@@ -33,6 +33,7 @@ public static class Printable
     /// <param name="voxel">The grid's spacing, in the model's own units.</param>
     /// <returns>The rebuilt mesh and what the model had wrong.</returns>
     /// <exception cref="ArgumentException">A voxel that is not above zero, or a model with no extent.</exception>
+    /// <exception cref="InvalidOperationException">The model encloses nothing at this voxel.</exception>
     public static PrintableResult Make(Mesh mesh, float voxel)
     {
         ArgumentNullException.ThrowIfNull(mesh);
@@ -75,7 +76,7 @@ public static class Printable
         Mesh rebuilt = MarchingCubes.Extract(grid, 0.5f);
         if (rebuilt.TriangleCount == 0)
         {
-            throw new ArgumentException("The model encloses nothing at this voxel: try a smaller one.", nameof(voxel));
+            throw new InvalidOperationException("The model encloses nothing at this voxel: try a smaller one.");
         }
 
         (int open, int tangled) = EdgeFaults(t);

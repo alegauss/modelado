@@ -348,6 +348,24 @@
   <data name="SlicerNotStarted" xml:space="preserve">
     <value>O {0} não abriu: {1}</value>
   </data>
+  <data name="MakePrintableButton" xml:space="preserve">
+    <value>Tornar imprimível</value>
+  </data>
+  <data name="MakePrintableButtonTip" xml:space="preserve">
+    <value>Reconstrói o modelo numa grade de voxels com essa largura em milímetros, no tamanho de impressão da Exportação, para sair fechado e manifold para o fatiador. As cores ficam; a textura vira cor por vértice.</value>
+  </data>
+  <data name="PrintableVoxelMm" xml:space="preserve">
+    <value>Tamanho do voxel</value>
+  </data>
+  <data name="MakePrintableStep" xml:space="preserve">
+    <value>Imprimível com voxel de {0} mm</value>
+  </data>
+  <data name="MadePrintable" xml:space="preserve">
+    <value>Imprimível: {0} arestas abertas e {1} emaranhadas antes, fechado agora.</value>
+  </data>
+  <data name="PrintableVoxelInvalid" xml:space="preserve">
+    <value>O voxel e o tamanho de impressão no cartão Exportar precisam ser maiores que 0 mm.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

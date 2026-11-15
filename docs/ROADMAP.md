@@ -49,8 +49,7 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- ⏳ **MOD111** (deps: —) **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — Still to come: Make printable on the window's Edit card, with what it fixed in the history. → §MOD111
-- 📋 **MOD112** (deps: MOD111 ⏳) **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — A thin ear or tail breaks off or vanishes in the slicer, and choosing a face to rest on is done by hand in every slicer. → §MOD112
+- 📋 **MOD112** (deps: MOD111 ✅) **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — A thin ear or tail breaks off or vanishes in the slicer, and choosing a face to rest on is done by hand in every slicer. → §MOD112
 - 📋 **MOD113** (deps: —) **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — The window and the mesh disagree, so a user who set no base exports a solid and one who wants a thin base cannot trust the label. → §MOD113
 - 📋 **MOD114** (deps: —) **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — Object only is the relief most keychains and medallions will use, and an irregular mask is where pinched vertices break a closed mesh. → §MOD114
 - 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
@@ -154,12 +153,5 @@
 - **A case proves the slicer picked is kept for the next session** Once WW628 lets a
   file step read text, the slicer case reads settings.json for the pick, and each of the
   four slicers on a test PC opens the 3MF.
-
-## Done when — MOD111
-
-- **The Edit card makes the model shown printable as one undoable step** A UI case
-  presses Make printable on the open cube with a voxel in mm, the history gains the step
-  with what it fixed, and the mesh counts match what modelado-cli edit --make-printable
-  gives.
 
 ## Non-goals

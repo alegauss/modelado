@@ -144,7 +144,7 @@
 - ✅ **MOD108** **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — The Relief card's Make lithophane turns the photo into a panel sized in mm without a model, saved at that size, as the CLI does (design superseded: curves and frame: MOD145).
 - ✅ **MOD109** **A relief is not exported in the orientation it prints best, face up and flat on the plate** — STL and 3MF from the window and the CLI are laid on the plate, centred with the lowest point on Z = 0, so a relief opens face up with its back down.
 - ✅ **MOD110 (Open in slicer on the Export card)** **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The Export card finds Bambu Studio, OrcaSlicer, PrusaSlicer or Cura and opens the model in the one picked as a 3MF at the print size.
-- ✅ **MOD111 (voxel remesh in CLI)** **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — modelado-cli edit --make-printable rebuilds any model on a voxel grid in mm, closed with every edge used twice, its colours kept, and says what it fixed.
+- ✅ **MOD111** **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — The Edit card's Make printable rebuilds the model shown on a voxel in mm at the print size, one undoable step giving the CLI's mesh.
 
 ## Block M — The CPU and integrated-GPU path
 

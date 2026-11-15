@@ -348,6 +348,24 @@
   <data name="SlicerNotStarted" xml:space="preserve">
     <value>{0} did not start: {1}</value>
   </data>
+  <data name="MakePrintableButton" xml:space="preserve">
+    <value>Make printable</value>
+  </data>
+  <data name="MakePrintableButtonTip" xml:space="preserve">
+    <value>Rebuilds the model on a voxel grid this many millimetres wide, at the size Export prints at, so it comes out closed and manifold for a slicer. Its colours are kept; its texture becomes vertex colour.</value>
+  </data>
+  <data name="PrintableVoxelMm" xml:space="preserve">
+    <value>Voxel size</value>
+  </data>
+  <data name="MakePrintableStep" xml:space="preserve">
+    <value>Made printable at {0} mm</value>
+  </data>
+  <data name="MadePrintable" xml:space="preserve">
+    <value>Made printable: {0} open and {1} tangled edges before, closed now.</value>
+  </data>
+  <data name="PrintableVoxelInvalid" xml:space="preserve">
+    <value>The voxel and the print size on the Export card need a size above 0 mm.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

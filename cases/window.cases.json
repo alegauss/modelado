@@ -1077,6 +1077,25 @@
     },
 
     {
+      "name": "the Edit card makes the model printable on a voxel in millimetres, the mesh the CLI gives",
+      "catches": "a voxel read in the model's units rather than in mm at the print size, a step the history does not keep, or a mesh other than modelado-cli edit --make-printable 2 --size 100 gives",
+      "filed": "MOD111",
+      "tags": ["edit", "print"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Edit#PrintableVoxelMm", "act": "read", "reads": "value", "expect": "0.4", "named": "a 0.4 mm voxel, a nozzle's line, to start with" },
+        { "locator": "Edit#PrintableVoxelMm", "act": "set value", "with": "2", "reads": "value", "expect": "2", "named": "a 2 mm voxel is typed" },
+        { "locator": "Button#MakePrintableButton", "act": "invoke", "named": "Make printable is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Made printable: 0 open and 0 tangled edges before, closed now.", "named": "it says what the cube had wrong" },
+        { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "14,382 vertices · 28,760 triangles", "named": "the counts modelado-cli edit --make-printable 2 --size 100 gives on the same cube" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Made printable at 2 mm", "named": "the step is a version that can be undone" }
+      ]
+    },
+
+    {
       "name": "the Edit card's amounts give the mesh the CLI gives for the same values",
       "catches": "a slider the edit ignores, a label that names another amount than the one applied, or a window that edits differently from modelado-cli",
       "filed": "MOD16",

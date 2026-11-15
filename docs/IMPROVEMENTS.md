@@ -581,20 +581,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD111 Make printable: a closed, manifold mesh
-
-Marching cubes usually closes TripoSR's mesh, and a test asserts it for one model, but
-nothing guarantees it after edits or for every photo. On the Bambu forum (05/11/2026),
-files from MakerLab's image to 3D printed with empty layers, and the fix suggested was a
-voxel remesh at 0.3 to 0.5 mm in Blender.
-
-A Make printable action rebuilds the surface on a voxel grid in mm (default 0.4 mm),
-keeps the largest shell or unions them, guarantees a closed two-manifold mesh, and
-reprojects the colours. It reports what it fixed. The CLI gains the same.
-
-Done when every mesh in the test set comes out of Make printable with each edge used
-twice and no self-intersection, and slices with no empty layer.
-
 ### §MOD112 Thickness check and lay flat
 
 After Make printable, two problems remain: parts thinner than the nozzle can print
