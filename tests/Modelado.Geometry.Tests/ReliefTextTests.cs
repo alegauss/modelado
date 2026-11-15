@@ -65,4 +65,16 @@ public sealed class ReliefTextTests
     {
         Assert.Throws<ArgumentException>(() => Relief(OutlineShape.Rectangle, new ReliefText("A VERY LONG NAME INDEED", Height: 8)));
     }
+
+    [Fact]
+    public void The_card_can_ask_whether_text_fits_before_a_relief_is_built()
+    {
+        ReliefTextStamp.Check(new ReliefText("ANA 2026", Height: 5), 60, 40, 0);
+        ReliefTextStamp.Check(new ReliefText("JOAO", Height: 5, Placement: TextPlacement.Arc), 60, 60, 2);
+        ReliefTextStamp.Check(new ReliefText("   ", Height: 5), 10, 10, 0);
+        Assert.Throws<ArgumentException>(() => ReliefTextStamp.Check(new ReliefText("A VERY LONG NAME INDEED", Height: 8), 60, 40, 0));
+        Assert.Throws<ArgumentException>(() => ReliefTextStamp.Check(new ReliefText("ANA", Height: 20), 60, 15, 0));
+        Assert.Throws<ArgumentException>(() => ReliefTextStamp.Check(new ReliefText("ANA", Height: 0), 60, 40, 0));
+        Assert.Throws<ArgumentException>(() => ReliefTextStamp.Check(new ReliefText("A ♥ B", Height: 5), 60, 40, 0));
+    }
 }

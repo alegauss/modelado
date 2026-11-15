@@ -288,6 +288,24 @@
   <data name="ReliefBorderHeightMm" xml:space="preserve">
     <value>Altura del marco</value>
   </data>
+  <data name="ReliefTextWords" xml:space="preserve">
+    <value>Texto (vacío para ninguno)</value>
+  </data>
+  <data name="ReliefTextMm" xml:space="preserve">
+    <value>Altura de las letras</value>
+  </data>
+  <data name="ReliefTextOn" xml:space="preserve">
+    <value>El texto va</value>
+  </data>
+  <data name="ReliefTextOnLine" xml:space="preserve">
+    <value>Abajo, en línea recta</value>
+  </data>
+  <data name="ReliefTextOnArc" xml:space="preserve">
+    <value>En arco, en el borde del medallón</value>
+  </data>
+  <data name="ReliefTextInvalid" xml:space="preserve">
+    <value>El texto necesita letras, dígitos, espacios o - . / ', letras de más de 0 mm y espacio en el relieve dentro del marco.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

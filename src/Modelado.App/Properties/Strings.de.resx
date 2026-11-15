@@ -288,6 +288,24 @@
   <data name="ReliefBorderHeightMm" xml:space="preserve">
     <value>Rahmenhöhe</value>
   </data>
+  <data name="ReliefTextWords" xml:space="preserve">
+    <value>Text (leer für keinen)</value>
+  </data>
+  <data name="ReliefTextMm" xml:space="preserve">
+    <value>Buchstabenhöhe</value>
+  </data>
+  <data name="ReliefTextOn" xml:space="preserve">
+    <value>Text verläuft</value>
+  </data>
+  <data name="ReliefTextOnLine" xml:space="preserve">
+    <value>Unten entlang</value>
+  </data>
+  <data name="ReliefTextOnArc" xml:space="preserve">
+    <value>Im Bogen des Medaillons</value>
+  </data>
+  <data name="ReliefTextInvalid" xml:space="preserve">
+    <value>Der Text braucht Buchstaben, Ziffern, Leerzeichen oder - . / ', eine Buchstabenhöhe über 0 mm und Platz im Relief innerhalb des Rahmens.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

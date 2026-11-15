@@ -14,7 +14,8 @@ namespace Modelado.App;
 /// The CLI takes the same as --width-mm, --depth-mm and --base-mm. MOD104: in millimetres the card
 /// can also cut the relief into a keychain, a disc or a rounded tag with a hole near the top
 /// (<see cref="Keychain"/>), as the CLI's --keychain and --hole-mm do; a tag's hole slides along its
-/// top on a slider.
+/// top on a slider. MOD106: a name or a date raised on the relief, along the bottom or around a
+/// medallion's arc, with its letters' height in mm, as the CLI's --text, --text-mm and --text-on do.
 /// </summary>
 public partial class MainWindow
 {
@@ -26,6 +27,41 @@ public partial class MainWindow
         ReliefHoleMm.Text = Millimetres(Keychain.HoleDiameterDefault);
         ReliefBorderMm.Text = "0";
         ReliefBorderHeightMm.Text = Millimetres(Relief.PrintDepthDefault + 1);
+        ReliefTextMm.Text = Millimetres(ReliefTextHeightDefault);
+    }
+
+    private const float ReliefTextHeightDefault = 6;
+
+    /// <summary>
+    /// MOD106: the text the card raises, or null for none. Letters the font lacks, a height that is not
+    /// one, or text with no room on a relief this wide is refused here rather than by the run. The
+    /// relief's printed height follows the outline the card crops to: a medallion is as tall as wide.
+    /// </summary>
+    private (bool Valid, ReliefText? Text) TextSettings(float printWidth, float border)
+    {
+        if (string.IsNullOrWhiteSpace(ReliefTextWords.Text))
+        {
+            return (true, null);
+        }
+
+        if (Typed(ReliefTextMm.Text) is not { } height || height <= 0)
+        {
+            return (false, null);
+        }
+
+        TextPlacement placement = (ReliefTextOn.SelectedItem as ComboBoxItem)?.Tag as string == "arc" ? TextPlacement.Arc : TextPlacement.Line;
+        ReliefText text = new(ReliefTextWords.Text, height, Placement: placement);
+        float aspect = photo is null ? 1 : (float)photo.Height / photo.Width;
+        float tall = KeychainChosen is null && ShapeChosen == OutlineShape.Circle ? 1 : aspect / Outline.Width(ShapeChosen, aspect);
+        try
+        {
+            ReliefTextStamp.Check(text, printWidth, printWidth * tall, border);
+            return (true, text);
+        }
+        catch (ArgumentException)
+        {
+            return (false, null);
+        }
     }
 
     // MOD105: the outline the card crops the relief to.
@@ -111,6 +147,9 @@ public partial class MainWindow
 
     private void OnReliefMillimetresTyped(object sender, TextChangedEventArgs e) => ShowReliefSizeError();
 
+    // MOD106: the shape and the text's placement decide whether the text fits.
+    private void OnReliefChoiceChanged(object sender, SelectionChangedEventArgs e) => ShowReliefSizeError();
+
     /// <summary>The keychain the Relief card's millimetres cut, or null (MOD104).</summary>
     private KeychainOptions? ReliefKeychainOptions() =>
         ReliefInMillimetres && PrintedSize() is { } size ? KeychainSettings(size.Width).Options : null;
@@ -125,9 +164,12 @@ public partial class MainWindow
         bool wrong = ReliefInMillimetres && PrintedSize() is null;
         ReliefSizeError.Visibility = wrong ? Visibility.Visible : Visibility.Collapsed;
 
-        // MOD104: the sizes may all be sizes and the keychain's hole still not fit the tag.
+        // MOD104: the sizes may all be sizes and the keychain's hole still not fit the tag;
+        // MOD106: or the text not be one the relief can carry.
         bool sizesFine = Typed(ReliefWidthMm.Text) is > 0 && Typed(ReliefDepthMm.Text) is > 0 && Typed(ReliefBaseMm.Text) is >= 0 && BorderSize() is not null;
-        ReliefSizeError.Text = wrong && sizesFine ? Strings.ReliefHoleInvalid : Strings.ReliefSizeInvalid;
+        ReliefSizeError.Text = !wrong || !sizesFine ? Strings.ReliefSizeInvalid
+            : !KeychainSettings(Typed(ReliefWidthMm.Text)!.Value).Valid ? Strings.ReliefHoleInvalid
+            : Strings.ReliefTextInvalid;
     }
 
     /// <summary>
@@ -137,7 +179,7 @@ public partial class MainWindow
     /// </summary>
     private (float Width, float Depth, float Base)? PrintedSize()
     {
-        if (ReliefWidthMm is null || ReliefDepthMm is null || ReliefBaseMm is null || ReliefBorderMm is null)
+        if (ReliefWidthMm is null || ReliefDepthMm is null || ReliefBaseMm is null || ReliefBorderMm is null || ReliefTextMm is null)
         {
             return null;
         }
@@ -147,6 +189,7 @@ public partial class MainWindow
             && Typed(ReliefBaseMm.Text) is { } baseMm && baseMm >= 0
             && BorderSize() is not null
             && KeychainSettings(width).Valid
+            && TextSettings(width, BorderSize()!.Value.Width).Valid
             ? (width, depth, baseMm)
             : null;
     }
@@ -165,7 +208,8 @@ public partial class MainWindow
         }
 
         return PrintedSize() is { } size && BorderSize() is { } border
-            ? new ReliefOptions(GridLongSide: grid, Depth: size.Depth, BaseThickness: size.Base, PrintWidth: size.Width, BorderWidth: border.Width, BorderHeight: border.Height)
+            ? new ReliefOptions(GridLongSide: grid, Depth: size.Depth, BaseThickness: size.Base, PrintWidth: size.Width, BorderWidth: border.Width, BorderHeight: border.Height,
+                Text: TextSettings(size.Width, border.Width).Text)
             : null;
     }
 

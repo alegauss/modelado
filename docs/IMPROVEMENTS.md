@@ -566,19 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD106 Text on reliefs
-
-Users of Bambu's Relief Sculpture Maker ask for text around the frame. Today adding a
-name or a date to a Modelado relief means another program.
-
-Text is raised or engraved on the base or the border: along an arc around a medallion,
-on a straight line under a plaque, or on a keychain tag. It needs glyph outlines from a
-font turned into a closed extruded mesh and merged with the relief, with a bundled open
-font (OFL) and the option to pick an installed one. Height and depth are in mm.
-
-Done when a medallion with a name along its arc and a plaque with a date underneath
-export as one closed mesh that prints legibly at 1 mm of text height.
-
 ### §MOD107 A stand for reliefs
 
 A plaque or medallion made in Modelado lies flat. To display it upright, the user models
@@ -701,6 +688,40 @@ position in the photo's 0..1 coordinates going into KeychainOptions.
 
 A case makes a cut-out keychain from a fixture with transparency and reads that its mesh
 is closed with one hole (Euler 0), as KeychainTests does for the disc and the tag.
+
+### §MOD142 Real fonts for relief text
+
+Text on a relief (MOD106) is drawn in a built-in stroke font in
+`src/Modelado.Geometry/ReliefText.cs`: capitals, digits and - . / ' on a 4 × 6 grid,
+stamped into the height grid as strokes. A name in lower case, a script face or a
+character outside that set cannot be written.
+
+Bundle one open font (OFL, its licence shipped beside it) and let the Relief card and
+the CLI's `--font` pick an installed one. Read glyph outlines from the TrueType file
+(quadratic curves flattened to polylines), fill them with an even-odd scan over the grid
+at the relief's cells per millimetre, and stamp the filled area exactly as the strokes
+are stamped today, so the relief stays one closed solid. The stroke font stays as the
+fallback and for text below about 3 mm, where filled outlines lose their counters.
+
+Done when a medallion with a lower-case name in the bundled font and one in an installed
+font both export as one closed mesh, and a character the chosen font lacks is refused in
+words before a run.
+
+### §MOD143 Engraved text on reliefs
+
+`ReliefTextStamp` in `src/Modelado.Geometry/ReliefText.cs` (MOD106) only raises letters
+above the relief's highest point. A plaque with a smooth band, or a keychain's back,
+often wants the name cut in instead.
+
+Add an engraved mode to `ReliefText`: the covered vertices are set to the surface there
+minus a depth in mm, clamped so the cut never reaches the base (at least 0.6 mm of
+material left under it). Placing it is the same layout as raised text. The CLI takes it
+as `--text-engrave-mm D` in place of `--text-raise-mm`, the Relief card as a Raised /
+Engraved choice beside the letter height.
+
+Done when a plaque with an engraved date exports as one closed mesh whose letters sit
+below the surface around them, and a cut deeper than the relief allows is refused in
+words.
 
 ## Block M — The CPU and integrated-GPU path
 

@@ -288,6 +288,24 @@
   <data name="ReliefBorderHeightMm" xml:space="preserve">
     <value>Altura da moldura</value>
   </data>
+  <data name="ReliefTextWords" xml:space="preserve">
+    <value>Texto (vazio para nenhum)</value>
+  </data>
+  <data name="ReliefTextMm" xml:space="preserve">
+    <value>Altura das letras</value>
+  </data>
+  <data name="ReliefTextOn" xml:space="preserve">
+    <value>O texto vai</value>
+  </data>
+  <data name="ReliefTextOnLine" xml:space="preserve">
+    <value>Embaixo, em linha reta</value>
+  </data>
+  <data name="ReliefTextOnArc" xml:space="preserve">
+    <value>Em arco, na borda do medalhão</value>
+  </data>
+  <data name="ReliefTextInvalid" xml:space="preserve">
+    <value>O texto precisa de letras, dígitos, espaços ou - . / ', letras com mais de 0 mm e espaço no relevo dentro da moldura.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

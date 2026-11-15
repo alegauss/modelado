@@ -139,7 +139,7 @@
 - ✅ **MOD103** **There is no 3MF export, and STL carries no units, so a slicer has to guess the model's size** — Export card and CLI write 3MF in millimetres with vertex colour, tested against the core spec; slicer opens not yet checked (design recorded in `src/Modelado.Geometry/MeshExport.ThreeMf.cs`).
 - ✅ **MOD104** **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — The Relief card and CLI cut a disc or tag keychain with a hole, one closed solid; the cut-out outline and dragging the hole went to MOD141 (design recorded in `src/Modelado.Geometry/Keychain.cs`).
 - ✅ **MOD105** **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Card and CLI crop a relief to a plaque or medallion with a raised mm border, flat back; a framed 60 mm medallion came out closed, 60 x 60 x 7 (design recorded in `src/Modelado.Geometry/Outline.cs`).
-- ✅ **MOD106 (stroke-font text in pipeline and CLI)** **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — relief --text raises a name or date on a line or a medallion's arc; a named 60 mm medallion from a real photo welded closed and read clearly.
+- ✅ **MOD106** **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — The Relief card raises a name or date along the bottom or a medallion's arc, sized in mm, and says before a run when the text will not fit (design superseded: fonts and engraving: MOD142, MOD143).
 
 ## Block M — The CPU and integrated-GPU path
 

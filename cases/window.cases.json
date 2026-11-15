@@ -669,6 +669,29 @@
     },
 
     {
+      "name": "the Relief card raises a name along the bottom or a medallion's arc, and says when it will not fit",
+      "catches": "a card with no text field, a letter height that starts empty, or text too long for the relief that only fails once the run has started",
+      "filed": "MOD106",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "Edit#ReliefTextWords", "act": "read", "reads": "value", "expect": "", "named": "no text to start with" },
+        { "locator": "Edit#ReliefTextMm", "act": "read", "reads": "value", "expect": "6", "named": "letters 6 mm tall" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "ANA 2026", "reads": "value", "expect": "ANA 2026", "named": "a name and a year are typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and they fit along the bottom of 60 mm" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "A VERY LONG NAME INDEED", "reads": "value", "expect": "A VERY LONG NAME INDEED", "named": "a name too long is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The text needs letters, digits, spaces or - . / ', a letter height above 0 mm, and room on the relief inside the border.", "named": "the card says it will not fit" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "ANA", "reads": "value", "expect": "ANA", "named": "a short name is typed" },
+        { "locator": "ComboBox#ReliefTextOn", "act": "expand", "named": "the placements are opened" },
+        { "locator": "ComboBox#ReliefTextOn > ListItem[name=\"Around a medallion's arc\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "around a medallion's arc is chosen" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and it fits the arc" }
+      ]
+    },
+
+    {
       "name": "About opens and closes during a download whose chip keeps going",
       "catches": "an About that hides a running download, stops it, or takes the status bar with it",
       "filed": "MOD11",

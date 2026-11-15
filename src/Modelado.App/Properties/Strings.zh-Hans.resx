@@ -288,6 +288,24 @@
   <data name="ReliefBorderHeightMm" xml:space="preserve">
     <value>边框高度</value>
   </data>
+  <data name="ReliefTextWords" xml:space="preserve">
+    <value>文字（留空则无）</value>
+  </data>
+  <data name="ReliefTextMm" xml:space="preserve">
+    <value>字母高度</value>
+  </data>
+  <data name="ReliefTextOn" xml:space="preserve">
+    <value>文字排列</value>
+  </data>
+  <data name="ReliefTextOnLine" xml:space="preserve">
+    <value>沿底部直线</value>
+  </data>
+  <data name="ReliefTextOnArc" xml:space="preserve">
+    <value>沿纪念章底部弧线</value>
+  </data>
+  <data name="ReliefTextInvalid" xml:space="preserve">
+    <value>文字只能包含字母、数字、空格或 - . / '，字母高度须大于 0 mm，且须放得下在边框以内的浮雕上。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

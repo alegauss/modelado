@@ -391,7 +391,8 @@
             </ComboBox>
             <!-- MOD105: the outline the relief is cropped to; a keychain cuts its own. -->
             <TextBlock Text="{x:Static p:Strings.ReliefShape}" Style="{StaticResource FieldLabel}" />
-            <ComboBox x:Name="ReliefShape" AutomationProperties.AutomationId="ReliefShape" AutomationProperties.Name="{x:Static p:Strings.ReliefShape}" SelectedIndex="0">
+            <ComboBox x:Name="ReliefShape" AutomationProperties.AutomationId="ReliefShape" AutomationProperties.Name="{x:Static p:Strings.ReliefShape}" SelectedIndex="0"
+                      SelectionChanged="OnReliefChoiceChanged">
               <ComboBoxItem Content="{x:Static p:Strings.ReliefShapeRectangle}" Tag="Rectangle" />
               <ComboBoxItem Content="{x:Static p:Strings.ReliefShapeRounded}" Tag="Rounded" />
               <ComboBoxItem Content="{x:Static p:Strings.ReliefShapeCircle}" Tag="Circle" />
@@ -416,6 +417,9 @@
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -462,7 +466,21 @@
               <TextBox x:Name="ReliefBorderHeightMm" Grid.Row="7" Grid.Column="1" AutomationProperties.AutomationId="ReliefBorderHeightMm" AutomationProperties.Name="{x:Static p:Strings.ReliefBorderHeightMm}"
                        Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
               <TextBlock Grid.Row="7" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
-              <TextBlock x:Name="ReliefSizeError" Grid.Row="8" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
+              <!-- MOD106: a name or a date raised on the relief, along the bottom or a medallion's arc. -->
+              <TextBlock Grid.Row="8" Text="{x:Static p:Strings.ReliefTextWords}" VerticalAlignment="Center" />
+              <TextBox x:Name="ReliefTextWords" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ReliefTextWords"
+                       AutomationProperties.Name="{x:Static p:Strings.ReliefTextWords}" Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
+              <TextBlock Grid.Row="9" Text="{x:Static p:Strings.ReliefTextMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="ReliefTextMm" Grid.Row="9" Grid.Column="1" AutomationProperties.AutomationId="ReliefTextMm" AutomationProperties.Name="{x:Static p:Strings.ReliefTextMm}"
+                       Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
+              <TextBlock Grid.Row="9" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock Grid.Row="10" Text="{x:Static p:Strings.ReliefTextOn}" VerticalAlignment="Center" />
+              <ComboBox x:Name="ReliefTextOn" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ReliefTextOn"
+                        AutomationProperties.Name="{x:Static p:Strings.ReliefTextOn}" Margin="0,0,0,4" SelectedIndex="0" SelectionChanged="OnReliefChoiceChanged">
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnLine}" Tag="line" />
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnArc}" Tag="arc" />
+              </ComboBox>
+              <TextBlock x:Name="ReliefSizeError" Grid.Row="11" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />

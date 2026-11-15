@@ -48,7 +48,6 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- ⏳ **MOD106** (deps: MOD105 ✅) **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — Still to come: text on the Relief card, a bundled OFL font and installed fonts, and engraved text. → §MOD106
 - 📋 **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
 - 📋 **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
 - 📋 **MOD109** (deps: MOD103 ✅) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
@@ -58,6 +57,8 @@
 - 📋 **MOD113** (deps: —) **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — The window and the mesh disagree, so a user who set no base exports a solid and one who wants a thin base cannot trust the label. → §MOD113
 - 📋 **MOD114** (deps: —) **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — Object only is the relief most keychains and medallions will use, and an irregular mask is where pinched vertices break a closed mesh. → §MOD114
 - 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
+- 📋 **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — MOD106 raises text in a stroke font only, so a lower-case name or a script face still needs another program. → §MOD142
+- 📋 **MOD143** (deps: MOD106 ✅) **Text on a relief can only be raised, never engraved into the surface** — MOD106 stamps letters above the relief, while a plaque band or a keychain back often wants the name cut in. → §MOD143
 
 ## Block M — The CPU and integrated-GPU path
 
@@ -149,12 +150,5 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
-
-## Done when — MOD106
-
-- **Text is set on the Relief card, in a real font, raised or engraved** The card takes
-  the words, their height and line or arc; glyphs come from a bundled OFL font or an
-  installed one, raised or engraved, one closed mesh that prints legibly at 1 mm of text
-  height; a case sets a name on a medallion.
 
 ## Non-goals

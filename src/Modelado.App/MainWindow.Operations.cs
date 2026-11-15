@@ -125,7 +125,9 @@ public partial class MainWindow
         {
             LastRunSaid(Ui.Format(Strings.StepCancelled, title));
         }
-        catch (Exception error) when (error is InvalidOperationException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
+        // ArgumentException (MOD106): text the card checked against the outline can still miss the
+        // cut-out the background removal leaves, which is known only once the run has it.
+        catch (Exception error) when (error is InvalidOperationException or ArgumentException or InvalidDataException or FileNotFoundException or Microsoft.ML.OnnxRuntime.OnnxRuntimeException or OutOfMemoryException)
         {
             LastRunSaid(Ui.Format(Strings.StepFailed, title), error.Message);
             MessageBox.Show(this, error.Message, title, MessageBoxButton.OK, MessageBoxImage.Warning);

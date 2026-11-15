@@ -102,45 +102,11 @@ public static class ReliefTextStamp
             return null;
         }
 
-        string words = Drawable(text.Text);
         (int minColumn, int maxColumn, int minRow, int maxRow) = Kept(mask, gw, gh, options.MaskThreshold);
         float cellsPerMm = Math.Max(1, maxColumn - minColumn) / printWidth;
         float centreColumn = (minColumn + maxColumn) / 2f, centreRow = (minRow + maxRow) / 2f;
-        float width = printWidth, height = (maxRow - minRow) / cellsPerMm;
-        float scale = text.Height / GlyphHeight;
-        float length = ((words.Length * Advance) - (Advance - 4)) * scale;
-        float inset = options.BorderWidth + Margin;
-        float stroke = MathF.Max(text.Height / 7, 0.4f);
-
-        // Each glyph point in millimetres around the relief's centre, y up.
-        Func<float, float, Vector2> place;
-        if (text.Placement == TextPlacement.Arc)
-        {
-            float baseline = (MathF.Min(width, height) / 2) - inset - (stroke / 2);
-            float radius = baseline - (text.Height / 2);
-            if (radius <= 0 || length > MathF.PI * radius)
-            {
-                throw new ArgumentException($"\"{words}\" does not fit around a {printWidth:0.#} mm medallion at {text.Height:0.#} mm.", nameof(options));
-            }
-
-            // Left to right along the bottom; a letter's up points to the centre.
-            place = (x, y) =>
-            {
-                float angle = (-MathF.PI / 2) + ((x - (length / 2)) / radius);
-                float r = baseline - y;
-                return new Vector2(r * MathF.Cos(angle), r * MathF.Sin(angle));
-            };
-        }
-        else
-        {
-            if (length > width - (2 * inset))
-            {
-                throw new ArgumentException($"\"{words}\" does not fit across {printWidth:0.#} mm at {text.Height:0.#} mm.", nameof(options));
-            }
-
-            float bottom = (-height / 2) + inset + (stroke / 2);
-            place = (x, y) => new Vector2(x - (length / 2), bottom + y);
-        }
+        (string words, Func<float, float, Vector2> place, float scale, float stroke) =
+            Layout(text, printWidth, (maxRow - minRow) / cellsPerMm, options.BorderWidth);
 
         float top = options.Depth + text.Raise;
         float[] heights = new float[gw * gh];
@@ -160,6 +126,65 @@ public static class ReliefTextStamp
         }
 
         return heights;
+    }
+
+    /// <summary>
+    /// Whether the text can be written on a relief of this printed size, before one is built: the
+    /// Relief card asks so it can say why before a run, not after (MOD106).
+    /// </summary>
+    /// <param name="text">The text and its size.</param>
+    /// <param name="width">The relief's printed width in millimetres.</param>
+    /// <param name="height">Its printed height in millimetres.</param>
+    /// <param name="borderWidth">The raised border the text keeps clear of, in millimetres.</param>
+    /// <exception cref="ArgumentException">A character the font does not have, or text that does not fit.</exception>
+    public static void Check(ReliefText text, float width, float height, float borderWidth)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        if (!string.IsNullOrWhiteSpace(text.Text))
+        {
+            _ = Layout(text, width, height, borderWidth);
+        }
+    }
+
+    // The characters drawn and where each glyph point lands, in millimetres around the relief's
+    // centre with y up; refused when the text does not fit.
+    private static (string Words, Func<float, float, Vector2> Place, float Scale, float Stroke) Layout(ReliefText text, float width, float height, float borderWidth)
+    {
+        if (text.Height <= 0 || text.Raise <= 0)
+        {
+            throw new ArgumentException("Letters need a height and a raise above 0 mm.", nameof(text));
+        }
+
+        string words = Drawable(text.Text);
+        float scale = text.Height / GlyphHeight;
+        float length = ((words.Length * Advance) - (Advance - 4)) * scale;
+        float inset = borderWidth + Margin;
+        float stroke = MathF.Max(text.Height / 7, 0.4f);
+        if (text.Placement == TextPlacement.Arc)
+        {
+            float baseline = (MathF.Min(width, height) / 2) - inset - (stroke / 2);
+            float radius = baseline - (text.Height / 2);
+            if (radius <= 0 || length > MathF.PI * radius)
+            {
+                throw new ArgumentException($"\"{words}\" does not fit around a {width:0.#} mm medallion at {text.Height:0.#} mm.", nameof(text));
+            }
+
+            // Left to right along the bottom; a letter's up points to the centre.
+            return (words, (x, y) =>
+            {
+                float angle = (-MathF.PI / 2) + ((x - (length / 2)) / radius);
+                float r = baseline - y;
+                return new Vector2(r * MathF.Cos(angle), r * MathF.Sin(angle));
+            }, scale, stroke);
+        }
+
+        if (length > width - (2 * inset) || text.Height + stroke > height - (2 * inset))
+        {
+            throw new ArgumentException($"\"{words}\" does not fit across {width:0.#} mm at {text.Height:0.#} mm.", nameof(text));
+        }
+
+        float bottom = (-height / 2) + inset + (stroke / 2);
+        return (words, (x, y) => new Vector2(x - (length / 2), bottom + y), scale, stroke);
     }
 
     // Every grid vertex within half a stroke of the segment a–b (millimetres around the centre, y up).

@@ -288,6 +288,24 @@
   <data name="ReliefBorderHeightMm" xml:space="preserve">
     <value>Border height</value>
   </data>
+  <data name="ReliefTextWords" xml:space="preserve">
+    <value>Text (none if empty)</value>
+  </data>
+  <data name="ReliefTextMm" xml:space="preserve">
+    <value>Letter height</value>
+  </data>
+  <data name="ReliefTextOn" xml:space="preserve">
+    <value>Text runs</value>
+  </data>
+  <data name="ReliefTextOnLine" xml:space="preserve">
+    <value>Along the bottom</value>
+  </data>
+  <data name="ReliefTextOnArc" xml:space="preserve">
+    <value>Around a medallion's arc</value>
+  </data>
+  <data name="ReliefTextInvalid" xml:space="preserve">
+    <value>The text needs letters, digits, spaces or - . / ', a letter height above 0 mm, and room on the relief inside the border.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>
