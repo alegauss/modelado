@@ -381,6 +381,12 @@
   <data name="ExportFormatStl" xml:space="preserve">
     <value>STL · 3D 打印</value>
   </data>
+  <data name="ExportFormat3mf" xml:space="preserve">
+    <value>3MF · 3D 打印，带颜色</value>
+  </data>
+  <data name="ExportNote3mf" xml:space="preserve">
+    <value>3MF 记录毫米单位，因此上面的尺寸就是打印尺寸，并保留颜色。</value>
+  </data>
   <data name="ExportObjTexture" xml:space="preserve">
     <value>纹理，另存为旁边的 .mtl 和 .png</value>
   </data>
@@ -810,6 +816,9 @@
   </data>
   <data name="SaveFilterStl" xml:space="preserve">
     <value>STL (毫米)|*.stl</value>
+  </data>
+  <data name="SaveFilter3mf" xml:space="preserve">
+    <value>3MF (毫米，带颜色)|*.3mf</value>
   </data>
   <data name="SaveFilterGlb" xml:space="preserve">
     <value>GLB (二进制 glTF)|*.glb</value>

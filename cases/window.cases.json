@@ -842,6 +842,30 @@
     },
 
     {
+      "name": "the Export card writes 3MF in millimetres, sized as STL is, and says the unit and the colours go with it",
+      "catches": "a 3MF choice sized in glTF units, a print size lost between STL and 3MF, or a Save as that writes another format",
+      "filed": "MOD103",
+      "tags": ["export", "dialog", "print"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Edit#ExportSize", "act": "set value", "with": "60", "expect": "60", "reads": "value", "named": "60 mm is typed" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"3MF\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "3MF is chosen" },
+        { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "mm", "named": "3MF is sized in millimetres" },
+        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "60", "named": "at the print size STL had" },
+        { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "3MF records millimetres, so the size above is the print's, and it keeps the colours.", "named": "and it says the unit is in the file" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/plate", "named": "the dialog is told to save plate" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved plate.3mf", "named": "the card says it wrote plate.3mf" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Saved plate.3mf · 60 mm on the longest side", "named": "at 60 mm on the longest side" }
+      ]
+    },
+
+    {
       // The PNG is dropped back in because a file step claims only sameBytesAs, and the viewport's
       // proportions, so the saved bytes, differ from one desk to the next (WW573).
       "name": "Save view as image writes a 2048 px PNG of the view, clear around the model",

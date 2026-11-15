@@ -93,7 +93,7 @@ public partial class MainWindow
         (System.Numerics.Vector3 min, System.Numerics.Vector3 max) = printed.Bounds();
         System.Numerics.Vector3 extent = max - min;
         stlSize = Millimetres(Math.Max(extent.X, Math.Max(extent.Y, extent.Z)));
-        if (ExportExtension == "stl")
+        if (ForPrinting(ExportExtension))
         {
             ExportSize.Text = stlSize;
         }

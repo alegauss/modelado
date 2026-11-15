@@ -15,12 +15,15 @@ namespace Modelado.App;
 /// </summary>
 public partial class MainWindow
 {
-    // MOD15: the longest side each kind of file is written at, as last typed: STL in millimetres
-    // (100, what slicers expect), every other format in its own units (1, a metre in glTF).
+    // MOD15: the longest side each kind of file is written at, as last typed: STL and 3MF (MOD103)
+    // in millimetres (100, what slicers expect), every other format in its own units (1, a metre in glTF).
     private string stlSize = "100";
     private string unitSize = "1";
 
     private string ExportExtension => (string)((ComboBoxItem)ExportFormat.SelectedItem).Tag;
+
+    // The formats a slicer reads in millimetres, which share the print's size.
+    private static bool ForPrinting(string format) => format is "stl" or "3mf";
 
     /// <summary>
     /// The longest side typed, or null when it is not a size above zero. A decimal comma is read
@@ -35,7 +38,7 @@ public partial class MainWindow
     {
         if (ExportSize is not null)
         {
-            ExportSize.Text = ExportExtension == "stl" ? stlSize : unitSize;
+            ExportSize.Text = ForPrinting(ExportExtension) ? stlSize : unitSize;
         }
 
         UpdateExportCard();
@@ -50,7 +53,7 @@ public partial class MainWindow
             return;
         }
 
-        if (ExportExtension == "stl")
+        if (ForPrinting(ExportExtension))
         {
             stlSize = ExportSize.Text;
         }
@@ -113,6 +116,15 @@ public partial class MainWindow
                 notes.Add(Strings.ExportNoteStlOpen);
             }
         }
+        else if (format == "3mf")
+        {
+            // MOD103: the unit is in the file and the colours go with it; only an open surface is said.
+            notes.Add(Strings.ExportNote3mf);
+            if (mesh is { DoubleSided: true })
+            {
+                notes.Add(Strings.ExportNoteStlOpen);
+            }
+        }
         else if (format == "ply" && mesh?.Texture is not null)
         {
             notes.Add(Strings.ExportNotePlyTexture);
@@ -127,7 +139,7 @@ public partial class MainWindow
     }
 
     // The unit the longest side is typed in: millimetres for STL, the format's own units otherwise.
-    private static string SizeUnit(string format) => format == "stl" ? Strings.UnitMillimetres : Strings.UnitUnits;
+    private static string SizeUnit(string format) => ForPrinting(format) ? Strings.UnitMillimetres : Strings.UnitUnits;
 
     private void OnExport(object sender, ExecutedRoutedEventArgs e)
     {
@@ -146,6 +158,7 @@ public partial class MainWindow
                 "obj" => Strings.SaveFilterObj,
                 "ply" => Strings.SaveFilterPly,
                 "stl" => Strings.SaveFilterStl,
+                "3mf" => Strings.SaveFilter3mf,
                 _ => Strings.SaveFilterGlb,
             },
             DefaultExt = "." + format,

@@ -381,6 +381,12 @@
   <data name="ExportFormatStl" xml:space="preserve">
     <value>STL · 3D printing</value>
   </data>
+  <data name="ExportFormat3mf" xml:space="preserve">
+    <value>3MF · 3D printing, with colour</value>
+  </data>
+  <data name="ExportNote3mf" xml:space="preserve">
+    <value>3MF records millimetres, so the size above is the print's, and it keeps the colours.</value>
+  </data>
   <data name="ExportObjTexture" xml:space="preserve">
     <value>Texture, as an .mtl and a .png beside it</value>
   </data>
@@ -810,6 +816,9 @@
   </data>
   <data name="SaveFilterStl" xml:space="preserve">
     <value>STL, in millimetres|*.stl</value>
+  </data>
+  <data name="SaveFilter3mf" xml:space="preserve">
+    <value>3MF, in millimetres with colour|*.3mf</value>
   </data>
   <data name="SaveFilterGlb" xml:space="preserve">
     <value>GLB, binary glTF|*.glb</value>

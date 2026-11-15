@@ -9,6 +9,9 @@ namespace Modelado.Geometry.Tests;
 
 public sealed class MeshExportTests : IDisposable
 {
+    // A 3MF triangle's three corner attributes (MOD103).
+    private static readonly string[] Corners = ["v1", "v2", "v3"];
+
     private readonly string folder = Directory.CreateTempSubdirectory("modelado-export-").FullName;
 
     public void Dispose() => Directory.Delete(folder, recursive: true);
@@ -239,6 +242,76 @@ public sealed class MeshExportTests : IDisposable
         string first = File.ReadLines(path).First(l => l.StartsWith("v ", StringComparison.Ordinal));
         Assert.Equal(7, first.Split(' ').Length);
         Assert.EndsWith(" 1 0.5 0", first, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_3mf_is_a_core_spec_package_in_millimetres_with_its_colours()
+    {
+        // MOD103: the package parts the core spec names, the root relationship to the model part, the
+        // unit, every vertex and triangle in range, and one colour per vertex in the materials group.
+        Mesh mesh = Coloured().Placed(80);
+        string path = Path.Combine(folder, "m.3mf");
+        Assert.Equal([path], MeshExport.Save(mesh, path));
+
+        using System.IO.Compression.ZipArchive package = System.IO.Compression.ZipFile.OpenRead(path);
+        string Part(string name)
+        {
+            using StreamReader reader = new(package.GetEntry(name)?.Open() ?? throw new Xunit.Sdk.XunitException($"{name} is missing"));
+            return reader.ReadToEnd();
+        }
+
+        System.Xml.Linq.XNamespace types = "http://schemas.openxmlformats.org/package/2006/content-types";
+        System.Xml.Linq.XDocument contentTypes = System.Xml.Linq.XDocument.Parse(Part("[Content_Types].xml"));
+        Assert.Contains(contentTypes.Root!.Elements(types + "Default"), d => (string?)d.Attribute("Extension") == "model" && (string?)d.Attribute("ContentType") == "application/vnd.ms-package.3dmanufacturing-3dmodel+xml");
+        Assert.Contains(contentTypes.Root!.Elements(types + "Default"), d => (string?)d.Attribute("Extension") == "rels");
+
+        System.Xml.Linq.XNamespace rels = "http://schemas.openxmlformats.org/package/2006/relationships";
+        System.Xml.Linq.XElement root = System.Xml.Linq.XDocument.Parse(Part("_rels/.rels")).Root!.Element(rels + "Relationship")!;
+        Assert.Equal("http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel", (string?)root.Attribute("Type"));
+        Assert.Equal("/" + MeshExport.ThreeMfModelPart, (string?)root.Attribute("Target"));
+
+        System.Xml.Linq.XNamespace core = "http://schemas.microsoft.com/3dmanufacturing/core/2015/02";
+        System.Xml.Linq.XNamespace material = "http://schemas.microsoft.com/3dmanufacturing/material/2015/02";
+        System.Xml.Linq.XElement model = System.Xml.Linq.XDocument.Parse(Part(MeshExport.ThreeMfModelPart)).Root!;
+        Assert.Equal(core + "model", model.Name);
+        Assert.Equal("millimeter", (string?)model.Attribute("unit"));
+        Assert.Null(model.Attribute("requiredextensions"));
+
+        System.Xml.Linq.XElement[] vertices = [.. model.Descendants(core + "vertex")];
+        System.Xml.Linq.XElement[] triangles = [.. model.Descendants(core + "triangle")];
+        string[] colours = [.. model.Descendants(material + "color").Select(e => (string)e.Attribute("color")!)];
+        Assert.Equal(mesh.VertexCount, vertices.Length);
+        Assert.Equal(mesh.TriangleCount, triangles.Length);
+        Assert.Equal(mesh.VertexCount, colours.Length);
+        Assert.All(colours, colour => Assert.Equal("#FF8000", colour));
+
+        float[] xs = [.. vertices.Select(v => float.Parse((string)v.Attribute("x")!, System.Globalization.CultureInfo.InvariantCulture))];
+        Assert.Equal(80f, xs.Max() - xs.Min(), 0.01f);
+        Assert.All(triangles, triangle =>
+        {
+            int[] corners = [.. Corners.Select(a => (int)triangle.Attribute(a)!)];
+            Assert.All(corners, v => Assert.InRange(v, 0, mesh.VertexCount - 1));
+            Assert.Equal(3, corners.Distinct().Count());
+            Assert.Equal("1", (string?)triangle.Attribute("pid"));
+        });
+
+        System.Xml.Linq.XElement item = model.Element(core + "build")!.Element(core + "item")!;
+        Assert.Equal((string?)model.Descendants(core + "object").Single().Attribute("id"), (string?)item.Attribute("objectid"));
+    }
+
+    [Fact]
+    public void A_3mf_of_an_uncoloured_mesh_has_no_colour_group_and_no_degenerate_triangle()
+    {
+        Mesh grey = new([new(0, 0, 0), new(10, 0, 0), new(0, 10, 0), new(0, 0, 10)], [0, 1, 2, 0, 1, 3, 1, 1, 2]);
+        string path = Path.Combine(folder, "g.3mf");
+        MeshExport.Save(grey, path);
+
+        using System.IO.Compression.ZipArchive package = System.IO.Compression.ZipFile.OpenRead(path);
+        using StreamReader reader = new(package.GetEntry(MeshExport.ThreeMfModelPart)!.Open());
+        string model = reader.ReadToEnd();
+        Assert.DoesNotContain("colorgroup", model, StringComparison.Ordinal);
+        Assert.Equal(2, model.Split("<triangle ").Length - 1);
+        Assert.Throws<InvalidDataException>(() => MeshImport.Load(path));
     }
 
     [Fact]

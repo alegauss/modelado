@@ -623,6 +623,8 @@
               <ComboBoxItem Content="{x:Static p:Strings.ExportFormatObj}" Tag="obj" />
               <ComboBoxItem Content="{x:Static p:Strings.ExportFormatPly}" Tag="ply" />
               <ComboBoxItem Content="{x:Static p:Strings.ExportFormatStl}" Tag="stl" />
+              <!-- MOD103: millimetres recorded in the file, and the colours kept. -->
+              <ComboBoxItem Content="{x:Static p:Strings.ExportFormat3mf}" Tag="3mf" />
             </ComboBox>
             <StackPanel x:Name="ExportObjOptions" Visibility="Collapsed" Margin="0,8,0,0">
               <RadioButton x:Name="ExportObjTexture" AutomationProperties.AutomationId="ExportObjTexture" GroupName="ObjColours"

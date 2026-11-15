@@ -31,8 +31,10 @@ first use and run with ONNX Runtime on the GPU or the CPU); Modelado makes geome
 
 The result appears in a 3D viewer (drag to turn, mouse wheel to zoom, double-click to recentre;
 colour, clay or edges) and is saved as **GLB** (binary glTF: Windows 3D Viewer, Blender, the
-web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres)
-or **PLY** (with colours: MeshLab, CloudCompare).
+web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres),
+**3MF** (3D printing with the millimetres recorded in the file and the colours kept: Bambu Studio,
+OrcaSlicer, PrusaSlicer) or **PLY** (with colours: MeshLab, CloudCompare). The command line writes
+whichever the output's extension names, `.3mf` included.
 
 A GLB carries a photo texture as JPEG (PNG where it has transparency) and, under 65,535 vertices,
 16-bit indices. The Export card's **Compact** choice (`--compact` on the command line) also

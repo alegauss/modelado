@@ -40,7 +40,9 @@ public static class MeshImport
                 MeshFormat.Glb => ReadGlb(File.ReadAllBytes(path), Path.GetFileName(path), out said),
                 MeshFormat.Obj => ReadObj(path, out said),
                 MeshFormat.Ply => ReadPly(File.ReadAllBytes(path)),
-                _ => ReadStl(File.ReadAllBytes(path)),
+                MeshFormat.Stl => ReadStl(File.ReadAllBytes(path)),
+                // MOD103 writes 3MF; reading it back is later work, said rather than misread as STL.
+                _ => throw new InvalidDataException($"{Path.GetFileName(path)}: Modelado saves 3MF but cannot open it yet."),
             };
             if (mesh.TriangleCount == 0)
             {

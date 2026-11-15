@@ -566,22 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD103 3MF export with units
-
-Modelado exports GLB, OBJ, PLY and STL. STL has no unit, so the size only survives when
-the slicer assumes millimetres, and it drops colour. 3MF, the 3D Manufacturing Format,
-records the unit, can keep vertex or texture colour, and is what Bambu Studio,
-OrcaSlicer and PrusaSlicer save and prefer. Modly's print epic (lightningpixel/modly
-#429, 12/11/2026) lists 3MF for the same reason, and MakerLab's lithophane tool already
-exports it.
-
-The export gains 3MF for both 3D Object and Relief, in millimetres, with the colour the
-mesh carries, written by a small writer of the 3MF core spec (a zip with the model XML),
-and the CLI gains the same format. Import can follow later.
-
-Done when a 3MF from Modelado opens at the right size and colour in Bambu Studio,
-OrcaSlicer and PrusaSlicer, and a test checks the file against the core spec.
-
 ### §MOD104 Keychain from a photo
 
 MakerLab's Image to Keychain is cloud-only, needs an account and passes the photo

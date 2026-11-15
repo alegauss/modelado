@@ -381,6 +381,12 @@
   <data name="ExportFormatStl" xml:space="preserve">
     <value>STL · impressão 3D</value>
   </data>
+  <data name="ExportFormat3mf" xml:space="preserve">
+    <value>3MF · impressão 3D, com cores</value>
+  </data>
+  <data name="ExportNote3mf" xml:space="preserve">
+    <value>O 3MF registra milímetros, então o tamanho acima é o da impressão, e mantém as cores.</value>
+  </data>
   <data name="ExportObjTexture" xml:space="preserve">
     <value>Textura, como um .mtl e um .png ao lado</value>
   </data>
@@ -810,6 +816,9 @@ Modelos 3D: {1}</value>
   </data>
   <data name="SaveFilterStl" xml:space="preserve">
     <value>STL, em milímetros|*.stl</value>
+  </data>
+  <data name="SaveFilter3mf" xml:space="preserve">
+    <value>3MF, em milímetros com cores|*.3mf</value>
   </data>
   <data name="SaveFilterGlb" xml:space="preserve">
     <value>GLB, glTF binário|*.glb</value>

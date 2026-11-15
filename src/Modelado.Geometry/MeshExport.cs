@@ -22,6 +22,12 @@ public enum MeshFormat
 
     /// <summary>Binary STL, geometry only: slicers for 3D printing.</summary>
     Stl,
+
+    /// <summary>
+    /// MOD103: 3MF, the 3D Manufacturing Format slicers save and prefer: the unit (millimetres) is
+    /// recorded, and the colour per vertex goes with it.
+    /// </summary>
+    ThreeMf,
 }
 
 /// <summary>The choices a format has beyond the format itself (MOD13, the Export card's options).</summary>
@@ -34,22 +40,23 @@ public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii 
     public static ExportOptions Default { get; } = new();
 }
 
-/// <summary>Writes meshes to GLB, OBJ, PLY and STL.</summary>
-public static class MeshExport
+/// <summary>Writes meshes to GLB, OBJ, PLY, STL and 3MF.</summary>
+public static partial class MeshExport
 {
     private static readonly UTF8Encoding Utf8 = new(encoderShouldEmitUTF8Identifier: false);
 
     /// <summary>The format a file name's extension names.</summary>
     /// <param name="path">The file name.</param>
     /// <returns>The format.</returns>
-    /// <exception cref="ArgumentException">The extension is not .glb, .obj, .ply or .stl.</exception>
+    /// <exception cref="ArgumentException">The extension is not .glb, .obj, .ply, .stl or .3mf.</exception>
     public static MeshFormat FormatOf(string path) => Path.GetExtension(path).ToUpperInvariant() switch
     {
         ".GLB" => MeshFormat.Glb,
         ".OBJ" => MeshFormat.Obj,
         ".PLY" => MeshFormat.Ply,
         ".STL" => MeshFormat.Stl,
-        _ => throw new ArgumentException($"{Path.GetFileName(path)}: save as .glb, .obj, .ply or .stl.", nameof(path)),
+        ".3MF" => MeshFormat.ThreeMf,
+        _ => throw new ArgumentException($"{Path.GetFileName(path)}: save as .glb, .obj, .ply, .stl or .3mf.", nameof(path)),
     };
 
     /// <summary>Saves a mesh in the format its extension names.</summary>
@@ -76,6 +83,9 @@ public static class MeshExport
                     break;
                 case MeshFormat.Ply:
                     WritePly(mesh, stream, options.PlyAscii);
+                    break;
+                case MeshFormat.ThreeMf:
+                    Write3mf(mesh, stream);
                     break;
                 default:
                     WriteStl(mesh, stream);

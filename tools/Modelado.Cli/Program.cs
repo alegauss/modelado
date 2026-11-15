@@ -11,7 +11,7 @@ using Modelado.Inference.Pipelines;
 // machines (and tests) that have no window. Runs on Windows with DirectML and anywhere on the CPU.
 
 const string Usage = """
-    modelado-cli object <photo> -o <output.glb|obj|ply|stl> [options]
+    modelado-cli object <photo> -o <output.glb|obj|ply|stl|3mf> [options]
         --resolution N       grid points per side (128, 192, 256, 320, 384); default 256
         --keep-background    does not cut the object out (for a PNG already cut out)
         --threshold D        surface density (the model's default, 25)
