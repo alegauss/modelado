@@ -70,12 +70,13 @@ public sealed class CliArgumentsTests
         string[] reliefRun = ["relief", "p.png", "-o", "r.glb", "--grid", "256", "--depth", "0.25", "--base", "0.1", "--remove-background"];
         string[] printedRun = ["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--depth-mm", "3", "--base-mm", "2"];
         string[] keychainRun = ["relief", "p.png", "-o", "k.3mf", "--width-mm", "45", "--keychain", "circle", "--hole-mm", "5"];
+        string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
         string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
         string[] retextureRun = ["cloud", "retexture", "m.glb", "-o", "c.glb", "--prompt", "rust", "--keep-uv", "--no-texture", "--pbr"];
 
-        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, keychainRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
+        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, keychainRun, medallionRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
         {
             Assert.Null(CliArguments.Parse(run).Error);
         }
@@ -96,5 +97,15 @@ public sealed class CliArgumentsTests
         Assert.Null(parsed);
         Assert.Contains("mm", error, StringComparison.Ordinal);
         Assert.Equal(CliArguments.Unknown, code);
+    }
+
+    [Fact]
+    public void A_shape_beside_a_keychain_is_refused_since_the_keychain_cuts_its_own()
+    {
+        // MOD105: one of the two would be ignored.
+        (CliArguments? parsed, string? error, _) = CliArguments.Parse(["relief", "p.png", "-o", "k.stl", "--width-mm", "50", "--keychain", "tag", "--shape", "circle"]);
+
+        Assert.Null(parsed);
+        Assert.Contains("own outline", error, StringComparison.Ordinal);
     }
 }

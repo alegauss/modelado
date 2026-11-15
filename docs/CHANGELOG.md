@@ -138,6 +138,7 @@
 - ✅ **MOD102** **Relief depth and base are set as a share of the width, while a printer thinks in millimetres** — The Relief card and CLI size a relief in mm; one at 60 mm wide, 3 mm deep on a 2 mm base measured 60 x 60 x 5 mm as STL (design recorded in `src/Modelado.App/MainWindow.ReliefSize.cs`).
 - ✅ **MOD103** **There is no 3MF export, and STL carries no units, so a slicer has to guess the model's size** — Export card and CLI write 3MF in millimetres with vertex colour, tested against the core spec; slicer opens not yet checked (design recorded in `src/Modelado.Geometry/MeshExport.ThreeMf.cs`).
 - ✅ **MOD104** **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — The Relief card and CLI cut a disc or tag keychain with a hole, one closed solid; the cut-out outline and dragging the hole went to MOD141 (design recorded in `src/Modelado.Geometry/Keychain.cs`).
+- ✅ **MOD105 (shapes in the pipeline and CLI)** **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — relief --shape rounded|circle|oval crops a relief closed at the size asked; a 70 mm medallion from a real photo welded with no open edge.
 
 ## Block M — The CPU and integrated-GPU path
 

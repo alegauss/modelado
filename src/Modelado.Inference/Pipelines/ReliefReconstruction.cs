@@ -15,7 +15,10 @@ namespace Modelado.Inference.Pipelines;
 /// it needs <see cref="ReliefOptions.PrintWidth"/>, since the hole is sized in millimetres. With
 /// <paramref name="RemoveBackground"/> too, the tag keeps only what both keep.
 /// </param>
-public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048, string DepthModel = ReliefReconstruction.Depth, KeychainOptions? Keychain = null);
+/// <param name="Shape">
+/// MOD105: the outline the relief is cropped to, a medallion or a plaque; a keychain cuts its own.
+/// </param>
+public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048, string DepthModel = ReliefReconstruction.Depth, KeychainOptions? Keychain = null, OutlineShape Shape = OutlineShape.Rectangle);
 
 /// <summary>
 /// A relief from one photo with Depth Anything V2 Small (Apache-2.0): the depth of every pixel,
@@ -59,16 +62,25 @@ public static class ReliefReconstruction
         return (results[0].GetTensorDataAsSpan<float>()[..(side * side)].ToArray(), side, side);
     }
 
-    // MOD104: the tag's outline and hole over whatever the cut-out kept.
+    // MOD104: the tag's outline and hole, or MOD105's shape, over whatever the cut-out kept.
     private static float[]? WithKeychain(float[]? mask, int width, int height, RgbaImage photo, ReliefRunOptions options)
     {
-        if (options.Keychain is not { } keychain)
+        float aspect = (float)photo.Height / photo.Width;
+        float[] tag;
+        if (options.Keychain is { } keychain)
+        {
+            float printWidth = options.Relief.PrintWidth ?? throw new ArgumentException("A keychain is sized in millimetres: give the relief a printed width.", nameof(options));
+            tag = Keychain.Mask(width, height, aspect, printWidth, keychain);
+        }
+        else if (options.Shape != OutlineShape.Rectangle)
+        {
+            tag = Outline.Mask(width, height, aspect, options.Shape);
+        }
+        else
         {
             return mask;
         }
 
-        float printWidth = options.Relief.PrintWidth ?? throw new ArgumentException("A keychain is sized in millimetres: give the relief a printed width.", nameof(options));
-        float[] tag = Keychain.Mask(width, height, (float)photo.Height / photo.Width, printWidth, keychain);
         if (mask is not null)
         {
             for (int i = 0; i < tag.Length; i++)

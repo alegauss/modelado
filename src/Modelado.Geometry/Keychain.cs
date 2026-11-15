@@ -53,7 +53,8 @@ public static class Keychain
 
         // Everything in the photo's own proportions: x across 0..1, y down 0..aspect. The outline's
         // width in those units is what PrintWidth millimetres becomes, so a millimetre is this long.
-        float outlineWidth = options.Shape == KeychainShape.Circle ? MathF.Min(1, photoAspect) : 1;
+        OutlineShape outline = options.Shape == KeychainShape.Circle ? OutlineShape.Circle : OutlineShape.Rounded;
+        float outlineWidth = Outline.Width(outline, photoAspect);
         float mm = outlineWidth / printWidth;
         float holeRadius = options.HoleDiameter / 2 * mm;
         float wall = MathF.Max(MinimumWall, options.HoleDiameter / 2) * mm;
@@ -68,32 +69,21 @@ public static class Keychain
             throw new ArgumentException($"A {options.HoleDiameter:0.#} mm hole does not fit in a {printWidth:0.#} mm tag.", nameof(options));
         }
 
-        float corner = 0.15f * MathF.Min(1, photoAspect);
-        float[] mask = new float[width * height];
+        // The outline (MOD105's shapes), less the hole.
+        float[] mask = Outline.Mask(width, height, photoAspect, outline);
         for (int j = 0; j < height; j++)
         {
             float y = (float)j / (height - 1) * photoAspect;
             for (int i = 0; i < width; i++)
             {
                 float x = (float)i / (width - 1);
-                bool inside = options.Shape == KeychainShape.Circle
-                    ? Square(x - cx) + Square(y - cy) <= Square(outlineWidth / 2)
-                    : InsideRounded(x, y, 1, photoAspect, corner);
-                bool hole = Square(x - holeX) + Square(y - holeY) <= Square(holeRadius);
-                mask[(j * width) + i] = inside && !hole ? 1 : 0;
+                if (Outline.Square(x - holeX) + Outline.Square(y - holeY) <= Outline.Square(holeRadius))
+                {
+                    mask[(j * width) + i] = 0;
+                }
             }
         }
 
         return mask;
-    }
-
-    private static float Square(float v) => v * v;
-
-    // Inside a w × h rectangle at the origin whose corners are rounded by r.
-    private static bool InsideRounded(float x, float y, float w, float h, float r)
-    {
-        float dx = MathF.Max(MathF.Max(r - x, x - (w - r)), 0);
-        float dy = MathF.Max(MathF.Max(r - y, y - (h - r)), 0);
-        return x >= 0 && x <= w && y >= 0 && y <= h && Square(dx) + Square(dy) <= Square(r);
     }
 }

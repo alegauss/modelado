@@ -29,7 +29,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--remove-background", "--depth-model"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
@@ -112,8 +112,14 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
             return "--keychain sizes the tag and its hole in millimetres: give its width as --width-mm.";
         }
 
-        return options.ContainsKey("--hole-mm") && !options.ContainsKey("--keychain")
-            ? "--hole-mm is the keychain's hole: give --keychain circle or tag too."
+        if (options.ContainsKey("--hole-mm") && !options.ContainsKey("--keychain"))
+        {
+            return "--hole-mm is the keychain's hole: give --keychain circle or tag too.";
+        }
+
+        // MOD105: a keychain cuts its own outline, so a second one would be ignored.
+        return options.ContainsKey("--shape") && options.ContainsKey("--keychain")
+            ? "--keychain cuts its own outline: give --shape or --keychain, not both."
             : null;
     }
 

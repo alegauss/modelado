@@ -30,6 +30,7 @@ const string Usage = """
         --keychain circle|tag   with --width-mm, cut into a keychain: a disc or a rounded tag, one
                              closed solid with a hole near the top to hang it by
         --hole-mm D          the keychain's hole; default 4
+        --shape S            rectangle (default), rounded, circle or oval: a plaque or a medallion
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -206,7 +207,8 @@ try
                     ReliefSize(Int("--grid", 256)),
                     RemoveBackground: options.ContainsKey("--remove-background"),
                     DepthModel: depthModel,
-                    Keychain: KeychainOf()), progress);
+                    Keychain: KeychainOf(),
+                    Shape: ShapeOf()), progress);
             Console.WriteLine();
             foreach ((ReconstructionStage stage, TimeSpan took) in result.Timings)
             {
@@ -343,6 +345,16 @@ KeychainOptions? KeychainOf() => Get("--keychain", null) switch
     "circle" => new KeychainOptions(KeychainShape.Circle, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
     "tag" => new KeychainOptions(KeychainShape.Tag, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
     var other => throw new ArgumentException($"--keychain {other}: use circle or tag."),
+};
+
+// MOD105: the outline the relief is cropped to.
+OutlineShape ShapeOf() => Get("--shape", "rectangle") switch
+{
+    "rectangle" => OutlineShape.Rectangle,
+    "rounded" => OutlineShape.Rounded,
+    "circle" => OutlineShape.Circle,
+    "oval" => OutlineShape.Oval,
+    var other => throw new ArgumentException($"--shape {other}: use rectangle, rounded, circle or oval."),
 };
 
 string? Get(string key, string? fallback) => options.TryGetValue(key, out string? value) ? value : fallback;
