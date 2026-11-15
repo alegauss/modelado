@@ -274,6 +274,28 @@
       "shareable": false
     },
     {
+      // MOD110: two slicers stood in by a program that exits at once, staged under their names and
+      // named by MODELADO_SLICERS; settings of its own, so the slicer picked is kept there.
+      "name": "a window on the cube, with stubs standing in for two slicers",
+      "files": [
+        "cases/fixtures/cube.obj",
+        { "from": "%SystemRoot%\\System32\\whoami.exe", "to": "stub/bambu-studio.exe" },
+        { "from": "%SystemRoot%\\System32\\whoami.exe", "to": "stub/orca-slicer.exe" }
+      ],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off"],
+      "variables": { "MODELADO_SLICERS": "Bambu Studio={files}/stub/bambu-studio.exe;OrcaSlicer={files}/stub/orca-slicer.exe", "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
+      // MOD110: MODELADO_SLICERS naming a program that is not there, so this window finds no slicer
+      // (an empty variable is no variable on Windows, and the PC's own slicers would be looked for).
+      "name": "a window on the cube where no slicer is found",
+      "files": ["cases/fixtures/cube.obj"],
+      "arguments": ["--open", "{files}/cube.obj", "--provider", "cpu", "--releases", "off"],
+      "variables": { "MODELADO_SLICERS": "Bambu Studio={files}/no-slicer/bambu-studio.exe" },
+      "shareable": false
+    },
+    {
       // MOD46: MODELADO_BLENDER naming nothing, so this window finds no Blender.
       "name": "a window on the cube where no Blender is found",
       "files": ["cases/fixtures/cube.obj"],
@@ -1367,6 +1389,41 @@
         { "locator": "Button#OpenInBlender", "act": "invoke", "named": "Open in Blender is pressed" },
         { "process": "starts", "act": "read", "matches": "^blender\\.exe --python-expr .*import_scene\\.gltf.*cube\\.glb", "named": "Blender is started importing the cube" },
         { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Opened in Blender: cube.glb", "named": "and the card says so" }
+      ]
+    },
+
+    {
+      "name": "the Export card opens the model shown in the slicer picked, as a 3MF",
+      "catches": "a button that starts no slicer, starts the other one, hands it no model, or forgets which was picked",
+      "filed": "MOD110",
+      "tags": ["slicer", "export", "process"],
+      "fixture": "a window on the cube, with stubs standing in for two slicers",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Button#OpenInSlicer", "act": "read", "reads": "name", "expect": "Open in Bambu Studio", "named": "the first slicer found is offered" },
+        { "locator": "ComboBox#ExportSlicer", "act": "expand", "named": "the slicers are opened" },
+        { "locator": "ComboBox#ExportSlicer > ListItem[name=\"OrcaSlicer\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "OrcaSlicer is picked" },
+        { "locator": "Button#OpenInSlicer", "act": "read", "reads": "name", "expect": "Open in OrcaSlicer", "named": "the button names it" },
+        { "locator": "Button#OpenInSlicer", "act": "invoke", "named": "Open in OrcaSlicer is pressed" },
+        { "process": "starts", "act": "read", "matches": "^orca-slicer\\.exe .*cube\\.3mf", "named": "OrcaSlicer is started on the cube as a 3MF" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Opened in OrcaSlicer: cube.3mf", "named": "and the card says so" }
+        // WW628: that the pick is kept in {files}/Modelado/settings.json for the next session is a
+        // text claim a file step cannot make yet.
+      ]
+    },
+
+    {
+      "name": "the Export card offers no Open in slicer where no slicer is found",
+      "catches": "a button that would start a slicer the machine does not have",
+      "filed": "MOD110",
+      "tags": ["slicer", "export"],
+      "fixture": "a window on the cube where no slicer is found",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Button#OpenInSlicer", "act": "read", "absent": true, "named": "no Open in slicer is offered" },
+        { "locator": "ComboBox#ExportSlicer", "act": "read", "absent": true, "named": "nor a list of slicers" }
       ]
     },
 

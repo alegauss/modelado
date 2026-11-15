@@ -319,6 +319,7 @@ public partial class MainWindow : Window, IDisposable
         ExportCard.Visibility = Visibility.Visible;
         UpdateExportCard();
         UpdateOpenInBlender();
+        UpdateOpenInSlicer();
         _ = RefreshFirstUseAsync();
         List<string> facts = [Ui.Format(Strings.MeshCounts, result.VertexCount, result.TriangleCount)];
         if (result.Texture is { } texture)

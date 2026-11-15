@@ -333,6 +333,21 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>A largura e a parte mais fina precisam ser maiores que 0 mm, e a mais grossa maior que a mais fina.</value>
   </data>
+  <data name="OpenInSlicer" xml:space="preserve">
+    <value>Abrir no {0}</value>
+  </data>
+  <data name="OpenInSlicerTip" xml:space="preserve">
+    <value>Grava o modelo como 3MF em milímetros, no tamanho acima para impressão, e o abre no fatiador.</value>
+  </data>
+  <data name="ExportSlicer" xml:space="preserve">
+    <value>Fatiador</value>
+  </data>
+  <data name="OpenedInSlicer" xml:space="preserve">
+    <value>Aberto no {0}: {1}</value>
+  </data>
+  <data name="SlicerNotStarted" xml:space="preserve">
+    <value>O {0} não abriu: {1}</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

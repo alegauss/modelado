@@ -333,6 +333,21 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>宽度和最薄处须大于 0 mm，最厚处须大于最薄处。</value>
   </data>
+  <data name="OpenInSlicer" xml:space="preserve">
+    <value>在 {0} 中打开</value>
+  </data>
+  <data name="OpenInSlicerTip" xml:space="preserve">
+    <value>将模型以毫米为单位写成 3MF（按上方的打印尺寸），并在切片软件中打开。</value>
+  </data>
+  <data name="ExportSlicer" xml:space="preserve">
+    <value>切片软件</value>
+  </data>
+  <data name="OpenedInSlicer" xml:space="preserve">
+    <value>已在 {0} 中打开：{1}</value>
+  </data>
+  <data name="SlicerNotStarted" xml:space="preserve">
+    <value>{0} 未能启动：{1}</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

@@ -753,6 +753,12 @@
             <Button x:Name="OpenInBlender" AutomationProperties.AutomationId="OpenInBlender" Content="{x:Static p:Strings.OpenInBlender}"
                     Margin="0,6,0,0" Padding="0,6" HorizontalAlignment="Stretch" Visibility="Collapsed" Click="OnOpenInBlender"
                     ToolTip="{x:Static p:Strings.OpenInBlenderTip}" />
+            <!-- MOD110: shown only where a slicer is found; the list only where there are several. -->
+            <ComboBox x:Name="ExportSlicer" AutomationProperties.AutomationId="ExportSlicer" AutomationProperties.Name="{x:Static p:Strings.ExportSlicer}"
+                      Margin="0,6,0,0" Visibility="Collapsed" SelectionChanged="OnExportSlicerChanged" />
+            <Button x:Name="OpenInSlicer" AutomationProperties.AutomationId="OpenInSlicer"
+                    Margin="0,6,0,0" Padding="0,6" HorizontalAlignment="Stretch" Visibility="Collapsed" Click="OnOpenInSlicer"
+                    ToolTip="{x:Static p:Strings.OpenInSlicerTip}" />
             <TextBlock x:Name="ExportStatus" AutomationProperties.AutomationId="ExportStatus" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
           </StackPanel>

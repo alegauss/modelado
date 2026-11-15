@@ -333,6 +333,21 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>La largeur et le point le plus fin doivent dépasser 0 mm, et le plus épais dépasser le plus fin.</value>
   </data>
+  <data name="OpenInSlicer" xml:space="preserve">
+    <value>Ouvrir dans {0}</value>
+  </data>
+  <data name="OpenInSlicerTip" xml:space="preserve">
+    <value>Écrit le modèle en 3MF en millimètres, à la taille d'impression ci-dessus, et l'ouvre dans le trancheur.</value>
+  </data>
+  <data name="ExportSlicer" xml:space="preserve">
+    <value>Trancheur</value>
+  </data>
+  <data name="OpenedInSlicer" xml:space="preserve">
+    <value>Ouvert dans {0} : {1}</value>
+  </data>
+  <data name="SlicerNotStarted" xml:space="preserve">
+    <value>{0} n'a pas démarré : {1}</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

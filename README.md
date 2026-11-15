@@ -36,7 +36,9 @@ web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, 
 OrcaSlicer, PrusaSlicer) or **PLY** (with colours: MeshLab, CloudCompare). The command line writes
 whichever the output's extension names, `.3mf` included. STL and 3MF are laid on the slicer's
 plate, centred with their lowest point on Z = 0, so a relief opens face up with its flat back
-down, the way it prints without supports.
+down, the way it prints without supports. Where Bambu Studio, OrcaSlicer, PrusaSlicer or UltiMaker
+Cura is installed, the Export card's **Open in** button hands it the model as a 3MF at the print
+size, and with several, the one picked is remembered.
 
 A GLB carries a photo texture as JPEG (PNG where it has transparency) and, under 65,535 vertices,
 16-bit indices. The Export card's **Compact** choice (`--compact` on the command line) also

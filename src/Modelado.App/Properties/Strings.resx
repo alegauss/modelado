@@ -333,6 +333,21 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>The width and the thinnest point need a size above 0 mm, and the thickest more than the thinnest.</value>
   </data>
+  <data name="OpenInSlicer" xml:space="preserve">
+    <value>Open in {0}</value>
+  </data>
+  <data name="OpenInSlicerTip" xml:space="preserve">
+    <value>Writes the model as a 3MF in millimetres, at the size above for printing, and opens it in the slicer.</value>
+  </data>
+  <data name="ExportSlicer" xml:space="preserve">
+    <value>Slicer</value>
+  </data>
+  <data name="OpenedInSlicer" xml:space="preserve">
+    <value>Opened in {0}: {1}</value>
+  </data>
+  <data name="SlicerNotStarted" xml:space="preserve">
+    <value>{0} did not start: {1}</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>
