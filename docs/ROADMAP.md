@@ -47,7 +47,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- 📋 **MOD102** (deps: —) **Relief depth and base are set as a share of the width, while a printer thinks in millimetres** — Every printed relief starts from a size in mm, so a percentage of the width makes the user work out each thickness by hand. → §MOD102
+- 🛠 **MOD102** (deps: —) **Relief depth and base are set as a share of the width, while a printer thinks in millimetres** — Every printed relief starts from a size in mm, so a percentage of the width makes the user work out each thickness by hand. → §MOD102
 - 📋 **MOD103** (deps: —) **There is no 3MF export, and STL carries no units, so a slicer has to guess the model's size** — 3MF is the format slicers prefer: it keeps millimetres and colour and opens straight onto Bambu, Orca and Prusa plates. → §MOD103
 - 📋 **MOD104** (deps: MOD102) **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — A keychain is among the most asked photo prints, and today the tool people use for it, MakerLab, works only in the cloud. → §MOD104
 - 📋 **MOD105** (deps: MOD102) **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Bambu's Relief Maker users ask to fit a relief in a round frame and cannot; a framed medallion is what a printed portrait gift looks like. → §MOD105

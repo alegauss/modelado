@@ -61,6 +61,7 @@
 - ✅ **MOD25** **Publishing never checks that a model's license allows redistribution before uploading it to a public repository** — build_manifest.py refuses a model whose license a public repository may not carry, naming both; --allow-license with a --reason lets it through and the reason goes into the model card.
 - ✅ **MOD26** **publish_models.py never reads back what it uploaded, so a broken or truncated file is found only by the app** — verify_published.py checks each published file's size and SHA-256 and passed all 13 in the live repository; publish_models.py runs it before embedding.
 - ✅ **MOD27** **The app reads a custom model repository only through --manifest at launch; the window cannot add or switch to one** — About adds a source by owner/name or URL after showing what it lists, keeps it, and the Relief card offers its depth model; two winwright cases passed on the guest.
+- ✅ **MOD139** **The decoder export test fails now and then, comparing against a network drawn before its seed** — The decoder export test seeds torch before building its network, so it compares the same weights every run and passed five runs in a row.
 
 ## Block F — Installer, releases and auto update
 

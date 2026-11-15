@@ -47,10 +47,12 @@ class ExportPiecesTests(unittest.TestCase):
         class Holder(torch.nn.Module):
             pass
 
+        # MOD139: seeded before the network is built, or its weights differ on every run and a
+        # failure says nothing about the rewrite.
+        torch.manual_seed(0)
         holder = Holder()
         holder.decoder = mlp(OmegaConf.create({"in_channels": 120, "n_neurons": 64, "n_hidden_layers": 9, "activation": "silu"}))
         holder.renderer = renderer(OmegaConf.create({"radius": em.TRIPOSR_RADIUS, "feature_reduction": "concat", "density_activation": "exp", "density_bias": -1.0}))
-        torch.manual_seed(0)
         triplane = torch.randn(1, 3, 40, 64, 64)
         points = torch.rand(500, 3) * 1.6 - 0.8
         with torch.no_grad():
