@@ -389,12 +389,45 @@
               <ComboBoxItem Content="384" Tag="384" />
               <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
             </ComboBox>
-            <TextBlock x:Name="DepthText" Style="{StaticResource FieldLabel}" />
-            <Slider x:Name="ReliefDepth" AutomationProperties.AutomationId="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="{x:Static p:Strings.ReliefDepthTip}" />
-            <TextBlock x:Name="BaseText" Style="{StaticResource FieldLabel}" />
-            <Slider x:Name="ReliefBase" AutomationProperties.AutomationId="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
-                    ToolTip="{x:Static p:Strings.ReliefBaseTip}" />
+            <StackPanel x:Name="ReliefSharePanel">
+              <TextBlock x:Name="DepthText" Style="{StaticResource FieldLabel}" />
+              <Slider x:Name="ReliefDepth" AutomationProperties.AutomationId="ReliefDepth" Minimum="0.05" Maximum="0.6" Value="0.25" ValueChanged="OnReliefSliderChanged"
+                      ToolTip="{x:Static p:Strings.ReliefDepthTip}" />
+              <TextBlock x:Name="BaseText" Style="{StaticResource FieldLabel}" />
+              <Slider x:Name="ReliefBase" AutomationProperties.AutomationId="ReliefBase" Minimum="0" Maximum="0.2" Value="0" ValueChanged="OnReliefSliderChanged"
+                      ToolTip="{x:Static p:Strings.ReliefBaseTip}" />
+            </StackPanel>
+            <!-- MOD102: the same relief sized in millimetres, which Export then saves as an STL of
+                 exactly that size, in place of the shares of the width above. -->
+            <CheckBox x:Name="ReliefMillimetres" AutomationProperties.AutomationId="ReliefMillimetres" Content="{x:Static p:Strings.ReliefMillimetres}" Margin="0,8,0,0"
+                      Checked="OnReliefMillimetresChanged" Unchecked="OnReliefMillimetresChanged" ToolTip="{x:Static p:Strings.ReliefMillimetresTip}" />
+            <Grid x:Name="ReliefMillimetresPanel" Margin="0,6,0,0" Visibility="Collapsed">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="72" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <TextBlock Text="{x:Static p:Strings.ReliefWidthMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="ReliefWidthMm" Grid.Column="1" AutomationProperties.AutomationId="ReliefWidthMm" AutomationProperties.Name="{x:Static p:Strings.ReliefWidthMm}"
+                       Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
+              <TextBlock Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock Grid.Row="1" Text="{x:Static p:Strings.ReliefDepthMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="ReliefDepthMm" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="ReliefDepthMm" AutomationProperties.Name="{x:Static p:Strings.ReliefDepthMm}"
+                       Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock Grid.Row="2" Text="{x:Static p:Strings.ReliefBaseMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="ReliefBaseMm" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="ReliefBaseMm" AutomationProperties.Name="{x:Static p:Strings.ReliefBaseMm}"
+                       Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
+              <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock x:Name="ReliefSizeError" Grid.Row="3" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
+                         Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
+            </Grid>
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
             <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="{x:Static p:Strings.ReliefButton}" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />

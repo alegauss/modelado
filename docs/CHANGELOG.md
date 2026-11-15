@@ -135,5 +135,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
+- ✅ **MOD102** **Relief depth and base are set as a share of the width, while a printer thinks in millimetres** — The Relief card and CLI size a relief in mm; one at 60 mm wide, 3 mm deep on a 2 mm base measured 60 x 60 x 5 mm as STL (design recorded in `src/Modelado.App/MainWindow.ReliefSize.cs`).
+
 ## Block M — The CPU and integrated-GPU path
 

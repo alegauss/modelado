@@ -101,6 +101,23 @@ control must first expand its card's Advanced, as the ObjectAdvanced case does;
 cases-live too. A new case checks that each Advanced starts closed and opens. Whether an
 Advanced remembers being open is an open choice; MOD98 kept only the chosen card.
 
+### §MOD140 Checkboxes that follow a toggle, not only a click
+
+Found while building MOD102: WPF raises a CheckBox's Click only for a mouse or keyboard
+press. UI Automation's Toggle pattern (what a screen reader and a winwright "toggle"
+step use) changes IsChecked and raises Checked or Unchecked, never Click. MOD102's
+millimetres box was wired to Click and its case caught the panel not swapping.
+
+Two boxes in MainWindow.xaml still listen to Click alone: ObjectEnhancePhoto
+(OnEnhanceChanged) and ReliefRemoveBackground (OnReliefCutOutChanged). Both refresh
+which models the card needs, so ticking one through UI Automation leaves the rail dot
+(MOD98) and the first-use download size stale: Object only needs U-2-Net, Enhance needs
+Real-ESRGAN.
+
+Wire both to Checked and Unchecked, guarded for the first events raised while the window
+is still being built, as MainWindow.ReliefSize.cs does. A case toggles Object only on a
+fresh models folder and reads the Relief rail icon's status change size.
+
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads
@@ -548,22 +565,6 @@ StringResourceTests-style checks find no library sentence on the window's consen
 chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
-
-### §MOD102 Relief dimensions in millimetres
-
-The Relief card sets depth (5 to 60%) and base (0 to 20%) as a share of the width, and
-millimetres appear only at export, where STL defaults the longest side to 100 mm.
-Someone printing a keychain or a plaque thinks the other way round: 50 mm wide, 3 mm of
-relief on a 2 mm base. Every later print feature in this block (keychain, medallion,
-stand, lithophane) needs sizes that mean something on the plate.
-
-The card gains a printed size (width or longest side in mm) and depth and base in mm,
-derived from the same mesh, so the export no longer asks for a size it already knows.
-The CLI takes the same values. The proportional controls can stay as the default for a
-model meant for the screen.
-
-Done when a relief made at 60 mm wide with 3 mm depth and 2 mm base measures exactly
-that in the exported STL and in a slicer.
 
 ### §MOD103 3MF export with units
 

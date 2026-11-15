@@ -228,6 +228,24 @@
   <data name="ReliefRemoveBackground" xml:space="preserve">
     <value>Apenas o objeto (remover o fundo)</value>
   </data>
+  <data name="ReliefMillimetres" xml:space="preserve">
+    <value>Medidas em milímetros, para imprimir</value>
+  </data>
+  <data name="ReliefMillimetresTip" xml:space="preserve">
+    <value>Define em milímetros a largura impressa, a profundidade do relevo e a base; o STL é salvo exatamente nesse tamanho.</value>
+  </data>
+  <data name="ReliefWidthMm" xml:space="preserve">
+    <value>Largura</value>
+  </data>
+  <data name="ReliefDepthMm" xml:space="preserve">
+    <value>Profundidade do relevo</value>
+  </data>
+  <data name="ReliefBaseMm" xml:space="preserve">
+    <value>Base sólida (0 para nenhuma)</value>
+  </data>
+  <data name="ReliefSizeInvalid" xml:space="preserve">
+    <value>A largura e a profundidade precisam ser maiores que 0 mm, e a base de 0 mm ou mais.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

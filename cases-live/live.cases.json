@@ -64,6 +64,28 @@
     },
 
     {
+      "name": "a relief sized at 60 mm wide, 3 mm deep on a 2 mm base is offered for STL at exactly that size",
+      "catches": "a relief whose millimetres the export rescales to its 100 mm default, or a depth or base that is not the one typed",
+      "filed": "MOD102",
+      "tags": ["relief", "print", "export"],
+      "fixture": "a window on the robot photo with the real models and no saved settings",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^robot\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked" },
+        { "locator": "Edit#ReliefWidthMm", "act": "read", "reads": "value", "expect": "60", "named": "60 mm wide" },
+        { "locator": "Edit#ReliefDepthMm", "act": "read", "reads": "value", "expect": "3", "named": "3 mm deep" },
+        { "locator": "Edit#ReliefBaseMm", "act": "read", "reads": "value", "expect": "2", "named": "on a 2 mm base" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · ", "named": "the relief is made" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "matches": "^60 × [\\d.]+ × 5 mm ", "named": "and the box it will be saved at is 60 mm wide and 5 mm thick, as typed" }
+      ]
+    },
+
+    {
       "name": "a relief takes a stone texture drawn from a description, and Undo brings back its photo",
       "catches": "a drawn texture that a textured relief does not take, or an Undo that loses the photo it was made from",
       "filed": "MOD40",

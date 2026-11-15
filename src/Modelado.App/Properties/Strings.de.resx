@@ -228,6 +228,24 @@
   <data name="ReliefRemoveBackground" xml:space="preserve">
     <value>Nur das Objekt (Hintergrund entfernen)</value>
   </data>
+  <data name="ReliefMillimetres" xml:space="preserve">
+    <value>In Millimetern bemaßen, für den Druck</value>
+  </data>
+  <data name="ReliefMillimetresTip" xml:space="preserve">
+    <value>Legt die gedruckte Breite, die Relieftiefe und den Sockel in Millimetern fest; eine STL-Datei wird dann genau in dieser Größe gespeichert.</value>
+  </data>
+  <data name="ReliefWidthMm" xml:space="preserve">
+    <value>Breite</value>
+  </data>
+  <data name="ReliefDepthMm" xml:space="preserve">
+    <value>Relieftiefe</value>
+  </data>
+  <data name="ReliefBaseMm" xml:space="preserve">
+    <value>Massiver Sockel (0 für keinen)</value>
+  </data>
+  <data name="ReliefSizeInvalid" xml:space="preserve">
+    <value>Breite und Tiefe brauchen mehr als 0 mm, der Sockel 0 mm oder mehr.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

@@ -9,6 +9,7 @@
 - 📋 **MOD100** (deps: MOD99 ⏸) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
 - 📋 **MOD136** (deps: —) **About's source and download rows, rebuilt equal by value, can drop out of the accessibility tree while still shown** — A Remove button a screen reader or a case found once can vanish from the tree when About is opened again. → §MOD136
 - 📋 **MOD138** (deps: —) **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — MOD98 shows one card at a time, but each card still lists all its settings; folding the extras leaves the main control and action in view. → §MOD138
+- 📋 **MOD140** (deps: —) **Ticking Object only or Enhance through UI Automation leaves the card's download size and rail dot stale** — Both boxes refresh the models they need on Click, which WPF never raises for a screen reader's or a case's toggle. → §MOD140
 
 ## Block C — Existing code wired into the window
 
@@ -47,13 +48,12 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- 🛠 **MOD102** (deps: —) **Relief depth and base are set as a share of the width, while a printer thinks in millimetres** — Every printed relief starts from a size in mm, so a percentage of the width makes the user work out each thickness by hand. → §MOD102
 - 📋 **MOD103** (deps: —) **There is no 3MF export, and STL carries no units, so a slicer has to guess the model's size** — 3MF is the format slicers prefer: it keeps millimetres and colour and opens straight onto Bambu, Orca and Prusa plates. → §MOD103
-- 📋 **MOD104** (deps: MOD102) **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — A keychain is among the most asked photo prints, and today the tool people use for it, MakerLab, works only in the cloud. → §MOD104
-- 📋 **MOD105** (deps: MOD102) **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Bambu's Relief Maker users ask to fit a relief in a round frame and cannot; a framed medallion is what a printed portrait gift looks like. → §MOD105
+- 📋 **MOD104** (deps: MOD102 ✅) **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — A keychain is among the most asked photo prints, and today the tool people use for it, MakerLab, works only in the cloud. → §MOD104
+- 📋 **MOD105** (deps: MOD102 ✅) **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Bambu's Relief Maker users ask to fit a relief in a round frame and cannot; a framed medallion is what a printed portrait gift looks like. → §MOD105
 - 📋 **MOD106** (deps: MOD105) **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — A name or a date is what turns a printed relief into a gift, and Relief Maker users ask for text around the frame. → §MOD106
-- 📋 **MOD107** (deps: MOD102) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
-- 📋 **MOD108** (deps: MOD102) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
+- 📋 **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
+- 📋 **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
 - 📋 **MOD109** (deps: MOD103) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
 - 📋 **MOD110** (deps: MOD103) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The step after export is always the slicer, and Bambu Studio now offers MakerLab's tools inside it, one click away. → §MOD110
 - 📋 **MOD111** (deps: —) **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — Users of MakerLab's image to 3D report unprintable files with empty layers, fixed by hand with a voxel remesh in Blender. → §MOD111

@@ -23,6 +23,10 @@ const string Usage = """
         --grid N             vertices on the longest side; default 256
         --depth F            relief height, as a share of the width; default 0.25
         --base F             solid base thickness, as a share of the width; 0 = open surface
+        --width-mm W         sized for printing: the relief W millimetres wide (the cut-out, with
+                             --remove-background), saved at that size unless --size says otherwise
+        --depth-mm D         with --width-mm, relief height in millimetres; default 3
+        --base-mm B          with --width-mm, solid base in millimetres; default 2, 0 = open surface
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -196,7 +200,7 @@ try
                     EnhancePhoto: options.ContainsKey("--enhance"),
                     ProjectPhoto: !options.ContainsKey("--no-project")), progress)
                 : ReliefReconstruction.Run(runner, photo, new ReliefRunOptions(
-                    new ReliefOptions(GridLongSide: Int("--grid", 256), Depth: (float)Number("--depth", 0.25), BaseThickness: (float)Number("--base", 0)),
+                    ReliefSize(Int("--grid", 256)),
                     RemoveBackground: options.ContainsKey("--remove-background"),
                     DepthModel: depthModel), progress);
             Console.WriteLine();
@@ -308,6 +312,24 @@ Mesh Edit(Mesh mesh, string key, Func<string, Mesh> edit)
 
     edits.Add(new JsonObject { ["edit"] = key, ["value"] = value, ["triangles"] = result.TriangleCount, ["seconds"] = Math.Round(clock.Elapsed.TotalSeconds, 3) });
     return result;
+}
+
+// MOD102: in shares of a 1-unit width, or with --width-mm in millimetres, written as built so an
+// STL saved without --size measures what was asked for.
+ReliefOptions ReliefSize(int grid)
+{
+    if (!options.ContainsKey("--width-mm"))
+    {
+        return new ReliefOptions(GridLongSide: grid, Depth: (float)Number("--depth", 0.25), BaseThickness: (float)Number("--base", 0));
+    }
+
+    double width = Number("--width-mm", Relief.PrintWidthDefault), depth = Number("--depth-mm", Relief.PrintDepthDefault), baseMm = Number("--base-mm", Relief.PrintBaseDefault);
+    if (width <= 0 || depth <= 0 || baseMm < 0)
+    {
+        throw new ArgumentException("--width-mm and --depth-mm take a size above 0 mm, --base-mm 0 mm or more.");
+    }
+
+    return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width);
 }
 
 string? Get(string key, string? fallback) => options.TryGetValue(key, out string? value) ? value : fallback;

@@ -228,6 +228,24 @@
   <data name="ReliefRemoveBackground" xml:space="preserve">
     <value>仅物体（移除背景）</value>
   </data>
+  <data name="ReliefMillimetres" xml:space="preserve">
+    <value>以毫米设置尺寸，用于打印</value>
+  </data>
+  <data name="ReliefMillimetresTip" xml:space="preserve">
+    <value>以毫米设置打印宽度、浮雕深度和底座；随后保存的 STL 正好是这个尺寸。</value>
+  </data>
+  <data name="ReliefWidthMm" xml:space="preserve">
+    <value>宽度</value>
+  </data>
+  <data name="ReliefDepthMm" xml:space="preserve">
+    <value>浮雕深度</value>
+  </data>
+  <data name="ReliefBaseMm" xml:space="preserve">
+    <value>实心底座（0 表示无）</value>
+  </data>
+  <data name="ReliefSizeInvalid" xml:space="preserve">
+    <value>宽度和深度必须大于 0 毫米，底座为 0 毫米或以上。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

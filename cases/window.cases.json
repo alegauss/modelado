@@ -597,6 +597,32 @@
     },
 
     {
+      "name": "the Relief card sizes a relief in millimetres in place of shares of its width, and says when a size is not one",
+      "catches": "a millimetre mode that keeps the share sliders beside it, starts empty, takes a zero width, or refuses a decimal comma",
+      "filed": "MOD102",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Slider#ReliefDepth", "act": "read", "reads": "enabled", "expect": "enabled", "named": "the depth starts as a share of the width" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked" },
+        { "locator": "Slider#ReliefDepth", "act": "read", "absent": true, "named": "the share sliders give way" },
+        { "locator": "Edit#ReliefWidthMm", "act": "read", "reads": "value", "expect": "60", "named": "to a printed width of 60 mm" },
+        { "locator": "Edit#ReliefDepthMm", "act": "read", "reads": "value", "expect": "3", "named": "3 mm of relief" },
+        { "locator": "Edit#ReliefBaseMm", "act": "read", "reads": "value", "expect": "2", "named": "on a 2 mm base" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "all of them sizes" },
+        { "locator": "Edit#ReliefWidthMm", "act": "set value", "with": "0", "reads": "value", "expect": "0", "named": "a width of 0 is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The width and the depth need a size above 0 mm, and the base 0 mm or more.", "named": "the card says what a size needs" },
+        { "locator": "Edit#ReliefWidthMm", "act": "set value", "with": "60,5", "reads": "value", "expect": "60,5", "named": "60,5 is typed with a decimal comma" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and read as 60.5 mm" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the box is cleared" },
+        { "locator": "Edit#ReliefWidthMm", "act": "read", "absent": true, "named": "the millimetres go" },
+        { "locator": "Slider#ReliefDepth", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the share sliders come back" }
+      ]
+    },
+
+    {
       "name": "About opens and closes during a download whose chip keeps going",
       "catches": "an About that hides a running download, stops it, or takes the status bar with it",
       "filed": "MOD11",

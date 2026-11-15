@@ -70,11 +70,19 @@ public partial class MainWindow
     private async void OnGenerateRelief(object sender, RoutedEventArgs e)
     {
         bool cutOut = ReliefRemoveBackground.IsChecked == true;
-        ReliefRunOptions settings = new(
-            new ReliefOptions(GridLongSide: TagOf(ReliefResolution), Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value),
-            RemoveBackground: cutOut,
-            DepthModel: DepthModel);
+        if (ReliefSettings() is not { } relief)
+        {
+            ShowReliefSizeError(); // MOD102: the millimetres typed say why nothing runs.
+            return;
+        }
+
+        ReliefRunOptions settings = new(relief, RemoveBackground: cutOut, DepthModel: DepthModel);
+        Mesh? before = mesh;
         await RunAsync(reliefFirstUse!, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        if (relief.PrintWidth is not null && mesh is { } made && !ReferenceEquals(made, before))
+        {
+            KeepPrintedSize(made);
+        }
     }
 
     private async Task RunAsync(FirstUseCard card, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)

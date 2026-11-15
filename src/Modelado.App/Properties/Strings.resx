@@ -228,6 +228,24 @@
   <data name="ReliefRemoveBackground" xml:space="preserve">
     <value>Object only (remove the background)</value>
   </data>
+  <data name="ReliefMillimetres" xml:space="preserve">
+    <value>Size it in millimetres, for printing</value>
+  </data>
+  <data name="ReliefMillimetresTip" xml:space="preserve">
+    <value>Sets the printed width, the relief's depth and the base in millimetres; an STL is then saved at exactly that size.</value>
+  </data>
+  <data name="ReliefWidthMm" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="ReliefDepthMm" xml:space="preserve">
+    <value>Relief depth</value>
+  </data>
+  <data name="ReliefBaseMm" xml:space="preserve">
+    <value>Solid base (0 for none)</value>
+  </data>
+  <data name="ReliefSizeInvalid" xml:space="preserve">
+    <value>The width and the depth need a size above 0 mm, and the base 0 mm or more.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

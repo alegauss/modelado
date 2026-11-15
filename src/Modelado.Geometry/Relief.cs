@@ -12,12 +12,19 @@ namespace Modelado.Geometry;
 /// </param>
 /// <param name="SmoothPasses">Box-blur passes over the depth before it becomes geometry, against speckle.</param>
 /// <param name="MaskThreshold">With a mask, the share of opacity a pixel needs to be part of the relief.</param>
+/// <param name="PrintWidth">
+/// MOD102: the relief's width in millimetres, for printing. Given, the relief is built that wide (the
+/// part a mask keeps, where there is one), and <paramref name="Depth"/> and
+/// <paramref name="BaseThickness"/> are millimetres too, so a relief made 60 mm wide with 3 mm of
+/// depth on a 2 mm base measures exactly that. Null keeps the shares of a 1-unit width.
+/// </param>
 public sealed record ReliefOptions(
     int GridLongSide = 256,
     float Depth = 0.25f,
     float BaseThickness = 0f,
     int SmoothPasses = 1,
-    float MaskThreshold = 0.5f);
+    float MaskThreshold = 0.5f,
+    float? PrintWidth = null);
 
 /// <summary>
 /// A relief (2.5D) model from a photo and its depth: a grid over the image whose height is the
@@ -26,6 +33,15 @@ public sealed record ReliefOptions(
 /// </summary>
 public static class Relief
 {
+    /// <summary>MOD102: the printed width a relief sized in millimetres starts from, in the window and the CLI.</summary>
+    public const float PrintWidthDefault = 60f;
+
+    /// <summary>MOD102: its depth in millimetres, unless one is given.</summary>
+    public const float PrintDepthDefault = 3f;
+
+    /// <summary>MOD102: its base in millimetres, unless one is given; a printed relief stands on one.</summary>
+    public const float PrintBaseDefault = 2f;
+
     /// <summary>Builds the relief.</summary>
     /// <param name="depth">Relative inverse depth (larger is nearer), <paramref name="width"/> × <paramref name="height"/>.</param>
     /// <param name="width">The depth map's width.</param>
@@ -33,7 +49,10 @@ public static class Relief
     /// <param name="photo">The photo: the texture, the vertex colours and the relief's aspect.</param>
     /// <param name="mask">Opacity in [0, 1] per depth pixel, or null to keep the whole image.</param>
     /// <param name="options">How.</param>
-    /// <returns>The relief, 1 unit wide, centred on X and Y, the nearest point at the front (+Z).</returns>
+    /// <returns>
+    /// The relief, 1 unit wide (or <see cref="ReliefOptions.PrintWidth"/> millimetres), centred on X and
+    /// Y, the nearest point at the front (+Z).
+    /// </returns>
     /// <exception cref="InvalidOperationException">The mask keeps nothing.</exception>
     public static Mesh Build(ReadOnlySpan<float> depth, int width, int height, RgbaImage photo, ReadOnlySpan<float> mask, ReliefOptions options)
     {
@@ -99,7 +118,22 @@ public static class Relief
         }
 
         Mesh surface = MeshCleanup.Compact(new Mesh(positions, [.. triangles], colors, uvs, photo, doubleSided: true), [.. triangles]);
+        surface = Widened(surface, options.PrintWidth);
         return options.BaseThickness > 0 ? Solidify(surface, -options.BaseThickness) : surface;
+    }
+
+    // MOD102: the depth is already in millimetres (zScale); the width is what the mask kept, made the
+    // width asked for, X and Y alike so the photo keeps its aspect.
+    private static Mesh Widened(Mesh surface, float? printWidth)
+    {
+        if (printWidth is not { } width)
+        {
+            return surface;
+        }
+
+        (Vector3 min, Vector3 max) = surface.Bounds();
+        float kept = max.X - min.X;
+        return kept > 0 ? surface.Transformed(Matrix4x4.CreateScale(width / kept, width / kept, 1)) : surface;
     }
 
     /// <summary>

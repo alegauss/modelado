@@ -93,6 +93,46 @@ public sealed class ReliefTests
     }
 
     [Fact]
+    public void A_relief_sized_in_millimetres_measures_exactly_that()
+    {
+        // MOD102: 60 mm wide, 3 mm of depth on a 2 mm base, on a 2:1 photo, so 30 mm tall.
+        Mesh mesh = Relief.Build(Dome(80, 40), 80, 40, Photo(400, 200), default, new ReliefOptions(GridLongSide: 80, Depth: 3, BaseThickness: 2, SmoothPasses: 0, PrintWidth: 60));
+
+        (Vector3 min, Vector3 max) = mesh.Bounds();
+        Assert.Equal(60f, max.X - min.X, 1e-3f);
+        Assert.Equal(30f, max.Y - min.Y, 0.5f);
+        Assert.Equal(3f, max.Z, 1e-4f);
+        Assert.Equal(-2f, min.Z, 1e-4f);
+        Assert.All(MarchingCubesTests.EdgeUses(mesh).Values, uses => Assert.Equal(2, uses));
+
+        // The longest side the export card proposes for it (MOD102) places it without rescaling.
+        (Vector3 placedMin, Vector3 placedMax) = mesh.Placed(60).Bounds();
+        Assert.Equal(60f, placedMax.X - placedMin.X, 1e-3f);
+        Assert.Equal(5f, placedMax.Z - placedMin.Z, 1e-3f);
+    }
+
+    [Fact]
+    public void A_cut_out_sized_in_millimetres_is_that_wide_itself()
+    {
+        float[] mask = new float[60 * 60];
+        for (int y = 15; y < 45; y++)
+        {
+            for (int x = 20; x < 40; x++)
+            {
+                mask[(y * 60) + x] = 1;
+            }
+        }
+
+        Mesh mesh = Relief.Build(Dome(60, 60), 60, 60, Photo(60, 60), mask, new ReliefOptions(GridLongSide: 60, Depth: 4, BaseThickness: 1.5f, SmoothPasses: 0, PrintWidth: 40));
+
+        (Vector3 min, Vector3 max) = mesh.Bounds();
+        Assert.Equal(40f, max.X - min.X, 1e-3f);
+        Assert.Equal(4f, max.Z, 1e-4f);
+        Assert.Equal(-1.5f, min.Z, 1e-4f);
+        Assert.True(mesh.SignedVolume() > 0);
+    }
+
+    [Fact]
     public void A_mask_that_keeps_nothing_is_refused()
     {
         Assert.Throws<InvalidOperationException>(() => Relief.Build(Dome(10, 10), 10, 10, Photo(10, 10), new float[100], new ReliefOptions(GridLongSide: 10)));

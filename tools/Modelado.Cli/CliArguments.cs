@@ -29,7 +29,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--remove-background", "--depth-model"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
@@ -86,7 +86,24 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
             }
         }
 
-        return (new CliArguments(command, positional, options), null, 0);
+        return Conflict(options) is { } conflict
+            ? (null, conflict, Unknown)
+            : (new CliArguments(command, positional, options), null, 0);
+    }
+
+    // MOD102: a relief is sized in shares of its width or in millimetres, never both, since --depth
+    // 0.25 read as millimetres (or --depth-mm 3 read as a share) would make a different object.
+    private static string? Conflict(Dictionary<string, string?> options)
+    {
+        bool millimetres = options.ContainsKey("--width-mm");
+        if (millimetres && (options.ContainsKey("--depth") || options.ContainsKey("--base")))
+        {
+            return "--width-mm sizes the relief in millimetres: give its depth and base as --depth-mm and --base-mm, not --depth or --base.";
+        }
+
+        return !millimetres && (options.ContainsKey("--depth-mm") || options.ContainsKey("--base-mm"))
+            ? "--depth-mm and --base-mm need the relief's width as --width-mm."
+            : null;
     }
 
     private static HashSet<string> Takes(params string[] own) => new(own.Concat(Common), StringComparer.Ordinal);
