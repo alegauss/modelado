@@ -566,18 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD109 Print orientation for reliefs
-
-A user of Bambu's Relief Maker reported prints coming out standing, which needs supports
-and costs detail. A relief prints best face up, its flat back on the plate.
-
-On STL and 3MF export, a relief (and the keychain, medallion, plaque and lithophane
-variants) is placed with its back on Z = 0 and its face up, centred on the origin,
-unless the user asks otherwise. GLB for the screen keeps today's Y-up orientation.
-
-Done when every relief variant opens in Bambu Studio, OrcaSlicer and PrusaSlicer lying
-face up on the plate with no rotation needed.
-
 ### §MOD110 Open in slicer
 
 Modelado has Open in Blender, but a print still ends with saving a file, opening the

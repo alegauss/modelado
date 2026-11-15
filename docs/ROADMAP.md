@@ -48,7 +48,6 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- 📋 **MOD109** (deps: MOD103 ✅) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
 - 📋 **MOD110** (deps: MOD103 ✅) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The step after export is always the slicer, and Bambu Studio now offers MakerLab's tools inside it, one click away. → §MOD110
 - 📋 **MOD111** (deps: —) **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — Users of MakerLab's image to 3D report unprintable files with empty layers, fixed by hand with a voxel remesh in Blender. → §MOD111
 - 📋 **MOD112** (deps: MOD111) **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — A thin ear or tail breaks off or vanishes in the slicer, and choosing a face to rest on is done by hand in every slicer. → §MOD112

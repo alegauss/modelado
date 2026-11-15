@@ -85,7 +85,7 @@ public partial class MainWindow
             return;
         }
 
-        (System.Numerics.Vector3 min, System.Numerics.Vector3 max) = mesh.Placed(size).Bounds();
+        (System.Numerics.Vector3 min, System.Numerics.Vector3 max) = mesh.OnPlate(size).Bounds();
         System.Numerics.Vector3 box = max - min;
         ExportDimensions.Text = Ui.Format(Strings.ExportBox, box.X, box.Y, box.Z, unit);
     }
@@ -179,14 +179,15 @@ public partial class MainWindow
         {
             // Scaled at export only, through Mesh.Placed as the CLI's --size is, so the two write the
             // same bytes; the history keeps the model as it was.
-            Mesh placed = mesh.Placed(size);
+            // MOD109: a slicer's file is laid on its plate, a relief face up; a scene's stands on Y = 0.
+            Mesh placed = ForPrinting(format) ? mesh.OnPlate(size) : mesh.Placed(size);
             IReadOnlyList<string> written = MeshExport.Save(placed, path, choices);
 
             // MOD107: a relief made with a stand on the Relief card is saved with it, sized from the
             // relief as it is written, in millimetres, so the slot fits the print.
             if (ReferenceEquals(mesh, standFor) && ForPrinting(format))
             {
-                written = [.. written, .. MeshExport.Save(Stand.For(placed), Stand.PathBeside(path), choices)];
+                written = [.. written, .. MeshExport.Save(Stand.For(placed).OnPlate(), Stand.PathBeside(path), choices)];
             }
 
             string names = string.Join(", ", written.Select(Path.GetFileName));

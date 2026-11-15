@@ -188,6 +188,7 @@ public sealed class CliJsonTests : IDisposable
         Assert.Equal(80, max.X - min.X, 1);
         Assert.InRange(max.Y - min.Y, 59.5f, 60.5f); // the 64 × 48 photo's proportions
         Assert.InRange(max.Z - min.Z, 2.3f, 2.41f);
+        Assert.Equal(0f, min.Z, 1e-4f); // MOD109: an STL lies on the plate, its back on z = 0
     }
 
     [Fact]

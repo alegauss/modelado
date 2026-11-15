@@ -188,4 +188,23 @@ public sealed class Mesh
         Vector3 offset = new(-(min.X + max.X) / 2, -min.Y, -(min.Z + max.Z) / 2);
         return Transformed(Matrix4x4.CreateTranslation(offset) * Matrix4x4.CreateScale(scale));
     }
+
+    /// <summary>
+    /// MOD109: a copy laid on a slicer's plate, which is Z-up: centred on X and Y with its lowest
+    /// point on Z = 0, scaled so its largest side is <paramref name="size"/> when one is given. Only
+    /// moved, never turned, so a relief, whose face is +Z and back flat, lies face up with its back on
+    /// the plate, which is how it prints without supports. STL and 3MF are written this way; GLB and
+    /// the other formats a scene reads keep <see cref="Placed"/>, standing on Y = 0.
+    /// </summary>
+    /// <param name="size">The largest side in millimetres, or null to keep the size it has.</param>
+    /// <returns>The mesh on the plate.</returns>
+    public Mesh OnPlate(float? size = null)
+    {
+        (Vector3 min, Vector3 max) = Bounds();
+        Vector3 extent = max - min;
+        float largest = MathF.Max(extent.X, MathF.Max(extent.Y, extent.Z));
+        float scale = size is { } wanted && largest > 0 ? wanted / largest : 1;
+        Vector3 offset = new(-(min.X + max.X) / 2, -(min.Y + max.Y) / 2, -min.Z);
+        return Transformed(Matrix4x4.CreateTranslation(offset) * Matrix4x4.CreateScale(scale));
+    }
 }

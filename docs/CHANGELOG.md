@@ -142,6 +142,7 @@
 - ✅ **MOD106** **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — The Relief card raises a name or date along the bottom or a medallion's arc, sized in mm, and says before a run when the text will not fit (design superseded: fonts and engraving: MOD142, MOD143).
 - ✅ **MOD107** **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — The Relief card's Also save a stand makes Save as write the slot stand beside an STL or 3MF relief, as relief --stand does.
 - ✅ **MOD108** **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — The Relief card's Make lithophane turns the photo into a panel sized in mm without a model, saved at that size, as the CLI does (design superseded: curves and frame: MOD145).
+- ✅ **MOD109** **A relief is not exported in the orientation it prints best, face up and flat on the plate** — STL and 3MF from the window and the CLI are laid on the plate, centred with the lowest point on Z = 0, so a relief opens face up with its back down.
 
 ## Block M — The CPU and integrated-GPU path
 

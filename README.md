@@ -34,7 +34,9 @@ colour, clay or edges) and is saved as **GLB** (binary glTF: Windows 3D Viewer, 
 web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres),
 **3MF** (3D printing with the millimetres recorded in the file and the colours kept: Bambu Studio,
 OrcaSlicer, PrusaSlicer) or **PLY** (with colours: MeshLab, CloudCompare). The command line writes
-whichever the output's extension names, `.3mf` included.
+whichever the output's extension names, `.3mf` included. STL and 3MF are laid on the slicer's
+plate, centred with their lowest point on Z = 0, so a relief opens face up with its flat back
+down, the way it prints without supports.
 
 A GLB carries a photo texture as JPEG (PNG where it has transparency) and, under 65,535 vertices,
 16-bit indices. The Export card's **Compact** choice (`--compact` on the command line) also

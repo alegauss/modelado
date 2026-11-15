@@ -232,7 +232,7 @@ try
             if (args[0] == "relief" && options.ContainsKey("--stand"))
             {
                 Mesh stand = Stand.For(result.Mesh, new StandOptions(Tilt: (float)Number("--stand-tilt", Stand.TiltDefault)));
-                IReadOnlyList<string> beside = MeshExport.Save(stand, Stand.PathBeside(output), new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
+                IReadOnlyList<string> beside = MeshExport.Save(stand.OnPlate(), Stand.PathBeside(output), new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
                 Console.WriteLine($"stand, {stand.TriangleCount:N0} triangles -> {string.Join(", ", beside)}");
                 foreach (string path in beside)
                 {
@@ -325,7 +325,11 @@ int Done(int code)
 
 void Save(Mesh mesh, string output, Stopwatch total)
 {
-    mesh = options.ContainsKey("--size") ? mesh.Placed((float)Number("--size", 1)) : mesh;
+    // MOD109: STL and 3MF go to a slicer, so they are laid on its plate, a relief face up; the rest
+    // stand on Y = 0 as a scene reads them, and are moved only when --size asks.
+    float? size = options.ContainsKey("--size") ? (float)Number("--size", 1) : null;
+    mesh = MeshExport.FormatOf(output) is MeshFormat.Stl or MeshFormat.ThreeMf ? mesh.OnPlate(size)
+        : size is { } longest ? mesh.Placed(longest) : mesh;
     IReadOnlyList<string> written = MeshExport.Save(mesh, output, new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
     Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
     report["written"] = new JsonArray([.. written.Select(path => JsonValue.Create(Path.GetFullPath(path)))]);

@@ -321,6 +321,36 @@ public sealed class MeshExportTests : IDisposable
     }
 
     [Fact]
+    public void On_the_plate_a_relief_lies_face_up_with_its_back_on_z_0_and_keeps_its_millimetres()
+    {
+        // MOD109: a slicer is Z-up; a relief's face is +Z and its back flat, so moving it is enough.
+        float[] depth = [.. Enumerable.Range(0, 32 * 24).Select(i => (i % 32) / 32f)];
+        Mesh relief = Relief.Build(depth, 32, 24, new RgbaImage(32, 24), ReadOnlySpan<float>.Empty,
+            new ReliefOptions(GridLongSide: 32, Depth: 3, BaseThickness: 2, SmoothPasses: 0, PrintWidth: 60));
+
+        Mesh plate = relief.OnPlate();
+        (Vector3 min, Vector3 max) = plate.Bounds();
+        Assert.Equal(0f, min.Z, 1e-4f);
+        Assert.Equal(5f, max.Z, 1e-3f);
+        Assert.Equal(60f, max.X - min.X, 1e-3f);
+        Assert.Equal(0f, (min.X + max.X) / 2, 1e-3f);
+        Assert.Equal(0f, (min.Y + max.Y) / 2, 1e-3f);
+
+        // The back is the flat face on the plate: a third of the vertices or more sit at z = 0.
+        Assert.True(plate.Positions.Count(p => MathF.Abs(p.Z) < 1e-4f) >= plate.VertexCount / 3);
+
+        // Written as STL and read back, it is where it was laid.
+        string path = Path.Combine(folder, "plate.stl");
+        MeshExport.Save(plate, path);
+        Assert.Equal(0f, MeshImport.Load(path).Bounds().Min.Z, 1e-4f);
+
+        // A size rescales it as Placed does.
+        (Vector3 small, Vector3 large) = relief.OnPlate(30).Bounds();
+        Assert.Equal(30f, large.X - small.X, 1e-3f);
+        Assert.Equal(0f, small.Z, 1e-4f);
+    }
+
+    [Fact]
     public void Placed_stands_on_the_floor_at_the_size_asked()
     {
         Mesh placed = Coloured().Placed(100);
