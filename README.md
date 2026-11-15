@@ -240,7 +240,8 @@ bottom, or with `--text-on arc` around a medallion (`--text-mm` sets the letters
 built-in font of capitals and digits; the Relief card takes the text, its height and where it runs
 with the other millimetres, and says before a run when the text will not fit. `--stand` also
 writes `<output>-stand`, a block that prints flat with a slot cut to the relief's thickness, so
-the plaque stands on a shelf leaning back `--stand-tilt` degrees (15 by default). Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+the plaque stands on a shelf leaning back `--stand-tilt` degrees (15 by default); on the Relief
+card, **Also save a stand** makes Save as write it beside an STL or 3MF. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

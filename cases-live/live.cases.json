@@ -86,6 +86,30 @@
     },
 
     {
+      "name": "a relief made with a stand on the Relief card is saved as an STL with its stand beside it",
+      "catches": "a stand ticked and never written, written in place of the relief, or one that does not open as a model",
+      "filed": "MOD107",
+      "tags": ["relief", "print", "export", "stand"],
+      "fixture": "a window on the robot photo with the real models and no saved settings",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^robot\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked" },
+        { "locator": "CheckBox#ReliefStand", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Also save a stand is ticked" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · ", "named": "the relief is made" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
+        { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/plaque", "named": "the dialog is told to save plaque" },
+        { "locator": "Text#ExportStatus", "act": "read", "reads": "name", "expect": "Saved plaque.stl, plaque-stand.stl", "named": "the card says it wrote the plaque and its stand" },
+        { "locator": "Image#ViewImage", "act": "drop file", "with": "{files}/plaque-stand.stl", "named": "the stand is dropped in" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "plaque-stand.stl", "named": "and opens as a model" }
+      ]
+    },
+
+    {
       "name": "a relief takes a stone texture drawn from a description, and Undo brings back its photo",
       "catches": "a drawn texture that a textured relief does not take, or an Undo that loses the photo it was made from",
       "filed": "MOD40",

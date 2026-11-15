@@ -82,6 +82,9 @@ public partial class MainWindow
         if (relief.PrintWidth is not null && mesh is { } made && !ReferenceEquals(made, before))
         {
             KeepPrintedSize(made);
+
+            // MOD107: this relief, and no later edit of it, is saved with a stand beside it.
+            standFor = ReliefStand.IsChecked == true ? made : null;
         }
     }
 

@@ -306,6 +306,12 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>El texto necesita letras, dígitos, espacios o - . / ', letras de más de 0 mm y espacio en el relieve dentro del marco.</value>
   </data>
+  <data name="ReliefStand" xml:space="preserve">
+    <value>Guardar también un soporte para encajarlo</value>
+  </data>
+  <data name="ReliefStandTip" xml:space="preserve">
+    <value>Guardar como escribe un segundo archivo junto al relieve: un bloque que se imprime plano, con una ranura del grosor del relieve, que lo sostiene de pie inclinado 15° hacia atrás.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

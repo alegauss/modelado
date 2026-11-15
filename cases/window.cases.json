@@ -692,6 +692,23 @@
     },
 
     {
+      "name": "the Relief card offers a stand with the millimetres, off until it is ticked",
+      "catches": "a stand offered for a relief sized in shares, one that starts ticked, or a box that cannot be ticked",
+      "filed": "MOD107",
+      "tags": ["relief", "print", "stand"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefStand", "act": "read", "absent": true, "named": "no stand while the relief is sized in shares of its width" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "CheckBox#ReliefStand", "act": "read", "reads": "toggle", "expect": "Off", "named": "the stand is offered, off" },
+        { "locator": "CheckBox#ReliefStand", "act": "toggle", "reads": "toggle", "expect": "On", "named": "and it is ticked" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "the sizes still stand" }
+      ]
+    },
+
+    {
       "name": "About opens and closes during a download whose chip keeps going",
       "catches": "an About that hides a running download, stops it, or takes the status bar with it",
       "filed": "MOD11",

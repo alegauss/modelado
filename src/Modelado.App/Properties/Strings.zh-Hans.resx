@@ -306,6 +306,12 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>文字只能包含字母、数字、空格或 - . / '，字母高度须大于 0 mm，且须放得下在边框以内的浮雕上。</value>
   </data>
+  <data name="ReliefStand" xml:space="preserve">
+    <value>同时保存一个插槽支架</value>
+  </data>
+  <data name="ReliefStandTip" xml:space="preserve">
+    <value>“另存为”会在浮雕旁再写一个文件：一个平放打印的底座，开有与浮雕厚度相同的插槽，让浮雕向后倾斜 15° 立起来。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

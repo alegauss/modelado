@@ -306,6 +306,12 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>O texto precisa de letras, dígitos, espaços ou - . / ', letras com mais de 0 mm e espaço no relevo dentro da moldura.</value>
   </data>
+  <data name="ReliefStand" xml:space="preserve">
+    <value>Salvar também um suporte de encaixe</value>
+  </data>
+  <data name="ReliefStandTip" xml:space="preserve">
+    <value>Salvar como grava um segundo arquivo ao lado do relevo: um bloco que imprime deitado, com uma fenda na espessura do relevo, que o segura em pé inclinado 15° para trás.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

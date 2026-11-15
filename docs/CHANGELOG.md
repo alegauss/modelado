@@ -140,7 +140,7 @@
 - ✅ **MOD104** **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — The Relief card and CLI cut a disc or tag keychain with a hole, one closed solid; the cut-out outline and dragging the hole went to MOD141 (design recorded in `src/Modelado.Geometry/Keychain.cs`).
 - ✅ **MOD105** **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Card and CLI crop a relief to a plaque or medallion with a raised mm border, flat back; a framed 60 mm medallion came out closed, 60 x 60 x 7 (design recorded in `src/Modelado.Geometry/Outline.cs`).
 - ✅ **MOD106** **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — The Relief card raises a name or date along the bottom or a medallion's arc, sized in mm, and says before a run when the text will not fit (design superseded: fonts and engraving: MOD142, MOD143).
-- ✅ **MOD107 (slot stand in geometry and CLI)** **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — relief --stand writes a slot stand beside the relief, one closed solid that prints flat, its slot cut to the relief's thickness and its foot deep enough not to tip.
+- ✅ **MOD107** **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — The Relief card's Also save a stand makes Save as write the slot stand beside an STL or 3MF relief, as relief --stand does.
 
 ## Block M — The CPU and integrated-GPU path
 

@@ -306,6 +306,12 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>Der Text braucht Buchstaben, Ziffern, Leerzeichen oder - . / ', eine Buchstabenhöhe über 0 mm und Platz im Relief innerhalb des Rahmens.</value>
   </data>
+  <data name="ReliefStand" xml:space="preserve">
+    <value>Auch einen Ständer zum Einstecken speichern</value>
+  </data>
+  <data name="ReliefStandTip" xml:space="preserve">
+    <value>Speichern unter schreibt eine zweite Datei neben das Relief: einen flach druckbaren Block mit einem Schlitz in der Dicke des Reliefs, der es aufrecht und 15° nach hinten geneigt hält.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

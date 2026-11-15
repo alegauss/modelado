@@ -306,6 +306,12 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>The text needs letters, digits, spaces or - . / ', a letter height above 0 mm, and room on the relief inside the border.</value>
   </data>
+  <data name="ReliefStand" xml:space="preserve">
+    <value>Also save a stand it slots into</value>
+  </data>
+  <data name="ReliefStandTip" xml:space="preserve">
+    <value>Save as writes a second file beside the relief: a block that prints flat, with a slot cut to the relief's thickness, holding it upright and leaning back 15°.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

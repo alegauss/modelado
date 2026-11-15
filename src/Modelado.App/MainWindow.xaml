@@ -429,6 +429,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <TextBlock Text="{x:Static p:Strings.ReliefWidthMm}" VerticalAlignment="Center" />
               <TextBox x:Name="ReliefWidthMm" Grid.Column="1" AutomationProperties.AutomationId="ReliefWidthMm" AutomationProperties.Name="{x:Static p:Strings.ReliefWidthMm}"
@@ -480,7 +481,10 @@
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnLine}" Tag="line" />
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnArc}" Tag="arc" />
               </ComboBox>
-              <TextBlock x:Name="ReliefSizeError" Grid.Row="11" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
+              <!-- MOD107: a stand the relief slots into, saved beside it. -->
+              <CheckBox x:Name="ReliefStand" Grid.Row="11" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefStand" Content="{x:Static p:Strings.ReliefStand}"
+                        ToolTip="{x:Static p:Strings.ReliefStandTip}" Margin="0,2,0,4" />
+              <TextBlock x:Name="ReliefSizeError" Grid.Row="12" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />

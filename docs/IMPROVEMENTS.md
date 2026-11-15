@@ -566,19 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD107 A stand for reliefs
-
-A plaque or medallion made in Modelado lies flat. To display it upright, the user models
-a stand in Blender or prints an easel found elsewhere.
-
-The Relief card gains an optional stand: a foot joined to the base at a chosen tilt
-(around 10 to 20 degrees back), sized from the relief's width and thickness so it does
-not tip, and a slot variant that prints separately and holds the plaque. Either way the
-export is printable without supports.
-
-Done when a plaque with a stand prints upright without supports and stands on a table
-without falling.
-
 ### §MOD108 Lithophane mode
 
 A lithophane is a thin panel whose thickness follows the photo's brightness, so the

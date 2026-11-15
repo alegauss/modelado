@@ -18,6 +18,9 @@ public partial class MainWindow
     // MOD15: the longest side each kind of file is written at, as last typed: STL and 3MF (MOD103)
     // in millimetres (100, what slicers expect), every other format in its own units (1, a metre in glTF).
     private string stlSize = "100";
+
+    // MOD107: the relief the Relief card made with a stand, which Save as writes beside it.
+    private Mesh? standFor;
     private string unitSize = "1";
 
     private string ExportExtension => (string)((ComboBoxItem)ExportFormat.SelectedItem).Tag;
@@ -176,7 +179,16 @@ public partial class MainWindow
         {
             // Scaled at export only, through Mesh.Placed as the CLI's --size is, so the two write the
             // same bytes; the history keeps the model as it was.
-            IReadOnlyList<string> written = MeshExport.Save(mesh.Placed(size), path, choices);
+            Mesh placed = mesh.Placed(size);
+            IReadOnlyList<string> written = MeshExport.Save(placed, path, choices);
+
+            // MOD107: a relief made with a stand on the Relief card is saved with it, sized from the
+            // relief as it is written, in millimetres, so the slot fits the print.
+            if (ReferenceEquals(mesh, standFor) && ForPrinting(format))
+            {
+                written = [.. written, .. MeshExport.Save(Stand.For(placed), Stand.PathBeside(path), choices)];
+            }
+
             string names = string.Join(", ", written.Select(Path.GetFileName));
             string? texture = format == "glb" ? MeshExport.GlbTextureFormat(mesh) : null;
             bool compact = format == "glb" && choices.GlbCompact;
