@@ -221,6 +221,7 @@ Linux or macOS, on the CPU):
 dotnet run --project tools\Modelado.Cli -c Release -- object chair.png -o chair.glb --preview view.png
 dotnet run --project tools\Modelado.Cli -c Release -- relief portrait.jpg -o portrait.stl --base 0.05 --size 100
 dotnet run --project tools\Modelado.Cli -c Release -- relief portrait.jpg -o plaque.stl --width-mm 60 --depth-mm 3 --base-mm 2
+dotnet run --project tools\Modelado.Cli -c Release -- relief pet.jpg -o keychain.3mf --width-mm 45 --keychain circle --hole-mm 4
 dotnet run --project tools\Modelado.Cli -c Release -- download all
 ```
 
@@ -229,7 +230,9 @@ dotnet run --project tools\Modelado.Cli -c Release -- download all
 printing, `--width-mm`, `--depth-mm` and `--base-mm` in place of `--depth` and `--base`: the
 relief (the cut-out, with `--remove-background`) is built that many millimetres wide and saved at
 that size, so the STL measures what was asked for. The Relief card's **Size it in millimetres**
-does the same. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+does the same. With `--width-mm`, `--keychain circle` or `--keychain tag` cuts the relief into a
+keychain, a disc or a rounded tag with a hole near the top (`--hole-mm`, 4 by default), written as
+one closed solid with the hole through it. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

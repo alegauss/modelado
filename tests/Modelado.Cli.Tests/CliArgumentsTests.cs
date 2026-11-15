@@ -69,12 +69,13 @@ public sealed class CliArgumentsTests
         string[] objectRun = ["object", "p.png", "-o", "o.glb", "--resolution", "256", "--keep-background", "--threshold", "25", "--step", "2", "--smooth", "2", "--enhance", "--no-project", "--high", "--models", "m", "--manifest", "u"];
         string[] reliefRun = ["relief", "p.png", "-o", "r.glb", "--grid", "256", "--depth", "0.25", "--base", "0.1", "--remove-background"];
         string[] printedRun = ["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--depth-mm", "3", "--base-mm", "2"];
+        string[] keychainRun = ["relief", "p.png", "-o", "k.3mf", "--width-mm", "45", "--keychain", "circle", "--hole-mm", "5"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
         string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
         string[] retextureRun = ["cloud", "retexture", "m.glb", "-o", "c.glb", "--prompt", "rust", "--keep-uv", "--no-texture", "--pbr"];
 
-        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
+        foreach (string[] run in new[] { objectRun, reliefRun, printedRun, keychainRun, editRun, cloudRun, retextureRun, ["cloud", "key", "meshy"], ["download", "all"], ["models"] })
         {
             Assert.Null(CliArguments.Parse(run).Error);
         }
@@ -85,6 +86,8 @@ public sealed class CliArgumentsTests
     [InlineData("--width-mm", "60", "--base", "0.1")]
     [InlineData("--depth-mm", "3", "--grid", "256")]
     [InlineData("--base-mm", "2", "--grid", "256")]
+    [InlineData("--keychain", "circle", "--grid", "256")]
+    [InlineData("--hole-mm", "4", "--width-mm", "50")]
     public void A_relief_is_sized_in_shares_or_in_millimetres_never_both(string first, string firstValue, string second, string secondValue)
     {
         // MOD102: --depth 0.25 read as millimetres, or --depth-mm 3 as a share, would make another object.

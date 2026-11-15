@@ -10,7 +10,12 @@ namespace Modelado.Inference.Pipelines;
 /// <param name="RemoveBackground">Keep only the object U-2-Net finds, instead of the whole picture.</param>
 /// <param name="TextureSide">The longest side of the texture the mesh carries.</param>
 /// <param name="DepthModel">The depth model to run: the built-in one, or one an added source lists (MOD27).</param>
-public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048, string DepthModel = ReliefReconstruction.Depth);
+/// <param name="Keychain">
+/// MOD104: the relief made into a keychain tag, its outline and hole cut by <see cref="Geometry.Keychain.Mask"/>;
+/// it needs <see cref="ReliefOptions.PrintWidth"/>, since the hole is sized in millimetres. With
+/// <paramref name="RemoveBackground"/> too, the tag keeps only what both keep.
+/// </param>
+public sealed record ReliefRunOptions(ReliefOptions Relief, bool RemoveBackground = false, int TextureSide = 2048, string DepthModel = ReliefReconstruction.Depth, KeychainOptions? Keychain = null);
 
 /// <summary>
 /// A relief from one photo with Depth Anything V2 Small (Apache-2.0): the depth of every pixel,
@@ -54,6 +59,27 @@ public static class ReliefReconstruction
         return (results[0].GetTensorDataAsSpan<float>()[..(side * side)].ToArray(), side, side);
     }
 
+    // MOD104: the tag's outline and hole over whatever the cut-out kept.
+    private static float[]? WithKeychain(float[]? mask, int width, int height, RgbaImage photo, ReliefRunOptions options)
+    {
+        if (options.Keychain is not { } keychain)
+        {
+            return mask;
+        }
+
+        float printWidth = options.Relief.PrintWidth ?? throw new ArgumentException("A keychain is sized in millimetres: give the relief a printed width.", nameof(options));
+        float[] tag = Keychain.Mask(width, height, (float)photo.Height / photo.Width, printWidth, keychain);
+        if (mask is not null)
+        {
+            for (int i = 0; i < tag.Length; i++)
+            {
+                tag[i] = MathF.Min(tag[i], mask[i]);
+            }
+        }
+
+        return tag;
+    }
+
     /// <summary>Builds the relief.</summary>
     /// <param name="runner">The sessions.</param>
     /// <param name="photo">The photo.</param>
@@ -85,6 +111,7 @@ public static class ReliefReconstruction
             cancellation.ThrowIfCancellationRequested();
         }
 
+        mask = WithKeychain(mask, width, height, photo, options);
         progress?.Report(new(ReconstructionStage.BuildingRelief, 0));
         Mesh mesh = Relief.Build(depth, width, height, texture, mask, options.Relief);
         Mark(ReconstructionStage.BuildingRelief);

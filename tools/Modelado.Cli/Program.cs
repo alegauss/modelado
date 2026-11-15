@@ -27,6 +27,9 @@ const string Usage = """
                              --remove-background), saved at that size unless --size says otherwise
         --depth-mm D         with --width-mm, relief height in millimetres; default 3
         --base-mm B          with --width-mm, solid base in millimetres; default 2, 0 = open surface
+        --keychain circle|tag   with --width-mm, cut into a keychain: a disc or a rounded tag, one
+                             closed solid with a hole near the top to hang it by
+        --hole-mm D          the keychain's hole; default 4
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -202,7 +205,8 @@ try
                 : ReliefReconstruction.Run(runner, photo, new ReliefRunOptions(
                     ReliefSize(Int("--grid", 256)),
                     RemoveBackground: options.ContainsKey("--remove-background"),
-                    DepthModel: depthModel), progress);
+                    DepthModel: depthModel,
+                    Keychain: KeychainOf()), progress);
             Console.WriteLine();
             foreach ((ReconstructionStage stage, TimeSpan took) in result.Timings)
             {
@@ -331,6 +335,15 @@ ReliefOptions ReliefSize(int grid)
 
     return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width);
 }
+
+// MOD104: the relief cut into a keychain tag, its hole at the top.
+KeychainOptions? KeychainOf() => Get("--keychain", null) switch
+{
+    null => null,
+    "circle" => new KeychainOptions(KeychainShape.Circle, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
+    "tag" => new KeychainOptions(KeychainShape.Tag, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
+    var other => throw new ArgumentException($"--keychain {other}: use circle or tag."),
+};
 
 string? Get(string key, string? fallback) => options.TryGetValue(key, out string? value) ? value : fallback;
 
