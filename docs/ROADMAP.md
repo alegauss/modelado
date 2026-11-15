@@ -26,7 +26,6 @@
 
 ## Block G — Public site for 3D modelling
 
-- 📋 **MOD101** (deps: —) **Someone without an NVIDIA GPU can't tell from the README, site or Store page that Modelado runs on AMD, Intel or CPU** — ChatGPT ranks Modelado first only for non-NVIDIA PCs; askround (13/11/2026) found the assistants read the GitHub README, not the site, so its top comes first. → §MOD101
 - 📋 **MOD132** (deps: —) **The README sends GLB files to Windows 3D Viewer, which reports say left the Store on 01/07/2026** — Pointing users at an app that may be gone makes the first open of a result fail outside Modelado. → §MOD132
 - 📋 **MOD133** (deps: —) **Nothing on the site or Store says Modelado is unlimited, with no credits, no account and no moderation** — MakerLab now charges credits at generation and needs an account, and its users complain; Modelado's free local runs are the contrast. → §MOD133
 

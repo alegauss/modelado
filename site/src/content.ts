@@ -14,10 +14,12 @@ export const storeUrl = "https://apps.microsoft.com/detail/9PB86WW5NRR2";
 export const asset = (path: string) => `${BASE}${path}`;
 
 export const words = {
+  // MOD101: running without an NVIDIA card is the question Modelado is found by (ChatGPT ranks it
+  // first only when asked for AMD, Intel or CPU), so the title, the description and the intro say it.
   meta: {
-    title: "Modelado: a photo becomes a 3D model, on your PC",
+    title: "Modelado: photo to 3D model on your PC, no NVIDIA GPU needed",
     description:
-      "Turn a photo into a 3D object or a relief, then clean it up and export it for printing, games or the web, with AI on your own Windows computer. Nothing is uploaded.",
+      "Turn a photo into a 3D object or a relief on your own Windows PC, with no NVIDIA card needed: it runs on AMD and Intel graphics through DirectML, or on the CPU alone. Nothing is uploaded.",
   },
   nav: {
     // With the base, so they lead home from the privacy policy too.
@@ -32,10 +34,10 @@ export const words = {
     themeLabel: (next: string) => `Switch to the ${next} theme`,
   },
   intro: {
-    eyebrow: "Modelado · for Windows",
+    eyebrow: "Modelado · for Windows · no NVIDIA GPU needed",
     title: "A photo becomes a 3D model you can turn, print and share.",
     lead:
-      "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, on the GPU when it has one.",
+      "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, and no NVIDIA card is needed: AMD and Intel graphics run it through DirectML, and a PC with no graphics card makes a 3D object on the CPU in about 20 seconds.",
     download: "Get it from the Microsoft Store",
     source: "See the source",
   },

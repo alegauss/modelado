@@ -4,6 +4,12 @@ For anyone who wants to work in 3D with AI and save time: Modelado is a Windows 
 **photos of objects into 3D models**, and edits and improves any 3D model, with AI models running
 on your own computer. No photo leaves the PC.
 
+**No NVIDIA GPU needed.** Modelado runs its models through DirectML, so any DirectX 12 graphics
+card works: AMD and Intel as well as NVIDIA, with no CUDA. A PC with no graphics card runs it on
+the CPU alone: a 3D object from a photo in about 20 seconds on 8 cores of an Intel Core i7-14700,
+38 seconds on 4 cores, and a relief in about a second (see [How it works](#how-it-works)). It is
+free, with no account.
+
 **Get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PB86WW5NRR2)**: signed by
 the Store, updated by it, and installed without a SmartScreen warning. The
 [latest release](https://github.com/alegauss/modelado/releases/latest) also holds

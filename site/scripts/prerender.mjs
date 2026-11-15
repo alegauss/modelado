@@ -23,7 +23,7 @@ const card = await renderOgCard({
     eyebrow: "Modelado · for Windows",
     title: ["A photo becomes"],
     titleAccent: "a 3D model.",
-    line: ["A whole object or a relief, cleaned up and exported,", "with AI on your own PC. Nothing is uploaded."],
+    line: ["A whole object or a relief, made by AI on your own PC.", "No NVIDIA GPU needed. Nothing is uploaded."],
     mark: icon,
     tone: "cool",
   }),

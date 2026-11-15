@@ -89,6 +89,7 @@
 - ✅ **MOD34** **The site has no sections on each operation, privacy, formats or the download** — The Studio shows each operation on a real, credited photo: a burger to turn, three reliefs, a chair before and after refining, a texture before and after AI (design recorded in `site/README.md`).
 - ✅ **MOD64** **The site's speed table has no GPU timing, only the CPU's** — The site's speed table has a GPU column, measured on an RTX 4060 through DirectML: 3D Object about 4 s against the CPU's 20, Relief about 1 s.
 - ✅ **MOD69** **The README teaches compiling before it mentions the release, never links the site, and calls the sibling PhotoBoost** — The README opens on its reader, links the latest release's installer and the site, moves the build steps to a contributors section and names Revelei as the sibling.
+- ✅ **MOD101** **Someone without an NVIDIA GPU can't tell from the README, site or Store page that Modelado runs on AMD, Intel or CPU** — The README's first screen, the site's title, description, intro and llms.txt, and every Store listing open with no NVIDIA GPU needed, AMD, Intel or CPU.
 
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 

@@ -1,0 +1,35 @@
+# Modelado
+
+> Free Windows app that turns a photo into a 3D model (a whole object with TripoSR, or a relief
+> with Depth Anything V2) with AI running on the user's own PC. No NVIDIA GPU is needed: it runs on
+> AMD and Intel graphics through DirectML, and on a CPU-only PC, more slowly. No photo is uploaded,
+> no account is needed.
+
+## Hardware
+
+- No NVIDIA card and no CUDA are needed. The models run in ONNX Runtime with DirectML, on any
+  DirectX 12 graphics card: AMD, Intel or NVIDIA.
+- CPU only: yes. Without a usable GPU everything runs on the CPU. Measured with modelado-cli on a
+  512 px photo, 8 cores of an Intel Core i7-14700: a 3D Object in about 20 s, a relief in about
+  1 s. On 4 cores with the FP32 models, a 3D Object took 38 s.
+- On an NVIDIA GeForce RTX 4060 through DirectML: a 3D Object in about 4 s.
+- If a model fails on the GPU (out of video memory, for example), it runs again on the CPU and the
+  window says so.
+- Windows 10 (1903 or later) or Windows 11, x64.
+
+## What it does
+
+- 3D Object: one photo of an object becomes a closed, coloured mesh, its unseen sides inferred.
+- Relief: any photo becomes a bas-relief textured with the photo, with a solid base for printing.
+- Edit and improve: simplify, subdivide, smooth, fill holes, flatten a base, 4x sharper texture
+  (Real-ESRGAN), on generated models and on opened GLB, OBJ, PLY or STL files.
+- Export to GLB, OBJ, PLY or STL, sized in millimetres.
+- The AI models are downloaded once, on first use, after the app says how large they are and where
+  they come from. Meshy AI and Ideogram are optional, with the user's own key.
+
+## Links
+
+- [Microsoft Store](https://apps.microsoft.com/detail/9PB86WW5NRR2): free, signed and updated by the Store
+- [Site](https://alegauss.com/modelado/)
+- [Source and README](https://github.com/alegauss/modelado)
+- [Privacy policy](https://alegauss.com/modelado/privacy/)
