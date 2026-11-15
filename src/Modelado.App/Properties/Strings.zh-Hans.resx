@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>宽度和深度必须大于 0 毫米，底座为 0 毫米或以上。</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>钥匙扣</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>圆片</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>圆角挂牌</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>孔</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>孔沿顶边的位置</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>孔必须大于 0 毫米，并能连同四周的壁一起放进挂牌。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

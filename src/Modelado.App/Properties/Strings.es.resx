@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>El ancho y la profundidad deben superar 0 mm, y la base ser de 0 mm o más.</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>Llavero</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>Disco</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>Placa redondeada</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>Agujero</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>Agujero a lo largo del borde superior</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>El agujero debe superar 0 mm y caber en la placa con una pared alrededor.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

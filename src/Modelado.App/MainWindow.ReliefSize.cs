@@ -11,7 +11,10 @@ namespace Modelado.App;
 /// width, a relief depth and a solid base in mm. The relief is built at that size
 /// (<see cref="ReliefOptions.PrintWidth"/>), and the Export card's STL size is set to the longest
 /// side it came out at, so Save as writes exactly what was asked for rather than the 100 mm default.
-/// The CLI takes the same as --width-mm, --depth-mm and --base-mm.
+/// The CLI takes the same as --width-mm, --depth-mm and --base-mm. MOD104: in millimetres the card
+/// can also cut the relief into a keychain, a disc or a rounded tag with a hole near the top
+/// (<see cref="Keychain"/>), as the CLI's --keychain and --hole-mm do; a tag's hole slides along its
+/// top on a slider.
 /// </summary>
 public partial class MainWindow
 {
@@ -20,6 +23,60 @@ public partial class MainWindow
         ReliefWidthMm.Text = Millimetres(Relief.PrintWidthDefault);
         ReliefDepthMm.Text = Millimetres(Relief.PrintDepthDefault);
         ReliefBaseMm.Text = Millimetres(Relief.PrintBaseDefault);
+        ReliefHoleMm.Text = Millimetres(Keychain.HoleDiameterDefault);
+    }
+
+    // MOD104: the keychain the card cuts, or null for a plain relief.
+    private KeychainShape? KeychainChosen => (ReliefKeychain?.SelectedItem as ComboBoxItem)?.Tag switch
+    {
+        "circle" => KeychainShape.Circle,
+        "tag" => KeychainShape.Tag,
+        _ => null,
+    };
+
+    private void OnReliefKeychainChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ReliefHoleMm is null || ReliefHoleAcross is null)
+        {
+            return;
+        }
+
+        Visibility hole = KeychainChosen is null ? Visibility.Collapsed : Visibility.Visible;
+        ReliefHoleLabel.Visibility = ReliefHoleMm.Visibility = ReliefHoleUnit.Visibility = hole;
+
+        // Only a tag's hole slides along its top; a disc's sits at the top centre.
+        Visibility across = KeychainChosen == KeychainShape.Tag ? Visibility.Visible : Visibility.Collapsed;
+        ReliefHoleAcrossLabel.Visibility = ReliefHoleAcross.Visibility = across;
+        ShowReliefSizeError();
+    }
+
+    /// <summary>
+    /// The keychain chosen and its hole, or null for none. A hole that is not a size, or one too large
+    /// for the tag the photo makes at that width, is refused here rather than by the run.
+    /// </summary>
+    private (bool Valid, KeychainOptions? Options) KeychainSettings(float printWidth)
+    {
+        if (KeychainChosen is not { } shape)
+        {
+            return (true, null);
+        }
+
+        if (Typed(ReliefHoleMm.Text) is not { } hole || hole <= 0)
+        {
+            return (false, null);
+        }
+
+        KeychainOptions options = new(shape, hole, (float)ReliefHoleAcross.Value);
+        float aspect = photo is null ? 1 : (float)photo.Height / photo.Width;
+        try
+        {
+            _ = Keychain.Mask(8, 8, aspect, printWidth, options);
+            return (true, options);
+        }
+        catch (ArgumentException)
+        {
+            return (false, null);
+        }
     }
 
     private static string Millimetres(double value) => value.ToString("0.##", CultureInfo.InvariantCulture);
@@ -42,12 +99,23 @@ public partial class MainWindow
 
     private void OnReliefMillimetresTyped(object sender, TextChangedEventArgs e) => ShowReliefSizeError();
 
+    /// <summary>The keychain the Relief card's millimetres cut, or null (MOD104).</summary>
+    private KeychainOptions? ReliefKeychainOptions() =>
+        ReliefInMillimetres && PrintedSize() is { } size ? KeychainSettings(size.Width).Options : null;
+
     private void ShowReliefSizeError()
     {
-        if (ReliefSizeError is not null)
+        if (ReliefSizeError is null || ReliefHoleMm is null)
         {
-            ReliefSizeError.Visibility = ReliefInMillimetres && PrintedSize() is null ? Visibility.Visible : Visibility.Collapsed;
+            return;
         }
+
+        bool wrong = ReliefInMillimetres && PrintedSize() is null;
+        ReliefSizeError.Visibility = wrong ? Visibility.Visible : Visibility.Collapsed;
+
+        // MOD104: the sizes may all be sizes and the keychain's hole still not fit the tag.
+        bool sizesFine = Typed(ReliefWidthMm.Text) is > 0 && Typed(ReliefDepthMm.Text) is > 0 && Typed(ReliefBaseMm.Text) is >= 0;
+        ReliefSizeError.Text = wrong && sizesFine ? Strings.ReliefHoleInvalid : Strings.ReliefSizeInvalid;
     }
 
     /// <summary>
@@ -65,6 +133,7 @@ public partial class MainWindow
         return Typed(ReliefWidthMm.Text) is { } width && width > 0
             && Typed(ReliefDepthMm.Text) is { } depth && depth > 0
             && Typed(ReliefBaseMm.Text) is { } baseMm && baseMm >= 0
+            && KeychainSettings(width).Valid
             ? (width, depth, baseMm)
             : null;
     }

@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>Breite und Tiefe brauchen mehr als 0 mm, der Sockel 0 mm oder mehr.</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>Schlüsselanhänger</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>Scheibe</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>Abgerundete Marke</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>Loch</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>Loch entlang der Oberkante</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>Das Loch braucht mehr als 0 mm und muss mit einem Rand darum in die Marke passen.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

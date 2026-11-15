@@ -48,7 +48,6 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- ⏳ **MOD104** (deps: MOD102 ✅) **A relief cannot become a keychain: there is no hole, loop or tag outline to hang it by** — Still to come: the Relief card's keychain preset, a cut-out outline, and dragging the hole into place on the tag. → §MOD104
 - 📋 **MOD105** (deps: MOD102 ✅) **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Bambu's Relief Maker users ask to fit a relief in a round frame and cannot; a framed medallion is what a printed portrait gift looks like. → §MOD105
 - 📋 **MOD106** (deps: MOD105) **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — A name or a date is what turns a printed relief into a gift, and Relief Maker users ask for text around the frame. → §MOD106
 - 📋 **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
@@ -59,6 +58,7 @@
 - 📋 **MOD112** (deps: MOD111) **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — A thin ear or tail breaks off or vanishes in the slicer, and choosing a face to rest on is done by hand in every slicer. → §MOD112
 - 📋 **MOD113** (deps: —) **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — The window and the mesh disagree, so a user who set no base exports a solid and one who wants a thin base cannot trust the label. → §MOD113
 - 📋 **MOD114** (deps: —) **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — Object only is the relief most keychains and medallions will use, and an irregular mask is where pinched vertices break a closed mesh. → §MOD114
+- 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
 
 ## Block M — The CPU and integrated-GPU path
 
@@ -150,12 +150,5 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
-
-## Done when — MOD104
-
-- **A keychain is made from the Relief card as well as the CLI** The card offers circle,
-  tag and cut-out outlines and a hole the user drags into place; a case makes one from a
-  photo and the exported mesh is closed with the hole through it, as relief --keychain
-  already is.
 
 ## Non-goals

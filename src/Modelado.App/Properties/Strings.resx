@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>The width and the depth need a size above 0 mm, and the base 0 mm or more.</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>Keychain</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>Disc</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>Rounded tag</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>Hole</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>Hole along the top</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>The hole needs a size above 0 mm that fits inside the tag with a wall around it.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

@@ -412,6 +412,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <TextBlock Text="{x:Static p:Strings.ReliefWidthMm}" VerticalAlignment="Center" />
               <TextBox x:Name="ReliefWidthMm" Grid.Column="1" AutomationProperties.AutomationId="ReliefWidthMm" AutomationProperties.Name="{x:Static p:Strings.ReliefWidthMm}"
@@ -425,7 +428,22 @@
               <TextBox x:Name="ReliefBaseMm" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="ReliefBaseMm" AutomationProperties.Name="{x:Static p:Strings.ReliefBaseMm}"
                        Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" />
               <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
-              <TextBlock x:Name="ReliefSizeError" Grid.Row="3" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
+              <!-- MOD104: the relief cut into a keychain, a disc or a rounded tag, with a hole near the top. -->
+              <TextBlock Grid.Row="3" Text="{x:Static p:Strings.ReliefKeychain}" VerticalAlignment="Center" />
+              <ComboBox x:Name="ReliefKeychain" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ReliefKeychain"
+                        AutomationProperties.Name="{x:Static p:Strings.ReliefKeychain}" Margin="0,0,0,4" SelectedIndex="0" SelectionChanged="OnReliefKeychainChanged">
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainNone}" Tag="none" />
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainCircle}" Tag="circle" />
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainTag}" Tag="tag" />
+              </ComboBox>
+              <TextBlock x:Name="ReliefHoleLabel" Grid.Row="4" Text="{x:Static p:Strings.ReliefHoleMm}" VerticalAlignment="Center" Visibility="Collapsed" />
+              <TextBox x:Name="ReliefHoleMm" Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ReliefHoleMm" AutomationProperties.Name="{x:Static p:Strings.ReliefHoleMm}"
+                       Margin="0,0,0,4" TextChanged="OnReliefMillimetresTyped" Visibility="Collapsed" />
+              <TextBlock x:Name="ReliefHoleUnit" Grid.Row="4" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" Visibility="Collapsed" />
+              <TextBlock x:Name="ReliefHoleAcrossLabel" Grid.Row="5" Text="{x:Static p:Strings.ReliefHoleAcross}" VerticalAlignment="Center" Visibility="Collapsed" />
+              <Slider x:Name="ReliefHoleAcross" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ReliefHoleAcross"
+                      AutomationProperties.Name="{x:Static p:Strings.ReliefHoleAcross}" Minimum="0" Maximum="1" Value="0.5" Margin="0,0,0,4" Visibility="Collapsed" />
+              <TextBlock x:Name="ReliefSizeError" Grid.Row="6" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
             <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />

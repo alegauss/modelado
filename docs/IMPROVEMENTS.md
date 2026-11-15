@@ -566,21 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD104 Keychain from a photo
-
-MakerLab's Image to Keychain is cloud-only, needs an account and passes the photo
-through moderation; a Bambu forum thread asks for an offline way to get the same result
-and has no answer. The only offline route, Blender's Photo Relief extension, has no
-keychain and takes height from brightness, not depth.
-
-A keychain preset turns the relief into a tag: an outline (the cut-out object, a circle,
-a rounded rectangle), a hole or a loop placed where the user drags it, a minimum
-thickness that survives a pocket, and a size in mm (around 40 to 60 mm). The mesh stays
-closed with the hole cut through it.
-
-Done when a keychain made from a pet photo exports as one closed mesh with a hole that a
-slicer prints without supports, and the preset is in the window and the CLI.
-
 ### §MOD105 Medallions and plaques
 
 Today the relief covers the photo's rectangle, or the cut-out object with Object only.
@@ -712,6 +697,24 @@ touches) and assert closed two-manifold meshes; Solidify is fixed where they fai
 
 Done when those tests pass and a cut-out relief of each test photo slices without
 errors.
+
+### §MOD141 A keychain cut to the object, its hole dragged into place
+
+Split from MOD104, whose disc and rounded tag shipped in the Relief card and the CLI
+(Keychain.cs, MainWindow.ReliefSize.cs): a keychain is a relief mask with a hole, closed
+by Relief.Build's walls into one solid.
+
+Two things are left. First, the cut-out outline: the tag shaped like the object itself
+(Object only), which is what pet keychains look like. Today Object only plus a keychain
+keeps what both masks keep, so the hole can land outside the object. The cut-out needs
+its hole placed inside the object near its top: find the object's topmost run of rows
+wide enough for the hole plus a wall each side, and put the centre there, refusing in
+words when none is. Second, the hole placed by dragging it on the viewport over the
+photo or the made tag, instead of the slider along the top (ReliefHoleAcross), with the
+position in the photo's 0..1 coordinates going into KeychainOptions.
+
+A case makes a cut-out keychain from a fixture with transparency and reads that its mesh
+is closed with one hole (Euler 0), as KeychainTests does for the disc and the tag.
 
 ## Block M — The CPU and integrated-GPU path
 

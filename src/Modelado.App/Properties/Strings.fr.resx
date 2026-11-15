@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>La largeur et la profondeur doivent dépasser 0 mm, et le socle faire 0 mm ou plus.</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>Porte-clés</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>Non</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>Disque</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>Plaque arrondie</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>Trou</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>Trou le long du haut</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>Le trou doit dépasser 0 mm et tenir dans la plaque avec une paroi autour.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

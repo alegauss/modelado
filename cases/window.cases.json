@@ -623,6 +623,31 @@
     },
 
     {
+      "name": "the Relief card cuts a keychain in millimetres, a tag's hole slides along its top, and a hole too big for the tag is named",
+      "catches": "a keychain offered without a hole size, a disc offering a slider it ignores, or a hole that cannot fit refused only by a failed run",
+      "filed": "MOD104",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "Edit#ReliefHoleMm", "act": "read", "absent": true, "named": "a plain relief has no hole" },
+        { "locator": "ComboBox#ReliefKeychain", "act": "expand", "named": "the keychains are opened" },
+        { "locator": "ComboBox#ReliefKeychain > ListItem[name=\"Disc\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a disc is chosen" },
+        { "locator": "Edit#ReliefHoleMm", "act": "read", "reads": "value", "expect": "4", "named": "with a 4 mm hole" },
+        { "locator": "Slider#ReliefHoleAcross", "act": "read", "absent": true, "named": "which sits at the top centre, with nothing to slide" },
+        { "locator": "ComboBox#ReliefKeychain", "act": "expand", "named": "the keychains are opened again" },
+        { "locator": "ComboBox#ReliefKeychain > ListItem[name=\"Rounded tag\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a rounded tag is chosen" },
+        { "locator": "Slider#ReliefHoleAcross", "act": "read", "reads": "enabled", "expect": "enabled", "named": "its hole slides along the top" },
+        { "locator": "Edit#ReliefHoleMm", "act": "set value", "with": "40", "reads": "value", "expect": "40", "named": "a 40 mm hole is typed for the 60 mm tag" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The hole needs a size above 0 mm that fits inside the tag with a wall around it.", "named": "the card says the hole does not fit" },
+        { "locator": "Edit#ReliefHoleMm", "act": "set value", "with": "5", "reads": "value", "expect": "5", "named": "5 mm is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and it fits" }
+      ]
+    },
+
+    {
       "name": "About opens and closes during a download whose chip keeps going",
       "catches": "an About that hides a running download, stops it, or takes the status bar with it",
       "filed": "MOD11",

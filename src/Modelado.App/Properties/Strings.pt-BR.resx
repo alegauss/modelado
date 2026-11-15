@@ -246,6 +246,27 @@
   <data name="ReliefSizeInvalid" xml:space="preserve">
     <value>A largura e a profundidade precisam ser maiores que 0 mm, e a base de 0 mm ou mais.</value>
   </data>
+  <data name="ReliefKeychain" xml:space="preserve">
+    <value>Chaveiro</value>
+  </data>
+  <data name="ReliefKeychainNone" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="ReliefKeychainCircle" xml:space="preserve">
+    <value>Disco</value>
+  </data>
+  <data name="ReliefKeychainTag" xml:space="preserve">
+    <value>Plaquinha arredondada</value>
+  </data>
+  <data name="ReliefHoleMm" xml:space="preserve">
+    <value>Furo</value>
+  </data>
+  <data name="ReliefHoleAcross" xml:space="preserve">
+    <value>Furo ao longo do topo</value>
+  </data>
+  <data name="ReliefHoleInvalid" xml:space="preserve">
+    <value>O furo precisa ser maior que 0 mm e caber na plaquinha com uma parede em volta.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>
