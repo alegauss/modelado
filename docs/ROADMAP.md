@@ -6,10 +6,10 @@
 
 ## Block B — Windows interface built like PhotoBoost
 
-- 🛠 **MOD98** (deps: —) **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — Still to come: each card's extras folded into Advanced, and a dot on a rail icon in place of the card's one-time download note. → §MOD98
 - 📋 **MOD99** (deps: —) **The services the app drives (Meshy, Ideogram, Blender) appear only as text, with no logo anywhere in the window** — A logo tells which service an action or a charge belongs to at a glance, where a name has to be read. → §MOD99
 - 📋 **MOD100** (deps: MOD99) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
 - 📋 **MOD136** (deps: —) **About's source and download rows, rebuilt equal by value, can drop out of the accessibility tree while still shown** — A Remove button a screen reader or a case found once can vanish from the tree when About is opened again. → §MOD136
+- 📋 **MOD138** (deps: —) **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — MOD98 shows one card at a time, but each card still lists all its settings; folding the extras leaves the main control and action in view. → §MOD138
 
 ## Block C — Existing code wired into the window
 
@@ -153,11 +153,5 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
-
-## Done when — MOD98
-
-- **The Operations panel shows the chosen card alone** A case presses each rail icon and
-  finds that card and no other; every case driving a card selects its icon first; a dot
-  on an icon marks a model still to download.
 
 ## Non-goals

@@ -48,6 +48,18 @@
     <Setter Property="Margin" Value="4,2" />
   </Style>
 
+  <!-- MOD98: the dot on an Operations rail icon whose card still needs a download. Never alone: its
+       rail item carries the same in words (ItemStatus, HelpText and the tooltip). -->
+  <Style x:Key="RailDot" TargetType="Ellipse">
+    <Setter Property="Width" Value="8" />
+    <Setter Property="Height" Value="8" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+    <Setter Property="Visibility" Value="Collapsed" />
+  </Style>
+
   <!-- A status that carries a word ("GPU", "CPU"), never a coloured dot alone. -->
   <Style x:Key="StatusChip" TargetType="Border">
     <Setter Property="CornerRadius" Value="10" />

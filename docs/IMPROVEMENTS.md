@@ -23,22 +23,6 @@ two staged files and a gone one, read back in order. Left: the toolbar menu (a d
 on ToolbarOpen sharing FillRecent's rows), photo thumbnails (decoded small off the
 window's thread, cached by path and time written), and the Jump List.
 
-### §MOD98 MOD98 — An icon rail with one operation shown at a time
-
-MainWindow.xaml stacks 3D Object, Relief, Cloud 3D, Edit and improve, Export, History
-and Quality in one ScrollViewer. Add a narrow vertical rail of icons, about 48 px wide,
-on the panel's edge next to the viewport, with one Segoe Fluent icon per card, a
-tooltip, an AutomationId (Rail-Object, Rail-Relief, …) and a selected state. The panel
-shows only the selected card, so the viewport stays visible and usable, unlike a modal,
-which the user weighed and set aside because these settings are tuned while watching the
-model. The choice persists in SettingsFile. A card's essentials (its main control and
-its Generate button) stay on top, and the rest folds into Advanced, as on 3D Object
-today. A dot on an icon means its model still needs a download, so the "One-time
-download" note leaves the card. Cloud 3D hides with its rail icon when no key is held.
-The rail is keyboard reachable (arrows move, Enter selects). Existing winwright cases
-first select the rail icon of the card they drive. A new case checks that pressing each
-icon shows that card alone, and that the choice survives a restart.
-
 ### §MOD99 MOD99 — The logos of the services the app drives
 
 Ship the marks of Meshy AI, Ideogram and Blender as app resources (SVG converted to XAML
@@ -93,6 +77,29 @@ Give SourceRow reference equality as RecentRow and ModelRow have it (Equals by
 ReferenceEquals, GetHashCode by RuntimeHelpers). An architecture test can hold every
 record used as an ItemsSource row in Modelado.App to that, and a case reopens About
 after a source is removed and invokes a Remove that was there before.
+
+### §MOD138 Each card's extras folded into Advanced
+
+Split from MOD98, whose rail and dot shipped. Each card keeps its essentials on top (its
+main control and its action) and folds the rest into a closed Advanced expander, as 3D
+Object's ObjectAdvanced does since MOD17. Proposed split, settled against
+MainWindow.xaml:
+
+- Relief: Depth and Generate relief stay; Advanced holds the depth-model choice (MOD27),
+  resolution, base and the cut-out checkbox.
+- Cloud 3D: service, photo or text, the prompt and Generate stay; Advanced holds texture, PBR
+  and quad topology.
+- Edit and improve: Simplify, Subdivide, Fill holes and the AI buttons stay; Advanced holds
+  the pieces, smoothing and flatten rows with their amounts, and the cloud remesh and retexture
+  group.
+- Export: format and Save as stay; Advanced holds the per-format options and the longest side.
+
+History and Quality have nothing to fold. Each expander gets an AutomationId
+(ReliefAdvanced, CloudAdvanced, EditAdvanced, ExportAdvanced). A closed WPF Expander
+takes its content out of the UI Automation tree, so every case that drives a folded
+control must first expand its card's Advanced, as the ObjectAdvanced case does;
+cases-live too. A new case checks that each Advanced starts closed and opens. Whether an
+Advanced remembers being open is an open choice; MOD98 kept only the chosen card.
 
 ## Block C — Existing code wired into the window
 

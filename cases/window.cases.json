@@ -459,14 +459,17 @@
       "fixture": "a window with a photo open and a fresh models folder",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
+        { "locator": "ListItem#Rail-Object", "act": "read", "reads": "status", "expect": "One-time download · 4 MB", "named": "the 3D Object rail icon names its download and its size, the words of its dot (MOD98)" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "status", "expect": "One-time download · 1 MB", "named": "and so does the Relief icon (MOD98)" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "description", "expect": "depth-anything-v2-small, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "which model, and from where (MOD98)" },
+        { "locator": "ListItem#Rail-Quality", "act": "read", "reads": "status", "empty": true, "named": "a card with nothing to download has no dot (MOD98)" },
         { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
-        { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "the 3D Object card names its download and its size" },
+        { "locator": "Text#ObjectFirstUseBadge", "act": "read", "absent": true, "named": "and the card itself no longer carries the note (MOD98)" },
         { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
-        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "and so does the Relief card" },
-        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "depth-anything-v2-small, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "which model, and from where" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },
         { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "matches": "^Downloading · \\d+%$", "named": "the card says it is downloading, and how far" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "status", "empty": true, "named": "and the Relief icon's dot has gone, the card saying it now (MOD98)" },
         { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "matches": "^\\d+ of 1 MB · ", "named": "with the megabytes done of the total" },
         { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
         { "locator": "Button#ObjectButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the other operation stays usable meanwhile" },
@@ -510,9 +513,8 @@
         { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "absent": true, "named": "it leaves the list" },
         { "locator": "Text#AboutDownloadNote", "act": "read", "reads": "name", "matches": "Nothing is downloaded yet\\.$", "named": "and the total says so" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
-        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 1 MB", "named": "the Relief card offers its download again" },
-        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
-        { "locator": "Text#ObjectFirstUseBadge", "act": "read", "reads": "name", "expect": "One-time download · 4 MB", "named": "and the 3D Object card is as it was" }
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "status", "expect": "One-time download · 1 MB", "named": "the Relief icon offers its download again (MOD98)" },
+        { "locator": "ListItem#Rail-Object", "act": "read", "reads": "status", "expect": "One-time download · 4 MB", "named": "and the 3D Object icon is as it was (MOD98)" }
       ]
     },
 
@@ -563,7 +565,7 @@
         { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the Relief card now offers a depth model" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[order=top]", "act": "read", "reads": "name", "expect": "Depth Anything V2 Small (built in)", "named": "the built-in one first" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[nameStarts=\"my-depth\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "the source's my-depth is chosen" },
-        { "locator": "Text#ReliefFirstUseDetail", "act": "read", "reads": "name", "expect": "my-depth, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "the card names what its first use now downloads" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "description", "expect": "my-depth, from 127.0.0.1:47631/files. Your photo is never uploaded.", "named": "the Relief icon names what its first use now downloads (MOD98)" },
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "List#ConsentFiles > ListItem[order=top]", "act": "read", "reads": "name", "expect": "my-depth · FP32 · 1 MB · from 127.0.0.1:47631/files", "named": "the download offered is the chosen model's" },
         { "locator": "Button#ConsentAccept", "act": "invoke", "named": "the download is agreed to" },

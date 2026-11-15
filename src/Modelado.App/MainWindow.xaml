@@ -259,18 +259,29 @@
       <ListBox x:Name="Rail" AutomationProperties.AutomationId="Rail" AutomationProperties.Name="{x:Static p:Strings.OperationsTitle}"
                DockPanel.Dock="Left" Width="48" Margin="0,0,4,0" BorderThickness="0" Background="Transparent"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="OnRailChanged">
+        <!-- A dot on an icon means its card's model still needs a one-time download; the size and
+             the source are its tooltip, and its ItemStatus and HelpText for a screen reader. -->
         <ListBoxItem x:Name="RailObject" AutomationProperties.AutomationId="Rail-Object" AutomationProperties.Name="{x:Static p:Strings.ObjectCardTitle}" ToolTip="{x:Static p:Strings.ObjectCardTitle}" Tag="Object">
-          <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7B8;" />
+          <Grid>
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE7B8;" />
+            <Ellipse x:Name="RailObjectDot" Style="{StaticResource RailDot}" />
+          </Grid>
         </ListBoxItem>
         <ListBoxItem x:Name="RailRelief" AutomationProperties.AutomationId="Rail-Relief" AutomationProperties.Name="{x:Static p:Strings.ReliefCardTitle}" ToolTip="{x:Static p:Strings.ReliefCardTitle}" Tag="Relief">
-          <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE81E;" />
+          <Grid>
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE81E;" />
+            <Ellipse x:Name="RailReliefDot" Style="{StaticResource RailDot}" />
+          </Grid>
         </ListBoxItem>
         <ListBoxItem x:Name="RailCloud" AutomationProperties.AutomationId="Rail-Cloud" AutomationProperties.Name="{x:Static p:Strings.CloudCardTitle}" ToolTip="{x:Static p:Strings.CloudCardTitle}" Tag="Cloud"
                      Visibility="{Binding Visibility, ElementName=CloudCard}">
           <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE753;" />
         </ListBoxItem>
         <ListBoxItem x:Name="RailEdit" AutomationProperties.AutomationId="Rail-Edit" AutomationProperties.Name="{x:Static p:Strings.EditCardTitle}" ToolTip="{x:Static p:Strings.EditCardTitle}" Tag="Edit">
-          <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE70F;" />
+          <Grid>
+            <TextBlock Style="{StaticResource ToolbarIcon}" Text="&#xE70F;" />
+            <Ellipse x:Name="RailEditDot" Style="{StaticResource RailDot}" />
+          </Grid>
         </ListBoxItem>
         <ListBoxItem x:Name="RailExport" AutomationProperties.AutomationId="Rail-Export" AutomationProperties.Name="{x:Static p:Strings.ExportCardTitle}" ToolTip="{x:Static p:Strings.ExportCardTitle}" Tag="Export"
                      Visibility="{Binding Visibility, ElementName=ExportCard}">

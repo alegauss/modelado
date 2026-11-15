@@ -2,6 +2,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using Modelado.Inference;
 using Modelado.Inference.Pipelines;
@@ -11,7 +12,9 @@ namespace Modelado.App;
 /// <summary>
 /// First-use cards (MOD22, after PhotoBoost's PB58). The 3D Object and Relief cards, and the AI
 /// texture button, say before they are pressed that their models are a one-time download and how
-/// large it is. Pressing offers it in the consent panel (MOD21); once agreed the download runs beside
+/// large it is: since MOD98 as a dot on the card's rail icon, whose tooltip, ItemStatus and HelpText
+/// carry the size and source, so the card itself holds only its settings until a download starts.
+/// Pressing offers it in the consent panel (MOD21); once agreed the download runs beside
 /// the app, every other operation still usable, with its progress on the card and in the status bar.
 /// It can be paused and resumed, a failure says what to do, and the operation that was pressed
 /// starts by itself once its models are verified.
@@ -39,11 +42,14 @@ public partial class MainWindow
     private void StartFirstUse()
     {
         objectFirstUse = new(Strings.ObjectCardTitle, Strings.ObjectFirstUseAccept, () => ObjectModels(ObjectEnhancePhoto.IsChecked == true),
-            ObjectFirstUse, ObjectFirstUseBadge, ObjectFirstUseDetail, ObjectFirstUseProgress, ObjectFirstUseAction, () => OnGenerateObject(this, new RoutedEventArgs()));
+            ObjectFirstUse, ObjectFirstUseBadge, ObjectFirstUseDetail, ObjectFirstUseProgress, ObjectFirstUseAction, () => OnGenerateObject(this, new RoutedEventArgs()),
+            new RailMark(RailObject, RailObjectDot, Strings.ObjectCardTitle));
         reliefFirstUse = new(Strings.ReliefCardTitle, Strings.ReliefFirstUseAccept, () => ReliefReconstruction.Models(ReliefRemoveBackground.IsChecked == true, DepthModel),
-            ReliefFirstUse, ReliefFirstUseBadge, ReliefFirstUseDetail, ReliefFirstUseProgress, ReliefFirstUseAction, () => OnGenerateRelief(this, new RoutedEventArgs()));
+            ReliefFirstUse, ReliefFirstUseBadge, ReliefFirstUseDetail, ReliefFirstUseProgress, ReliefFirstUseAction, () => OnGenerateRelief(this, new RoutedEventArgs()),
+            new RailMark(RailRelief, RailReliefDot, Strings.ReliefCardTitle));
         textureFirstUse = new(Strings.TextureFirstUseTitle, Strings.TextureFirstUseAccept, () => [Upscaling.Model],
-            TextureFirstUse, TextureFirstUseBadge, TextureFirstUseDetail, TextureFirstUseProgress, TextureFirstUseAction, () => OnUpscaleTexture(this, new RoutedEventArgs()));
+            TextureFirstUse, TextureFirstUseBadge, TextureFirstUseDetail, TextureFirstUseProgress, TextureFirstUseAction, () => OnUpscaleTexture(this, new RoutedEventArgs()),
+            new RailMark(RailEdit, RailEditDot, Strings.EditCardTitle));
         Closed += (_, _) =>
         {
             // The .part files stay, so the next start resumes them.
@@ -71,6 +77,7 @@ public partial class MainWindow
         if (textureFirstUse is not null && mesh?.Texture is null)
         {
             textureFirstUse.Box.Visibility = Visibility.Collapsed;
+            textureFirstUse.Rail.Show(null, null);
         }
     }
 
@@ -82,31 +89,33 @@ public partial class MainWindow
         // collapsed and shown again on each progress report: a control flickered four times a
         // second drops out of the accessibility tree once its card has been hidden and shown.
         card.Action.Tag = null;
+        card.Note = null;
         Visibility bar = Visibility.Collapsed;
         try
         {
-            ShowFirstUseStage(card, listed, missing, ref bar);
+            card.Box.Visibility = ShowFirstUseStage(card, listed, missing, ref bar);
         }
         finally
         {
             card.Bar.Visibility = bar;
             card.Action.Visibility = card.Action.Tag is null ? Visibility.Collapsed : Visibility.Visible;
+            card.Rail.Show(card.Note, card.Note is null ? null : card.Detail.Text);
         }
     }
 
-    private void ShowFirstUseStage(FirstUseCard card, ModelManifest? listed, IReadOnlyList<ModelRequest> missing, ref Visibility bar)
+    // Where this reading leaves the card's box. A download not yet asked for is no longer said on
+    // the card (MOD98): it is the dot on the card's rail icon, with the size and source in words.
+    private Visibility ShowFirstUseStage(FirstUseCard card, ModelManifest? listed, IReadOnlyList<ModelRequest> missing, ref Visibility bar)
     {
         if (missing.Count == 0 && card.Downloading is null)
         {
             card.Stage = FirstUseStage.Offered;
             card.Badge.Visibility = Visibility.Collapsed;
             card.Detail.Text = card.Ready ?? "";
-            card.Box.Visibility = card.Ready is null ? Visibility.Collapsed : Visibility.Visible;
-            return;
+            return card.Ready is null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         card.Ready = null;
-        card.Box.Visibility = Visibility.Visible;
         card.Badge.Visibility = Visibility.Visible;
         if (listed is null || missing.Any(m => listed.Model(m.Model) is null))
         {
@@ -114,7 +123,7 @@ public partial class MainWindow
             card.Detail.Text = listed is null
                 ? manifestError is null ? Strings.ModelListUnreadableOffline : Ui.Format(Strings.ModelListUnreadableOfflineBecause, manifestError)
                 : Ui.Format(Strings.ModelListLacks, listed.Version, string.Join(Strings.ListComma, missing.Where(m => listed.Model(m.Model) is null).Select(m => m.Model)));
-            return;
+            return Visibility.Visible;
         }
 
         long pending = ModelDownloads.PendingBytes(listed, library.DownloadRoot, missing, library.Roots);
@@ -154,8 +163,11 @@ public partial class MainWindow
                     Strings.FirstUseDetail,
                     string.Join(Strings.ListComma, missing.Select(m => m.Model)),
                     string.Join(Strings.ListAnd, missing.Select(m => SourceOf(listed.Model(m.Model)!.Variants[ModelDownloads.VariantOf(listed, m)!].Url)).Distinct(StringComparer.Ordinal)));
-                break;
+                card.Note = card.Badge.Text;
+                return Visibility.Collapsed;
         }
+
+        return Visibility.Visible;
     }
 
     // Its caption and the card it acts on; ShowFirstUse shows it once the reading is done.
@@ -328,9 +340,14 @@ public partial class MainWindow
     private Action? pendingRun;
 
     /// <summary>One card's first-use controls and where its download stands.</summary>
-    private sealed class FirstUseCard(string title, string accept, Func<IReadOnlyList<string>> models, FrameworkElement box, TextBlock badge, TextBlock detail, ProgressBar bar, Button action, Action run)
+    private sealed class FirstUseCard(string title, string accept, Func<IReadOnlyList<string>> models, FrameworkElement box, TextBlock badge, TextBlock detail, ProgressBar bar, Button action, Action run, RailMark rail)
     {
         public string Title { get; } = title;
+
+        public RailMark Rail { get; } = rail;
+
+        // The download not yet asked for, which the rail icon says in place of the card (MOD98).
+        public string? Note { get; set; }
 
         public string Accept { get; } = accept;
 
@@ -361,5 +378,38 @@ public partial class MainWindow
         public bool RunWhenReady { get; set; }
 
         public System.Diagnostics.Stopwatch Shown { get; } = new();
+    }
+
+    /// <summary>
+    /// A card's rail icon and its dot (MOD98). The dot is never alone: the same note is the icon's
+    /// ItemStatus, its detail the HelpText, and both follow the card's name in the tooltip. Each is
+    /// set only when it changes, so a reading repeated four times a second raises nothing.
+    /// </summary>
+    private sealed class RailMark(ListBoxItem item, FrameworkElement dot, string title)
+    {
+        public void Show(string? note, string? detail)
+        {
+            Visibility shown = note is null ? Visibility.Collapsed : Visibility.Visible;
+            if (dot.Visibility != shown)
+            {
+                dot.Visibility = shown;
+            }
+
+            if (AutomationProperties.GetItemStatus(item) != (note ?? ""))
+            {
+                AutomationProperties.SetItemStatus(item, note ?? "");
+            }
+
+            if (AutomationProperties.GetHelpText(item) != (detail ?? ""))
+            {
+                AutomationProperties.SetHelpText(item, detail ?? "");
+            }
+
+            string tip = note is null ? title : string.Join(Environment.NewLine, new[] { title, note, detail }.Where(line => !string.IsNullOrEmpty(line)));
+            if (!Equals(item.ToolTip, tip))
+            {
+                item.ToolTip = tip;
+            }
+        }
     }
 }

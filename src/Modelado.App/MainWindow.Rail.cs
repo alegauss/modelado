@@ -11,7 +11,10 @@ namespace Modelado.App;
 /// shows the chosen card alone, so its settings and its Generate button are not read past the
 /// others', while the model stays in view to tune against (a modal was weighed and set aside for
 /// that). The choice is kept for the next start. Cloud 3D, Export and History have an icon only
-/// while they are available.
+/// while they are available. Rail items are keyboard reachable as any ListBox (arrows move). A dot
+/// on 3D Object, Relief or Edit means that card's model still needs its one-time download; the
+/// note that used to sit on the card is the icon's tooltip, ItemStatus and HelpText instead (see
+/// RailMark in MainWindow.FirstUse.cs). Folding each card's extras into Advanced is MOD138.
 /// </summary>
 public partial class MainWindow
 {
