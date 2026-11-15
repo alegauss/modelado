@@ -244,7 +244,7 @@
     <value>Massiver Sockel (0 für keinen)</value>
   </data>
   <data name="ReliefSizeInvalid" xml:space="preserve">
-    <value>Breite und Tiefe brauchen mehr als 0 mm, der Sockel 0 mm oder mehr.</value>
+    <value>Breite und Tiefe brauchen mehr als 0 mm, Sockel und Rahmen 0 mm oder mehr.</value>
   </data>
   <data name="ReliefKeychain" xml:space="preserve">
     <value>Schlüsselanhänger</value>
@@ -266,6 +266,27 @@
   </data>
   <data name="ReliefHoleInvalid" xml:space="preserve">
     <value>Das Loch braucht mehr als 0 mm und muss mit einem Rand darum in die Marke passen.</value>
+  </data>
+  <data name="ReliefShape" xml:space="preserve">
+    <value>Form</value>
+  </data>
+  <data name="ReliefShapeRectangle" xml:space="preserve">
+    <value>Das Rechteck des Fotos</value>
+  </data>
+  <data name="ReliefShapeRounded" xml:space="preserve">
+    <value>Abgerundete Plakette</value>
+  </data>
+  <data name="ReliefShapeCircle" xml:space="preserve">
+    <value>Rundes Medaillon</value>
+  </data>
+  <data name="ReliefShapeOval" xml:space="preserve">
+    <value>Ovales Medaillon</value>
+  </data>
+  <data name="ReliefBorderMm" xml:space="preserve">
+    <value>Erhöhter Rahmen (0 für keinen)</value>
+  </data>
+  <data name="ReliefBorderHeightMm" xml:space="preserve">
+    <value>Rahmenhöhe</value>
   </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>

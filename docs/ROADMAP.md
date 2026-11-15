@@ -48,8 +48,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-- ⏳ **MOD105** (deps: MOD102 ✅) **A relief is always the photo's rectangle, never a round or oval medallion or a plaque with a border** — Still to come: the Relief card's shape, a raised border of a set width and height in mm, and the flat back. → §MOD105
-- 📋 **MOD106** (deps: MOD105 ⏳) **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — A name or a date is what turns a printed relief into a gift, and Relief Maker users ask for text around the frame. → §MOD106
+- 📋 **MOD106** (deps: MOD105 ✅) **There is no way to put text on a relief: around a medallion, under a plaque or on a keychain** — A name or a date is what turns a printed relief into a gift, and Relief Maker users ask for text around the frame. → §MOD106
 - 📋 **MOD107** (deps: MOD102 ✅) **A relief has no stand, so a print meant to stand on a shelf needs a support modelled elsewhere** — A printed portrait or plaque is often displayed upright, and the only fix today is modelling a stand in another tool. → §MOD107
 - 📋 **MOD108** (deps: MOD102 ✅) **There is no lithophane mode, where thickness follows brightness and the print shows the photo when lit from behind** — Lithophanes are among the most searched photo prints; tools like Cura, ItsLitho and MakerLab make them, and Modelado's height mesher nearly does. → §MOD108
 - 📋 **MOD109** (deps: MOD103 ✅) **A relief is not exported in the orientation it prints best, face up and flat on the plate** — A relief printed standing or face down needs supports and loses detail, and users of Bambu's Relief Maker report exactly that. → §MOD109
@@ -150,12 +149,5 @@
   case opens the toolbar's Recent menu and finds the drop zone's list in it; photo
   entries carry a thumbnail; the Jump List lists the same paths where Windows allows it
   for the package.
-
-## Done when — MOD105
-
-- **A medallion and a bordered plaque come from the Relief card too** The card offers
-  the four shapes and a raised border of a width and height in mm joined to the relief
-  in one closed mesh with a flat back; a case picks a shape and border, and the CLI
-  takes the border as it takes --shape.
 
 ## Non-goals

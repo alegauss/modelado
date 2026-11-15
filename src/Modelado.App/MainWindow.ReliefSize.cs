@@ -24,7 +24,19 @@ public partial class MainWindow
         ReliefDepthMm.Text = Millimetres(Relief.PrintDepthDefault);
         ReliefBaseMm.Text = Millimetres(Relief.PrintBaseDefault);
         ReliefHoleMm.Text = Millimetres(Keychain.HoleDiameterDefault);
+        ReliefBorderMm.Text = "0";
+        ReliefBorderHeightMm.Text = Millimetres(Relief.PrintDepthDefault + 1);
     }
+
+    // MOD105: the outline the card crops the relief to.
+    private OutlineShape ShapeChosen =>
+        Enum.TryParse((ReliefShape.SelectedItem as ComboBoxItem)?.Tag as string, out OutlineShape shape) ? shape : OutlineShape.Rectangle;
+
+    // MOD105: the raised border's width and height, or null when one is not a size.
+    private (float Width, float Height)? BorderSize() =>
+        Typed(ReliefBorderMm.Text) is { } width && width >= 0 && Typed(ReliefBorderHeightMm.Text) is { } height && height > 0
+            ? (width, height)
+            : null;
 
     // MOD104: the keychain the card cuts, or null for a plain relief.
     private KeychainShape? KeychainChosen => (ReliefKeychain?.SelectedItem as ComboBoxItem)?.Tag switch
@@ -114,7 +126,7 @@ public partial class MainWindow
         ReliefSizeError.Visibility = wrong ? Visibility.Visible : Visibility.Collapsed;
 
         // MOD104: the sizes may all be sizes and the keychain's hole still not fit the tag.
-        bool sizesFine = Typed(ReliefWidthMm.Text) is > 0 && Typed(ReliefDepthMm.Text) is > 0 && Typed(ReliefBaseMm.Text) is >= 0;
+        bool sizesFine = Typed(ReliefWidthMm.Text) is > 0 && Typed(ReliefDepthMm.Text) is > 0 && Typed(ReliefBaseMm.Text) is >= 0 && BorderSize() is not null;
         ReliefSizeError.Text = wrong && sizesFine ? Strings.ReliefHoleInvalid : Strings.ReliefSizeInvalid;
     }
 
@@ -125,7 +137,7 @@ public partial class MainWindow
     /// </summary>
     private (float Width, float Depth, float Base)? PrintedSize()
     {
-        if (ReliefWidthMm is null || ReliefDepthMm is null || ReliefBaseMm is null)
+        if (ReliefWidthMm is null || ReliefDepthMm is null || ReliefBaseMm is null || ReliefBorderMm is null)
         {
             return null;
         }
@@ -133,6 +145,7 @@ public partial class MainWindow
         return Typed(ReliefWidthMm.Text) is { } width && width > 0
             && Typed(ReliefDepthMm.Text) is { } depth && depth > 0
             && Typed(ReliefBaseMm.Text) is { } baseMm && baseMm >= 0
+            && BorderSize() is not null
             && KeychainSettings(width).Valid
             ? (width, depth, baseMm)
             : null;
@@ -151,8 +164,8 @@ public partial class MainWindow
             return new ReliefOptions(GridLongSide: grid, Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value);
         }
 
-        return PrintedSize() is { } size
-            ? new ReliefOptions(GridLongSide: grid, Depth: size.Depth, BaseThickness: size.Base, PrintWidth: size.Width)
+        return PrintedSize() is { } size && BorderSize() is { } border
+            ? new ReliefOptions(GridLongSide: grid, Depth: size.Depth, BaseThickness: size.Base, PrintWidth: size.Width, BorderWidth: border.Width, BorderHeight: border.Height)
             : null;
     }
 

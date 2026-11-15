@@ -613,7 +613,7 @@
         { "locator": "Edit#ReliefBaseMm", "act": "read", "reads": "value", "expect": "2", "named": "on a 2 mm base" },
         { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "all of them sizes" },
         { "locator": "Edit#ReliefWidthMm", "act": "set value", "with": "0", "reads": "value", "expect": "0", "named": "a width of 0 is typed" },
-        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The width and the depth need a size above 0 mm, and the base 0 mm or more.", "named": "the card says what a size needs" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The width and the depth need a size above 0 mm, and the base and the border 0 mm or more.", "named": "the card says what a size needs" },
         { "locator": "Edit#ReliefWidthMm", "act": "set value", "with": "60,5", "reads": "value", "expect": "60,5", "named": "60,5 is typed with a decimal comma" },
         { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and read as 60.5 mm" },
         { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the box is cleared" },
@@ -644,6 +644,27 @@
         { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The hole needs a size above 0 mm that fits inside the tag with a wall around it.", "named": "the card says the hole does not fit" },
         { "locator": "Edit#ReliefHoleMm", "act": "set value", "with": "5", "reads": "value", "expect": "5", "named": "5 mm is typed" },
         { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and it fits" }
+      ]
+    },
+
+    {
+      "name": "the Relief card crops a relief to a medallion or a plaque, with a raised border in millimetres",
+      "catches": "a shape list that offers no medallion, a border that starts on, or a negative border taken as a size",
+      "filed": "MOD105",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ReliefShape", "act": "expand", "named": "the shapes are opened" },
+        { "locator": "ComboBox#ReliefShape > ListItem[name=\"Round medallion\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a round medallion is chosen" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "Edit#ReliefBorderMm", "act": "read", "reads": "value", "expect": "0", "named": "no border to start with" },
+        { "locator": "Edit#ReliefBorderHeightMm", "act": "read", "reads": "value", "expect": "4", "named": "its height 1 mm above the 3 mm relief" },
+        { "locator": "Edit#ReliefBorderMm", "act": "set value", "with": "-1", "reads": "value", "expect": "-1", "named": "a negative border is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "The width and the depth need a size above 0 mm, and the base and the border 0 mm or more.", "named": "the card says it is not a size" },
+        { "locator": "Edit#ReliefBorderMm", "act": "set value", "with": "3", "reads": "value", "expect": "3", "named": "a 3 mm border is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and it is taken" }
       ]
     },
 

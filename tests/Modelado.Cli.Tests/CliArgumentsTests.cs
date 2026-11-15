@@ -70,7 +70,7 @@ public sealed class CliArgumentsTests
         string[] reliefRun = ["relief", "p.png", "-o", "r.glb", "--grid", "256", "--depth", "0.25", "--base", "0.1", "--remove-background"];
         string[] printedRun = ["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--depth-mm", "3", "--base-mm", "2"];
         string[] keychainRun = ["relief", "p.png", "-o", "k.3mf", "--width-mm", "45", "--keychain", "circle", "--hole-mm", "5"];
-        string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval"];
+        string[] medallionRun = ["relief", "p.png", "-o", "m.stl", "--width-mm", "70", "--shape", "oval", "--border-mm", "3", "--border-height-mm", "5"];
         string[] editRun = ["edit", "x.glb", "-o", "y.glb", "--rotate", "x:90", "--remove-pieces", "0.05", "--fill-holes", "--simplify", "0.25", "--subdivide", "--flatten", "0.03", "--upscale-texture"];
 
         string[] cloudRun = ["cloud", "remesh", "m.glb", "-o", "c.glb", "--service", "meshy", "--estimate", "--polycount", "9000", "--quads", "--cloud-api", "meshy=http://x/"];
@@ -89,6 +89,7 @@ public sealed class CliArgumentsTests
     [InlineData("--base-mm", "2", "--grid", "256")]
     [InlineData("--keychain", "circle", "--grid", "256")]
     [InlineData("--hole-mm", "4", "--width-mm", "50")]
+    [InlineData("--border-mm", "3", "--grid", "256")]
     public void A_relief_is_sized_in_shares_or_in_millimetres_never_both(string first, string firstValue, string second, string secondValue)
     {
         // MOD102: --depth 0.25 read as millimetres, or --depth-mm 3 as a share, would make another object.

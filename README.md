@@ -233,7 +233,9 @@ that size, so the STL measures what was asked for. The Relief card's **Size it i
 does the same. With `--width-mm`, `--keychain circle` or `--keychain tag` cuts the relief into a
 keychain, a disc or a rounded tag with a hole near the top (`--hole-mm`, 4 by default), written as
 one closed solid with the hole through it. `--shape rounded|circle|oval` crops a relief to a plaque
-or a medallion, closed the same way. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+or a medallion, closed the same way, and `--border-mm` with `--border-height-mm` raises a frame
+along its outline; the back stays flat, for a magnet or glue. The Relief card has the same shapes,
+and the border with the other millimetres. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

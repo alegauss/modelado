@@ -244,7 +244,7 @@
     <value>Base sólida (0 para nenhuma)</value>
   </data>
   <data name="ReliefSizeInvalid" xml:space="preserve">
-    <value>A largura e a profundidade precisam ser maiores que 0 mm, e a base de 0 mm ou mais.</value>
+    <value>A largura e a profundidade precisam ser maiores que 0 mm, e a base e a moldura de 0 mm ou mais.</value>
   </data>
   <data name="ReliefKeychain" xml:space="preserve">
     <value>Chaveiro</value>
@@ -266,6 +266,27 @@
   </data>
   <data name="ReliefHoleInvalid" xml:space="preserve">
     <value>O furo precisa ser maior que 0 mm e caber na plaquinha com uma parede em volta.</value>
+  </data>
+  <data name="ReliefShape" xml:space="preserve">
+    <value>Formato</value>
+  </data>
+  <data name="ReliefShapeRectangle" xml:space="preserve">
+    <value>O retângulo da foto</value>
+  </data>
+  <data name="ReliefShapeRounded" xml:space="preserve">
+    <value>Placa arredondada</value>
+  </data>
+  <data name="ReliefShapeCircle" xml:space="preserve">
+    <value>Medalhão redondo</value>
+  </data>
+  <data name="ReliefShapeOval" xml:space="preserve">
+    <value>Medalhão oval</value>
+  </data>
+  <data name="ReliefBorderMm" xml:space="preserve">
+    <value>Moldura em relevo (0 para nenhuma)</value>
+  </data>
+  <data name="ReliefBorderHeightMm" xml:space="preserve">
+    <value>Altura da moldura</value>
   </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>

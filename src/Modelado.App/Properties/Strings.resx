@@ -244,7 +244,7 @@
     <value>Solid base (0 for none)</value>
   </data>
   <data name="ReliefSizeInvalid" xml:space="preserve">
-    <value>The width and the depth need a size above 0 mm, and the base 0 mm or more.</value>
+    <value>The width and the depth need a size above 0 mm, and the base and the border 0 mm or more.</value>
   </data>
   <data name="ReliefKeychain" xml:space="preserve">
     <value>Keychain</value>
@@ -266,6 +266,27 @@
   </data>
   <data name="ReliefHoleInvalid" xml:space="preserve">
     <value>The hole needs a size above 0 mm that fits inside the tag with a wall around it.</value>
+  </data>
+  <data name="ReliefShape" xml:space="preserve">
+    <value>Shape</value>
+  </data>
+  <data name="ReliefShapeRectangle" xml:space="preserve">
+    <value>The photo's rectangle</value>
+  </data>
+  <data name="ReliefShapeRounded" xml:space="preserve">
+    <value>Rounded plaque</value>
+  </data>
+  <data name="ReliefShapeCircle" xml:space="preserve">
+    <value>Round medallion</value>
+  </data>
+  <data name="ReliefShapeOval" xml:space="preserve">
+    <value>Oval medallion</value>
+  </data>
+  <data name="ReliefBorderMm" xml:space="preserve">
+    <value>Raised border (0 for none)</value>
+  </data>
+  <data name="ReliefBorderHeightMm" xml:space="preserve">
+    <value>Border height</value>
   </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>

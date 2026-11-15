@@ -244,7 +244,7 @@
     <value>Base sólida (0 para ninguna)</value>
   </data>
   <data name="ReliefSizeInvalid" xml:space="preserve">
-    <value>El ancho y la profundidad deben superar 0 mm, y la base ser de 0 mm o más.</value>
+    <value>El ancho y la profundidad deben superar 0 mm, y la base y el marco ser de 0 mm o más.</value>
   </data>
   <data name="ReliefKeychain" xml:space="preserve">
     <value>Llavero</value>
@@ -266,6 +266,27 @@
   </data>
   <data name="ReliefHoleInvalid" xml:space="preserve">
     <value>El agujero debe superar 0 mm y caber en la placa con una pared alrededor.</value>
+  </data>
+  <data name="ReliefShape" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="ReliefShapeRectangle" xml:space="preserve">
+    <value>El rectángulo de la foto</value>
+  </data>
+  <data name="ReliefShapeRounded" xml:space="preserve">
+    <value>Placa redondeada</value>
+  </data>
+  <data name="ReliefShapeCircle" xml:space="preserve">
+    <value>Medallón redondo</value>
+  </data>
+  <data name="ReliefShapeOval" xml:space="preserve">
+    <value>Medallón ovalado</value>
+  </data>
+  <data name="ReliefBorderMm" xml:space="preserve">
+    <value>Marco en relieve (0 para ninguno)</value>
+  </data>
+  <data name="ReliefBorderHeightMm" xml:space="preserve">
+    <value>Altura del marco</value>
   </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>

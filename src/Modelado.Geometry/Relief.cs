@@ -18,13 +18,20 @@ namespace Modelado.Geometry;
 /// <paramref name="BaseThickness"/> are millimetres too, so a relief made 60 mm wide with 3 mm of
 /// depth on a 2 mm base measures exactly that. Null keeps the shares of a 1-unit width.
 /// </param>
+/// <param name="BorderWidth">
+/// MOD105: with <paramref name="PrintWidth"/>, a raised border this many millimetres wide along the
+/// relief's outline (the photo's edge, or the crop's), a frame for a plaque or a medallion; 0 for none.
+/// </param>
+/// <param name="BorderHeight">MOD105: the border's top, in millimetres above the relief's lowest point.</param>
 public sealed record ReliefOptions(
     int GridLongSide = 256,
     float Depth = 0.25f,
     float BaseThickness = 0f,
     int SmoothPasses = 1,
     float MaskThreshold = 0.5f,
-    float? PrintWidth = null);
+    float? PrintWidth = null,
+    float BorderWidth = 0f,
+    float BorderHeight = 0f);
 
 /// <summary>
 /// A relief (2.5D) model from a photo and its depth: a grid over the image whose height is the
@@ -84,6 +91,7 @@ public static class Relief
 
         float aspect = (float)gh / gw;
         float zScale = options.Depth;
+        float[]? border = Border(gridMask, gw, gh, options);
         Vector3[] positions = new Vector3[gw * gh];
         Vector2[] uvs = new Vector2[gw * gh];
         Vector3[] colors = new Vector3[gw * gh];
@@ -93,7 +101,8 @@ public static class Relief
             {
                 int i = (y * gw) + x;
                 float u = (float)x / (gw - 1), v = (float)y / (gh - 1);
-                positions[i] = new Vector3(u - 0.5f, (0.5f - v) * aspect, grid[i] * zScale);
+                float z = border is not null && border[i] >= 0 ? border[i] : grid[i] * zScale;
+                positions[i] = new Vector3(u - 0.5f, (0.5f - v) * aspect, z);
                 uvs[i] = new Vector2(u, v);
                 (float r, float g, float b) = photo.Sample(u, v);
                 colors[i] = new Vector3(r, g, b);
@@ -120,6 +129,78 @@ public static class Relief
         Mesh surface = MeshCleanup.Compact(new Mesh(positions, [.. triangles], colors, uvs, photo, doubleSided: true), [.. triangles]);
         surface = Widened(surface, options.PrintWidth);
         return options.BaseThickness > 0 ? Solidify(surface, -options.BaseThickness) : surface;
+    }
+
+    /// <summary>
+    /// MOD105: the raised border's height at each grid vertex within the border's width of the
+    /// outline, and -1 elsewhere. The distance to the outline is a two-pass chamfer transform (1 along
+    /// a row, √2 on a diagonal) over the grid padded with a ring that counts as outside, so the
+    /// photo's own edge is outline as much as a crop's. Millimetres per cell come from the kept
+    /// width, which <see cref="ReliefOptions.PrintWidth"/> becomes.
+    /// </summary>
+    private static float[]? Border(float[]? mask, int gw, int gh, ReliefOptions options)
+    {
+        if (options.PrintWidth is not { } printWidth || options.BorderWidth <= 0)
+        {
+            return null;
+        }
+
+        int pw = gw + 2, ph = gh + 2;
+        float[] distance = new float[pw * ph];
+        int minColumn = gw, maxColumn = -1;
+        for (int y = 0; y < ph; y++)
+        {
+            for (int x = 0; x < pw; x++)
+            {
+                bool kept = x > 0 && y > 0 && x <= gw && y <= gh
+                    && (mask is null || mask[((y - 1) * gw) + x - 1] >= options.MaskThreshold);
+                distance[(y * pw) + x] = kept ? float.MaxValue : 0;
+                if (kept)
+                {
+                    (minColumn, maxColumn) = (Math.Min(minColumn, x - 1), Math.Max(maxColumn, x - 1));
+                }
+            }
+        }
+
+        Chamfer(distance, pw, ph);
+        float cellsPerMm = Math.Max(1, maxColumn - minColumn) / printWidth;
+        float reach = options.BorderWidth * cellsPerMm;
+        float[] border = new float[gw * gh];
+        for (int y = 0; y < gh; y++)
+        {
+            for (int x = 0; x < gw; x++)
+            {
+                // A kept vertex next to the outline is 1 cell from the first outside one.
+                float d = distance[((y + 1) * pw) + x + 1];
+                border[(y * gw) + x] = d < float.MaxValue && d - 1 <= reach ? options.BorderHeight : -1;
+            }
+        }
+
+        return border;
+    }
+
+    // Forward then backward over the grid, each cell taking the least of its neighbours' distances
+    // plus the step to them.
+    private static void Chamfer(float[] d, int w, int h)
+    {
+        const float diagonal = 1.41421356f;
+        for (int y = 1; y < h; y++)
+        {
+            for (int x = 1; x < w - 1; x++)
+            {
+                int i = (y * w) + x;
+                d[i] = MathF.Min(d[i], MathF.Min(MathF.Min(d[i - 1] + 1, d[i - w] + 1), MathF.Min(d[i - w - 1] + diagonal, d[i - w + 1] + diagonal)));
+            }
+        }
+
+        for (int y = h - 2; y >= 0; y--)
+        {
+            for (int x = w - 2; x >= 1; x--)
+            {
+                int i = (y * w) + x;
+                d[i] = MathF.Min(d[i], MathF.Min(MathF.Min(d[i + 1] + 1, d[i + w] + 1), MathF.Min(d[i + w + 1] + diagonal, d[i + w - 1] + diagonal)));
+            }
+        }
     }
 
     // MOD102: the depth is already in millimetres (zScale); the width is what the mask kept, made the

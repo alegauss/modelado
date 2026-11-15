@@ -29,7 +29,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--remove-background", "--depth-model"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--remove-background", "--depth-model"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
@@ -104,6 +104,12 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         if (!millimetres && (options.ContainsKey("--depth-mm") || options.ContainsKey("--base-mm")))
         {
             return "--depth-mm and --base-mm need the relief's width as --width-mm.";
+        }
+
+        // MOD105: the border is drawn in millimetres along the outline.
+        if (!millimetres && (options.ContainsKey("--border-mm") || options.ContainsKey("--border-height-mm")))
+        {
+            return "--border-mm and --border-height-mm need the relief's width as --width-mm.";
         }
 
         // MOD104: a keychain's hole is sized in millimetres, so the tag is too.

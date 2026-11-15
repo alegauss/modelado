@@ -31,6 +31,8 @@ const string Usage = """
                              closed solid with a hole near the top to hang it by
         --hole-mm D          the keychain's hole; default 4
         --shape S            rectangle (default), rounded, circle or oval: a plaque or a medallion
+        --border-mm W        with --width-mm, a raised frame W mm wide along the outline
+        --border-height-mm H the frame's top above the relief's lowest point; default the depth + 1
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -335,7 +337,14 @@ ReliefOptions ReliefSize(int grid)
         throw new ArgumentException("--width-mm and --depth-mm take a size above 0 mm, --base-mm 0 mm or more.");
     }
 
-    return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width);
+    // MOD105: a frame along the outline, standing 1 mm above the relief unless told otherwise.
+    double border = Number("--border-mm", 0), borderHeight = Number("--border-height-mm", depth + 1);
+    if (border < 0 || borderHeight <= 0)
+    {
+        throw new ArgumentException("--border-mm takes 0 mm or more, --border-height-mm a height above 0 mm.");
+    }
+
+    return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width, BorderWidth: (float)border, BorderHeight: (float)borderHeight);
 }
 
 // MOD104: the relief cut into a keychain tag, its hole at the top.

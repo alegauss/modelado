@@ -566,20 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD105 Medallions and plaques
-
-Today the relief covers the photo's rectangle, or the cut-out object with Object only.
-Users of MakerLab's Relief Sculpture Maker ask on the Bambu forum to fit the relief in a
-circular frame and cannot. A portrait gift usually is a round or oval medallion, or a
-plaque with a raised border.
-
-The Relief card gains a shape (rectangle, rounded rectangle, circle, oval) that crops
-the relief, a raised border of a set width and height in mm, and an optional back that
-stays flat for a magnet or glue. The border joins the relief in one closed mesh.
-
-Done when a circular medallion and a bordered plaque export as single closed meshes at
-the size asked, with the shape and border in the window and the CLI.
-
 ### §MOD106 Text on reliefs
 
 Users of Bambu's Relief Sculpture Maker ask for text around the frame. Today adding a

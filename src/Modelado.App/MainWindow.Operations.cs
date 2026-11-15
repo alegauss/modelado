@@ -76,7 +76,7 @@ public partial class MainWindow
             return;
         }
 
-        ReliefRunOptions settings = new(relief, RemoveBackground: cutOut, DepthModel: DepthModel, Keychain: ReliefKeychainOptions());
+        ReliefRunOptions settings = new(relief, RemoveBackground: cutOut, DepthModel: DepthModel, Keychain: ReliefKeychainOptions(), Shape: ShapeChosen);
         Mesh? before = mesh;
         await RunAsync(reliefFirstUse!, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
         if (relief.PrintWidth is not null && mesh is { } made && !ReferenceEquals(made, before))

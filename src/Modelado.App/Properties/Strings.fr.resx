@@ -244,7 +244,7 @@
     <value>Socle plein (0 pour aucun)</value>
   </data>
   <data name="ReliefSizeInvalid" xml:space="preserve">
-    <value>La largeur et la profondeur doivent dépasser 0 mm, et le socle faire 0 mm ou plus.</value>
+    <value>La largeur et la profondeur doivent dépasser 0 mm, et le socle et le cadre faire 0 mm ou plus.</value>
   </data>
   <data name="ReliefKeychain" xml:space="preserve">
     <value>Porte-clés</value>
@@ -266,6 +266,27 @@
   </data>
   <data name="ReliefHoleInvalid" xml:space="preserve">
     <value>Le trou doit dépasser 0 mm et tenir dans la plaque avec une paroi autour.</value>
+  </data>
+  <data name="ReliefShape" xml:space="preserve">
+    <value>Forme</value>
+  </data>
+  <data name="ReliefShapeRectangle" xml:space="preserve">
+    <value>Le rectangle de la photo</value>
+  </data>
+  <data name="ReliefShapeRounded" xml:space="preserve">
+    <value>Plaque arrondie</value>
+  </data>
+  <data name="ReliefShapeCircle" xml:space="preserve">
+    <value>Médaillon rond</value>
+  </data>
+  <data name="ReliefShapeOval" xml:space="preserve">
+    <value>Médaillon ovale</value>
+  </data>
+  <data name="ReliefBorderMm" xml:space="preserve">
+    <value>Cadre en relief (0 pour aucun)</value>
+  </data>
+  <data name="ReliefBorderHeightMm" xml:space="preserve">
+    <value>Hauteur du cadre</value>
   </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
