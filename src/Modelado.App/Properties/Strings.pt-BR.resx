@@ -312,6 +312,27 @@
   <data name="ReliefStandTip" xml:space="preserve">
     <value>Salvar como grava um segundo arquivo ao lado do relevo: um bloco que imprime deitado, com uma fenda na espessura do relevo, que o segura em pé inclinado 15° para trás.</value>
   </data>
+  <data name="LithophaneTitle" xml:space="preserve">
+    <value>Litofania</value>
+  </data>
+  <data name="LithophaneCaption" xml:space="preserve">
+    <value>Fina onde a foto é clara e grossa onde é escura: iluminada por trás, a impressão mostra a foto. Não precisa de modelo.</value>
+  </data>
+  <data name="LithophaneWidthMm" xml:space="preserve">
+    <value>Largura do painel</value>
+  </data>
+  <data name="LithophaneMinMm" xml:space="preserve">
+    <value>Mais fino, no claro</value>
+  </data>
+  <data name="LithophaneMaxMm" xml:space="preserve">
+    <value>Mais grosso, no escuro</value>
+  </data>
+  <data name="LithophaneButton" xml:space="preserve">
+    <value>Gerar litofania</value>
+  </data>
+  <data name="LithophaneSizeInvalid" xml:space="preserve">
+    <value>A largura e a parte mais fina precisam ser maiores que 0 mm, e a mais grossa maior que a mais fina.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>

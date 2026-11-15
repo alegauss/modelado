@@ -566,21 +566,6 @@ chips, History or About, and the CLI's output is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
-### §MOD108 Lithophane mode
-
-A lithophane is a thin panel whose thickness follows the photo's brightness, so the
-photo appears when light passes through it. Cura, ItsLitho, 3dp.rocks, MakerLab and
-Blender's Photo Relief already make them, so it does not set Modelado apart, but it is
-one of the largest photo-print searches and the relief mesher already builds a height
-grid with a solid base.
-
-The Relief card gains a Lithophane mode: height from inverted brightness instead of
-depth, minimum and maximum thickness in mm (around 0.8 and 3 mm), flat, curved or
-cylinder shapes, an optional frame, and a resolution suited to a 0.4 mm nozzle.
-
-Done when a flat and a curved lithophane print and show the photo against a light, with
-the mode in the window and the CLI.
-
 ### §MOD109 Print orientation for reliefs
 
 A user of Bambu's Relief Maker reported prints coming out standing, which needs supports

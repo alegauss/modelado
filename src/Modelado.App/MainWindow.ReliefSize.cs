@@ -28,6 +28,7 @@ public partial class MainWindow
         ReliefBorderMm.Text = "0";
         ReliefBorderHeightMm.Text = Millimetres(Relief.PrintDepthDefault + 1);
         ReliefTextMm.Text = Millimetres(ReliefTextHeightDefault);
+        StartLithophane();
     }
 
     private const float ReliefTextHeightDefault = 6;

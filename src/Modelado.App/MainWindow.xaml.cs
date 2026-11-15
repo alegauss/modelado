@@ -239,7 +239,7 @@ public partial class MainWindow : Window, IDisposable
         photo = null;
         photoPath = path;
         Title = Ui.Format(Strings.WindowTitleWithFile, Path.GetFileName(path));
-        ObjectButton.IsEnabled = ReliefButton.IsEnabled = false;
+        ObjectButton.IsEnabled = ReliefButton.IsEnabled = LithophaneButton.IsEnabled = false;
         ShowMesh(loaded, null, null, Strings.HistoryOpened);
         savedVersion = shownVersion;
         ShowSource(Path.GetFileName(path));
@@ -284,7 +284,7 @@ public partial class MainWindow : Window, IDisposable
         ExportCard.Visibility = Visibility.Collapsed;
         ExportStatus.Visibility = Visibility.Collapsed;
         ViewChoice.IsEnabled = false;
-        ObjectButton.IsEnabled = ReliefButton.IsEnabled = true;
+        ObjectButton.IsEnabled = ReliefButton.IsEnabled = LithophaneButton.IsEnabled = true;
         ObjectRemoveBackground.IsChecked = !photo.HasTransparency;
         ShowImage(photo);
         ShowSource(Ui.Format(photo.HasTransparency ? Strings.PhotoSourceCutOut : Strings.PhotoSource, Path.GetFileName(path), photo.Width, photo.Height));

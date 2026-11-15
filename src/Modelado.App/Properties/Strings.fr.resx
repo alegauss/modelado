@@ -312,6 +312,27 @@
   <data name="ReliefStandTip" xml:space="preserve">
     <value>Enregistrer sous écrit un second fichier à côté du relief : un bloc imprimé à plat, avec une fente de l'épaisseur du relief, qui le tient debout incliné de 15° vers l'arrière.</value>
   </data>
+  <data name="LithophaneTitle" xml:space="preserve">
+    <value>Lithophanie</value>
+  </data>
+  <data name="LithophaneCaption" xml:space="preserve">
+    <value>Fine là où la photo est claire, épaisse là où elle est sombre : éclairée par derrière, l'impression montre la photo. Aucun modèle requis.</value>
+  </data>
+  <data name="LithophaneWidthMm" xml:space="preserve">
+    <value>Largeur du panneau</value>
+  </data>
+  <data name="LithophaneMinMm" xml:space="preserve">
+    <value>Le plus fin, dans le clair</value>
+  </data>
+  <data name="LithophaneMaxMm" xml:space="preserve">
+    <value>Le plus épais, dans le sombre</value>
+  </data>
+  <data name="LithophaneButton" xml:space="preserve">
+    <value>Créer la lithophanie</value>
+  </data>
+  <data name="LithophaneSizeInvalid" xml:space="preserve">
+    <value>La largeur et le point le plus fin doivent dépasser 0 mm, et le plus épais dépasser le plus fin.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

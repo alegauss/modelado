@@ -502,6 +502,38 @@
                         Visibility="Collapsed" Click="OnFirstUseAction" />
               </StackPanel>
             </Border>
+            <!-- MOD108: a lithophane, thickness from the photo's darkness, made without a model. -->
+            <TextBlock Text="{x:Static p:Strings.LithophaneTitle}" Style="{StaticResource FieldLabel}" Margin="0,16,0,0" FontWeight="SemiBold" />
+            <TextBlock Style="{StaticResource StatCaption}" Text="{x:Static p:Strings.LithophaneCaption}" TextWrapping="Wrap" />
+            <Grid Margin="0,6,0,0">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="72" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <TextBlock Text="{x:Static p:Strings.LithophaneWidthMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="LithophaneWidthMm" Grid.Column="1" AutomationProperties.AutomationId="LithophaneWidthMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneWidthMm}"
+                       Margin="0,0,0,4" TextChanged="OnLithophaneTyped" />
+              <TextBlock Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock Grid.Row="1" Text="{x:Static p:Strings.LithophaneMinMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="LithophaneMinMm" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="LithophaneMinMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneMinMm}"
+                       Margin="0,0,0,4" TextChanged="OnLithophaneTyped" />
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock Grid.Row="2" Text="{x:Static p:Strings.LithophaneMaxMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="LithophaneMaxMm" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="LithophaneMaxMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneMaxMm}"
+                       Margin="0,0,0,4" TextChanged="OnLithophaneTyped" />
+              <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock x:Name="LithophaneSizeError" Grid.Row="3" Grid.ColumnSpan="3" AutomationProperties.AutomationId="LithophaneSizeError" Style="{StaticResource StatCaption}"
+                         Text="{x:Static p:Strings.LithophaneSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
+            </Grid>
+            <Button x:Name="LithophaneButton" AutomationProperties.AutomationId="LithophaneButton" Content="{x:Static p:Strings.LithophaneButton}" Margin="0,8,0,0" Padding="0,8"
+                    HorizontalAlignment="Stretch" Click="OnMakeLithophane" IsEnabled="False" />
           </StackPanel>
         </Border>
 

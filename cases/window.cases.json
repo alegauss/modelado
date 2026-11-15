@@ -692,6 +692,30 @@
     },
 
     {
+      "name": "the Relief card makes a lithophane without a model, sized in millimetres for an STL",
+      "catches": "a lithophane that asks for a model download, a thickest point thinner than the thinnest taken as a size, or a panel the Export card rescales",
+      "filed": "MOD108",
+      "tags": ["relief", "print", "lithophane"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Edit#LithophaneWidthMm", "act": "read", "reads": "value", "expect": "100", "named": "a 100 mm panel" },
+        { "locator": "Edit#LithophaneMinMm", "act": "read", "reads": "value", "expect": "0.8", "named": "0.8 mm where bright" },
+        { "locator": "Edit#LithophaneMaxMm", "act": "set value", "with": "0,5", "reads": "value", "expect": "0,5", "named": "a thickest point under the thinnest is typed" },
+        { "locator": "Text#LithophaneSizeError", "act": "read", "reads": "name", "expect": "The width and the thinnest point need a size above 0 mm, and the thickest more than the thinnest.", "named": "the card says it cannot be printed" },
+        { "locator": "Edit#LithophaneMaxMm", "act": "set value", "with": "3", "reads": "value", "expect": "3", "named": "3 mm where dark is typed" },
+        { "locator": "Text#LithophaneSizeError", "act": "read", "absent": true, "named": "and it is taken" },
+        { "locator": "Button#LithophaneButton", "act": "invoke", "named": "Make lithophane is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Lithophane · \\d+\\.\\d s · CPU$", "named": "the panel is made, with no model and no download offered" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "matches": "^100 × 7\\d(\\.\\d+)? × 3 mm ", "named": "and it will be saved 100 mm wide and 3 mm thick, as typed" }
+      ]
+    },
+
+    {
       "name": "the Relief card offers a stand with the millimetres, off until it is ticked",
       "catches": "a stand offered for a relief sized in shares, one that starts ticked, or a box that cannot be ticked",
       "filed": "MOD107",

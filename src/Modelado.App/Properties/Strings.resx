@@ -312,6 +312,27 @@
   <data name="ReliefStandTip" xml:space="preserve">
     <value>Save as writes a second file beside the relief: a block that prints flat, with a slot cut to the relief's thickness, holding it upright and leaning back 15°.</value>
   </data>
+  <data name="LithophaneTitle" xml:space="preserve">
+    <value>Lithophane</value>
+  </data>
+  <data name="LithophaneCaption" xml:space="preserve">
+    <value>Thin where the photo is bright and thick where it is dark: lit from behind, the print shows the photo. It needs no model.</value>
+  </data>
+  <data name="LithophaneWidthMm" xml:space="preserve">
+    <value>Panel width</value>
+  </data>
+  <data name="LithophaneMinMm" xml:space="preserve">
+    <value>Thinnest, where bright</value>
+  </data>
+  <data name="LithophaneMaxMm" xml:space="preserve">
+    <value>Thickest, where dark</value>
+  </data>
+  <data name="LithophaneButton" xml:space="preserve">
+    <value>Make lithophane</value>
+  </data>
+  <data name="LithophaneSizeInvalid" xml:space="preserve">
+    <value>The width and the thinnest point need a size above 0 mm, and the thickest more than the thinnest.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

@@ -312,6 +312,27 @@
   <data name="ReliefStandTip" xml:space="preserve">
     <value>Guardar como escribe un segundo archivo junto al relieve: un bloque que se imprime plano, con una ranura del grosor del relieve, que lo sostiene de pie inclinado 15° hacia atrás.</value>
   </data>
+  <data name="LithophaneTitle" xml:space="preserve">
+    <value>Litofanía</value>
+  </data>
+  <data name="LithophaneCaption" xml:space="preserve">
+    <value>Fina donde la foto es clara y gruesa donde es oscura: iluminada por detrás, la impresión muestra la foto. No necesita modelo.</value>
+  </data>
+  <data name="LithophaneWidthMm" xml:space="preserve">
+    <value>Ancho del panel</value>
+  </data>
+  <data name="LithophaneMinMm" xml:space="preserve">
+    <value>Lo más fino, en lo claro</value>
+  </data>
+  <data name="LithophaneMaxMm" xml:space="preserve">
+    <value>Lo más grueso, en lo oscuro</value>
+  </data>
+  <data name="LithophaneButton" xml:space="preserve">
+    <value>Crear litofanía</value>
+  </data>
+  <data name="LithophaneSizeInvalid" xml:space="preserve">
+    <value>El ancho y el punto más fino necesitan más de 0 mm, y el más grueso más que el más fino.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

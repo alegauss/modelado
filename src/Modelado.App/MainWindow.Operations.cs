@@ -157,7 +157,7 @@ public partial class MainWindow
         PauseButton.Content = Strings.PauseButton;
         CancelButton.IsEnabled = true;
         bool idle = !on && photo is not null;
-        ObjectButton.IsEnabled = ReliefButton.IsEnabled = idle;
+        ObjectButton.IsEnabled = ReliefButton.IsEnabled = LithophaneButton.IsEnabled = idle;
         UpdateEditButtons();
         QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
         ProviderAuto.IsEnabled = ProviderDirectML.IsEnabled = ProviderCpu.IsEnabled = !on;
