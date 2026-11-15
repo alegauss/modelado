@@ -33,6 +33,9 @@ const string Usage = """
         --shape S            rectangle (default), rounded, circle or oval: a plaque or a medallion
         --border-mm W        with --width-mm, a raised frame W mm wide along the outline
         --border-height-mm H the frame's top above the relief's lowest point; default the depth + 1
+        --text "WORDS"       with --width-mm, letters and digits raised on the relief
+        --text-mm H          a capital's height; default 6     --text-raise-mm R   above the relief; default 1
+        --text-on line|arc   along the bottom (default), or around a medallion's bottom arc
         --remove-background  the object only, without the background
         --depth-model NAME   another depth model, from --source; default depth-anything-v2-small
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
@@ -344,7 +347,16 @@ ReliefOptions ReliefSize(int grid)
         throw new ArgumentException("--border-mm takes 0 mm or more, --border-height-mm a height above 0 mm.");
     }
 
-    return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width, BorderWidth: (float)border, BorderHeight: (float)borderHeight);
+    // MOD106: words raised along the bottom, or around a medallion's arc.
+    ReliefText? text = Get("--text", null) is { } words
+        ? new ReliefText(words, (float)Number("--text-mm", 6), (float)Number("--text-raise-mm", 1), Get("--text-on", "line") switch
+        {
+            "line" => TextPlacement.Line,
+            "arc" => TextPlacement.Arc,
+            var other => throw new ArgumentException($"--text-on {other}: use line or arc."),
+        })
+        : null;
+    return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width, BorderWidth: (float)border, BorderHeight: (float)borderHeight, Text: text);
 }
 
 // MOD104: the relief cut into a keychain tag, its hole at the top.

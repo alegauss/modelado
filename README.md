@@ -235,7 +235,9 @@ keychain, a disc or a rounded tag with a hole near the top (`--hole-mm`, 4 by de
 one closed solid with the hole through it. `--shape rounded|circle|oval` crops a relief to a plaque
 or a medallion, closed the same way, and `--border-mm` with `--border-height-mm` raises a frame
 along its outline; the back stays flat, for a magnet or glue. The Relief card has the same shapes,
-and the border with the other millimetres. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
+and the border with the other millimetres. `--text "ANA 2026"` raises a name or a date along the
+bottom, or with `--text-on arc` around a medallion (`--text-mm` sets the letters' height), in a
+built-in font of capitals and digits. Common to all: `--provider`, `--high`, `--models`, `--manifest`, `--size` (longest
 side when saving).
 
 ## Preparing the models (Windows, Python) and publishing them on Hugging Face

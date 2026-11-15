@@ -23,6 +23,7 @@ namespace Modelado.Geometry;
 /// relief's outline (the photo's edge, or the crop's), a frame for a plaque or a medallion; 0 for none.
 /// </param>
 /// <param name="BorderHeight">MOD105: the border's top, in millimetres above the relief's lowest point.</param>
+/// <param name="Text">MOD106: with <paramref name="PrintWidth"/>, words raised on the relief (<see cref="ReliefTextStamp"/>).</param>
 public sealed record ReliefOptions(
     int GridLongSide = 256,
     float Depth = 0.25f,
@@ -31,7 +32,8 @@ public sealed record ReliefOptions(
     float MaskThreshold = 0.5f,
     float? PrintWidth = null,
     float BorderWidth = 0f,
-    float BorderHeight = 0f);
+    float BorderHeight = 0f,
+    ReliefText? Text = null);
 
 /// <summary>
 /// A relief (2.5D) model from a photo and its depth: a grid over the image whose height is the
@@ -92,6 +94,7 @@ public static class Relief
         float aspect = (float)gh / gw;
         float zScale = options.Depth;
         float[]? border = Border(gridMask, gw, gh, options);
+        float[]? text = ReliefTextStamp.Heights(gridMask, gw, gh, options);
         Vector3[] positions = new Vector3[gw * gh];
         Vector2[] uvs = new Vector2[gw * gh];
         Vector3[] colors = new Vector3[gw * gh];
@@ -102,6 +105,7 @@ public static class Relief
                 int i = (y * gw) + x;
                 float u = (float)x / (gw - 1), v = (float)y / (gh - 1);
                 float z = border is not null && border[i] >= 0 ? border[i] : grid[i] * zScale;
+                z = text is not null && text[i] >= 0 ? MathF.Max(z, text[i]) : z;
                 positions[i] = new Vector3(u - 0.5f, (0.5f - v) * aspect, z);
                 uvs[i] = new Vector2(u, v);
                 (float r, float g, float b) = photo.Sample(u, v);
