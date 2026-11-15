@@ -34,7 +34,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
         ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--text", "--text-mm", "--text-raise-mm", "--text-on", "--stand", "--stand-tilt", "--remove-background", "--depth-model"),
         ["lithophane"] = Takes("--out", "--width-mm", "--min-mm", "--max-mm"),
-        ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
+        ["edit"] = Takes("--out", "--rotate", "--mirror", "--remove-pieces", "--fill-holes", "--make-printable", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
         ["models"] = Takes(),
         ["cloud"] = Takes("--out", "--service", "--estimate", "--no-texture", "--pbr", "--quads", "--cloud-api", "--polycount", "--prompt", "--keep-uv"),

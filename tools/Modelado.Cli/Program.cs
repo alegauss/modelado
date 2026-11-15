@@ -49,6 +49,8 @@ const string Usage = """
         --mirror             mirrors left to right
         --remove-pieces F    removes pieces smaller than F of the largest (e.g. 0.05)
         --fill-holes         fills the holes
+        --make-printable MM  rebuilds it closed and manifold on a voxel grid MM wide (0.4 is a
+                             nozzle's line), in mm at --size, else in the model's units
         --simplify N|F       N triangles, or the share F (e.g. 0.25)
         --subdivide          4× the triangles, rounded off
         --smooth N           smoothing passes (Taubin)
@@ -284,6 +286,20 @@ try
             model = Edit(model, "--mirror", _ => MeshEdit.Mirror(model));
             model = Edit(model, "--remove-pieces", value => MeshCleanup.RemoveSmallPieces(model, double.Parse(value, CultureInfo.InvariantCulture)));
             model = Edit(model, "--fill-holes", _ => MeshEdit.FillHoles(model).Mesh);
+
+            // MOD111: the voxel is in millimetres at the size the model is saved at (--size), or in
+            // the model's own units, which a relief's millimetres are.
+            model = Edit(model, "--make-printable", value =>
+            {
+                float voxel = float.Parse(value, CultureInfo.InvariantCulture);
+                (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = model.Bounds();
+                System.Numerics.Vector3 span = high - low;
+                float longest = MathF.Max(span.X, MathF.Max(span.Y, span.Z));
+                float perMm = options.ContainsKey("--size") ? longest / (float)Number("--size", 1) : 1;
+                PrintableResult made = Printable.Make(model, voxel * perMm);
+                Console.WriteLine($"  made printable: {made.OpenEdgesBefore:N0} open and {made.TangledEdgesBefore:N0} tangled edges before, none now");
+                return made.Mesh;
+            });
             model = Edit(model, "--simplify", value =>
             {
                 double amount = double.Parse(value, CultureInfo.InvariantCulture);

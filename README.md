@@ -76,6 +76,7 @@ From the command line:
 
 ```
 modelado-cli edit robot.glb -o robot.stl --simplify 0.15 --fill-holes --flatten 0.03 --size 100
+modelado-cli edit robot.glb -o robot.3mf --make-printable 0.4 --size 100
 modelado-cli edit relief.glb -o relief-sharp.glb --upscale-texture
 modelado-cli object photo.jpg -o object.glb --enhance
 modelado-cli cloud image-to-3d photo.jpg --estimate
@@ -85,7 +86,9 @@ modelado-cli cloud remesh model.glb -o clean.glb --polycount 20000
 modelado-cli cloud retexture model.glb --prompt "rusted iron" -o rust.glb --keep-uv
 ```
 
-`cloud` uses the Meshy AI key stored in the window's About, or one stored with
+`--make-printable` rebuilds the model on a voxel grid that many millimetres wide at the `--size`
+it is saved at, so whatever holes or crossing pieces it had, it comes out closed and manifold
+for a slicer, its colours kept. `cloud` uses the Meshy AI key stored in the window's About, or one stored with
 `modelado-cli cloud key meshy`, which reads it from standard input. `--estimate` prints the
 window's consent line (what is sent, to whom, for how much, and what the month's budget leaves)
 and sends nothing. A job sent this way is checked against the same budgets and recorded in the

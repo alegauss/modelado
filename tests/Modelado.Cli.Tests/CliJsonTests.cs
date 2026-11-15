@@ -173,6 +173,24 @@ public sealed class CliJsonTests : IDisposable
     }
 
     [Fact]
+    public void Make_printable_rebuilds_a_model_closed_in_millimetres_at_the_size_saved()
+    {
+        // MOD111: a 0.5 mm voxel at --size 20 is a 40-cell grid across the cube, whatever its units.
+        string cube = Path.Combine(Repository.Root, "cases", "fixtures", "cube.obj");
+        string written = Path.Combine(folder, "printable.stl");
+
+        (int code, string output, string error) = Run("edit", cube, "-o", written, "--make-printable", "0.5", "--size", "20", "--json", "--provider", "cpu");
+
+        Assert.Equal(0, code);
+        JsonObject report = Assert.IsType<JsonObject>(JsonNode.Parse(output));
+        Assert.Equal(["--make-printable"], report["edits"]!.AsArray().Select(e => e!["edit"]!.GetValue<string>()));
+        Assert.InRange(report["triangles"]!.GetValue<int>(), 1000, 100_000);
+        Assert.Contains("made printable: 0 open and 0 tangled edges before", error, StringComparison.Ordinal);
+        (Vector3 min, Vector3 max) = MeshImport.Load(written).Bounds();
+        Assert.InRange(max.X - min.X, 19, 21);
+    }
+
+    [Fact]
     public void A_photo_becomes_a_lithophane_sized_in_millimetres_without_a_model()
     {
         // MOD108: brightness, not depth, so no model is downloaded or run.
