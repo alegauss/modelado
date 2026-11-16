@@ -57,23 +57,6 @@ an info icon. Existing AutomationIds are kept where the control survives, so the
 only add a navigation step. Cases press each page and find its key control. MOD96 and
 MOD97 land inside these pages, whichever ships first.
 
-### §MOD140 Checkboxes that follow a toggle, not only a click
-
-Found while building MOD102: WPF raises a CheckBox's Click only for a mouse or keyboard
-press. UI Automation's Toggle pattern (what a screen reader and a winwright "toggle"
-step use) changes IsChecked and raises Checked or Unchecked, never Click. MOD102's
-millimetres box was wired to Click and its case caught the panel not swapping.
-
-Two boxes in MainWindow.xaml still listen to Click alone: ObjectEnhancePhoto
-(OnEnhanceChanged) and ReliefRemoveBackground (OnReliefCutOutChanged). Both refresh
-which models the card needs, so ticking one through UI Automation leaves the rail dot
-(MOD98) and the first-use download size stale: Object only needs U-2-Net, Enhance needs
-Real-ESRGAN.
-
-Wire both to Checked and Unchecked, guarded for the first events raised while the window
-is still being built, as MainWindow.ReliefSize.cs does. A case toggles Object only on a
-fresh models folder and reads the Relief rail icon's status change size.
-
 ## Block C — Existing code wired into the window
 
 ## Block D — Model downloads

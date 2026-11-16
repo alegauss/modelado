@@ -335,7 +335,7 @@
                       ToolTip="{x:Static p:Strings.ObjectRemoveBackgroundTip}" />
             <CheckBox x:Name="ObjectProjectPhoto" AutomationProperties.AutomationId="ObjectProjectPhoto" Content="{x:Static p:Strings.ObjectProjectPhoto}" IsChecked="True" Margin="0,4,0,0"
                       ToolTip="{x:Static p:Strings.ObjectProjectPhotoTip}" />
-            <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="{x:Static p:Strings.ObjectEnhancePhoto}" Margin="0,4,0,0" Click="OnEnhanceChanged"
+            <CheckBox x:Name="ObjectEnhancePhoto" AutomationProperties.AutomationId="ObjectEnhancePhoto" Content="{x:Static p:Strings.ObjectEnhancePhoto}" Margin="0,4,0,0" Checked="OnEnhanceChanged" Unchecked="OnEnhanceChanged"
                       ToolTip="{x:Static p:Strings.ObjectEnhancePhotoTip}" />
             <!-- MOD17: the CLI's -\-step and -\-smooth, and the loose-piece share it fixes, closed by default. -->
             <Expander x:Name="ObjectAdvanced" AutomationProperties.AutomationId="ObjectAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
@@ -490,7 +490,7 @@
                   <ComboBoxItem Content="384" Tag="384" />
                   <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
                 </ComboBox>
-                <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+                <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Checked="OnReliefCutOutChanged" Unchecked="OnReliefCutOutChanged" />
               </StackPanel>
             </Expander>
             <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="{x:Static p:Strings.ReliefButton}" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"

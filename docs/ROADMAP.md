@@ -7,7 +7,6 @@
 ## Block B — Windows interface built like PhotoBoost
 
 - 📋 **MOD100** (deps: MOD99 ⏸) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
-- 📋 **MOD140** (deps: —) **Ticking Object only or Enhance through UI Automation leaves the card's download size and rail dot stale** — Both boxes refresh the models they need on Click, which WPF never raises for a screen reader's or a case's toggle. → §MOD140
 
 ## Block C — Existing code wired into the window
 

@@ -213,9 +213,23 @@ public partial class MainWindow
     private static IReadOnlyList<string> ObjectModels(bool enhance) =>
         enhance ? [.. ObjectReconstruction.Models, Upscaling.Model] : ObjectReconstruction.Models;
 
-    private async void OnEnhanceChanged(object sender, RoutedEventArgs e) => await RefreshModelStatusAsync().ConfigureAwait(true);
+    // MOD140: Checked and Unchecked, not Click, so a toggle through UI Automation (a screen reader,
+    // a case) refreshes the models the card needs too; nothing to refresh before the window loads.
+    private async void OnEnhanceChanged(object sender, RoutedEventArgs e)
+    {
+        if (IsLoaded)
+        {
+            await RefreshModelStatusAsync().ConfigureAwait(true);
+        }
+    }
 
-    private async void OnReliefCutOutChanged(object sender, RoutedEventArgs e) => await RefreshModelStatusAsync().ConfigureAwait(true);
+    private async void OnReliefCutOutChanged(object sender, RoutedEventArgs e)
+    {
+        if (IsLoaded)
+        {
+            await RefreshModelStatusAsync().ConfigureAwait(true);
+        }
+    }
 
     private async void OnQualityChanged(object sender, RoutedEventArgs e)
     {

@@ -494,6 +494,26 @@
     },
 
     {
+      "name": "Object only and Enhance ticked through UI Automation change what the cards say their first use downloads",
+      "catches": "a box that changes the models a card needs only when clicked with a mouse, leaving the rail's download size stale",
+      "filed": "MOD140",
+      "tags": ["download", "operations"],
+      "fixture": "a window with a photo open and a fresh models folder",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "status", "expect": "One-time download · 1 MB", "named": "the Relief icon names the depth model's download" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Relief card's Advanced is opened (MOD138)" },
+        { "locator": "CheckBox#ReliefRemoveBackground", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Object only is ticked through UI Automation" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "status", "expect": "One-time download · 2 MB", "named": "and the Relief icon now counts U-2-Net too" },
+        { "locator": "ListItem#Rail-Object", "act": "read", "reads": "status", "expect": "One-time download · 4 MB", "named": "the 3D Object icon names its download" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ObjectEnhancePhoto", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Enhance is ticked through UI Automation" },
+        { "locator": "ListItem#Rail-Object", "act": "read", "reads": "status", "expect": "One-time download · 5 MB", "named": "and the 3D Object icon now counts Real-ESRGAN too" }
+      ]
+    },
+
+    {
       "name": "each card says what its first use downloads, and a download paused, resumed and finished runs the operation by itself",
       "catches": "a Generate button whose download is a surprise, a pause that loses the download, or an operation that has to be pressed again once its models are in",
       "filed": "MOD22",
