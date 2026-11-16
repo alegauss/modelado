@@ -61,30 +61,16 @@ MOD97 land inside these pages, whichever ships first.
 
 ## Block D — Model downloads
 
-### §MOD122 Spike: downloading gated models
-
-The downloader fetches public files from Hugging Face by pinned commit and SHA-256. SF3D
-and SPAR3D, accepted on 12/11/2026 despite the Stability AI Community License, are
-gated: the user logs in to Hugging Face, accepts the licence, and Stability asks for
-registration. Modelado must not redistribute the weights itself unless the licence
-allows it.
-
-A spike, time-boxed, answers: can the app use the user's Hugging Face token (OAuth or a
-pasted token, stored with DPAPI) to fetch a gated file; how it learns the licence is
-accepted; whether the exported ONNX may be published in Modelado's own repository under
-the licence or must be produced on the user's PC from the gated weights; and where
-registration happens.
-
-Done when docs/model-downloads.md records the answers and the flow a download wizard
-would follow, with a throwaway prototype fetching one gated file.
-
 ### §MOD123 The model download wizard
 
 About has Download everything and per-model downloads. Models with conditions
 (registration, attribution, a revenue cap) need more: what the model does and how big it
-is, its licence in plain words and the full text, a consent the app records, the Hugging
-Face login or token when the file is gated, and the progress and checks the downloader
-already does.
+is, its licence in plain words and the full text, a consent the app records, and the
+progress and checks the downloader already does. MOD122 found (docs/model-downloads.md)
+that the Stability licence lets Modelado publish its ONNX export with the Agreement, a
+Notice file and "Powered by Stability AI", so the user meets no login or registration; a
+token step (401 sign in, 403 open the page and agree) is only for a licence that forbids
+redistribution.
 
 A wizard, built from MOD122's flow, does that for any model whose manifest entry carries
 conditions, and stays one click for the permissive ones. It also lists models available
