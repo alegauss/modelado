@@ -257,8 +257,18 @@
       <!-- MOD98: one icon per card, on the edge beside the viewport; the one chosen is brought into
            view and kept for the next start. Arrows move between icons, as in any list. -->
       <ListBox x:Name="Rail" AutomationProperties.AutomationId="Rail" AutomationProperties.Name="{x:Static p:Strings.OperationsTitle}"
-               DockPanel.Dock="Left" Width="48" Margin="0,0,4,0" BorderThickness="0" Background="Transparent"
+               DockPanel.Dock="Left" Width="48" Margin="0,0,4,0" Padding="0" BorderThickness="0" Background="Transparent"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="OnRailChanged">
+        <!-- Fluent's ListBoxItem padding is wider than the rail is; without this the icons are cut
+             on the right. The icon is centred in the item instead. -->
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="Padding" Value="0,10" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+          </Style>
+        </ListBox.ItemContainerStyle>
         <!-- A dot on an icon means its card's model still needs a one-time download; the size and
              the source are its tooltip, and its ItemStatus and HelpText for a screen reader. -->
         <ListBoxItem x:Name="RailObject" AutomationProperties.AutomationId="Rail-Object" AutomationProperties.Name="{x:Static p:Strings.ObjectCardTitle}" ToolTip="{x:Static p:Strings.ObjectCardTitle}" Tag="Object">
