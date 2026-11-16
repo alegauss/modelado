@@ -378,6 +378,15 @@
   <data name="LayFlatNone" xml:space="preserve">
     <value>Das Modell hat keine ebene Fläche zum Aufliegen; es bleibt, wie es war.</value>
   </data>
+  <data name="MemoryShort" xml:space="preserve">
+    <value>{0} braucht etwa {1:0.0} GB Arbeitsspeicher, frei sind {2:0.0} GB. Schließen Sie andere Programme oder wählen Sie Standardqualität, ein kleineres Raster oder die GPU, wo eine vorhanden ist.</value>
+  </data>
+  <data name="MemoryShortAsk" xml:space="preserve">
+    <value>Trotzdem ausführen?</value>
+  </data>
+  <data name="MemoryShortStopped" xml:space="preserve">
+    <value>{0} nicht gestartet: zu wenig freier Speicher</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

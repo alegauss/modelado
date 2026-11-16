@@ -734,16 +734,3 @@ the default.
 
 Done when a CPU-only install downloads and runs the chosen variant, the README and the
 site state the new size and time, and the speed table shows both.
-
-### §MOD119 Check memory before a run
-
-Sessions stay loaded until the provider or quality changes, and nothing compares free
-memory with what a run needs. On an 8 GB laptop, a 3D Object at a high grid can exhaust
-memory after a long run.
-
-With MOD118's figures, the app checks available RAM (and video memory on DirectML)
-before a run and, when short, says so and offers a lower grid, Standard quality or the
-CPU, or releases loaded sessions it does not need.
-
-Done when a run that would not fit is stopped with that advice before it starts, tested
-by forcing a low limit.

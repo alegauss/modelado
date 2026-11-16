@@ -43,7 +43,7 @@ public partial class MainWindow
             CoarseStep: ObjectEveryPoint.IsChecked == true ? 1 : 2,
             SmoothingIterations: (int)ObjectSmoothing.Value,
             KeepPieces: (int)ObjectPieces.Value / 100.0);
-        await RunAsync(objectFirstUse!, (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync(objectFirstUse!, Pipeline.Object, (photo, progress, token) => ObjectReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
     }
 
     private void OnObjectAdvancedChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -78,7 +78,7 @@ public partial class MainWindow
 
         ReliefRunOptions settings = new(relief, RemoveBackground: cutOut, DepthModel: DepthModel, Keychain: ReliefKeychainOptions(), Shape: ShapeChosen);
         Mesh? before = mesh;
-        await RunAsync(reliefFirstUse!, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
+        await RunAsync(reliefFirstUse!, Pipeline.Relief, (photo, progress, token) => ReliefReconstruction.Run(runner, photo, settings, progress, token)).ConfigureAwait(true);
         if (relief.PrintWidth is not null && mesh is { } made && !ReferenceEquals(made, before))
         {
             KeepPrintedSize(made);
@@ -88,11 +88,23 @@ public partial class MainWindow
         }
     }
 
-    private async Task RunAsync(FirstUseCard card, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
+    private async Task RunAsync(FirstUseCard card, Pipeline pipeline, Func<Imaging.RgbaImage, IProgress<ReconstructionProgress>, CancellationToken, ReconstructionResult> operation)
     {
         if (busy || photo is null)
         {
             return;
+        }
+
+        // MOD119: a PC short of memory is told before a download or a long run, not in the middle of one.
+        MemoryFit fit = MemoryCheck.Check(pipeline, provider, runner.HighQuality);
+        if (!fit.Fits)
+        {
+            string advice = Ui.Format(Strings.MemoryShort, card.Title, fit.NeededMb / 1024.0, fit.FreeMb / 1024.0);
+            if (MessageBox.Show(this, $"{advice}{Environment.NewLine}{Environment.NewLine}{Strings.MemoryShortAsk}", card.Title, MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            {
+                LastRunSaid(Ui.Format(Strings.MemoryShortStopped, card.Title), advice);
+                return;
+            }
         }
 
         // First use (MOD22): the card offers its download, and this runs by itself once it is in.

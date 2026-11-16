@@ -378,6 +378,15 @@
   <data name="LayFlatNone" xml:space="preserve">
     <value>模型没有可着床的平面，保持原样。</value>
   </data>
+  <data name="MemoryShort" xml:space="preserve">
+    <value>{0} 大约需要 {1:0.0} GB 内存，当前空闲 {2:0.0} GB。请关闭其他程序，或选择标准质量、较小的网格，或在有 GPU 时使用 GPU。</value>
+  </data>
+  <data name="MemoryShortAsk" xml:space="preserve">
+    <value>仍要运行吗？</value>
+  </data>
+  <data name="MemoryShortStopped" xml:space="preserve">
+    <value>{0} 未启动：空闲内存不足</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

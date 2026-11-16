@@ -325,6 +325,14 @@
       "shareable": false
     },
     {
+      // MOD119: Windows' free memory stood in by MODELADO_AVAILABLE_MB, low enough that any run is short of it.
+      "name": "a window with a photo open on a PC short of memory",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/short-models", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}", "MODELADO_AVAILABLE_MB": "0" },
+      "shareable": false
+    },
+    {
       // MOD27: no --manifest, so the built-in list is the embedded one and nothing of it is fetched;
       // LOCALAPPDATA staged empty for sources of this run's own, and a models folder of its own.
       "name": "a window with a photo open and no model sources added",
@@ -734,6 +742,23 @@
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "matches": "^100 × 7\\d(\\.\\d+)? × 3 mm ", "named": "and it will be saved 100 mm wide and 3 mm thick, as typed" }
+      ]
+    },
+
+    {
+      "name": "a run the PC has too little memory for is stopped before it starts, with what to change",
+      "catches": "a check that lets the run start and fail midway, offers a download first, or stops it without saying why",
+      "filed": "MOD119",
+      "tags": ["relief", "memory", "dialog"],
+      "fixture": "a window with a photo open on a PC short of memory",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Window[class=\"#32770\"] > Text[nameStarts=\"Relief needs about 0.9 GB of memory\"]", "act": "read", "reads": "name", "matches": "or the GPU where there is one\\.", "named": "the window says what the run needs and what to change, before anything starts" },
+        { "locator": "Window[class=\"#32770\"] > Button#7", "act": "invoke", "named": "No: it is not run (IDNO, whatever language Windows names it in)" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "Relief not started: not enough free memory", "named": "the last run says why" },
+        { "locator": "Text#ReliefFirstUseBadge", "act": "read", "absent": true, "named": "and no download was offered" }
       ]
     },
 

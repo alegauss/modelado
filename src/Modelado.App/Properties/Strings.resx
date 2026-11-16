@@ -378,6 +378,15 @@
   <data name="LayFlatNone" xml:space="preserve">
     <value>The model has no flat face to rest on; it was left as it was.</value>
   </data>
+  <data name="MemoryShort" xml:space="preserve">
+    <value>{0} needs about {1:0.0} GB of memory and {2:0.0} GB is free. Close other programs, or choose Standard quality, a lower grid, or the GPU where there is one.</value>
+  </data>
+  <data name="MemoryShortAsk" xml:space="preserve">
+    <value>Run it anyway?</value>
+  </data>
+  <data name="MemoryShortStopped" xml:space="preserve">
+    <value>{0} not started: not enough free memory</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

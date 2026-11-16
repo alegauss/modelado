@@ -378,6 +378,15 @@
   <data name="LayFlatNone" xml:space="preserve">
     <value>Le modèle n'a pas de face plane où reposer ; il est resté tel quel.</value>
   </data>
+  <data name="MemoryShort" xml:space="preserve">
+    <value>{0} demande environ {1:0.0} Go de mémoire et {2:0.0} Go sont libres. Fermez d'autres programmes, ou choisissez la qualité Standard, une grille plus petite ou le GPU s'il y en a un.</value>
+  </data>
+  <data name="MemoryShortAsk" xml:space="preserve">
+    <value>Lancer quand même ?</value>
+  </data>
+  <data name="MemoryShortStopped" xml:space="preserve">
+    <value>{0} non lancé : pas assez de mémoire libre</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

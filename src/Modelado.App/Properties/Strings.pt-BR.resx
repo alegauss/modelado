@@ -378,6 +378,15 @@
   <data name="LayFlatNone" xml:space="preserve">
     <value>O modelo não tem face plana para apoiar; ficou como estava.</value>
   </data>
+  <data name="MemoryShort" xml:space="preserve">
+    <value>{0} precisa de cerca de {1:0.0} GB de memória e há {2:0.0} GB livres. Feche outros programas ou escolha a qualidade Padrão, uma grade menor ou a GPU, se houver.</value>
+  </data>
+  <data name="MemoryShortAsk" xml:space="preserve">
+    <value>Executar mesmo assim?</value>
+  </data>
+  <data name="MemoryShortStopped" xml:space="preserve">
+    <value>{0} não iniciado: memória livre insuficiente</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Gerar relevo</value>
   </data>
