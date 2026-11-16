@@ -12,7 +12,7 @@
 
 ## Block D — Model downloads
 
-- 📋 **MOD126** (deps: MOD125 ✅) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
+- 🛠 **MOD126** (deps: MOD125 ✅) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
 
 ## Block E — Publishing custom models to Hugging Face
 

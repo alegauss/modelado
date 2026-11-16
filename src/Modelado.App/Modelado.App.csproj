@@ -27,11 +27,18 @@
   <!-- MOD85: every string the interface shows, in English, the neutral culture a translation's
        Strings.<culture>.resx fills. The Strings class is generated from it at build time, into
        obj, so the file and the class cannot drift apart; XAML reads it through x:Static. -->
+  <!-- One path both builds agree on: on Linux the *_wpftmp project's IntermediateOutputPath carries
+       the framework and RID twice (obj/Debug/net10.0-windows/win-x64/net10.0-windows/win-x64/), so a
+       class generated under the real project's was looked for where it never was. -->
+  <PropertyGroup>
+    <StringsDesignerFile>$(BaseIntermediateOutputPath)$(Configuration)/Strings.Designer.cs</StringsDesignerFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Modelado.App.Properties" />
     <EmbeddedResource Update="Properties\Strings.resx">
       <Generator>MSBuild:Compile</Generator>
-      <StronglyTypedFileName>$(IntermediateOutputPath)Strings.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedFileName>$(StringsDesignerFile)</StronglyTypedFileName>
       <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
       <StronglyTypedNamespace>Modelado.App.Properties</StronglyTypedNamespace>
       <StronglyTypedClassName>Strings</StronglyTypedClassName>
@@ -44,7 +51,7 @@
        generation of its own: so it is generated first and handed to that build by path. -->
   <Target Name="GenerateStringsBeforeMarkup" BeforeTargets="MarkupCompilePass1" DependsOnTargets="PrepareResourceNames;CoreResGen" />
   <ItemGroup Condition="'$(_TargetAssemblyProjectName)' != ''">
-    <Compile Include="$(IntermediateOutputPath)Strings.Designer.cs" />
+    <Compile Include="$(StringsDesignerFile)" />
   </ItemGroup>
 
   <ItemGroup>

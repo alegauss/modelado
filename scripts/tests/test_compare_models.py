@@ -8,7 +8,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import numpy as np
+# numpy is in scripts/requirements.txt, not in a bare Python such as CI's: skipped there, as
+# test_add_model.py's ONNX tests are, rather than failing the suite at import.
+try:
+    import numpy as np
+except ModuleNotFoundError:
+    raise unittest.SkipTest("numpy is not installed (scripts/requirements.txt)") from None
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
