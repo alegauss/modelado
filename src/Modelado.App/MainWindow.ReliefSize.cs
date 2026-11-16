@@ -205,7 +205,8 @@ public partial class MainWindow
         int grid = TagOf(ReliefResolution);
         if (!ReliefInMillimetres)
         {
-            return new ReliefOptions(GridLongSide: grid, Depth: (float)ReliefDepth.Value, BaseThickness: (float)ReliefBase.Value);
+            // MOD113: the base the label names, so "none" is an open relief.
+            return new ReliefOptions(GridLongSide: grid, Depth: (float)ReliefDepth.Value, BaseThickness: Relief.BaseShare((float)ReliefBase.Value));
         }
 
         return PrintedSize() is { } size && BorderSize() is { } border

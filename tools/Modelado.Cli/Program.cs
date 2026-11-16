@@ -22,7 +22,7 @@ const string Usage = """
     modelado-cli relief <photo> -o <output> [options]
         --grid N             vertices on the longest side; default 256
         --depth F            relief height, as a share of the width; default 0.25
-        --base F             solid base thickness, as a share of the width; 0 = open surface
+        --base F             solid base thickness, as a share of the width; under 0.005 = open surface
         --width-mm W         sized for printing: the relief W millimetres wide (the cut-out, with
                              --remove-background), saved at that size unless --size says otherwise
         --depth-mm D         with --width-mm, relief height in millimetres; default 3
@@ -387,7 +387,7 @@ ReliefOptions ReliefSize(int grid)
 {
     if (!options.ContainsKey("--width-mm"))
     {
-        return new ReliefOptions(GridLongSide: grid, Depth: (float)Number("--depth", 0.25), BaseThickness: (float)Number("--base", 0));
+        return new ReliefOptions(GridLongSide: grid, Depth: (float)Number("--depth", 0.25), BaseThickness: Relief.BaseShare((float)Number("--base", 0))); // MOD113: as the window reads its slider
     }
 
     double width = Number("--width-mm", Relief.PrintWidthDefault), depth = Number("--depth-mm", Relief.PrintDepthDefault), baseMm = Number("--base-mm", Relief.PrintBaseDefault);

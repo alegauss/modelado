@@ -42,6 +42,18 @@ public sealed record ReliefOptions(
 /// </summary>
 public static class Relief
 {
+    /// <summary>
+    /// MOD113: a base thinner than this share of the width is no base: the relief stays an open
+    /// surface, and the window's label says "none". One threshold for both, so the label and the
+    /// mesh never disagree.
+    /// </summary>
+    public const float NoBaseBelow = 0.005f;
+
+    /// <summary>MOD113: the base a share of the width gives, 0 under <see cref="NoBaseBelow"/>.</summary>
+    /// <param name="share">The base, as a share of the width.</param>
+    /// <returns>The share, or 0 for no base.</returns>
+    public static float BaseShare(float share) => share < NoBaseBelow ? 0 : share;
+
     /// <summary>MOD102: the printed width a relief sized in millimetres starts from, in the window and the CLI.</summary>
     public const float PrintWidthDefault = 60f;
 

@@ -192,7 +192,7 @@ public partial class MainWindow
         }
 
         DepthText.Text = Ui.Format(Strings.ReliefDepthLabel, ReliefDepth.Value);
-        BaseText.Text = Ui.Format(Strings.ReliefBaseLabel, ReliefBase.Value < 0.005 ? Strings.BaseNone : Ui.Format(Strings.BaseShare, ReliefBase.Value));
+        BaseText.Text = Ui.Format(Strings.ReliefBaseLabel, Relief.BaseShare((float)ReliefBase.Value) == 0 ? Strings.BaseNone : Ui.Format(Strings.BaseShare, ReliefBase.Value));
     }
 
     private static IReadOnlyList<string> ObjectModels(bool enhance) =>

@@ -581,15 +581,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD113 A base below 0.5% is not no base
-
-MainWindow.Operations.cs shows no base for a value below 0.5% but passes the value
-through, and Relief.Solidify adds walls and a back anyway (lines 64 and 172, found on
-12/11/2026). Either the threshold applies to both, or the label shows the real value.
-
-Done when a base below the threshold produces an open relief and says so, or the label
-shows the thin base it builds, with a test for each side of the threshold.
-
 ### §MOD114 Closed reliefs for irregular masks
 
 ReliefTests assert every edge used twice and a positive volume for an unmasked relief

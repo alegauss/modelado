@@ -71,6 +71,26 @@ public sealed class ReliefTests
         Assert.Equal(-0.05f, mesh.Bounds().Min.Z, 1e-5f);
     }
 
+    [Theory]
+    [InlineData(0.004f, true)]
+    [InlineData(0.0049f, true)]
+    [InlineData(0.005f, false)]
+    [InlineData(0.01f, false)]
+    public void A_base_under_the_threshold_the_label_calls_none_builds_an_open_relief(float share, bool open)
+    {
+        // MOD113: the window's "none" and the mesh agree on each side of Relief.NoBaseBelow.
+        float base_ = Relief.BaseShare(share);
+        Mesh mesh = Relief.Build(Dome(40, 30), 40, 30, Photo(40, 30), default, new ReliefOptions(GridLongSide: 30, BaseThickness: base_));
+
+        Assert.Equal(open, base_ == 0);
+        Assert.Equal(open, mesh.DoubleSided);
+        Assert.Equal(open, MarchingCubesTests.EdgeUses(mesh).Values.Any(uses => uses == 1));
+        if (!open)
+        {
+            Assert.Equal(-share, mesh.Bounds().Min.Z, 1e-5f);
+        }
+    }
+
     [Fact]
     public void A_mask_keeps_only_the_object_and_its_solid_is_still_closed()
     {

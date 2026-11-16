@@ -146,6 +146,7 @@
 - ✅ **MOD110 (Open in slicer on the Export card)** **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — The Export card finds Bambu Studio, OrcaSlicer, PrusaSlicer or Cura and opens the model in the one picked as a 3MF at the print size.
 - ✅ **MOD111** **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — The Edit card's Make printable rebuilds the model shown on a voxel in mm at the print size, one undoable step giving the CLI's mesh.
 - ✅ **MOD112** **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — Lay flat on the Edit card and edit --lay-flat turn a model onto its largest face nothing crosses, so it rests on the slicer's plate (design superseded: thickness check: MOD146).
+- ✅ **MOD113** **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — A base under 0.5% of the width is no base in the label, the mesh and the CLI alike, through one threshold tested on each side.
 
 ## Block M — The CPU and integrated-GPU path
 
