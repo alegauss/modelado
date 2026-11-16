@@ -21,13 +21,13 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     {
         "--keep-background", "--remove-background", "--high", "--enhance", "--no-project",
         "--mirror", "--fill-holes", "--subdivide", "--upscale-texture", "--json", "--dry-run",
-        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv", "--compact", "--stand", "--lay-flat",
+        "--estimate", "--no-texture", "--pbr", "--quads", "--keep-uv", "--compact", "--stand", "--lay-flat", "--light",
     };
 
     // MOD106: the relief's text and how it is sized and placed.
     private static readonly string[] TextOptions = ["--text", "--text-mm", "--text-raise-mm", "--text-on"];
 
-    private static readonly string[] Common = ["--provider", "--gpu", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
+    private static readonly string[] Common = ["--provider", "--gpu", "--high", "--light", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {

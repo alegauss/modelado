@@ -325,6 +325,18 @@
       "shareable": false
     },
     {
+      // MOD116: an INT8 TripoSR encoder on disk (a stand-in file under its name), on the CPU, so Light is offered.
+      "name": "a window with a photo open and an INT8 encoder on disk, on the CPU",
+      "files": [
+        "cases/fixtures/photo.png",
+        { "from": "cases/fixtures/download/standin.onnx", "to": "light-models/triposr-encoder/int8.onnx" },
+        { "from": "cases/fixtures/light-encoder-meta.json", "to": "light-models/triposr-encoder/meta.json" }
+      ],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/light-models", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD119: Windows' free memory stood in by MODELADO_AVAILABLE_MB, low enough that any run is short of it.
       "name": "a window with a photo open on a PC short of memory",
       "files": ["cases/fixtures/photo.png"],
@@ -742,6 +754,35 @@
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
         { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "matches": "^100 × 7\\d(\\.\\d+)? × 3 mm ", "named": "and it will be saved 100 mm wide and 3 mm thick, as typed" }
+      ]
+    },
+
+    {
+      "name": "Light quality is offered on the CPU only where an INT8 encoder is there, and can be chosen",
+      "catches": "a Light that is offered with nothing to run it, missing where the encoder is on disk, or that cannot be chosen",
+      "filed": "MOD116",
+      "tags": ["quality", "light"],
+      "fixture": "a window with a photo open and an INT8 encoder on disk, on the CPU",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Quality", "act": "select", "reads": "selected", "expect": "selected", "named": "the Quality card is chosen on the rail (MOD98)" },
+        { "locator": "RadioButton#QualityLight", "act": "read", "reads": "name", "expect": "Light (on the CPU)", "named": "Light is offered beside Standard and High" },
+        { "locator": "RadioButton#QualityLight", "act": "select", "reads": "selected", "expect": "selected", "named": "and can be chosen" },
+        { "locator": "RadioButton#QualityStandard", "act": "read", "reads": "selected", "expect": "not selected", "named": "in place of Standard" }
+      ]
+    },
+
+    {
+      "name": "Light quality is not offered where no INT8 encoder is published or on disk",
+      "catches": "a Light quality offered that would run the fp32 encoder anyway",
+      "filed": "MOD116",
+      "tags": ["quality", "light"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Quality", "act": "select", "reads": "selected", "expect": "selected", "named": "the Quality card is chosen on the rail (MOD98)" },
+        { "locator": "RadioButton#QualityStandard", "act": "read", "reads": "selected", "expect": "selected", "named": "Standard is chosen" },
+        { "locator": "RadioButton#QualityLight", "act": "read", "absent": true, "named": "and Light is not offered" }
       ]
     },
 

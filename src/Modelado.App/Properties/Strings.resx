@@ -387,6 +387,12 @@
   <data name="MemoryShortStopped" xml:space="preserve">
     <value>{0} not started: not enough free memory</value>
   </data>
+  <data name="QualityLight" xml:space="preserve">
+    <value>Light (on the CPU)</value>
+  </data>
+  <data name="QualityLightTip" xml:space="preserve">
+    <value>The INT8 encoder: a quarter of the download and about 1 GB less memory, but shapes are visibly rougher (docs/local-3d-models.md).</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

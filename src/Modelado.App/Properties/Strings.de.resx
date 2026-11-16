@@ -387,6 +387,12 @@
   <data name="MemoryShortStopped" xml:space="preserve">
     <value>{0} nicht gestartet: zu wenig freier Speicher</value>
   </data>
+  <data name="QualityLight" xml:space="preserve">
+    <value>Leicht (auf der CPU)</value>
+  </data>
+  <data name="QualityLightTip" xml:space="preserve">
+    <value>Der INT8-Encoder: ein Viertel des Downloads und etwa 1 GB weniger Speicher, aber sichtbar gröbere Formen.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

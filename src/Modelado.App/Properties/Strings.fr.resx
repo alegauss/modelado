@@ -387,6 +387,12 @@
   <data name="MemoryShortStopped" xml:space="preserve">
     <value>{0} non lancé : pas assez de mémoire libre</value>
   </data>
+  <data name="QualityLight" xml:space="preserve">
+    <value>Légère (sur le CPU)</value>
+  </data>
+  <data name="QualityLightTip" xml:space="preserve">
+    <value>L'encodeur INT8 : un quart du téléchargement et environ 1 Go de mémoire en moins, mais des formes visiblement plus grossières.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

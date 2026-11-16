@@ -173,7 +173,7 @@ public partial class MainWindow
         await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 
-    private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].TotalBytes);
+    private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants.TryGetValue(v, out ModelVariant? described) ? described.TotalBytes : 0);
 
     private static string Describe(InstalledModel model) =>
         Ui.Format(Strings.InstalledRow, model.Name, string.Join(Strings.ListComma, model.Variants), Size(Bytes(model)), model.Meta.Task, model.Meta.Upstream.License, model.Meta.Upstream.LicenseUrl);
@@ -257,10 +257,27 @@ public partial class MainWindow
     private void ShowProvider()
     {
         ProviderStatus.Text = ExecutionProviders.Label(provider, gpu);
+        UpdateLightQuality();
 
         // Why it is not the GPU, where a person looking at "CPU" will look.
         ProviderChip.ToolTip = providerReason;
         AutomationProperties.SetHelpText(ProviderStatus, providerReason ?? "");
+    }
+
+    // MOD116: Light only where it is real: on the CPU, with an INT8 encoder listed or on disk.
+    private bool LightOffered =>
+        provider == ExecutionProvider.Cpu
+        && (manifest?.Model(ObjectReconstruction.Encoder)?.Variants.ContainsKey("int8") == true || library.Has(ObjectReconstruction.Encoder, "int8"));
+
+    private bool LightChosen => LightOffered && QualityLight.IsChecked == true;
+
+    private void UpdateLightQuality()
+    {
+        QualityLight.Visibility = LightOffered ? Visibility.Visible : Visibility.Collapsed;
+        if (!LightOffered && QualityLight.IsChecked == true)
+        {
+            QualityStandard.IsChecked = true;
+        }
     }
 
     // MOD18: the next operation builds its sessions on the new provider; nothing restarts.
@@ -304,7 +321,7 @@ public partial class MainWindow
     private void ReleaseSessions()
     {
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice));
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), light: LightChosen);
     }
 
     private async void OnAboutRemoveModel(object sender, RoutedEventArgs e)

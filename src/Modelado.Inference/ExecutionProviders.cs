@@ -56,9 +56,14 @@ public static class ExecutionProviders
     /// <summary>The variant a quality setting runs on a provider.</summary>
     /// <param name="provider">Where it runs.</param>
     /// <param name="high">True for High quality.</param>
-    /// <returns>fp32, or fp16 on the GPU in Standard quality: half the download and the video memory.</returns>
-    public static string VariantFor(ExecutionProvider provider, bool high) =>
-        high || provider == ExecutionProvider.Cpu ? "fp32" : "fp16";
+    /// <param name="light">
+    /// MOD116: Light quality, the INT8 variant on the CPU (a quarter of fp32's download and about
+    /// 1 GB less memory, at a visible cost in shape that docs/local-3d-models.md measured). A model
+    /// with no int8 variant falls back to fp32, in the manifest and on disk alike.
+    /// </param>
+    /// <returns>fp32, fp16 on the GPU in Standard quality, or int8 on the CPU in Light quality.</returns>
+    public static string VariantFor(ExecutionProvider provider, bool high, bool light = false) =>
+        high ? "fp32" : provider == ExecutionProvider.Cpu ? (light ? "int8" : "fp32") : "fp16";
 
     /// <summary>Loads a model file into a session.</summary>
     /// <param name="path">The .onnx file.</param>

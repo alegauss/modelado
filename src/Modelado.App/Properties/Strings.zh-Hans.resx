@@ -387,6 +387,12 @@
   <data name="MemoryShortStopped" xml:space="preserve">
     <value>{0} 未启动：空闲内存不足</value>
   </data>
+  <data name="QualityLight" xml:space="preserve">
+    <value>轻量（CPU）</value>
+  </data>
+  <data name="QualityLightTip" xml:space="preserve">
+    <value>INT8 编码器：下载量为四分之一，内存约少 1 GB，但形状明显更粗糙。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

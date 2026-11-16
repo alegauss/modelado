@@ -60,7 +60,7 @@ public partial class MainWindow
         };
     }
 
-    private string Variant => ExecutionProviders.VariantFor(provider, runner.HighQuality);
+    private string Variant => runner.Wanted;
 
     // Each card says what its first use downloads, or how its download is going.
     private async Task RefreshFirstUseAsync()

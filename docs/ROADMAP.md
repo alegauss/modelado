@@ -55,7 +55,7 @@
 
 ## Block M — The CPU and integrated-GPU path
 
-- 📋 **MOD116** (deps: MOD115 ✅) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — A CPU-only PC downloads and loads the largest variant today, so the people Modelado is best for wait the longest. → §MOD116
+- ⏳ **MOD116** (deps: MOD115 ✅) (requires: hf-token) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — Still to come: publish the INT8 encoder to the models repository, then state its size and time in the README and the site. → §MOD116
 - 📋 **MOD147** (deps: MOD121 ✅) **Automatic runs on an integrated GPU even where it is several times slower than the CPU** — MOD121 measured 3D Object at 65 s on an Intel UHD 770 against 15 s on its CPU, and Automatic picks that GPU. → §MOD147
 
 ## Done when — Block H
@@ -144,5 +144,12 @@
 - **A case proves the slicer picked is kept for the next session** Once WW628 lets a
   file step read text, the slicer case reads settings.json for the pick, and each of the
   four slicers on a test PC opens the 3MF.
+
+## Done when — MOD116
+
+- **A CPU-only install downloads and runs the published INT8 encoder** publish_models.py
+  publishes triposr-encoder int8, the embedded manifest lists it, and Light on a
+  CPU-only PC downloads 433 MB and runs it; the README and the site state its size and
+  time.
 
 ## Non-goals

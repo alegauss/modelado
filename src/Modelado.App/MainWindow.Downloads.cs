@@ -37,6 +37,7 @@ public partial class MainWindow
         try
         {
             manifest = await WithSourcesAsync(await ModelDownloads.LoadManifestAsync(http, options.Manifest, CancellationToken.None).ConfigureAwait(true)).ConfigureAwait(true);
+            UpdateLightQuality(); // MOD116: the manifest may list the INT8 encoder.
         }
         catch (Exception error) when (error is HttpRequestException or InvalidDataException or TaskCanceledException)
         {
@@ -68,7 +69,7 @@ public partial class MainWindow
             return false;
         }
 
-        string variant = ExecutionProviders.VariantFor(provider, runner.HighQuality);
+        string variant = runner.Wanted;
         ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
         if (requests.FirstOrDefault(r => listed.Model(r.Model) is null) is { Model: not null } absent)
         {

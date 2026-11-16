@@ -22,8 +22,10 @@ public sealed class ModelRunner : IDisposable
     /// <param name="highQuality">fp32 everywhere instead of fp16 on the GPU.</param>
     /// <param name="fallBack">MOD120: whether a GPU failure is retried on the CPU (Automatic) or is an error (DirectML chosen).</param>
     /// <param name="deviceId">MOD121: the DirectML adapter, DXGI's index; 0 is the system's default GPU.</param>
-    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false, bool fallBack = true, int deviceId = 0)
+    /// <param name="light">MOD116: Light quality, the INT8 variant on the CPU where a model has one.</param>
+    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false, bool fallBack = true, int deviceId = 0, bool light = false)
     {
+        Light = light;
         ArgumentOutOfRangeException.ThrowIfNegative(deviceId);
         DeviceId = deviceId;
         ArgumentNullException.ThrowIfNull(library);
@@ -32,6 +34,12 @@ public sealed class ModelRunner : IDisposable
         HighQuality = highQuality;
         FallBack = fallBack;
     }
+
+    /// <summary>MOD116: whether the INT8 variant is wanted on the CPU (Light quality).</summary>
+    public bool Light { get; }
+
+    /// <summary>The variant this runner asks for: the manifest and the disk fall back to fp32 where a model has none.</summary>
+    public string Wanted => ExecutionProviders.VariantFor(Provider, HighQuality, Light);
 
     /// <summary>MOD121: the DirectML adapter sessions run on, DXGI's index.</summary>
     public int DeviceId { get; }
@@ -59,14 +67,14 @@ public sealed class ModelRunner : IDisposable
     /// <summary>The variant of a model this runner loads.</summary>
     /// <param name="model">The model's folder name.</param>
     /// <returns>fp32 or fp16.</returns>
-    public string VariantOf(string model) => Library.VariantFor(model, ExecutionProviders.VariantFor(Provider, HighQuality));
+    public string VariantOf(string model) => Library.VariantFor(model, Wanted);
 
     /// <summary>What a set of models needs that is not on disk, as download requests.</summary>
     /// <param name="models">The models' folder names.</param>
     /// <returns>The requests; empty when everything is installed.</returns>
     public IReadOnlyList<ModelRequest> Missing(IEnumerable<string> models)
     {
-        string wanted = ExecutionProviders.VariantFor(Provider, HighQuality);
+        string wanted = Wanted;
         return [.. models.Where(m => !Library.Has(m, Library.VariantFor(m, wanted))).Select(m => new ModelRequest(m, wanted))];
     }
 

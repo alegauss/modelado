@@ -171,7 +171,7 @@ public partial class MainWindow
         bool idle = !on && photo is not null;
         ObjectButton.IsEnabled = ReliefButton.IsEnabled = LithophaneButton.IsEnabled = idle;
         UpdateEditButtons();
-        QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
+        QualityLight.IsEnabled = QualityStandard.IsEnabled = QualityHigh.IsEnabled = !on;
         ProviderAuto.IsEnabled = ProviderDirectML.IsEnabled = ProviderCpu.IsEnabled = !on;
         UpdateCloudCard();
         if (!on)
@@ -222,7 +222,7 @@ public partial class MainWindow
         }
 
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice));
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), light: LightChosen);
         await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 }

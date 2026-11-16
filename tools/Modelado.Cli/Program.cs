@@ -81,6 +81,8 @@ const string Usage = """
                                                 with these arguments, and waits until it closes
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
+            --light                   on the CPU, the INT8 encoder where one is published: a quarter of
+                                      the download and about 1 GB less memory, rougher shapes (MOD115)
             --gpu N                   DirectML on adapter N, e.g. an integrated GPU beside a discrete one; default 0
             --manifest <url>          --size <units> (longest side when saving)
             --source <owner/name|url> a model repository read after the built-in one
@@ -172,7 +174,7 @@ try
         throw new ArgumentException("--gpu takes an adapter index, 0 or more.");
     }
 
-    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice), gpu);
+    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice), gpu, options.ContainsKey("--light"));
     // MOD52: the words the window's provider chip shows, the GPU named.
     string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice(gpu) : null);
     Console.WriteLine($"Running on {where}{(reason is null ? "" : $": {reason}")}");
@@ -465,7 +467,7 @@ async Task<int> Download(ModelRunner runner, IReadOnlyCollection<string> models)
         manifest = await ModelSources.WithSourcesAsync(http, manifest, [source], CancellationToken.None).ConfigureAwait(false);
     }
 
-    string variant = ExecutionProviders.VariantFor(runner.Provider, runner.HighQuality);
+    string variant = runner.Wanted;
     ModelRequest[] requests = [.. models.Select(m => new ModelRequest(m, variant))];
     long pending = ModelDownloads.PendingBytes(manifest, runner.Library.DownloadRoot, requests, runner.Library.Roots);
     if (options.ContainsKey("--dry-run"))
