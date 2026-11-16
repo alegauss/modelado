@@ -376,19 +376,6 @@
             <TextBlock Text="{x:Static p:Strings.ReliefCardTitle}" Style="{StaticResource SectionHeader}" />
             <TextBlock Style="{StaticResource StatCaption}"
                        Text="{x:Static p:Strings.ReliefCardCaption}" />
-            <!-- MOD27: shown only when an added source lists a depth model of its own. -->
-            <StackPanel x:Name="ReliefDepthModelPanel" Visibility="Collapsed">
-              <TextBlock Text="{x:Static p:Strings.DepthModel}" Style="{StaticResource FieldLabel}" />
-              <ComboBox x:Name="ReliefDepthModel" AutomationProperties.AutomationId="ReliefDepthModel" AutomationProperties.Name="Depth model"
-                        DisplayMemberPath="Label" SelectionChanged="OnReliefDepthModelChanged" />
-            </StackPanel>
-            <TextBlock Text="{x:Static p:Strings.MeshResolution}" Style="{StaticResource FieldLabel}" />
-            <ComboBox x:Name="ReliefResolution" AutomationProperties.AutomationId="ReliefResolution" SelectedIndex="1">
-              <ComboBoxItem Content="128" Tag="128" />
-              <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution256}" Tag="256" />
-              <ComboBoxItem Content="384" Tag="384" />
-              <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
-            </ComboBox>
             <!-- MOD105: the outline the relief is cropped to; a keychain cuts its own. -->
             <TextBlock Text="{x:Static p:Strings.ReliefShape}" Style="{StaticResource FieldLabel}" />
             <ComboBox x:Name="ReliefShape" AutomationProperties.AutomationId="ReliefShape" AutomationProperties.Name="{x:Static p:Strings.ReliefShape}" SelectedIndex="0"
@@ -487,7 +474,25 @@
               <TextBlock x:Name="ReliefSizeError" Grid.Row="12" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
-            <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+            <!-- MOD138: the depth model, the resolution and the cut-out, folded; depth, shape and size stay in view. -->
+            <Expander x:Name="ReliefAdvanced" AutomationProperties.AutomationId="ReliefAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
+              <StackPanel Margin="0,4,0,0">
+                <!-- MOD27: shown only when an added source lists a depth model of its own. -->
+                <StackPanel x:Name="ReliefDepthModelPanel" Visibility="Collapsed">
+                  <TextBlock Text="{x:Static p:Strings.DepthModel}" Style="{StaticResource FieldLabel}" />
+                  <ComboBox x:Name="ReliefDepthModel" AutomationProperties.AutomationId="ReliefDepthModel" AutomationProperties.Name="Depth model"
+                            DisplayMemberPath="Label" SelectionChanged="OnReliefDepthModelChanged" />
+                </StackPanel>
+                <TextBlock Text="{x:Static p:Strings.MeshResolution}" Style="{StaticResource FieldLabel}" />
+                <ComboBox x:Name="ReliefResolution" AutomationProperties.AutomationId="ReliefResolution" SelectedIndex="1">
+                  <ComboBoxItem Content="128" Tag="128" />
+                  <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution256}" Tag="256" />
+                  <ComboBoxItem Content="384" Tag="384" />
+                  <ComboBoxItem Content="{x:Static p:Strings.ReliefResolution512}" Tag="512" />
+                </ComboBox>
+                <CheckBox x:Name="ReliefRemoveBackground" AutomationProperties.AutomationId="ReliefRemoveBackground" Content="{x:Static p:Strings.ReliefRemoveBackground}" Margin="0,8,0,0" Click="OnReliefCutOutChanged" />
+              </StackPanel>
+            </Expander>
             <Button x:Name="ReliefButton" AutomationProperties.AutomationId="ReliefButton" Content="{x:Static p:Strings.ReliefButton}" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Click="OnGenerateRelief" IsEnabled="False" />
             <!-- MOD22, after PhotoBoost's first-use blocks (PB58): what the first use downloads, how
@@ -556,12 +561,17 @@
             </StackPanel>
             <TextBox x:Name="CloudPrompt" AutomationProperties.AutomationId="CloudPrompt" AutomationProperties.Name="Description"
                      Margin="0,6,0,0" Visibility="Collapsed" TextWrapping="Wrap" MaxLength="800" TextChanged="OnCloudPromptChanged" />
-            <CheckBox x:Name="CloudTexture" AutomationProperties.AutomationId="CloudTexture" Content="{x:Static p:Strings.CloudTexture}" IsChecked="True" Margin="0,8,0,0"
-                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudTextureTip}" />
-            <CheckBox x:Name="CloudPbr" AutomationProperties.AutomationId="CloudPbr" Content="{x:Static p:Strings.CloudPbr}" Margin="0,4,0,0"
-                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" />
-            <CheckBox x:Name="CloudQuads" AutomationProperties.AutomationId="CloudQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0"
-                      Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudQuadsTip}" />
+            <!-- MOD138: texture, PBR and quad topology, folded; the service, the source and the action stay in view. -->
+            <Expander x:Name="CloudAdvanced" AutomationProperties.AutomationId="CloudAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
+              <StackPanel Margin="0,4,0,0">
+                <CheckBox x:Name="CloudTexture" AutomationProperties.AutomationId="CloudTexture" Content="{x:Static p:Strings.CloudTexture}" IsChecked="True" Margin="0,8,0,0"
+                          Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudTextureTip}" />
+                <CheckBox x:Name="CloudPbr" AutomationProperties.AutomationId="CloudPbr" Content="{x:Static p:Strings.CloudPbr}" Margin="0,4,0,0"
+                          Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" />
+                <CheckBox x:Name="CloudQuads" AutomationProperties.AutomationId="CloudQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0"
+                          Checked="OnCloudOptionChanged" Unchecked="OnCloudOptionChanged" ToolTip="{x:Static p:Strings.CloudQuadsTip}" />
+              </StackPanel>
+            </Expander>
             <Button x:Name="CloudGenerate" AutomationProperties.AutomationId="CloudGenerate" Margin="0,12,0,0" Padding="0,8" HorizontalAlignment="Stretch"
                     Style="{DynamicResource AccentButtonStyle}" Click="OnCloudGenerate" />
             <!-- Nothing leaves the PC before this is agreed to, each time. -->

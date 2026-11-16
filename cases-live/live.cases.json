@@ -54,6 +54,7 @@
         { "locator": "Text#JobChip", "act": "read", "absent": true, "named": "and the job chip is gone" },
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "43,264 vertices · 86,524 triangles", "named": "the counts modelado-cli object --step 1 --smooth 0 gives on the same photo (MOD17)" },
         { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Relief card's Advanced is opened (MOD138)" },
         { "locator": "ComboBox#ReliefResolution", "act": "expand", "named": "the relief resolutions are opened" },
         { "locator": "ComboBox#ReliefResolution > ListItem[nameStarts=\"512\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "512, so the run lasts long enough to be read" },
         { "locator": "CheckBox#ReliefRemoveBackground", "act": "toggle", "reads": "toggle", "expect": "On", "named": "and the background removed first" },

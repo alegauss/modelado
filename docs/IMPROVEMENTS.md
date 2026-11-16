@@ -57,29 +57,6 @@ an info icon. Existing AutomationIds are kept where the control survives, so the
 only add a navigation step. Cases press each page and find its key control. MOD96 and
 MOD97 land inside these pages, whichever ships first.
 
-### §MOD138 Each card's extras folded into Advanced
-
-Split from MOD98, whose rail and dot shipped. Each card keeps its essentials on top (its
-main control and its action) and folds the rest into a closed Advanced expander, as 3D
-Object's ObjectAdvanced does since MOD17. Proposed split, settled against
-MainWindow.xaml:
-
-- Relief: Depth and Generate relief stay; Advanced holds the depth-model choice (MOD27),
-  resolution, base and the cut-out checkbox.
-- Cloud 3D: service, photo or text, the prompt and Generate stay; Advanced holds texture, PBR
-  and quad topology.
-- Edit and improve: Simplify, Subdivide, Fill holes and the AI buttons stay; Advanced holds
-  the pieces, smoothing and flatten rows with their amounts, and the cloud remesh and retexture
-  group.
-- Export: format and Save as stay; Advanced holds the per-format options and the longest side.
-
-History and Quality have nothing to fold. Each expander gets an AutomationId
-(ReliefAdvanced, CloudAdvanced, EditAdvanced, ExportAdvanced). A closed WPF Expander
-takes its content out of the UI Automation tree, so every case that drives a folded
-control must first expand its card's Advanced, as the ObjectAdvanced case does;
-cases-live too. A new case checks that each Advanced starts closed and opens. Whether an
-Advanced remembers being open is an open choice; MOD98 kept only the chosen card.
-
 ### §MOD140 Checkboxes that follow a toggle, not only a click
 
 Found while building MOD102: WPF raises a CheckBox's Click only for a mouse or keyboard

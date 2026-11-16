@@ -604,6 +604,7 @@
         { "locator": "Text#Source-1", "act": "read", "reads": "name", "expect": "http://127.0.0.1:47631/files/custom-manifest.json", "named": "the source is listed after the built-in one" },
         { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
         { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Relief card's Advanced is opened (MOD138)" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the Relief card now offers a depth model" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[order=top]", "act": "read", "reads": "name", "expect": "Depth Anything V2 Small (built in)", "named": "the built-in one first" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[nameStarts=\"my-depth\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "the source's my-depth is chosen" },
@@ -626,6 +627,7 @@
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first (MOD56)" },
         { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Relief card's Advanced is opened (MOD138)" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "expand", "named": "the kept source's depth model is offered at start" },
         { "locator": "ComboBox#ReliefDepthModel > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "my-depth (http://127.0.0.1:47631/files/custom-manifest.json)", "named": "named with the source it came from" },
         { "locator": "ComboBox#ReliefDepthModel", "act": "collapse", "named": "the list is closed" },
@@ -1168,7 +1170,7 @@
       "name": "the Export and Edit cards keep their extras in an Advanced that starts closed and opens",
       "catches": "an Advanced that starts open and buries the main action, or one that cannot be opened to reach what it holds",
       "filed": "MOD138",
-      "tags": ["edit", "export", "advanced"],
+      "tags": ["edit", "export", "relief", "advanced"],
       "fixture": "a window on a staged cube, to save through the Export card",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
@@ -1183,7 +1185,12 @@
         { "locator": "Group#ExportAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "the Export card's Advanced starts closed" },
         { "locator": "Edit#ExportSize", "act": "read", "absent": true, "named": "with the longest side folded away" },
         { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "it opens" },
-        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "and the longest side is there" }
+        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "and the longest side is there" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ReliefAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "the Relief card's Advanced starts closed" },
+        { "locator": "ComboBox#ReliefResolution", "act": "read", "absent": true, "named": "with the resolution folded away" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "it opens" },
+        { "locator": "ComboBox#ReliefResolution", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the resolution is there" }
       ]
     },
 
@@ -1439,6 +1446,8 @@
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
         { "locator": "ListItem#Rail-Cloud", "act": "select", "reads": "selected", "expect": "selected", "named": "the Cloud 3D card is chosen on the rail (MOD98)" },
         { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~30 credits", "named": "the card offers Meshy, priced textured" },
+        { "locator": "Group#CloudAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "the Cloud 3D card's Advanced starts closed" },
+        { "locator": "Group#CloudAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Cloud 3D card's Advanced is opened (MOD138)" },
         { "locator": "CheckBox#CloudTexture", "act": "toggle", "reads": "toggle", "expect": "Off", "named": "the texture is turned off" },
         { "locator": "Button#CloudGenerate", "act": "read", "reads": "name", "expect": "Generate with Meshy AI · ~20 credits", "named": "and the estimate drops to the bare shape's" },
         { "locator": "CheckBox#CloudTexture", "act": "toggle", "reads": "toggle", "expect": "On", "named": "the texture is turned back on" },

@@ -29,7 +29,7 @@
 - ✅ **MOD94 (all but the Jump List)** **There is no list of recently opened photos and models, so a file opened yesterday has to be found again by hand** — The last ten files opened or saved are on the drop zone and in the toolbar's Recent menu, photos with thumbnails, a gone one greyed and removable.
 - ✅ **MOD98** **The Operations panel stacks all seven cards in one long scroll, so the one in use is buried among the others** — A rail shows one card at a time, kept across starts, and a dot on an icon says its model needs a download; Advanced went to MOD138 (design recorded in `src/Modelado.App/MainWindow.Rail.cs`).
 - ✅ **MOD136** **About's source and download rows, rebuilt equal by value, can drop out of the accessibility tree while still shown** — About's source rows and the language and depth choices are equal only to themselves, an architecture test holds every list row to it, and a reopened About's Remove answers.
-- ✅ **MOD138 (Export and Edit folded)** **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — The Export and Edit cards keep their main actions in view and fold format options, longest side, amounts and cloud edits into a closed Advanced.
+- ✅ **MOD138** **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — Relief and Cloud 3D fold their depth model, resolution, cut-out, texture, PBR and quads into a closed Advanced; window and live cases open it first.
 
 ## Block C — Existing code wired into the window
 
