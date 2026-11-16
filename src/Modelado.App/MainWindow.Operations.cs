@@ -129,6 +129,9 @@ public partial class MainWindow
         {
             ReconstructionResult result = await Task.Run(() => operation(input, progress, cancel.Token), cancel.Token).ConfigureAwait(true);
             ShowMesh(result.Mesh, result.Input, result.Reference, title);
+            // The manifest the app was pointed at, loaded once: with every model already installed,
+            // nothing else may have asked for it yet, and only it carries a license's terms.
+            ShowCredits(ModelCredits.For(card.Models(), library, await ManifestAsync().ConfigureAwait(true) ?? ModelDownloads.Embedded));
             TimeSpan total = TimeSpan.FromTicks(result.Timings.Sum(t => t.Took.Ticks));
             string steps = string.Join(Strings.ListSeparator, result.Timings.Select(t => Ui.Format(Strings.StageTook, Describe(t.Stage), t.Took.TotalSeconds)));
 
@@ -156,6 +159,19 @@ public partial class MainWindow
             SetBusy(false, title, download: false);
         }
     }
+
+    // MOD126: the notices the shown result owes, kept through its edits (they are made from it) and
+    // written into what Save as and Open in write.
+    private IReadOnlyList<ModelCredit> resultCredits = [];
+
+    private void ShowCredits(IReadOnlyList<ModelCredit> credits)
+    {
+        resultCredits = credits;
+        CreditText.Text = string.Join(Strings.ListSeparator, credits.Select(c => Ui.Format(Strings.CreditLine, c.Notice, c.Model)));
+        CreditChip.Visibility = credits.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private IReadOnlyList<ExportCredit> ExportCredits => [.. resultCredits.Select(c => new ExportCredit(c.Model, c.Notice))];
 
     private void SetBusy(bool on, string title, bool download)
     {

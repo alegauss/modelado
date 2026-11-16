@@ -72,7 +72,7 @@ public partial class MainWindow
         string name = Path.GetFileNameWithoutExtension(blenderSession?.ObjectName ?? photoPath ?? Strings.DefaultModelName);
         try
         {
-            string model = SlicerLauncher.Open(slicer, mesh.OnPlate(size), name);
+            string model = SlicerLauncher.Open(slicer, mesh.OnPlate(size), name, ExportCredits);
             ExportStatus.Text = Ui.Format(Strings.OpenedInSlicer, slicer.Name, Path.GetFileName(model));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)

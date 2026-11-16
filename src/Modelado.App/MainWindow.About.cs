@@ -175,8 +175,14 @@ public partial class MainWindow
 
     private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants.TryGetValue(v, out ModelVariant? described) ? described.TotalBytes : 0);
 
-    private static string Describe(InstalledModel model) =>
-        Ui.Format(Strings.InstalledRow, model.Name, string.Join(Strings.ListComma, model.Variants), Size(Bytes(model)), model.Meta.Task, model.Meta.Upstream.License, model.Meta.Upstream.LicenseUrl);
+    // MOD126: a model whose license requires a notice says it on its row, from its meta.json or the manifest.
+    private string Describe(InstalledModel model)
+    {
+        string row = Ui.Format(Strings.InstalledRow, model.Name, string.Join(Strings.ListComma, model.Variants), Size(Bytes(model)), model.Meta.Task, model.Meta.Upstream.License, model.Meta.Upstream.LicenseUrl);
+        return ModelCredits.For([model.Name], library, manifest ?? ModelDownloads.Embedded) is [{ } credit]
+            ? $"{row}{Strings.ListSeparator}{credit.Notice}"
+            : row;
+    }
 
     private static bool IsUnder(string path, string folder) =>
         Path.GetFullPath(path).StartsWith(Path.GetFullPath(folder), StringComparison.OrdinalIgnoreCase);

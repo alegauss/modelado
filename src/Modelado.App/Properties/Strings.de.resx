@@ -931,6 +931,9 @@
   <data name="MeshCounts" xml:space="preserve">
     <value>{0:N0} Vertices · {1:N0} Dreiecke</value>
   </data>
+  <data name="CreditLine" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
   <data name="MeshTexture" xml:space="preserve">
     <value>Textur {0} × {1}</value>
   </data>

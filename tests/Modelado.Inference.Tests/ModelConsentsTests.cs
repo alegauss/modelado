@@ -41,6 +41,19 @@ public sealed class ModelConsentsTests
     }
 
     [Fact]
+    public void A_model_whose_license_requires_a_notice_is_credited_from_the_manifest_and_a_permissive_one_is_not()
+    {
+        // MOD126: neither is installed here, so the manifest's terms are what is read.
+        ModelLibrary empty = new([Path.Combine(Path.GetTempPath(), $"no-models-{Guid.NewGuid():N}")]);
+
+        IReadOnlyList<ModelCredit> credits = ModelCredits.For(["plain", "gated-3d", "gated-3d"], empty, ModelManifest.Parse(Manifest));
+
+        Assert.Equal([new ModelCredit("gated-3d", "Powered by Stability AI")], credits);
+        Assert.Empty(ModelCredits.For(["plain"], empty, ModelManifest.Parse(Manifest)));
+        Assert.Empty(ModelCredits.For(["gated-3d"], empty, null));
+    }
+
+    [Fact]
     public void An_agreement_is_recorded_per_model_and_asked_again_for_another_license_text()
     {
         string settings = Path.Combine(Path.GetTempPath(), $"consents-{Guid.NewGuid():N}", "settings.json");

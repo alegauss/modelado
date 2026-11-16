@@ -121,7 +121,8 @@ public sealed record ModelVariant(string File, long Bytes, string Sha256, IReadO
 /// <param name="Url">The upstream weights.</param>
 /// <param name="License">Their license, as the About panel shows it.</param>
 /// <param name="LicenseUrl">The license text.</param>
-public sealed record ModelUpstream(string Url, string License, string LicenseUrl);
+/// <param name="Conditions">MOD126: what a license with conditions asks, the attribution among it; null when permissive.</param>
+public sealed record ModelUpstream(string Url, string License, string LicenseUrl, ModelConditions? Conditions = null);
 
 /// <summary>Reads a shape whose dynamic dimensions are names, as -1. Public only for [JsonConverter].</summary>
 public sealed class ShapeConverter : JsonConverter<IReadOnlyList<int>>

@@ -931,6 +931,9 @@ Modelos 3D: {1}</value>
   <data name="MeshCounts" xml:space="preserve">
     <value>{0:N0} vértices · {1:N0} triángulos</value>
   </data>
+  <data name="CreditLine" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
   <data name="MeshTexture" xml:space="preserve">
     <value>textura {0} × {1}</value>
   </data>

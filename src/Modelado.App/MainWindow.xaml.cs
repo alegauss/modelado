@@ -296,6 +296,8 @@ public partial class MainWindow : Window, IDisposable
     // A new model, from a reconstruction or a file: the history starts over and the view resets.
     private void ShowMesh(Mesh result, RgbaImage? input, RgbaImage? projectFrom, string label)
     {
+        // MOD126: a new model owes no notice until the run that made it says so (RunAsync).
+        ShowCredits([]);
         modelInput = input;
         reference = projectFrom;
         history.Reset(result, label);

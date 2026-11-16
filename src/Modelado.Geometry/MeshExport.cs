@@ -34,11 +34,21 @@ public enum MeshFormat
 /// <param name="ObjVertexColours">OBJ: the colours per vertex (sampled from the texture) rather than an .mtl and a .png.</param>
 /// <param name="PlyAscii">PLY: text rather than binary, for tools and eyes that read it.</param>
 /// <param name="GlbCompact">GLB: the geometry quantized (MOD66), about half its bytes, for readers that support KHR_mesh_quantization.</param>
-public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii = false, bool GlbCompact = false)
+/// <param name="Credits">
+/// MOD126: the notices the licenses of the models that made it require, e.g. "Powered by Stability
+/// AI" for SF3D: a GLB carries them as its asset's copyright, a 3MF as its Copyright metadata, each
+/// with the model named. None for a result of permissive models only.
+/// </param>
+public sealed record ExportOptions(bool ObjVertexColours = false, bool PlyAscii = false, bool GlbCompact = false, IReadOnlyList<ExportCredit>? Credits = null)
 {
     /// <summary>What a format is written as when nothing is chosen.</summary>
     public static ExportOptions Default { get; } = new();
 }
+
+/// <summary>MOD126: a model that made the result and the notice its license requires.</summary>
+/// <param name="Model">The model's name, e.g. "sf3d".</param>
+/// <param name="Notice">The notice, e.g. "Powered by Stability AI".</param>
+public sealed record ExportCredit(string Model, string Notice);
 
 /// <summary>Writes meshes to GLB, OBJ, PLY, STL and 3MF.</summary>
 public static partial class MeshExport
@@ -79,13 +89,13 @@ public static partial class MeshExport
             switch (format)
             {
                 case MeshFormat.Glb:
-                    WriteGlb(mesh, stream, options.GlbCompact);
+                    WriteGlb(mesh, stream, options.GlbCompact, options.Credits);
                     break;
                 case MeshFormat.Ply:
                     WritePly(mesh, stream, options.PlyAscii);
                     break;
                 case MeshFormat.ThreeMf:
-                    Write3mf(mesh, stream);
+                    Write3mf(mesh, stream, options.Credits);
                     break;
                 default:
                     WriteStl(mesh, stream);
@@ -122,7 +132,8 @@ public static partial class MeshExport
     /// bounds, normals as 8-bit, texture coordinates as 16-bit where they stay within 0 to 1, colours
     /// as 8-bit. About half the geometry's bytes; three.js and Blender read it, older viewers refuse it.
     /// </param>
-    public static void WriteGlb(Mesh mesh, Stream stream, bool compact = false)
+    /// <param name="credits">MOD126: the notices required, as the asset's copyright and, per model, in its extras.</param>
+    public static void WriteGlb(Mesh mesh, Stream stream, bool compact = false, IReadOnlyList<ExportCredit>? credits = null)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         ArgumentNullException.ThrowIfNull(stream);
@@ -200,6 +211,15 @@ public static partial class MeshExport
             }),
             ["materials"] = new JsonArray(new JsonObject { ["pbrMetallicRoughness"] = pbr, ["doubleSided"] = mesh.DoubleSided }),
         };
+        if (credits is { Count: > 0 })
+        {
+            JsonObject asset = root["asset"]!.AsObject();
+            asset["copyright"] = string.Join("; ", credits.Select(c => c.Notice).Distinct(StringComparer.Ordinal));
+            asset["extras"] = new JsonObject
+            {
+                ["models"] = new JsonArray([.. credits.Select(c => (JsonNode)new JsonObject { ["name"] = c.Model, ["notice"] = c.Notice })]),
+            };
+        }
         if (compact)
         {
             root["extensionsUsed"] = new JsonArray("KHR_mesh_quantization");

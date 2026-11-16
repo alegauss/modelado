@@ -26,7 +26,8 @@ public static partial class MeshExport
     /// <summary>Writes 3MF: the mesh in millimetres, with its colour per vertex where it has one.</summary>
     /// <param name="mesh">The mesh, its coordinates in millimetres.</param>
     /// <param name="stream">Where; it is left open.</param>
-    public static void Write3mf(Mesh mesh, Stream stream)
+    /// <param name="credits">MOD126: the notices required, as Copyright metadata, and the models named in Description.</param>
+    public static void Write3mf(Mesh mesh, Stream stream, IReadOnlyList<ExportCredit>? credits = null)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         ArgumentNullException.ThrowIfNull(stream);
@@ -45,7 +46,7 @@ public static partial class MeshExport
 
         ZipArchiveEntry model = package.CreateEntry(ThreeMfModelPart, CompressionLevel.Optimal);
         using StreamWriter xml = new(model.Open(), Utf8) { NewLine = "\n" };
-        WriteModel(mesh, xml);
+        WriteModel(mesh, xml, credits);
     }
 
     private static void WritePart(ZipArchive package, string name, string content)
@@ -55,13 +56,20 @@ public static partial class MeshExport
         part.Write(Utf8.GetBytes(content));
     }
 
-    private static void WriteModel(Mesh mesh, StreamWriter xml)
+    private static void WriteModel(Mesh mesh, StreamWriter xml, IReadOnlyList<ExportCredit>? credits)
     {
         CultureInfo c = CultureInfo.InvariantCulture;
         Vector3[]? colours = VertexColors(mesh);
         xml.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         xml.WriteLine($"<model unit=\"millimeter\" xml:lang=\"en-US\" xmlns=\"{CoreNamespace}\" xmlns:m=\"{MaterialNamespace}\">");
         xml.WriteLine(" <metadata name=\"Application\">Modelado</metadata>");
+        if (credits is { Count: > 0 })
+        {
+            string notices = string.Join("; ", credits.Select(credit => credit.Notice).Distinct(StringComparer.Ordinal));
+            string models = string.Join(", ", credits.Select(credit => credit.Model));
+            xml.WriteLine($" <metadata name=\"Copyright\">{System.Security.SecurityElement.Escape(notices)}</metadata>");
+            xml.WriteLine($" <metadata name=\"Description\">{System.Security.SecurityElement.Escape($"Made with {models}")}</metadata>");
+        }
         xml.WriteLine(" <resources>");
 
         // The colour group is resource 1 and the object resource 2; the object's own pid/pindex is

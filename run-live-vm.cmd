@@ -17,5 +17,6 @@ if not exist "%WINWRIGHT%\run-tests-vm.cmd" (
 set "CONFIG=%MODELADO_CONFIG%"
 if "%CONFIG%"=="" set "CONFIG=Debug"
 
-call "%WINWRIGHT%\run-tests-vm.cmd" -Tree "%~dp0." -Run "run-live.cmd %CONFIG%" -ResultsIn "TestResults\reports" %*
+rem MOD126: MODELADO_CASES=tag,tag runs only the live cases with those tags, as run-tests-vm.cmd does.
+call "%WINWRIGHT%\run-tests-vm.cmd" -Tree "%~dp0." -Run "run-live.cmd %CONFIG% %MODELADO_CASES%" -ResultsIn "TestResults\reports" %*
 exit /b %ERRORLEVEL%

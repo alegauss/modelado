@@ -22,6 +22,16 @@
       "shareable": false
     },
     {
+      // MOD126: the published manifest with the depth model given an attribution condition
+      // (cases/fixtures/download/make_fixture.py), the real models already installed as it lists them.
+      "name": "a window on the robot photo with the real models and a depth model that owes a notice",
+      "files": [{ "from": "docs/robot.png", "to": "robot.png" }],
+      "arguments": ["--open", "{files}/robot.png", "--provider", "cpu", "--releases", "off", "--manifest", "http://127.0.0.1:47631/files/credits-manifest.json"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD39: Ideogram stood in by the fixture server (FixtureServer.Ideogram), the real models for TripoSR.
       "name": "an empty window with Ideogram stood in and the real models",
       "files": ["cases/fixtures/notes.txt"],
@@ -61,6 +71,25 @@
         { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
         { "locator": "Text#JobChip", "act": "read", "reads": "name", "matches": "^Relief: ", "named": "the job chip shows the Relief running" },
         { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "then its last run, on the CPU" }
+      ]
+    },
+
+    {
+      "name": "a result made with a model whose license requires a notice shows it, and one made with permissive models shows none",
+      "catches": "a notice a license requires that the window never shows, a notice left on a result the model did not make, or one on permissive models",
+      "filed": "MOD126",
+      "tags": ["relief", "object", "credits"],
+      "fixture": "a window on the robot photo with the real models and a depth model that owes a notice",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^robot\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "Button#ReliefButton", "act": "invoke", "named": "Generate relief is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Relief · \\d+\\.\\d s · CPU$", "named": "the relief is made with the depth model" },
+        { "locator": "Text#CreditText", "act": "read", "reads": "name", "expect": "Powered by Example Labs (depth-anything-v2-small)", "named": "and the notice its license requires is shown beside it" },
+        { "locator": "ListItem#Rail-Object", "act": "select", "reads": "selected", "expect": "selected", "named": "the 3D Object card is chosen on the rail (MOD98)" },
+        { "locator": "Button#ObjectButton", "act": "invoke", "named": "Generate 3D object is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^3D Object · \\d+\\.\\d s · CPU$", "named": "the object is made with permissive models" },
+        { "locator": "Text#CreditText", "act": "read", "absent": true, "named": "and no notice is shown for it" }
       ]
     },
 

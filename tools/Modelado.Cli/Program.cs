@@ -152,6 +152,9 @@ List<string> positional = [.. parsed.Positional];
 bool json = options.ContainsKey("--json");
 TextWriter stdout = Console.Out;
 JsonObject report = new() { ["command"] = args[0] };
+
+// MOD126: the notices the models that made the result owe, which Save writes into the file.
+IReadOnlyList<ExportCredit> credits = [];
 if (json)
 {
     Console.SetOut(Console.Error);
@@ -256,6 +259,13 @@ try
             foreach ((ReconstructionStage stage, TimeSpan took) in result.Timings)
             {
                 Console.WriteLine($"  {stage,-20} {took.TotalSeconds,6:0.00} s");
+            }
+
+            // MOD126: the notice a model's license requires wherever it is used, in the file and here.
+            credits = [.. ModelCredits.For(needed, library, ModelDownloads.Embedded).Select(c => new ExportCredit(c.Model, c.Notice))];
+            foreach (ExportCredit credit in credits)
+            {
+                Console.WriteLine($"  {credit.Notice} ({credit.Model})");
             }
 
             Save(result.Mesh, output, total);
@@ -418,7 +428,7 @@ void Save(Mesh mesh, string output, Stopwatch total)
     float? size = options.ContainsKey("--size") ? (float)Number("--size", 1) : null;
     mesh = MeshExport.FormatOf(output) is MeshFormat.Stl or MeshFormat.ThreeMf ? mesh.OnPlate(size)
         : size is { } longest ? mesh.Placed(longest) : mesh;
-    IReadOnlyList<string> written = MeshExport.Save(mesh, output, new ExportOptions(GlbCompact: options.ContainsKey("--compact")));
+    IReadOnlyList<string> written = MeshExport.Save(mesh, output, new ExportOptions(GlbCompact: options.ContainsKey("--compact"), Credits: credits));
     Console.WriteLine($"{mesh.VertexCount:N0} vertices, {mesh.TriangleCount:N0} triangles in {total.Elapsed.TotalSeconds:0.0} s -> {string.Join(", ", written)}");
     report["written"] = new JsonArray([.. written.Select(path => JsonValue.Create(Path.GetFullPath(path)))]);
     report["vertices"] = mesh.VertexCount;

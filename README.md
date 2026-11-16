@@ -497,3 +497,11 @@ All of them allow redistribution and commercial use, which is why they are all h
 Hugging Face model repository. The TripoSR code used for the export is in
 `scripts\archs\triposr` (MIT, with the original licence). The app's About window lists each
 installed model with a link to its licence.
+
+None of these carries conditions. A model whose licence does carry them is optional, and it is
+handled like this:
+- The download asks you to agree to its terms first, and records that you did (MOD123).
+- A notice its licence requires appears beside each result made with it, in About, and in the
+  GLB or 3MF metadata of what is saved or opened in a slicer, with the model named (MOD126). An
+  example is "Powered by Stability AI" for SF3D and SPAR3D, which are under the Stability AI
+  Community License (docs/model-downloads.md).

@@ -88,4 +88,15 @@ for model in conditions["models"]:
             "register_url": "https://example.org/register",
         }
 (root / "conditions-manifest.json").write_text(json.dumps(conditions, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+# MOD126: the published manifest the app carries, its depth model given an attribution condition,
+# so a live case's relief on the real (already installed, same bytes) models owes a notice and its
+# 3D Object none. Regenerate after every publish: a hash that no longer matches the installed
+# model makes the live case offer a download instead.
+embedded = json.loads((root.parents[2] / "src" / "Modelado.Inference" / "models-manifest.json").read_text(encoding="utf-8"))
+embedded["version"] = "credits"
+for model in embedded["models"]:
+    if model["name"] == "depth-anything-v2-small":
+        model["conditions"] = {"summary": "A stand-in condition for the attribution case.", "attribution": "Powered by Example Labs"}
+(root / "credits-manifest.json").write_text(json.dumps(embedded, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(f"wrote {root}")

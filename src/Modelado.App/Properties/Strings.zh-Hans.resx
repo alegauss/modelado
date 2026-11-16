@@ -931,6 +931,9 @@
   <data name="MeshCounts" xml:space="preserve">
     <value>{0:N0} 个顶点 · {1:N0} 个三角形</value>
   </data>
+  <data name="CreditLine" xml:space="preserve">
+    <value>{0}（{1}）</value>
+  </data>
   <data name="MeshTexture" xml:space="preserve">
     <value>纹理 {0} × {1}</value>
   </data>

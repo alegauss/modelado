@@ -63,6 +63,7 @@
 - ✅ **MOD122** **Only freely downloadable models can be offered; one behind a licence click, login or registration cannot be fetched** — docs/model-downloads.md records how gated files answer (401, 403, 200), what the form asks, and that Modelado may publish the ONNX export, so users need no login.
 - ✅ **MOD123** **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model whose manifest entry has conditions shows them plainly and downloads only once agreed to; the agreement is kept per licence text, and a permissive model stays one click.
 - ✅ **MOD125** **The licence gate accepts only permissive licences, so a model under the Stability licence cannot be published** — The manifest carries a licence class; a Stability-licensed model passes with its conditions, and CC-BY-NC or region-excluding licences are refused with why, with tests.
+- ✅ **MOD126** **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — A result made with a model whose licence requires a notice shows it beside the result and in About, and writes it into GLB and 3MF metadata; permissive models show none.
 
 ## Block E — Publishing custom models to Hugging Face
 

@@ -6,10 +6,12 @@ rem and never by the gate. Builds the solution, downloads every model into the d
 rem folder (each file verified by SHA-256, and one already there kept), then runs the cases under
 rem winwright.live.json's longer waits.
 rem
-rem Usage:  run-live.cmd [Configuration]        default Debug
+rem Usage:  run-live.cmd [Configuration] [tag,tag]        default Debug, every live case
 
 set "CONFIG=%~1"
 if "%CONFIG%"=="" set "CONFIG=Debug"
+rem MOD126: a second argument, tag,tag, runs only the live cases with those tags (MODELADO_CASES).
+if not "%~2"=="" set "MODELADO_CASES=%~2"
 
 pushd "%~dp0"
 

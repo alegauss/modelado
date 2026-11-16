@@ -61,18 +61,6 @@ MOD97 land inside these pages, whichever ships first.
 
 ## Block D — Model downloads
 
-### §MOD126 Attribution for conditional models
-
-The Stability AI Community License requires a Powered by Stability AI notice. Modelado
-shows model licences only in About.
-
-When a model with an attribution condition is installed and used, the result panel and
-About show its notice, the export metadata (GLB asset, 3MF metadata) names the model,
-and the README and the Store listing say which optional models carry conditions.
-
-Done when a result made with a Stability model shows the notice in the window and in its
-exported file metadata, and no notice appears for permissive models.
-
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update

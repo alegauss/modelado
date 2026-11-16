@@ -1138,6 +1138,10 @@
       <Border x:Name="MeshChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
         <TextBlock x:Name="MeshText" AutomationProperties.AutomationId="MeshText" FontSize="12" />
       </Border>
+      <!-- MOD126: the notice a model's license requires wherever its result is shown, e.g. Powered by Stability AI. -->
+      <Border x:Name="CreditChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
+        <TextBlock x:Name="CreditText" AutomationProperties.AutomationId="CreditText" FontSize="12" />
+      </Border>
       <Border x:Name="JobChip" Style="{StaticResource StatusChip}" DockPanel.Dock="Left" Visibility="Collapsed">
         <TextBlock x:Name="JobChipText" AutomationProperties.AutomationId="JobChip" FontSize="12">
           <TextBlock.Text>

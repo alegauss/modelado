@@ -12,8 +12,6 @@
 
 ## Block D — Model downloads
 
-- 🛠 **MOD126** (deps: MOD125 ✅) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
-
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update
@@ -26,8 +24,8 @@
 
 ## Block J — Local model quality: past TripoSR
 
-- 📋 **MOD130** (deps: MOD123 ✅, MOD125 ✅, MOD126, MOD127 ✅) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
-- 📋 **MOD131** (deps: MOD123 ✅, MOD125 ✅, MOD126, MOD127 ✅) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
+- 📋 **MOD130** (deps: MOD123 ✅, MOD125 ✅, MOD126 ✅, MOD127 ✅) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
+- 📋 **MOD131** (deps: MOD123 ✅, MOD125 ✅, MOD126 ✅, MOD127 ✅) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
 
 ## Block K — Translated interface
 

@@ -174,7 +174,7 @@ public partial class MainWindow
 
         // The card's format, whatever extension was typed.
         string path = Path.ChangeExtension(dialog.FileName, "." + format);
-        ExportOptions choices = new(ObjVertexColours: ExportObjVertexColours.IsChecked == true, PlyAscii: ExportPlyAscii.IsChecked == true, GlbCompact: ExportGlbCompact.IsChecked == true);
+        ExportOptions choices = new(ObjVertexColours: ExportObjVertexColours.IsChecked == true, PlyAscii: ExportPlyAscii.IsChecked == true, GlbCompact: ExportGlbCompact.IsChecked == true, Credits: ExportCredits);
         try
         {
             // Scaled at export only, through Mesh.Placed as the CLI's --size is, so the two write the

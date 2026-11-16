@@ -77,8 +77,9 @@ public static class SlicerLauncher
     /// <param name="slicer">The slicer.</param>
     /// <param name="mesh">The model, as Save as would write it for printing.</param>
     /// <param name="name">What the file is called, without its extension.</param>
+    /// <param name="credits">MOD126: the notices the model's licenses require, written into the 3MF's metadata.</param>
     /// <returns>The 3MF the slicer opens.</returns>
-    public static string Open(Slicer slicer, Mesh mesh, string name)
+    public static string Open(Slicer slicer, Mesh mesh, string name, IReadOnlyList<ExportCredit>? credits = null)
     {
         ArgumentNullException.ThrowIfNull(slicer);
         ArgumentNullException.ThrowIfNull(mesh);
@@ -87,7 +88,7 @@ public static class SlicerLauncher
         string model = Path.Combine(folder, $"{name}.3mf");
         using (FileStream stream = File.Create(model))
         {
-            MeshExport.Write3mf(mesh, stream);
+            MeshExport.Write3mf(mesh, stream, credits);
         }
 
         ProcessStartInfo start = new(slicer.Program) { UseShellExecute = false };
