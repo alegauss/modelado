@@ -292,7 +292,9 @@ export const words = {
   models: {
     eyebrow: "The models",
     title: "Open models, each under its own licence",
-    lead: "What the app downloads, from the list this version carries. Each one is fetched the first time an operation needs it.",
+    lead: "What the app downloads, from the list this version carries. Each one is fetched the first time an operation needs it, in the size this PC needs: a GPU in Standard quality takes the lighter half-precision file, the CPU and High quality the full one. 3D Object is about 1.0 GB on a GPU and 1.85 GB on the CPU or at High.",
+    onGpu: "on a GPU",
+    onCpu: "on the CPU or at High quality",
     tasks: {
       "image-to-triplane": "3D Object: reads the photo",
       "triplane-decoder": "3D Object: shapes the mesh",

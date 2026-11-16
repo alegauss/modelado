@@ -57,7 +57,6 @@
 
 ## Block M — The CPU and integrated-GPU path
 
-- 📋 **MOD117** (deps: —) **The README promises a 1.1 GB download, which is wrong for a CPU-only PC, where it is about 1.85 GB** — The CPU always loads the fp32 encoder, so the people told the app runs without a GPU are the ones the stated size misleads. → §MOD117
 - 📋 **MOD118** (deps: —) **No run has ever measured peak RAM or video memory, so the about 4 GB requirement is a guess** — A requirement nobody measured cannot tell a user with an 8 GB laptop whether the app will run, nor give a memory check a figure. → §MOD118
 - 📋 **MOD120** (deps: —) **Choosing DirectML is documented as failing on a GPU error, yet ModelRunner silently falls back to the CPU** — The code and its own comment disagree, so a user who forces the GPU to compare times may be measuring the CPU. → §MOD120
 - 📋 **MOD121** (deps: —) **The speed table has no Intel or integrated-GPU timing, so the claim that Intel graphics work is untested** — Since October Modly runs on recent Radeons, so Intel and integrated GPUs are where Modelado alone runs, and that needs a measured row. → §MOD121

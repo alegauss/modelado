@@ -682,16 +682,6 @@ in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
-### §MOD117 State the real download size for the CPU
-
-README lines 101 and 102 say 3D Object needs 1.1 GB (2 GB at high quality). That holds
-for a GPU in Standard quality, which loads fp16; the CPU always loads the fp32 encoder
-(ExecutionProviders.cs lines 60 and 61), so a CPU-only PC downloads about 1.85 GB. About
-and the first-use download prompt should give the size for this PC, not the GPU's.
-
-Done when the README, the site and the download prompt state the size per path (GPU,
-CPU, High), and the prompt shows the size it is about to download.
-
 ### §MOD118 Measure memory
 
 The README gives about 4 GB of free RAM or video memory, from the encoder sizes; no peak

@@ -113,8 +113,10 @@ starts Blender with the model shown imported into an empty scene.
   memory, for example) it is run again on the CPU and the status bar says so.
 - **Memory:** TripoSR's encoder is the heavy model: 0.8 GB in FP16 (the GPU default) or 1.7 GB
   in FP32. Allow about 4 GB of free RAM or video memory for 3D Object.
-- **Disk:** 1.1 GB of models for 3D Object at standard quality (2 GB at high), 50 to 100 MB for
-  Relief and 34 to 67 MB for Real-ESRGAN, downloaded only when an AI enhancement is used.
+- **Disk:** 3D Object downloads about 1.0 GB of models on a GPU at standard quality and 1.85 GB
+  on the CPU or at high quality, since those always take the full-precision encoder. Relief takes
+  50 MB on a GPU or 99 MB on the CPU (176 MB more for Object only), and Real-ESRGAN 34 or 67 MB,
+  only when an AI enhancement is used. The first-use prompt says the size for this PC.
 
 ## Using it
 

@@ -60,11 +60,14 @@ interface ListedModel {
   name: string;
   task: string;
   bytes: number;
+  /** MOD117: the fp16 variant a GPU downloads in Standard quality, where the model has one. */
+  gpuBytes: number | null;
   license: string;
   licenseUrl: string;
 }
 
-// The models the app downloads, from the manifest it embeds: the largest variant's size each.
+// The models the app downloads, from the manifest it embeds: the fp32 size the CPU and High
+// quality download, and the fp16 size a GPU in Standard quality downloads instead (MOD117).
 function listedModels(): ListedModel[] {
   const path = fileURLToPath(new URL("../src/Modelado.Inference/models-manifest.json", import.meta.url));
   const manifest = JSON.parse(readFileSync(path, "utf8")) as {
@@ -74,6 +77,7 @@ function listedModels(): ListedModel[] {
     name: m.name,
     task: m.task,
     bytes: Math.max(...Object.values(m.variants).map((v) => v.bytes)),
+    gpuBytes: m.variants.fp16?.bytes ?? null,
     license: m.license,
     licenseUrl: m.license_url,
   }));

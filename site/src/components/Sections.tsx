@@ -110,7 +110,18 @@ export function Models() {
                   {model.name}
                   <span className="facts-sub">{w.tasks[model.task] ?? model.task}</span>
                 </th>
-                <td>{megabytes(model.bytes)}</td>
+                <td>
+                  {model.gpuBytes === null ? (
+                    megabytes(model.bytes)
+                  ) : (
+                    <>
+                      {megabytes(model.gpuBytes)} {w.onGpu}
+                      <span className="facts-sub">
+                        {megabytes(model.bytes)} {w.onCpu}
+                      </span>
+                    </>
+                  )}
+                </td>
                 <td>
                   <a href={model.licenseUrl} rel="noopener">
                     {model.license}
