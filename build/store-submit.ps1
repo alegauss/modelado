@@ -23,12 +23,19 @@
       powershell -NoProfile -File build\store-submit.ps1 -DryRun   # reads only: credentials, app, submissions
       powershell -NoProfile -File build\store-submit.ps1           # prepares and uploads, does not send
       powershell -NoProfile -File build\store-submit.ps1 -Commit   # and sends it to certification
+
+    -PackageOnly sends a new version instead: artifacts\msix\Modelado.msix (build\build-msix.cmd) takes
+    the place of the published package, and the listings, images and trailers stay as they are.
+
+      powershell -NoProfile -File build\store-submit.ps1 -PackageOnly -Commit
 #>
 [CmdletBinding()]
 param(
     [string]$AppId = '9PB86WW5NRR2',
     [switch]$DryRun,
     [switch]$Commit,
+    # A new version: the MSIX replaces the published package; the listings are not touched.
+    [switch]$PackageOnly,
     # Only commits the pending submission as it is, after a run without -Commit was read and approved.
     [switch]$CommitOnly
 )
@@ -127,6 +134,25 @@ if (-not $pendingId) {
     Write-Host "submission created: $($sub.id)"
 }
 
+if ($PackageOnly) {
+    $msix = Join-Path $repo 'artifacts\msix\Modelado.msix'
+    if (-not (Test-Path $msix)) { throw "No $msix (run build\build-msix.cmd)" }
+    $stage = Join-Path $repo 'artifacts\store-submit'
+    if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
+    New-Item -ItemType Directory -Force $stage | Out-Null
+    $zipPath = Join-Path $stage 'upload.zip'
+    Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+    $zip = [IO.Compression.ZipFile]::Open($zipPath, 'Create')
+    try { [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $msix, 'Modelado.msix', 'NoCompression') }
+    finally { $zip.Dispose() }
+
+    # Every package the clone carried goes; the new one takes their place.
+    $packages = @($sub.applicationPackages | Where-Object { $_ } | ForEach-Object { $_.fileStatus = 'PendingDelete'; $_ })
+    $packages += [pscustomobject]@{ fileName = 'Modelado.msix'; fileStatus = 'PendingUpload' }
+    $sub | Add-Member -NotePropertyName applicationPackages -NotePropertyValue ([object[]]$packages) -Force
+    $sub = Api 'Put' "$base/submissions/$($sub.id)" $sub
+    Write-Host "submission $($sub.id) updated: the package replaced, the listings as published"
+} else {
 # --- 3) Listings, images and trailers --------------------------------------------------------------------
 $langs = Read-StoreListing
 $template = $sub.listings.'en-us'.baseListing
@@ -214,6 +240,7 @@ finally { $zip.Dispose() }
 $sub | Add-Member -NotePropertyName trailers -NotePropertyValue ([object[]]$trailers) -Force
 $sub = Api 'Put' "$base/submissions/$($sub.id)" $sub
 Write-Host "submission $($sub.id) updated: $(@($sub.listings.PSObject.Properties).Count) listings, $(@($sub.trailers).Count) trailers"
+}
 
 # --- 4) Files --------------------------------------------------------------------------------------------
 # x-ms-version raises the single-request blob limit past the 64 MB of the oldest service version.
