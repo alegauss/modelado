@@ -74,6 +74,7 @@ export function Speed() {
               <th scope="col">{w.columns.what}</th>
               <th scope="col">{w.columns.cpu}</th>
               <th scope="col">{w.columns.gpu}</th>
+              <th scope="col">{w.columns.integrated}</th>
             </tr>
           </thead>
           <tbody>
@@ -82,6 +83,7 @@ export function Speed() {
                 <th scope="row">{row.what}</th>
                 <td>{row.cpu}</td>
                 <td>{row.gpu}</td>
+                <td>{row.integrated}</td>
               </tr>
             ))}
           </tbody>

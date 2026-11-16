@@ -279,15 +279,16 @@ export const words = {
     eyebrow: "Speed",
     title: "Measured, not promised",
     // MOD64: the GPU column from three runs each of modelado-cli --provider dml on the same photos.
-    lead: "Each a fresh run of modelado-cli with the published models on a 512 px photo: on the CPU alone, 8 cores of an Intel Core i7-14700 with 8 GB of memory, and on an NVIDIA GeForce RTX 4060 (8 GB) through DirectML.",
-    columns: { what: "Operation", cpu: "CPU", gpu: "GPU" },
+    // MOD121: the integrated column from modelado-cli --provider dml --gpu 1 on the i7-14700's own UHD Graphics 770.
+    lead: "Each a fresh run of modelado-cli with the published models on a 512 px photo: on the CPU alone, 8 cores of an Intel Core i7-14700 with 8 GB of memory, on an NVIDIA GeForce RTX 4060 (8 GB) through DirectML, and on the same processor's integrated Intel UHD Graphics 770 through DirectML.",
+    columns: { what: "Operation", cpu: "CPU", gpu: "GPU", integrated: "Intel integrated" },
     rows: [
-      { what: "3D Object, default grid (256)", cpu: "about 20 s", gpu: "about 4 s" },
-      { what: "3D Object, finer grid (320)", cpu: "25 to 32 s", gpu: "about 4 s" },
-      { what: "Relief, default grid (256)", cpu: "about 1 s", gpu: "about 1 s" },
-      { what: "Simplify 150,000 triangles to 45,000", cpu: "under 1 s", gpu: "runs on the CPU" },
+      { what: "3D Object, default grid (256)", cpu: "about 20 s", gpu: "about 4 s", integrated: "about 65 s" },
+      { what: "3D Object, finer grid (320)", cpu: "25 to 32 s", gpu: "about 4 s", integrated: "not measured" },
+      { what: "Relief, default grid (256)", cpu: "about 1 s", gpu: "about 1 s", integrated: "2 to 9 s" },
+      { what: "Simplify 150,000 triangles to 45,000", cpu: "under 1 s", gpu: "runs on the CPU", integrated: "runs on the CPU" },
     ],
-    note: "Most of a GPU run is loading the model onto it. The first run on a new GPU takes several seconds longer while DirectML prepares the models. The status bar names the GPU in use.",
+    note: "Most of a GPU run is loading the model onto it. The first run on a new GPU takes several seconds longer while DirectML prepares the models. The status bar names the GPU in use. Intel's integrated graphics run every model, but a 3D Object there is slower than on the CPU, so choose the CPU in About on a PC with no other GPU.",
   },
   models: {
     eyebrow: "The models",

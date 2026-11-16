@@ -445,6 +445,18 @@ shared is system memory the GPU maps), on an Intel Core i7-14700 with an NVIDIA 
 | Relief, grid 256 | 0.3 GB | 0.4 GB | not sampled (under 1 s) | not sampled |
 | Relief, Object only, grid 512 | 0.8 GB | 0.6 GB | 0.6 GB | 0.3 GB |
 
+On the same processor's integrated **Intel UHD Graphics 770** through DirectML (MOD121,
+`build\measure-memory.ps1 -Gpu 1`, which runs `modelado-cli --gpu 1`), every model runs, but
+3D Object is slower there than on the CPU, so on a PC with only integrated graphics choose the
+CPU in About:
+
+| Operation | Time | RAM | GPU dedicated | GPU shared |
+| --- | --: | --: | --: | --: |
+| 3D Object, grid 256 (FP16) | 65 s | 2.6 GB | 2.0 GB | 2.0 GB |
+| 3D Object, High, grid 384 (FP32) | 35 s | 6.4 GB | 1.2 GB | 5.4 GB |
+| Relief, grid 256 (first run, shaders compiled) | 8.9 s | 0.4 GB | 0.2 GB | 0.1 GB |
+| Relief, Object only, grid 512 | 2.3 s | 0.5 GB | 0.2 GB | 0.1 GB |
+
 ## Model licences
 
 | Model | Licence |

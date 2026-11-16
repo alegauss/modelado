@@ -27,7 +27,7 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     // MOD106: the relief's text and how it is sized and placed.
     private static readonly string[] TextOptions = ["--text", "--text-mm", "--text-raise-mm", "--text-on"];
 
-    private static readonly string[] Common = ["--provider", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
+    private static readonly string[] Common = ["--provider", "--gpu", "--high", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {

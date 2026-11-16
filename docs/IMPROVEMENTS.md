@@ -682,20 +682,6 @@ in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
-### §MOD121 Measure Intel and integrated GPUs
-
-The site's speed table has two columns, a CPU (8 cores of an i7-14700 in a VM) and an
-RTX 4060. Modly added AMD support through ROCm in v0.4.3 (04/10/2026), but only for
-RDNA2 or newer discrete Radeons on Windows; Intel Arc, Intel and AMD integrated graphics
-and older Radeons remain Modelado's own ground through DirectML.
-
-Time and memory for 3D Object and Relief on an Intel integrated GPU, an Intel Arc if
-available, and an AMD integrated GPU, through DirectML, added to the table, with any
-failure fixed or documented. This needs access to that hardware.
-
-Done when the table and README have at least one Intel and one integrated-GPU row,
-measured.
-
 ### §MOD115 Measure an INT8 encoder
 
 A public ONNX export of TripoSR (fernandotonon/QtMeshEditor-triposr-onnx) ships an INT8
@@ -724,3 +710,29 @@ the default.
 
 Done when a CPU-only install downloads and runs the chosen variant, the README and the
 site state the new size and time, and the speed table shows both.
+
+### §MOD147 Automatic and integrated GPUs
+
+MOD121 measured the i7-14700's integrated Intel UHD Graphics 770 through DirectML
+(`modelado-cli --gpu 1`, README's integrated table): 3D Object took 65 s at Standard
+(FP16) and 35 s at High (FP32), against 15 s on the same PC's CPU. Relief ran in 2 to 9
+s, slower than the CPU's 1 s. FP16 is slower than FP32 there, the opposite of a discrete
+GPU.
+
+Automatic (`ExecutionProviders.Resolve`) picks DirectML whenever the build has it, and
+`GpuAdapter.ForDevice(0)` is whatever DXGI lists first. On a PC whose only GPU is
+integrated, that is the slow path, and the user is told only "DirectML · Intel UHD
+Graphics 770" on the chip.
+
+Automatic should weigh the adapter. Dedicated memory does not tell: `GpuAdapter` read 2
+GB for the UHD 770 (the CLI named it "Intel(R) UHD Graphics 770, 2 GB"). DXCore does:
+`IDXCoreAdapter` answers `DXCoreAdapterProperty::IsIntegrated`. Where the only hardware
+adapter is integrated, Automatic resolves to the CPU and says why on the chip ("CPU: the
+integrated GPU is slower here"), and About's DirectML choice still forces it. On a
+hybrid laptop where DXGI lists the integrated GPU first, Automatic could prefer the
+discrete adapter through `IDXGIFactory6::EnumAdapterByGpuPreference` (high performance)
+instead of index 0.
+
+Done when Automatic on a PC whose only GPU is integrated runs on the CPU and says why,
+tested with the adapter's figures stood in, and a hybrid PC's Automatic names its
+discrete GPU.

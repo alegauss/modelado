@@ -81,6 +81,7 @@ const string Usage = """
                                                 with these arguments, and waits until it closes
 
     Common: --provider auto|dml|cpu   --high (FP32 on the GPU too)   --models <folder>
+            --gpu N                   DirectML on adapter N, e.g. an integrated GPU beside a discrete one; default 0
             --manifest <url>          --size <units> (longest side when saving)
             --source <owner/name|url> a model repository read after the built-in one
             --preview <image.png>     saves a rendered view, on a transparent background
@@ -164,9 +165,16 @@ try
         var other => throw new ArgumentException($"--provider {other}: use auto, dml or cpu."),
     };
     (ExecutionProvider provider, string? reason) = ExecutionProviders.Resolve(choice);
-    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice));
+    // MOD121: --gpu N runs DirectML on another adapter than the default, an integrated GPU beside a discrete one.
+    int gpu = Int("--gpu", 0);
+    if (gpu < 0)
+    {
+        throw new ArgumentException("--gpu takes an adapter index, 0 or more.");
+    }
+
+    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice), gpu);
     // MOD52: the words the window's provider chip shows, the GPU named.
-    string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice() : null);
+    string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice(gpu) : null);
     Console.WriteLine($"Running on {where}{(reason is null ? "" : $": {reason}")}");
 
     switch (args[0])

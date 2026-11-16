@@ -21,14 +21,20 @@ public sealed class ModelRunner : IDisposable
     /// <param name="provider">Where sessions run.</param>
     /// <param name="highQuality">fp32 everywhere instead of fp16 on the GPU.</param>
     /// <param name="fallBack">MOD120: whether a GPU failure is retried on the CPU (Automatic) or is an error (DirectML chosen).</param>
-    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false, bool fallBack = true)
+    /// <param name="deviceId">MOD121: the DirectML adapter, DXGI's index; 0 is the system's default GPU.</param>
+    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false, bool fallBack = true, int deviceId = 0)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(deviceId);
+        DeviceId = deviceId;
         ArgumentNullException.ThrowIfNull(library);
         Library = library;
         Provider = provider;
         HighQuality = highQuality;
         FallBack = fallBack;
     }
+
+    /// <summary>MOD121: the DirectML adapter sessions run on, DXGI's index.</summary>
+    public int DeviceId { get; }
 
     /// <summary>MOD120: whether a model that fails on the GPU runs on the CPU instead; false where DirectML was chosen.</summary>
     public bool FallBack { get; }
@@ -147,7 +153,7 @@ public sealed class ModelRunner : IDisposable
             string path = Library.FileOf(model, variant);
             try
             {
-                loaded = (ExecutionProviders.Create(path, Provider), Provider);
+                loaded = (ExecutionProviders.Create(path, Provider, DeviceId), Provider);
             }
             catch (OnnxRuntimeException failure) when (Provider != ExecutionProvider.Cpu && !FallBack)
             {

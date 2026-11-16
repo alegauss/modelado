@@ -9,9 +9,14 @@
 #
 # Usage:  build\measure-memory.ps1 [-Photo docs\robot.png] [-Configuration Release]
 
+#
+# MOD121: -Gpu N runs the DirectML half on adapter N (modelado-cli --gpu), such as an integrated GPU
+# beside a discrete one; the counters are the process's, whichever adapter it runs on.
+
 param(
     [string]$Photo = "docs\robot.png",
-    [string]$Configuration = "Release"
+    [string]$Configuration = "Release",
+    [int]$Gpu = 0
 )
 
 $ErrorActionPreference = "Stop"
@@ -67,7 +72,8 @@ function Measure-Run([string[]]$arguments) {
 
 $rows = foreach ($provider in "cpu", "dml") {
     foreach ($run in $runs) {
-        $m = Measure-Run ($run.Args + @("--provider", $provider))
+        $gpuArgs = if ($provider -eq "dml") { @("--gpu", "$Gpu") } else { @() }
+        $m = Measure-Run ($run.Args + @("--provider", $provider) + $gpuArgs)
         if ($m.ExitCode -ne 0) { throw "$($run.Name) on $provider failed: $($m.Errors)" }
         [pscustomobject]@{
             Operation = $run.Name
