@@ -289,22 +289,6 @@ Done when the six listings are live on the Store page.
 
 ## Block G — Public site for 3D modelling
 
-### §MOD133 Unlimited, no credits, nothing uploaded
-
-The site says nothing is uploaded. It does not say what that means against the tools
-people compare with: MakerLab's image to 3D charges credits at generation since
-mid-2026, with complaints about paying for unprintable results, needs an account and
-moderates photos; Meshy and 3D AI Studio sell credits; Microsoft's Copilot 3D left with
-Copilot Labs on 29/09/2026.
-
-The site, the README's first screen and the Store listing say Modelado makes unlimited
-results for free, with no account, no credits and no moderation, because it runs on the
-PC. Printing is one of its uses beside games, Blender and the web, not its only one. The
-wording joins MOD101's no-NVIDIA claim.
-
-Done when the three places carry the message in the first screen, and MOD92's
-translations include it.
-
 ## Block H — Cloud services: Meshy AI for 3D, Ideogram for images and textures
 
 ## Block I — Blender integration: AI tools for existing Blender models

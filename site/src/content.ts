@@ -37,7 +37,7 @@ export const words = {
     eyebrow: "Modelado · for Windows · no NVIDIA GPU needed",
     title: "A photo becomes a 3D model you can turn, print and share.",
     lead:
-      "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, and no NVIDIA card is needed: AMD and Intel graphics run it through DirectML, and a PC with no graphics card makes a 3D object on the CPU in about 20 seconds.",
+      "One photo of an object gives a whole model with TripoSR, sides and back included; any photo gives a relief with Depth Anything V2. Smooth, simplify, fill holes and export to GLB, OBJ, PLY or STL. It all runs on your own PC, and no NVIDIA card is needed: AMD and Intel graphics run it through DirectML, and a PC with no graphics card makes a 3D object on the CPU in about 20 seconds. Because it all runs on your PC, it is unlimited and free: no account, no credits and no moderation of what you make.",
     download: "Get it from the Microsoft Store",
     source: "See the source",
   },

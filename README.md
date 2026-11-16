@@ -7,8 +7,11 @@ on your own computer. No photo leaves the PC.
 **No NVIDIA GPU needed.** Modelado runs its models through DirectML, so any DirectX 12 graphics
 card works: AMD and Intel as well as NVIDIA, with no CUDA. A PC with no graphics card runs it on
 the CPU alone: a 3D object from a photo in about 20 seconds on 8 cores of an Intel Core i7-14700,
-38 seconds on 4 cores, and a relief in about a second (see [How it works](#how-it-works)). It is
-free, with no account.
+38 seconds on 4 cores, and a relief in about a second (see [How it works](#how-it-works)).
+
+**Unlimited and free.** Because everything runs on your PC, there is no account, no credits to buy
+and no moderation of your photos or what you make: run it as often as you like, for printing,
+games, Blender or the web.
 
 **Get it from the [Microsoft Store](https://apps.microsoft.com/detail/9PB86WW5NRR2)**: signed by
 the Store, updated by it, and installed without a SmartScreen warning. The
