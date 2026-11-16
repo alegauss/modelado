@@ -37,6 +37,7 @@ const string Usage = """
         --text "WORDS"       with --width-mm, letters and digits raised on the relief
         --text-mm H          a capital's height; default 6     --text-raise-mm R   above the relief; default 1
         --text-on line|arc   along the bottom (default), or around a medallion's bottom arc
+        --font FILE.ttf      the text in a TrueType font, as typed, in place of the built-in capitals
         --stand              with --width-mm, also writes <output>-stand: a block with a slot the
                              relief stands in, leaning back --stand-tilt degrees (default 15)
         --remove-background  the object only, without the background
@@ -426,7 +427,7 @@ ReliefOptions ReliefSize(int grid)
             "line" => TextPlacement.Line,
             "arc" => TextPlacement.Arc,
             var other => throw new ArgumentException($"--text-on {other}: use line or arc."),
-        })
+        }, Get("--font", null)) // MOD142: a TrueType font's outlines in place of the stroke font
         : null;
     return new ReliefOptions(GridLongSide: grid, Depth: (float)depth, BaseThickness: (float)baseMm, PrintWidth: (float)width, BorderWidth: (float)border, BorderHeight: (float)borderHeight, Text: text);
 }

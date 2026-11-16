@@ -37,7 +37,7 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- 📋 **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — MOD106 raises text in a stroke font only, so a lower-case name or a script face still needs another program. → §MOD142
+- ⏳ **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — Still to come: bundle an OFL font with its licence, and let the Relief card choose it or an installed font. → §MOD142
 - 📋 **MOD143** (deps: MOD106 ✅) **Text on a relief can only be raised, never engraved into the surface** — MOD106 stamps letters above the relief, while a plaque band or a keychain back often wants the name cut in. → §MOD143
 - 📋 **MOD145** (deps: MOD108 ✅) **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — Curved and cylinder lithophanes are what the other tools offer beside flat, and a thin unframed panel warps. → §MOD145
 - 📋 **MOD146** (deps: MOD112 ✅) **Nothing shows which parts of a model are too thin to print, so an ear or a tail breaks off or vanishes in the slicer** — MOD112 lays a model flat and MOD111 closes it, but neither measures wall thickness, the last check before a print fails. → §MOD146
@@ -140,5 +140,11 @@
   publishes triposr-encoder int8, the embedded manifest lists it, and Light on a
   CPU-only PC downloads 433 MB and runs it; the README and the site state its size and
   time.
+
+## Done when — MOD142
+
+- **The Relief card writes in a bundled OFL font or an installed one** An OFL font ships
+  with its licence beside it, the Relief card offers it and the installed .ttf fonts,
+  and a case makes a medallion with a lower-case name in each.
 
 ## Non-goals

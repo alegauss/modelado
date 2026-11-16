@@ -19,7 +19,11 @@ public enum TextPlacement
 /// <param name="Height">A capital's height in millimetres.</param>
 /// <param name="Raise">How far the text stands above the relief's highest point, in millimetres.</param>
 /// <param name="Placement">A straight line or an arc.</param>
-public sealed record ReliefText(string Text, float Height = 6, float Raise = 1, TextPlacement Placement = TextPlacement.Line);
+/// <param name="Font">
+/// MOD142: a TrueType font file to draw the text in, filled, in its own case and characters; null
+/// keeps the built-in stroke font of capitals and digits.
+/// </param>
+public sealed record ReliefText(string Text, float Height = 6, float Raise = 1, TextPlacement Placement = TextPlacement.Line, string? Font = null);
 
 /// <summary>
 /// Text stamped into a relief's height grid (MOD106). The letters are a built-in stroke font, each
@@ -27,12 +31,19 @@ public sealed record ReliefText(string Text, float Height = 6, float Raise = 1, 
 /// so a name or a date prints legibly from a few millimetres up. Stamping heights rather than
 /// merging a second mesh keeps the relief one closed solid, as the border (MOD105) does. The text
 /// sits inside the outline, clear of the border: on a line along the bottom, or along the bottom of
-/// the circle a medallion is cut to. Outlines from a font file, a font the user picks, and engraved
-/// rather than raised text are later work.
+/// the circle a medallion is cut to. MOD142: with <see cref="ReliefText.Font"/>, the letters are a
+/// TrueType font's own outlines (<see cref="TrueTypeFont"/>), filled by a nonzero-winding test at each
+/// grid vertex they cover, sized so a capital H is the height asked and bent along the arc the same
+/// way the strokes are.
 /// </summary>
 public static class ReliefTextStamp
 {
     private const float GlyphHeight = 6, Advance = 6, Margin = 1.5f;
+
+    // Fonts read once per path: a relief may be rebuilt many times with the same one.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, TrueTypeFont> Fonts = new(StringComparer.OrdinalIgnoreCase);
+
+    private static TrueTypeFont FontAt(string path) => Fonts.GetOrAdd(Path.GetFullPath(path), TrueTypeFont.Load);
 
     // Polylines separated by ';', points "x,y" on a 0..4 × 0..6 grid with y up.
     private static readonly Dictionary<char, string> Glyphs = new()
@@ -111,6 +122,27 @@ public static class ReliefTextStamp
         float top = options.Depth + text.Raise;
         float[] heights = new float[gw * gh];
         Array.Fill(heights, -1f);
+
+        // MOD142: a font's outlines, filled, each point placed as a stroke's would be.
+        if (text.Font is { } path)
+        {
+            TrueTypeFont font = FontAt(path);
+            List<Vector2[]> polygons = [];
+            float pen = 0;
+            foreach (char c in words)
+            {
+                foreach (Vector2[] contour in font.Outline(c))
+                {
+                    polygons.Add([.. contour.Select(v => place((pen + v.X) * scale, v.Y * scale))]);
+                }
+
+                pen += font.Advance(c);
+            }
+
+            Fill(heights, gw, gh, polygons, top, cellsPerMm, centreColumn, centreRow);
+            return heights;
+        }
+
         for (int letter = 0; letter < words.Length; letter++)
         {
             foreach (string line in Glyphs[words[letter]].Split(';', StringSplitOptions.RemoveEmptyEntries))
@@ -155,9 +187,28 @@ public static class ReliefTextStamp
             throw new ArgumentException("Letters need a height and a raise above 0 mm.", nameof(text));
         }
 
-        string words = Drawable(text.Text);
-        float scale = text.Height / GlyphHeight;
-        float length = ((words.Length * Advance) - (Advance - 4)) * scale;
+        string words;
+        float scale, length;
+        if (text.Font is { } path)
+        {
+            // MOD142: the text as typed; a character the font lacks is refused in words.
+            TrueTypeFont font = FontAt(path);
+            words = text.Text.Normalize(NormalizationForm.FormC).Trim();
+            if (words.FirstOrDefault(c => !char.IsWhiteSpace(c) && !font.Has(c)) is var missing && missing != default)
+            {
+                throw new ArgumentException($"\"{missing}\" is not in {Path.GetFileName(path)}: choose another font or leave it out.", nameof(text));
+            }
+
+            float capital = font.Outline('H').SelectMany(p => p).Select(v => v.Y).DefaultIfEmpty(font.UnitsPerEm * 0.7f).Max();
+            scale = text.Height / capital;
+            length = words.Sum(c => (float)font.Advance(c)) * scale;
+        }
+        else
+        {
+            words = Drawable(text.Text);
+            scale = text.Height / GlyphHeight;
+            length = ((words.Length * Advance) - (Advance - 4)) * scale;
+        }
         float inset = borderWidth + Margin;
         float stroke = MathF.Max(text.Height / 7, 0.4f);
         if (text.Placement == TextPlacement.Arc)
@@ -185,6 +236,51 @@ public static class ReliefTextStamp
 
         float bottom = (-height / 2) + inset + (stroke / 2);
         return (words, (x, y) => new Vector2(x - (length / 2), bottom + y), scale, stroke);
+    }
+
+    // MOD142: every grid vertex inside the polygons by the nonzero rule, as TrueType fills its outlines.
+    private static void Fill(float[] heights, int gw, int gh, List<Vector2[]> polygons, float top, float cellsPerMm, float centreColumn, float centreRow)
+    {
+        if (polygons.Count == 0)
+        {
+            return;
+        }
+
+        Vector2 min = new(polygons.SelectMany(p => p).Min(v => v.X), polygons.SelectMany(p => p).Min(v => v.Y));
+        Vector2 max = new(polygons.SelectMany(p => p).Max(v => v.X), polygons.SelectMany(p => p).Max(v => v.Y));
+        int x0 = Math.Max(0, (int)MathF.Floor(centreColumn + (min.X * cellsPerMm)));
+        int x1 = Math.Min(gw - 1, (int)MathF.Ceiling(centreColumn + (max.X * cellsPerMm)));
+        int y0 = Math.Max(0, (int)MathF.Floor(centreRow - (max.Y * cellsPerMm)));
+        int y1 = Math.Min(gh - 1, (int)MathF.Ceiling(centreRow - (min.Y * cellsPerMm)));
+        for (int y = y0; y <= y1; y++)
+        {
+            for (int x = x0; x <= x1; x++)
+            {
+                Vector2 p = new((x - centreColumn) / cellsPerMm, (centreRow - y) / cellsPerMm);
+                int winding = 0;
+                foreach (Vector2[] polygon in polygons)
+                {
+                    for (int i = 0; i < polygon.Length; i++)
+                    {
+                        Vector2 a = polygon[i], b = polygon[(i + 1) % polygon.Length];
+                        float side = ((b.X - a.X) * (p.Y - a.Y)) - ((p.X - a.X) * (b.Y - a.Y));
+                        if (a.Y <= p.Y && b.Y > p.Y && side > 0)
+                        {
+                            winding++;
+                        }
+                        else if (a.Y > p.Y && b.Y <= p.Y && side < 0)
+                        {
+                            winding--;
+                        }
+                    }
+                }
+
+                if (winding != 0)
+                {
+                    heights[(y * gw) + x] = top;
+                }
+            }
+        }
     }
 
     // Every grid vertex within half a stroke of the segment a–b (millimetres around the centre, y up).
