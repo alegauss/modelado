@@ -828,6 +828,27 @@
   <data name="LicenseTitle" xml:space="preserve">
     <value>Licença</value>
   </data>
+  <data name="ConsentConditionsTitle" xml:space="preserve">
+    <value>Condições de uso</value>
+  </data>
+  <data name="ConsentAgree" xml:space="preserve">
+    <value>Li estes termos e concordo com eles</value>
+  </data>
+  <data name="ConsentConditionsModel" xml:space="preserve">
+    <value>{0} está sob a {1}. {2}</value>
+  </data>
+  <data name="ConsentConditionsFullText" xml:space="preserve">
+    <value>Texto completo: {0}</value>
+  </data>
+  <data name="ConsentConditionsNotice" xml:space="preserve">
+    <value>A licença exige este aviso onde o modelo for usado: “{0}”.</value>
+  </data>
+  <data name="ConsentConditionsRegister" xml:space="preserve">
+    <value>Usá-lo com fim comercial exige registrar-se com o criador: {0}</value>
+  </data>
+  <data name="ConsentConditionsAgreed" xml:space="preserve">
+    <value>Você concordou com estes termos em {0}.</value>
+  </data>
   <data name="AboutButton" xml:space="preserve">
     <value>Sobre e modelos</value>
   </data>

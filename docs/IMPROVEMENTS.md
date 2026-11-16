@@ -61,24 +61,6 @@ MOD97 land inside these pages, whichever ships first.
 
 ## Block D — Model downloads
 
-### §MOD123 The model download wizard
-
-About has Download everything and per-model downloads. Models with conditions
-(registration, attribution, a revenue cap) need more: what the model does and how big it
-is, its licence in plain words and the full text, a consent the app records, and the
-progress and checks the downloader already does. MOD122 found (docs/model-downloads.md)
-that the Stability licence lets Modelado publish its ONNX export with the Agreement, a
-Notice file and "Powered by Stability AI", so the user meets no login or registration; a
-token step (401 sign in, 403 open the page and agree) is only for a licence that forbids
-redistribution.
-
-A wizard, built from MOD122's flow, does that for any model whose manifest entry carries
-conditions, and stays one click for the permissive ones. It also lists models available
-but not installed (overlapping MOD97).
-
-Done when SF3D (or the gated test file) can be installed through the wizard on a clean
-PC, with consent recorded, and a permissive model still installs in one click.
-
 ### §MOD125 Licences with conditions
 
 build_manifest.py and publish_models.py accept only MIT, Apache-2.0, BSD-2-Clause,

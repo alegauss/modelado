@@ -38,6 +38,7 @@ public partial class MainWindow
             Strings.ConsentFactResume);
         ConsentLicense.Text = string.Join(Environment.NewLine, needed.Select(n => Ui.Format(Strings.ConsentLicenseLine, n.Model.Name, n.Model.License, n.Model.LicenseUrl)));
         ConsentAccept.Content = accept;
+        ShowConditions([.. needed.Select(n => n.Model).Where(m => m.Conditions is not null).DistinctBy(m => m.Name)]);
 
         aboutBeforeConsent = AboutOpen;
         AboutPanel.Visibility = Visibility.Collapsed;
@@ -75,7 +76,62 @@ public partial class MainWindow
         answered?.TrySetResult(accepted);
     }
 
-    private void OnConsentAccept(object sender, RoutedEventArgs e) => HideConsent(accepted: true);
+    // MOD123: the conditioned models in this download not yet agreed to, which Accept waits on.
+    private List<ManifestModel> unagreed = [];
+
+    /// <summary>
+    /// MOD123: each model whose license sets conditions, its terms in plain words, the full text,
+    /// the notice it requires and where a commercial user registers; the box to agree when any is not
+    /// yet agreed to (Accept waits on it), or when each was agreed to otherwise.
+    /// </summary>
+    private void ShowConditions(IReadOnlyList<ManifestModel> conditioned)
+    {
+        string settings = SettingsFile.DefaultPath;
+        unagreed = [.. conditioned.Where(m => ModelConsents.Agreed(settings, m) is null)];
+        ConsentConditions.Visibility = conditioned.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        ConsentConditionsText.Text = string.Join(Environment.NewLine + Environment.NewLine, conditioned.Select(m =>
+        {
+            ModelConditions terms = m.Conditions!;
+            List<string> lines = [Ui.Format(Strings.ConsentConditionsModel, m.Name, m.License, terms.Summary), Ui.Format(Strings.ConsentConditionsFullText, m.LicenseUrl)];
+            if (terms.Attribution is { } notice)
+            {
+                lines.Add(Ui.Format(Strings.ConsentConditionsNotice, notice));
+            }
+
+            if (terms.RegisterUrl is { } register)
+            {
+                lines.Add(Ui.Format(Strings.ConsentConditionsRegister, register));
+            }
+
+            if (ModelConsents.Agreed(settings, m) is { } at)
+            {
+                lines.Add(Ui.Format(Strings.ConsentConditionsAgreed, at.ToLocalTime().ToString("d", System.Globalization.CultureInfo.CurrentCulture)));
+            }
+
+            return string.Join(Environment.NewLine, lines);
+        }));
+        ConsentAgree.IsChecked = false;
+        ConsentAgree.Visibility = unagreed.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        ConsentAccept.IsEnabled = unagreed.Count == 0;
+    }
+
+    private void OnConsentAgreeChanged(object sender, RoutedEventArgs e) => ConsentAccept.IsEnabled = unagreed.Count == 0 || ConsentAgree.IsChecked == true;
+
+    private void OnConsentAccept(object sender, RoutedEventArgs e)
+    {
+        if (unagreed.Count > 0)
+        {
+            if (ConsentAgree.IsChecked != true)
+            {
+                return;
+            }
+
+            ModelConsents.Record(SettingsFile.DefaultPath, unagreed, DateTimeOffset.UtcNow);
+            unagreed = [];
+        }
+
+        HideConsent(accepted: true);
+    }
 
     private void OnConsentDecline(object sender, RoutedEventArgs e) => HideConsent(accepted: false);
 }

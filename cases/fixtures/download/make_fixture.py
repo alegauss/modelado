@@ -73,4 +73,19 @@ custom = {
     ],
 }
 (root / "custom-manifest.json").write_text(json.dumps(custom, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+# MOD123: the same five, the depth model under a license with conditions, as SF3D's would be, so
+# its download asks the person to agree first.
+conditions = json.loads(json.dumps(manifest))
+conditions["version"] = "conditions"
+for model in conditions["models"]:
+    if model["name"] == "depth-anything-v2-small":
+        model["license"] = "Example Community License"
+        model["license_url"] = "https://example.org/community-license"
+        model["conditions"] = {
+            "summary": "Free for research, personal use and businesses under US $1M a year.",
+            "attribution": "Powered by Example",
+            "register_url": "https://example.org/register",
+        }
+(root / "conditions-manifest.json").write_text(json.dumps(conditions, indent=2) + "\n", encoding="utf-8", newline="\n")
 print(f"wrote {root}")

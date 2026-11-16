@@ -43,6 +43,19 @@ class BuildManifestTests(unittest.TestCase):
         self.assertEqual("depth", model["task"])
         self.assertEqual(manifest, json.loads((self.stage / "manifest.json").read_text(encoding="utf-8")))
 
+    def test_a_licenses_conditions_are_carried_and_a_permissive_model_has_none(self):
+        # MOD123: what the app asks the person to agree to before the download.
+        meta_path = self.models / "tiny" / "meta.json"
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        meta["upstream"]["conditions"] = {"summary": "Free under US $1M a year.", "attribution": "Powered by Example"}
+        meta_path.write_text(json.dumps(meta), encoding="utf-8")
+        write_model(self.models, "plain", {"fp32": b"plain"})
+
+        models = {m["name"]: m for m in bm.build(self.models, self.stage, "https://host", "1")["models"]}
+
+        self.assertEqual({"summary": "Free under US $1M a year.", "attribution": "Powered by Example"}, models["tiny"]["conditions"])
+        self.assertNotIn("conditions", models["plain"])
+
     def test_files_are_staged_under_flat_names(self):
         bm.build(self.models, self.stage, "https://host", "1")
         self.assertEqual(b"fp32 bytes", (self.stage / "tiny-fp32.onnx").read_bytes())

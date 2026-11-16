@@ -93,6 +93,16 @@
       "shareable": false
     },
     {
+      // MOD123: the same, the depth model under a license with conditions, and settings.json of its own
+      // so the agreement it records stays in this case's folder.
+      "name": "a window with a fresh models folder and a model whose license has conditions",
+      "files": ["cases/fixtures/notes.txt"],
+      "arguments": ["--models", "{files}/conditions-models", "--manifest", "http://127.0.0.1:47631/files/conditions-manifest.json", "--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "reaches": ["127.0.0.1:47631"],
+      "shareable": false
+    },
+    {
       // MOD23: a models folder of its own, which the case fills by downloading and then empties.
       "name": "a window with a photo open, to download and remove a model",
       "files": ["cases/fixtures/photo.png"],
@@ -614,6 +624,32 @@
         { "locator": "Button#Remove-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "Remove depth-anything-v2-small", "named": "the row turns to downloaded, with Remove" },
         { "locator": "Text#Download-depth-anything-v2-small", "act": "read", "reads": "name", "expect": "depth-anything-v2-small · fp32 · 1 MB", "named": "and its variant and size" },
         { "locator": "Button#AboutDownloadAll", "act": "read", "reads": "name", "expect": "Download 4 missing, 5 MB", "named": "Download everything counts one fewer" }
+      ]
+    },
+
+    {
+      "name": "a model whose license has conditions is downloaded only once its terms are agreed to, and the agreement is remembered",
+      "catches": "a conditioned model fetched with one click like a permissive one, terms not shown, an agreement not recorded, or asked for again every time",
+      "filed": "MOD123",
+      "tags": ["about", "download", "consent"],
+      "fixture": "a window with a fresh models folder and a model whose license has conditions",
+      "steps": [
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Button#DownloadModel-u2net", "act": "invoke", "named": "a permissive model's Download is pressed" },
+        { "locator": "Group#ConsentConditions", "act": "read", "absent": true, "named": "its offer has no conditions to agree to" },
+        { "locator": "Button#ConsentAccept", "act": "read", "reads": "enabled", "expect": "enabled", "named": "so it downloads in one click" },
+        { "locator": "Button#ConsentDecline", "act": "invoke", "named": "Not now is pressed" },
+        { "locator": "Button#DownloadModel-depth-anything-v2-small", "act": "invoke", "named": "the conditioned model's Download is pressed" },
+        { "locator": "Text#ConsentConditionsText", "act": "read", "reads": "name", "matches": "^depth-anything-v2-small is under the Example Community License\\. Free for research, personal use and businesses under US \\$1M a year\\.\\r?\\nFull text: https://example\\.org/community-license\\r?\\nThe license requires this notice wherever the model is used: “Powered by Example”\\.\\r?\\nUsing it for a commercial purpose means registering with its maker: https://example\\.org/register$", "named": "its terms are said in plain words, with the full text and what it asks" },
+        { "locator": "Button#ConsentAccept", "act": "read", "reads": "enabled", "expect": "not enabled", "named": "and the download waits on agreeing" },
+        { "locator": "CheckBox#ConsentAgree", "act": "toggle", "reads": "toggle", "expect": "On", "named": "the terms are agreed to" },
+        { "locator": "Button#ConsentAccept", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the download can start" },
+        { "locator": "Button#ConsentAccept", "act": "invoke", "named": "it is accepted" },
+        { "locator": "Button#AboutCancelDownload", "act": "invoke", "named": "the slow fetch is cancelled" },
+        { "locator": "Button#DownloadModel-depth-anything-v2-small", "act": "invoke", "named": "Download is pressed again" },
+        { "locator": "Text#ConsentConditionsText", "act": "read", "reads": "name", "matches": "You agreed to these terms on \\S+\\.$", "named": "the agreement was recorded, and is said with its date" },
+        { "locator": "CheckBox#ConsentAgree", "act": "read", "absent": true, "named": "so it is not asked for again" },
+        { "locator": "Button#ConsentAccept", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and the download can go on" }
       ]
     },
 

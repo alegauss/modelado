@@ -59,8 +59,13 @@ Stability registration when the ONNX comes from Modelado's own models repository
    counts as commercial; that is the maintainer's call. The weights are fetched with that
    account's token, exported to ONNX, and published to the models repository. The Agreement
    and the Notice file go beside them. Licence-class handling is MOD125.
-2. **In the app.** The download wizard (MOD123) shows the licence and asks for consent before
-   the download. The attribution (MOD126) is shown wherever the model's result appears. The
+2. **In the app.** The download's consent panel shows the licence and asks for consent before
+   the download (MOD123, built): a manifest entry with `conditions` (summary, attribution and
+   registration URL, carried from the model's meta.json `upstream.conditions` by
+   build_manifest.py) adds them in plain words, with the full text and an "I agree" box that
+   Download waits on. The agreement is kept in settings.json under `modelConsents`, by model
+   and licence URL, so it is asked once per licence text. A permissive model still downloads in
+   one click. The attribution (MOD126) is shown wherever the model's result appears. The
    download itself is an ordinary public fetch, so the user meets no login and no
    registration.
 3. **Fallback, only if a licence forbids redistribution.** The user pastes a Hugging Face token,

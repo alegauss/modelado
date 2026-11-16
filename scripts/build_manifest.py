@@ -137,6 +137,9 @@ def build(
                 "license_url": meta["upstream"]["license_url"],
             }
         )
+        # MOD123: a license's conditions in plain words, which the app asks the person to agree to.
+        if "conditions" in meta["upstream"]:
+            entries[-1]["conditions"] = meta["upstream"]["conditions"]
     manifest = {"schema": MANIFEST_SCHEMA, "version": version, "base_url": base, "models": entries}
     (stage / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return manifest

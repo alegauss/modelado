@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "version": "conditions",
+  "models": [
+    {
+      "name": "triposr-encoder",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "triposr-decoder",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "u2net",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    },
+    {
+      "name": "depth-anything-v2-small",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "Example Community License",
+      "license_url": "https://example.org/community-license",
+      "conditions": {
+        "summary": "Free for research, personal use and businesses under US $1M a year.",
+        "attribution": "Powered by Example",
+        "register_url": "https://example.org/register"
+      }
+    },
+    {
+      "name": "realesrgan-x4plus",
+      "task": "stand-in",
+      "meta": {
+        "url": "http://127.0.0.1:47631/files/standin-meta.json",
+        "bytes": 710,
+        "sha256": "751a00654298a4ba45f814c798b7e87c311637fd3c519b12d9e274025c907a29"
+      },
+      "variants": {
+        "fp32": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        },
+        "fp16": {
+          "url": "http://127.0.0.1:47631/files/standin.onnx",
+          "bytes": 1228800,
+          "sha256": "8af9f7b85a107c7ea71721bc4c9fe89b095af20e2b35bdf7ef8336ab09665101"
+        }
+      },
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    }
+  ]
+}

@@ -39,7 +39,17 @@ public sealed record ManifestPart(string Name, string Url, long Bytes, string Sh
 /// <param name="Variants">Its ONNX files, by variant.</param>
 /// <param name="License">Its license, as the download panel shows it.</param>
 /// <param name="LicenseUrl">The license text.</param>
-public sealed record ManifestModel(string Name, string Task, ManifestFile Meta, IReadOnlyDictionary<string, ManifestFile> Variants, string License, string LicenseUrl);
+/// <param name="Conditions">
+/// MOD123: what its license asks of the person using it, for a model that is not permissive; the
+/// download asks them to agree first, and records it. Null for an MIT or Apache-2.0 model.
+/// </param>
+public sealed record ManifestModel(string Name, string Task, ManifestFile Meta, IReadOnlyDictionary<string, ManifestFile> Variants, string License, string LicenseUrl, ModelConditions? Conditions = null);
+
+/// <summary>MOD123: the terms a model's license sets, in plain words, as the manifest carries them.</summary>
+/// <param name="Summary">What the license allows and asks, in a sentence or two.</param>
+/// <param name="Attribution">The notice it requires wherever the model is used, e.g. "Powered by Stability AI", or null.</param>
+/// <param name="RegisterUrl">Where a commercial user registers with the model's maker, or null.</param>
+public sealed record ModelConditions(string Summary, string? Attribution = null, string? RegisterUrl = null);
 
 /// <summary>scripts/build_manifest.py's manifest.json, schema 1.</summary>
 /// <param name="Schema">The format version.</param>

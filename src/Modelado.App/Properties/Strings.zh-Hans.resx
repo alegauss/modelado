@@ -828,6 +828,27 @@
   <data name="LicenseTitle" xml:space="preserve">
     <value>许可证</value>
   </data>
+  <data name="ConsentConditionsTitle" xml:space="preserve">
+    <value>使用条件</value>
+  </data>
+  <data name="ConsentAgree" xml:space="preserve">
+    <value>我已阅读并同意这些条款</value>
+  </data>
+  <data name="ConsentConditionsModel" xml:space="preserve">
+    <value>{0} 采用 {1}。{2}</value>
+  </data>
+  <data name="ConsentConditionsFullText" xml:space="preserve">
+    <value>全文：{0}</value>
+  </data>
+  <data name="ConsentConditionsNotice" xml:space="preserve">
+    <value>该许可要求在使用此模型的任何地方显示此声明：“{0}”。</value>
+  </data>
+  <data name="ConsentConditionsRegister" xml:space="preserve">
+    <value>用于商业目的需向其开发者注册：{0}</value>
+  </data>
+  <data name="ConsentConditionsAgreed" xml:space="preserve">
+    <value>你已于 {0} 同意这些条款。</value>
+  </data>
   <data name="AboutButton" xml:space="preserve">
     <value>关于和模型</value>
   </data>
