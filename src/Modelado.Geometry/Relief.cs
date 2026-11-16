@@ -144,6 +144,9 @@ public static class Relief
 
         Mesh surface = MeshCleanup.Compact(new Mesh(positions, [.. triangles], colors, uvs, photo, doubleSided: true), [.. triangles]);
         surface = Widened(surface, options.PrintWidth);
+
+        // MOD114: a cut-out's outline can touch itself at a corner; split there, or the solid's walls meet on one edge.
+        surface = MeshCleanup.Unpinched(surface).Mesh;
         return options.BaseThickness > 0 ? Solidify(surface, -options.BaseThickness) : surface;
     }
 

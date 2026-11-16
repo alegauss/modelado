@@ -581,19 +581,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD114 Closed reliefs for irregular masks
-
-ReliefTests assert every edge used twice and a positive volume for an unmasked relief
-and a rectangular mask. Object only cuts the relief along U-2-Net's outline, where two
-triangles can meet at one vertex and leave the mesh non-manifold after Solidify. The
-keychain and medallion work in this block relies on that outline.
-
-Tests generate reliefs from several real cut-out masks (thin parts, holes, diagonal
-touches) and assert closed two-manifold meshes; Solidify is fixed where they fail.
-
-Done when those tests pass and a cut-out relief of each test photo slices without
-errors.
-
 ### §MOD141 A keychain cut to the object, its hole dragged into place
 
 Split from MOD104, whose disc and rounded tag shipped in the Relief card and the CLI

@@ -152,6 +152,100 @@ public static class MeshCleanup
         return new Mesh(positions, renumbered, colors, uvs, mesh.Texture, mesh.DoubleSided);
     }
 
+    /// <summary>
+    /// MOD114: every vertex where pieces of surface meet at a point only (two corners of a cut-out's
+    /// outline touching diagonally) split into one vertex per piece, so each vertex's triangles are
+    /// one fan. Solidifying a surface pinched that way walls the point twice and leaves an edge with
+    /// four faces; split, the two walls only touch, and the solid is two-manifold. Positions are not
+    /// moved, colours and texture coordinates are copied.
+    /// </summary>
+    /// <param name="mesh">The surface.</param>
+    /// <returns>The surface with its pinches split, and how many vertices were added.</returns>
+    public static (Mesh Mesh, int Split) Unpinched(Mesh mesh)
+    {
+        ArgumentNullException.ThrowIfNull(mesh);
+        int[] t = mesh.Triangles;
+
+        // The corners each vertex is used at, as triangle indices.
+        List<int>[] around = new List<int>[mesh.VertexCount];
+        for (int k = 0; k < t.Length; k++)
+        {
+            (around[t[k]] ??= []).Add(k / 3);
+        }
+
+        int[] triangles = (int[])t.Clone();
+        List<int> copies = []; // the source vertex of each vertex added
+        for (int v = 0; v < around.Length; v++)
+        {
+            if (around[v] is not { Count: > 1 } fan)
+            {
+                continue;
+            }
+
+            // Triangles around v join when they share an edge from v: union by the far end of that edge.
+            int[] parent = [.. Enumerable.Range(0, fan.Count)];
+            int Find(int i) => parent[i] == i ? i : parent[i] = Find(parent[i]);
+            Dictionary<int, int> byNeighbour = [];
+            for (int i = 0; i < fan.Count; i++)
+            {
+                int tri = fan[i] * 3;
+                for (int c = 0; c < 3; c++)
+                {
+                    int other = t[tri + c];
+                    if (other == v)
+                    {
+                        continue;
+                    }
+
+                    if (byNeighbour.TryGetValue(other, out int j))
+                    {
+                        parent[Find(i)] = Find(j);
+                    }
+                    else
+                    {
+                        byNeighbour[other] = i;
+                    }
+                }
+            }
+
+            // The first piece keeps v; each further piece takes a copy of it.
+            Dictionary<int, int> vertexOf = [];
+            for (int i = 0; i < fan.Count; i++)
+            {
+                int root = Find(i);
+                if (!vertexOf.TryGetValue(root, out int to))
+                {
+                    to = vertexOf.Count == 0 ? v : mesh.VertexCount + copies.Count;
+                    if (to != v)
+                    {
+                        copies.Add(v);
+                    }
+
+                    vertexOf[root] = to;
+                }
+
+                int tri = fan[i] * 3;
+                for (int c = 0; c < 3; c++)
+                {
+                    if (t[tri + c] == v)
+                    {
+                        triangles[tri + c] = to;
+                    }
+                }
+            }
+        }
+
+        if (copies.Count == 0)
+        {
+            return (mesh, 0);
+        }
+
+        Vector3[] positions = [.. mesh.Positions, .. copies.Select(v => mesh.Positions[v])];
+        Vector3[]? colors = mesh.Colors is { } c0 ? [.. c0, .. copies.Select(v => c0[v])] : null;
+        Vector2[]? uvs = mesh.TexCoords is { } u0 ? [.. u0, .. copies.Select(v => u0[v])] : null;
+        return (new Mesh(positions, triangles, colors, uvs, mesh.Texture, mesh.DoubleSided), copies.Count);
+    }
+
     private static int[][] Neighbours(Mesh mesh)
     {
         HashSet<int>[] sets = new HashSet<int>[mesh.VertexCount];

@@ -147,6 +147,7 @@
 - ✅ **MOD111** **A 3D Object is not guaranteed closed and manifold, so a slicer may show holes or empty layers** — The Edit card's Make printable rebuilds the model shown on a voxel in mm at the print size, one undoable step giving the CLI's mesh.
 - ✅ **MOD112** **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — Lay flat on the Edit card and edit --lay-flat turn a model onto its largest face nothing crosses, so it rests on the slicer's plate (design superseded: thickness check: MOD146).
 - ✅ **MOD113** **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — A base under 0.5% of the width is no base in the label, the mesh and the CLI alike, through one threshold tested on each side.
+- ✅ **MOD114** **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — A relief cut to an irregular outline splits pinched corners before Solidify, so diagonal touches, threads, holes and speckle all come out closed and two-manifold.
 
 ## Block M — The CPU and integrated-GPU path
 
