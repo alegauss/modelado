@@ -289,19 +289,6 @@ Done when the six listings are live on the Store page.
 
 ## Block G — Public site for 3D modelling
 
-### §MOD132 Windows 3D Viewer may be gone
-
-README line 27 names Windows 3D Viewer first among the viewers that open GLB. A
-secondary source reports that Microsoft removed 3D Viewer from the Store on 01/07/2026;
-this was not confirmed with Microsoft on 12/11/2026.
-
-Check Microsoft's own pages and a clean Windows 11 install. If 3D Viewer is gone, name
-viewers that still exist (Blender, a browser glTF viewer, Modelado itself), and check
-the site and Store listing for the same mention.
-
-Done when the README, the site and the listing name only viewers that can be installed
-today, with the source of the check recorded.
-
 ### §MOD133 Unlimited, no credits, nothing uploaded
 
 The site says nothing is uploaded. It does not say what that means against the tools

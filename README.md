@@ -30,8 +30,8 @@ first use and run with ONNX Runtime on the GPU or the CPU); Modelado makes geome
 | **Edit and improve** | Real-ESRGAN x4plus + geometry tools | Any generated or opened model (GLB, OBJ, PLY, STL): simplify, subdivide, smooth, fill holes, flat base, turn, mirror, 4× sharper texture, photo colours |
 
 The result appears in a 3D viewer (drag to turn, mouse wheel to zoom, double-click to recentre;
-colour, clay or edges) and is saved as **GLB** (binary glTF: Windows 3D Viewer, Blender, the
-web), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres),
+colour, clay or edges) and is saved as **GLB** (binary glTF: Blender, the Babylon.js
+Sandbox in a browser, the web; Windows 3D Viewer left the Microsoft Store on 1 July 2026), **OBJ** (with .mtl and texture, or vertex colours), **STL** (3D printing, in millimetres),
 **3MF** (3D printing with the millimetres recorded in the file and the colours kept: Bambu Studio,
 OrcaSlicer, PrusaSlicer) or **PLY** (with colours: MeshLab, CloudCompare). The command line writes
 whichever the output's extension names, `.3mf` included. STL and 3MF are laid on the slicer's

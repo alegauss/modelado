@@ -11,7 +11,7 @@ namespace Modelado.Geometry;
 /// <summary>The file formats a mesh is saved as.</summary>
 public enum MeshFormat
 {
-    /// <summary>Binary glTF 2.0: one file with the texture inside; Windows' 3D Viewer, Blender, the web.</summary>
+    /// <summary>Binary glTF 2.0: one file with the texture inside; Blender, the Babylon.js Sandbox, the web (MOD132: Windows' 3D Viewer left the Store on 01/07/2026).</summary>
     Glb,
 
     /// <summary>Wavefront OBJ, with an .mtl and a .png beside it when textured.</summary>
