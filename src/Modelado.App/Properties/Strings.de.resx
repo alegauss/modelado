@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>In Form des Objekts</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>Das Loch liegt bei {0:0} % quer und {1:0} % abwärts im Foto; ziehen Sie darauf, um es zu verschieben.</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>Ziehen Sie auf dem Foto, um das Loch zu platzieren.</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Loch</value>
   </data>

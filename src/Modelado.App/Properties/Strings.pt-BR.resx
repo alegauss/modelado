@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>No formato do objeto</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>O furo está a {0:0}% na horizontal e {1:0}% na vertical da foto; arraste nela para movê-lo.</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>Arraste na foto para posicionar o furo.</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Furo</value>
   </data>

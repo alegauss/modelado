@@ -68,4 +68,40 @@ public sealed class KeychainTests
     {
         Assert.Throws<ArgumentException>(() => Keychain.Mask(64, 64, 1, 8, new KeychainOptions(HoleDiameter: 6)));
     }
+
+    [Theory]
+    [InlineData(KeychainShape.Tag, 0.3f, 0.6f)]
+    [InlineData(KeychainShape.Circle, 0.7f, 0.5f)]
+    public void A_hole_dragged_into_place_is_cut_there_and_the_keychain_stays_closed(KeychainShape shape, float across, float down)
+    {
+        // MOD141: the hole where it was dropped, in the photo's 0..1 coordinates.
+        const int side = 192;
+        float[] mask = Keychain.Mask(side, side, 1, 50, new KeychainOptions(shape, 4, across, down));
+        List<(int X, int Y)> hole = [];
+        float[] outline = Outline.Mask(side, side, 1, shape == KeychainShape.Circle ? OutlineShape.Circle : OutlineShape.Rounded);
+        for (int i = 0; i < mask.Length; i++)
+        {
+            if (outline[i] >= 0.5f && mask[i] < 0.5f)
+            {
+                hole.Add((i % side, i / side));
+            }
+        }
+
+        Assert.NotEmpty(hole);
+        Assert.Equal(across, (float)hole.Average(p => p.X) / (side - 1), 0.03f);
+        Assert.Equal(down, (float)hole.Average(p => p.Y) / (side - 1), 0.03f);
+
+        Mesh mesh = Tag(new KeychainOptions(shape, 4, across, down));
+        Assert.All(MarchingCubesTests.EdgeUses(mesh).Values, uses => Assert.Equal(2, uses));
+        Assert.Equal(0, Euler(mesh));
+    }
+
+    [Fact]
+    public void A_hole_dropped_past_the_rim_is_kept_a_wall_inside()
+    {
+        Mesh mesh = Tag(new KeychainOptions(KeychainShape.Circle, 4, 1, 1));
+
+        Assert.All(MarchingCubesTests.EdgeUses(mesh).Values, uses => Assert.Equal(2, uses));
+        Assert.Equal(0, Euler(mesh));
+    }
 }

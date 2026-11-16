@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>À la forme de l'objet</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>Le trou est à {0:0} % en largeur et {1:0} % en hauteur de la photo ; faites glisser dessus pour le déplacer.</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>Faites glisser sur la photo pour placer le trou.</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Trou</value>
   </data>

@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>Shaped like the object</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>The hole is at {0:0}% across and {1:0}% down the photo; drag on it to move it.</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>Drag on the photo to place the hole.</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Hole</value>
   </data>

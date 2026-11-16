@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>物体轮廓形状</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>孔位于照片横向 {0:0}%、纵向 {1:0}% 处；在照片上拖动可移动它。</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>在照片上拖动以放置孔。</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>孔</value>
   </data>

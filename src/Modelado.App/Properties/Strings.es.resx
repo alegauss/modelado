@@ -261,6 +261,12 @@
   <data name="ReliefKeychainCutOut" xml:space="preserve">
     <value>Con la forma del objeto</value>
   </data>
+  <data name="ReliefHolePlace" xml:space="preserve">
+    <value>El agujero está al {0:0}% en horizontal y al {1:0}% en vertical de la foto; arrastra sobre ella para moverlo.</value>
+  </data>
+  <data name="ReliefHoleDragHint" xml:space="preserve">
+    <value>Arrastra sobre la foto para colocar el agujero.</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Agujero</value>
   </data>

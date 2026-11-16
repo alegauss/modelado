@@ -274,6 +274,7 @@ public partial class MainWindow : Window, IDisposable
         photo = loaded;
         photoPath = path;
         mesh = null;
+        holeDown = null; // MOD141: a new photo's keychain hole starts near the top again
         renderer = null;
         modelInput = null;
         reference = null;
@@ -415,6 +416,15 @@ public partial class MainWindow : Window, IDisposable
 
     private void OnViewportMouseDown(object sender, MouseButtonEventArgs e)
     {
+        // MOD141: over the photo, a press places a keychain's hole.
+        if (PlacingHole)
+        {
+            placingHole = true;
+            PlaceHole(e.GetPosition(ViewImage));
+            Viewport.CaptureMouse();
+            return;
+        }
+
         if (!ShowingModel)
         {
             return;
@@ -433,6 +443,12 @@ public partial class MainWindow : Window, IDisposable
 
     private void OnViewportMouseMove(object sender, MouseEventArgs e)
     {
+        if (placingHole)
+        {
+            PlaceHole(e.GetPosition(ViewImage));
+            return;
+        }
+
         if (!dragging)
         {
             return;
@@ -446,6 +462,13 @@ public partial class MainWindow : Window, IDisposable
 
     private void OnViewportMouseUp(object sender, MouseButtonEventArgs e)
     {
+        if (placingHole)
+        {
+            placingHole = false;
+            Viewport.ReleaseMouseCapture();
+            return;
+        }
+
         if (dragging)
         {
             dragging = false;

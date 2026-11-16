@@ -17,7 +17,11 @@ public enum KeychainShape
 /// <param name="Shape">The outline.</param>
 /// <param name="HoleDiameter">The hole's diameter in millimetres.</param>
 /// <param name="HoleX">Where the hole's centre sits across the tag, 0 at the left edge and 1 at the right.</param>
-public sealed record KeychainOptions(KeychainShape Shape = KeychainShape.Circle, float HoleDiameter = Keychain.HoleDiameterDefault, float HoleX = 0.5f);
+/// <param name="HoleY">
+/// MOD141: where it sits down the photo, 0 at the top and 1 at the bottom, when it was dragged into
+/// place; null keeps it near the top edge. Either way it stays a wall away from the outline.
+/// </param>
+public sealed record KeychainOptions(KeychainShape Shape = KeychainShape.Circle, float HoleDiameter = Keychain.HoleDiameterDefault, float HoleX = 0.5f, float? HoleY = null);
 
 /// <summary>
 /// A keychain from a relief (MOD104): the tag's outline and its hole drawn as a mask over the depth
@@ -70,6 +74,23 @@ public static class Keychain
         if (holeY + holeRadius + wall > top + (options.Shape == KeychainShape.Circle ? outlineWidth : photoAspect))
         {
             throw new ArgumentException($"A {options.HoleDiameter:0.#} mm hole does not fit in a {printWidth:0.#} mm tag.", nameof(options));
+        }
+
+        // MOD141: dragged into place, kept a wall inside the tag's edges or the disc's rim.
+        if (options.HoleY is { } down)
+        {
+            if (options.Shape == KeychainShape.Circle)
+            {
+                float room = (outlineWidth / 2) - wall - holeRadius;
+                (float ox, float oy) = (options.HoleX - cx, (down * photoAspect) - cy);
+                float far = MathF.Sqrt((ox * ox) + (oy * oy));
+                float pull = far > room && far > 0 ? room / far : 1;
+                (holeX, holeY) = (cx + (ox * pull), cy + (oy * pull));
+            }
+            else
+            {
+                holeY = Math.Clamp(down * photoAspect, wall + holeRadius, photoAspect - wall - holeRadius);
+            }
         }
 
         // The outline (MOD105's shapes), less the hole.

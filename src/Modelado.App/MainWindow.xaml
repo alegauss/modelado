@@ -476,6 +476,9 @@
               <TextBlock x:Name="ReliefSizeError" Grid.Row="12" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
+            <!-- MOD141: a disc's or a tag's hole, dragged into place on the photo. -->
+            <TextBlock x:Name="ReliefHolePlace" AutomationProperties.AutomationId="ReliefHolePlace" Style="{StaticResource StatCaption}" TextWrapping="Wrap"
+                       Margin="0,4,0,0" Visibility="Collapsed" />
             <!-- MOD138: the depth model, the resolution and the cut-out, folded; depth, shape and size stay in view. -->
             <Expander x:Name="ReliefAdvanced" AutomationProperties.AutomationId="ReliefAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
               <StackPanel Margin="0,4,0,0">

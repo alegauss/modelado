@@ -94,6 +94,10 @@ public partial class MainWindow
         Visibility hole = KeychainChosen is null ? Visibility.Collapsed : Visibility.Visible;
         ReliefHoleLabel.Visibility = ReliefHoleMm.Visibility = ReliefHoleUnit.Visibility = hole;
 
+        // MOD141: a new keychain's hole starts near the top again, until it is dragged.
+        holeDown = null;
+        ShowHolePlace();
+
         // MOD141: shaped like the object means cutting the object out.
         if (KeychainChosen == KeychainShape.CutOut)
         {
@@ -122,7 +126,7 @@ public partial class MainWindow
             return (false, null);
         }
 
-        KeychainOptions options = new(shape, hole, (float)ReliefHoleAcross.Value);
+        KeychainOptions options = new(shape, hole, (float)ReliefHoleAcross.Value, shape == KeychainShape.CutOut ? null : holeDown);
 
         // MOD141: where a cut-out has room for the hole is known only once the object is cut out.
         if (shape == KeychainShape.CutOut)
@@ -156,6 +160,7 @@ public partial class MainWindow
         }
 
         ReliefSharePanel.Visibility = ReliefInMillimetres ? Visibility.Collapsed : Visibility.Visible;
+        ShowHolePlace();
         ReliefMillimetresPanel.Visibility = ReliefInMillimetres ? Visibility.Visible : Visibility.Collapsed;
         ShowReliefSizeError();
     }

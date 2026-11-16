@@ -443,24 +443,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD141 A keychain cut to the object, its hole dragged into place
-
-Split from MOD104, whose disc and rounded tag shipped in the Relief card and the CLI
-(Keychain.cs, MainWindow.ReliefSize.cs): a keychain is a relief mask with a hole, closed
-by Relief.Build's walls into one solid.
-
-Two things are left. First, the cut-out outline: the tag shaped like the object itself
-(Object only), which is what pet keychains look like. Today Object only plus a keychain
-keeps what both masks keep, so the hole can land outside the object. The cut-out needs
-its hole placed inside the object near its top: find the object's topmost run of rows
-wide enough for the hole plus a wall each side, and put the centre there, refusing in
-words when none is. Second, the hole placed by dragging it on the viewport over the
-photo or the made tag, instead of the slider along the top (ReliefHoleAcross), with the
-position in the photo's 0..1 coordinates going into KeychainOptions.
-
-A case makes a cut-out keychain from a fixture with transparency and reads that its mesh
-is closed with one hole (Euler 0), as KeychainTests does for the disc and the tag.
-
 ### §MOD142 Real fonts for relief text
 
 Text on a relief (MOD106) is drawn in a built-in stroke font in

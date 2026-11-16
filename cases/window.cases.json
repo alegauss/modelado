@@ -771,6 +771,26 @@
     },
 
     {
+      "name": "a keychain's hole is dragged into place on the photo, and the slider follows it across",
+      "catches": "a hole only slid along the top, a drag the card does not take, or a caption that names another place than the one dragged to",
+      "filed": "MOD141",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "ComboBox#ReliefKeychain", "act": "expand", "named": "the keychains are opened" },
+        { "locator": "ComboBox#ReliefKeychain > ListItem[name=\"Rounded tag\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a rounded tag is chosen" },
+        { "locator": "ComboBox#ReliefKeychain", "act": "collapse", "named": "the list is closed, so its popup does not take the first press" },
+        { "locator": "Text#ReliefHolePlace", "act": "read", "reads": "name", "expect": "Drag on the photo to place the hole.", "named": "the card says the hole can be dragged" },
+        { "locator": "Image#ViewImage", "act": "drag", "from": "50%,10%", "to": "30%,60%", "named": "the hole is dragged on the photo" },
+        { "locator": "Text#ReliefHolePlace", "act": "read", "reads": "name", "expect": "The hole is at 30% across and 60% down the photo; drag on it to move it.", "named": "and the card says where it is now" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and the tag still takes it" }
+      ]
+    },
+
+    {
       "name": "the Relief card raises a name along the bottom or a medallion's arc, and says when it will not fit",
       "catches": "a card with no text field, a letter height that starts empty, or text too long for the relief that only fails once the run has started",
       "filed": "MOD106",
