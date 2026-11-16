@@ -173,7 +173,7 @@ public partial class MainWindow
         await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 
-    private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].Bytes);
+    private static long Bytes(InstalledModel model) => model.Variants.Sum(v => model.Meta.Variants[v].TotalBytes);
 
     private static string Describe(InstalledModel model) =>
         Ui.Format(Strings.InstalledRow, model.Name, string.Join(Strings.ListComma, model.Variants), Size(Bytes(model)), model.Meta.Task, model.Meta.Upstream.License, model.Meta.Upstream.LicenseUrl);

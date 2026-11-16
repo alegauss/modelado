@@ -66,6 +66,34 @@ class BuildManifestTests(unittest.TestCase):
         with self.assertRaises(bm.ManifestError):
             bm.build(self.stage, self.stage, "https://host", "1")
 
+    def _with_data(self, payload: bytes = b"weights", file_name: str = "fp32.onnx.data") -> None:
+        # MOD124: a graph over 2 GB keeps its weights beside it, listed under the variant's "data".
+        folder = self.models / "tiny"
+        if Path(file_name).name == file_name:
+            (folder / file_name).write_bytes(payload)
+        meta = json.loads((folder / "meta.json").read_text(encoding="utf-8"))
+        meta["variants"]["fp32"]["data"] = [{"file": file_name, "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()}]
+        (folder / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+
+    def test_external_data_is_staged_and_listed_under_the_name_the_graph_uses(self):
+        self._with_data()
+        manifest = bm.build(self.models, self.stage, "https://host", "1")
+        [part] = manifest["models"][0]["variants"]["fp32"]["data"]
+        self.assertEqual("fp32.onnx.data", part["name"])
+        self.assertEqual("https://host/tiny-fp32.onnx.data", part["url"])
+        self.assertEqual(hashlib.sha256(b"weights").hexdigest(), part["sha256"])
+        self.assertEqual(b"weights", (self.stage / "tiny-fp32.onnx.data").read_bytes())
+        self.assertNotIn("data", manifest["models"][0]["variants"]["fp16"])
+
+    def test_external_data_that_differs_or_escapes_the_folder_is_refused(self):
+        self._with_data()
+        (self.models / "tiny" / "fp32.onnx.data").write_bytes(b"changed")
+        with self.assertRaisesRegex(bm.ManifestError, "differs"):
+            bm.build(self.models, self.stage, "https://host", "1")
+        self._with_data(file_name="../elsewhere.data")
+        with self.assertRaisesRegex(bm.ManifestError, "bare file name"):
+            bm.build(self.models, self.stage, "https://host", "1")
+
 
 class LicenseGateTests(unittest.TestCase):
     """MOD25: a license a public repository may not carry is refused before anything is staged."""

@@ -122,20 +122,6 @@ fresh models folder and reads the Relief rail icon's status change size.
 
 ## Block D — Model downloads
 
-### §MOD124 ONNX external data in the manifest
-
-ONNX files above 2 GB must keep their weights in external data files beside the graph.
-The manifest, the downloader, meta.json and the published repository handle one file per
-model, so TripoSG (7.5 GB in fp32, about 3.8 GB in fp16, MOD80) cannot be shipped, nor
-any later large model.
-
-The manifest entry lists every file of a model with its size and SHA-256; the downloader
-fetches and resumes each; ModelLibrary loads the graph with its data beside it;
-publish_models.py and verify_published.py handle the set.
-
-Done when a test model split into external data publishes, downloads, verifies and runs,
-and MOD80 can move out of deferred.
-
 ### §MOD122 Spike: downloading gated models
 
 The downloader fetches public files from Hugging Face by pinned commit and SHA-256. SF3D

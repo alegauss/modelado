@@ -11,7 +11,26 @@ namespace Modelado.Inference;
 /// <param name="Url">A resolve/&lt;commit&gt;/ URL, so its bytes cannot change under the app.</param>
 /// <param name="Bytes">Its size.</param>
 /// <param name="Sha256">Its SHA-256, lowercase hex.</param>
-public sealed record ManifestFile(string Url, long Bytes, string Sha256);
+/// <param name="Data">
+/// MOD124: for a graph over protobuf's 2 GB limit, the ONNX external data files its weights are kept
+/// in, saved beside it under the names the graph refers to them by; none for every other file.
+/// </param>
+public sealed record ManifestFile(string Url, long Bytes, string Sha256, IReadOnlyList<ManifestPart>? Data = null)
+{
+    /// <summary>The file and its external data together, in bytes.</summary>
+    public long TotalBytes => Bytes + (Data?.Sum(part => part.Bytes) ?? 0);
+}
+
+/// <summary>MOD124: one external data file of a graph, saved beside it.</summary>
+/// <param name="Name">The file name the graph's tensors point at; a bare name, never a path.</param>
+/// <param name="Url">A resolve/&lt;commit&gt;/ URL.</param>
+/// <param name="Bytes">Its size.</param>
+/// <param name="Sha256">Its SHA-256, lowercase hex.</param>
+public sealed record ManifestPart(string Name, string Url, long Bytes, string Sha256)
+{
+    /// <summary>The part as a file to fetch.</summary>
+    public ManifestFile File => new(Url, Bytes, Sha256);
+}
 
 /// <summary>One model the manifest lists.</summary>
 /// <param name="Name">Its folder name.</param>
@@ -57,9 +76,17 @@ public sealed record ModelManifest(int Schema, string Version, IReadOnlyList<Man
             throw new InvalidDataException($"The manifest is schema {manifest.Schema}; this build reads 1.");
         }
 
-        if (manifest.Models.SelectMany(m => m.Variants.Values.Append(m.Meta)).FirstOrDefault(f => !Trusted(f.Url, loopback)) is { } plain)
+        IEnumerable<string> urls = manifest.Models.SelectMany(m => m.Variants.Values.Append(m.Meta))
+            .SelectMany(f => (f.Data ?? []).Select(p => p.Url).Prepend(f.Url));
+        if (urls.FirstOrDefault(url => !Trusted(url, loopback)) is { } plain)
         {
-            throw new InvalidDataException($"The manifest lists {plain.Url}, which is not https.");
+            throw new InvalidDataException($"The manifest lists {plain}, which is not https.");
+        }
+
+        // MOD124: a part is saved under its own name beside the graph, so a name that is a path could write elsewhere.
+        if (manifest.Models.SelectMany(m => m.Variants.Values).SelectMany(f => f.Data ?? []).FirstOrDefault(p => !BareName(p.Name)) is { } escaping)
+        {
+            throw new InvalidDataException($"The manifest names external data {escaping.Name}, which is not a bare file name.");
         }
 
         return manifest;
@@ -69,6 +96,9 @@ public sealed record ModelManifest(int Schema, string Version, IReadOnlyList<Man
     /// <param name="name">Its folder name.</param>
     /// <returns>The model.</returns>
     public ManifestModel? Model(string name) => Models.FirstOrDefault(m => m.Name == name);
+
+    private static bool BareName(string name) =>
+        name.Length > 0 && name is not ("." or "..") && name.IndexOfAny(['/', '\\', ':']) < 0 && Path.GetFileName(name) == name;
 
     private static bool Trusted(string url, bool loopback) =>
         url.StartsWith("https://", StringComparison.Ordinal)
@@ -371,6 +401,12 @@ public static class ModelDownloads
             string variant = VariantOf(manifest, request)!;
             if (model.Variants.TryGetValue(variant, out ManifestFile? onnx) && listed.Add($"{model.Name}/{variant}"))
             {
+                // MOD124: the external data first, so a folder never holds a graph whose weights are not there yet.
+                foreach (ManifestPart part in onnx.Data ?? [])
+                {
+                    yield return (Path.Combine(root, model.Name, part.Name), $"{model.Name}/{part.Name}", part.File);
+                }
+
                 yield return (Path.Combine(root, model.Name, variant + ".onnx"), $"{model.Name}/{variant}.onnx", onnx);
             }
 

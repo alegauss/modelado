@@ -82,7 +82,10 @@ def model_card(manifest: dict, allow: dict[str, str] | None = None) -> str:
         "| --- | --- | --- | --- |",
     ]
     for model in manifest["models"]:
-        variants = ", ".join(f"{v} ({_size(model['variants'][v]['bytes'])})" for v in model["variants"])
+        # MOD124: a variant's size is its graph and its external data together.
+        variants = ", ".join(
+            f"{v} ({_size(e['bytes'] + sum(p['bytes'] for p in e.get('data', [])))})" for v, e in model["variants"].items()
+        )
         lines.append(f"| {model['name']} | {model['task']} | {variants} | [{model['license']}]({model['license_url']}) |")
     lines += [
         "",

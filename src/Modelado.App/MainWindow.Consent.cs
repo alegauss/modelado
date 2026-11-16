@@ -26,7 +26,7 @@ public partial class MainWindow
         ConsentTitle.Text = Ui.Format(Strings.ConsentTitleText, purpose);
         ConsentLead.Text = Ui.Format(needed.Count == 1 ? Strings.ConsentLeadOne : Strings.ConsentLeadMany, purpose, Size(missing));
         ConsentFiles.ItemsSource = needed
-            .Select(n => Ui.Format(Strings.ConsentFile, n.Model.Name, n.Variant.ToUpperInvariant(), Size(n.Model.Meta.Bytes + n.Model.Variants[n.Variant].Bytes), SourceOf(n.Model.Variants[n.Variant].Url)))
+            .Select(n => Ui.Format(Strings.ConsentFile, n.Model.Name, n.Variant.ToUpperInvariant(), Size(n.Model.Meta.Bytes + n.Model.Variants[n.Variant].TotalBytes), SourceOf(n.Model.Variants[n.Variant].Url)))
             .ToList();
         ConsentTotal.Text = missing < total
             ? Ui.Format(Strings.ConsentTotalPartial, Size(missing), Size(total - missing))

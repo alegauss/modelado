@@ -110,7 +110,12 @@ public sealed record ModelPreprocess(
 /// <param name="File">Its name in the model's folder.</param>
 /// <param name="Bytes">Its size.</param>
 /// <param name="Sha256">Its SHA-256, lowercase hex, which a download is checked against.</param>
-public sealed record ModelVariant(string File, long Bytes, string Sha256);
+/// <param name="Data">MOD124: the external data files a graph over 2 GB keeps its weights in, beside it; none otherwise.</param>
+public sealed record ModelVariant(string File, long Bytes, string Sha256, IReadOnlyList<ModelVariant>? Data = null)
+{
+    /// <summary>The graph and its external data together, in bytes.</summary>
+    public long TotalBytes => Bytes + (Data?.Sum(part => part.Bytes) ?? 0);
+}
 
 /// <summary>Where the weights came from.</summary>
 /// <param name="Url">The upstream weights.</param>

@@ -68,6 +68,12 @@ class VerifyTests(unittest.TestCase):
     def test_every_file_is_listed_once(self):
         self.assertEqual(["tiny meta.json", "tiny fp32"], [label for label, _ in vp.files_of(MANIFEST)])
 
+    def test_external_data_is_checked_too(self):
+        # MOD124: a graph's external data is published beside it and read back like any file.
+        part = {"name": "fp32.onnx.data", "url": "https://host/tiny-fp32.onnx.data", "bytes": 3, "sha256": "ab"}
+        manifest = {"models": [{"name": "tiny", "meta": MANIFEST["models"][0]["meta"], "variants": {"fp32": {**MANIFEST["models"][0]["variants"]["fp32"], "data": [part]}}}]}
+        self.assertEqual(["tiny meta.json", "tiny fp32", "tiny fp32 fp32.onnx.data"], [label for label, _ in vp.files_of(manifest)])
+
     def test_the_cli_reads_the_recorded_repository_and_exits_1_on_a_difference(self):
         calls = {}
 

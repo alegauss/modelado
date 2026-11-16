@@ -341,7 +341,10 @@ What it does, step by step (each step can be run on its own):
    `resolve/<commit 1>/`, so no later upload can change a file the app checks by SHA-256. The
    pinned manifest is copied to `src\Modelado.Inference\models-manifest.json`: rebuild the app
    and it knows each file's size and hash without the network. While that file is empty, the app
-   reads the repository's latest manifest.
+   reads the repository's latest manifest. A graph over protobuf's 2 GB limit keeps its weights
+   in ONNX external data files beside it: `meta.json` lists them under the variant's `data`, they
+   are published as `<model>-<file>` and listed in the manifest with the name the graph uses, and
+   the app fetches and verifies them before the graph, into the same folder.
 
    Before that copy, the script reads the repository back: every file the pinned manifest lists
    is checked by size and SHA-256 (Hugging Face's `X-Linked-Etag` for an LFS file, a download

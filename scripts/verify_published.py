@@ -76,7 +76,10 @@ def files_of(manifest: dict) -> list[tuple[str, dict]]:
     listed = []
     for model in manifest["models"]:
         listed.append((f"{model['name']} meta.json", model["meta"]))
-        listed += [(f"{model['name']} {variant}", entry) for variant, entry in model["variants"].items()]
+        for variant, entry in model["variants"].items():
+            listed.append((f"{model['name']} {variant}", entry))
+            # MOD124: the external data a graph over 2 GB keeps beside it.
+            listed += [(f"{model['name']} {variant} {part['name']}", part) for part in entry.get("data", [])]
     return listed
 
 

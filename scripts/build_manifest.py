@@ -2,7 +2,10 @@
 
 Reads every <models>/<name>/meta.json export_models.py wrote and writes <stage>/manifest.json
 plus, beside it, each file under the flat name a Hugging Face repository holds:
-<name>-<variant>.onnx and <name>-meta.json. publish_models.py uploads the stage folder; this
+<name>-<variant>.onnx and <name>-meta.json. MOD124: a graph over 2 GB keeps its weights in
+ONNX external data files beside it; meta.json lists them under the variant's "data", and each is
+staged as <name>-<file> and listed in the manifest with the name the graph refers to it by, so
+the app saves it beside the graph. publish_models.py uploads the stage folder; this
 script alone only builds it, so the result can be checked before anything leaves the PC.
 
     .venv\\Scripts\\python scripts\\build_manifest.py --base-url https://example.org/models --version 1
@@ -113,6 +116,12 @@ def build(
             variants[variant] = {"url": f"{base}/{asset}", "bytes": described["bytes"], "sha256": described["sha256"]}
             if copy:
                 shutil.copyfile(source, stage / asset)
+            parts = data_parts(folder, name, described.get("data", []))
+            if parts:
+                variants[variant]["data"] = [{"name": p.name, "url": f"{base}/{name}-{p.name}", "bytes": size, "sha256": digest} for p, size, digest in parts]
+                if copy:
+                    for p, _, _ in parts:
+                        shutil.copyfile(p, stage / f"{name}-{p.name}")
         if not variants:
             raise ManifestError(f"{name}: none of {sorted(variants_wanted or [])} is in its meta.json")
         meta_asset = f"{name}-meta.json"
@@ -131,6 +140,26 @@ def build(
     manifest = {"schema": MANIFEST_SCHEMA, "version": version, "base_url": base, "models": entries}
     (stage / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return manifest
+
+
+def data_parts(folder: Path, name: str, described: list[dict]) -> list[tuple[Path, int, str]]:
+    """MOD124: a variant's external data files, each checked against meta.json, as (path, bytes, sha256).
+
+    The name is the one the graph's tensors point at, so it must be a bare file name in the
+    model's folder: anything with a separator could make the app write outside it.
+    """
+    parts = []
+    for part in described:
+        file_name = part["file"]
+        if Path(file_name).name != file_name or file_name in (".", "..") or "/" in file_name or "\\" in file_name:
+            raise ManifestError(f"{name}: external data {file_name!r} is not a bare file name beside the graph")
+        path = folder / file_name
+        if not path.is_file():
+            raise ManifestError(f"{name}: {path} is listed in meta.json as external data but missing")
+        if path.stat().st_size != part["bytes"] or sha256_of(path) != part["sha256"]:
+            raise ManifestError(f"{name}: {path} differs from meta.json; re-run export_models.py")
+        parts.append((path, part["bytes"], part["sha256"]))
+    return parts
 
 
 def add_allow_arguments(parser: argparse.ArgumentParser) -> None:
@@ -162,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
     except ManifestError as error:
         print(f"ERROR {error}", file=sys.stderr)
         return 1
-    files = sum(len(m["variants"]) + 1 for m in manifest["models"])
+    files = sum(1 + sum(1 + len(v.get("data", [])) for v in m["variants"].values()) for m in manifest["models"])
     print(f"manifest {args.version}: {len(manifest['models'])} models, {files} files -> {args.stage}")
     return 0
 
