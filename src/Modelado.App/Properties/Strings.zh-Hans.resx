@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>宽度和最薄处须大于 0 mm，最厚处须大于最薄处。</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>形状</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>平板</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>弧形，可自行站立</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>圆筒，整圈灯罩</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>边框</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>边框宽度须为 0 mm 或以上，且小于面板较短边的一半。</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>在 {0} 中打开</value>
   </data>

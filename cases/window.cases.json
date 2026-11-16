@@ -881,6 +881,33 @@
     },
 
     {
+      "name": "the Relief card bends a framed lithophane into a curve that stands upright, and refuses a frame with no panel inside it",
+      "catches": "a lithophane that can only be flat, a frame that swallows the panel accepted until the run, or a curve saved lying down",
+      "filed": "MOD145",
+      "tags": ["relief", "print", "lithophane"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#LithophaneShape", "act": "read", "reads": "picked", "expect": "Flat panel", "named": "a flat panel to start with" },
+        { "locator": "Edit#LithophaneFrameMm", "act": "read", "reads": "value", "expect": "0", "named": "and no frame" },
+        { "locator": "ComboBox#LithophaneShape", "act": "expand", "named": "the shapes are opened" },
+        { "locator": "ComboBox#LithophaneShape > ListItem[name=\"Curved, stands on its own\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a curve is chosen" },
+        { "locator": "ComboBox#LithophaneShape", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Edit#LithophaneFrameMm", "act": "set value", "with": "60", "reads": "value", "expect": "60", "named": "a frame wider than half the panel is typed" },
+        { "locator": "Text#LithophaneSizeError", "act": "read", "reads": "name", "expect": "The frame needs a width of 0 mm or more, and less than half the panel's shorter side.", "named": "the card says it leaves no panel" },
+        { "locator": "Edit#LithophaneFrameMm", "act": "set value", "with": "3", "reads": "value", "expect": "3", "named": "a 3 mm frame is typed" },
+        { "locator": "Text#LithophaneSizeError", "act": "read", "absent": true, "named": "and it is taken" },
+        { "locator": "Button#LithophaneButton", "act": "invoke", "named": "Make lithophane is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "matches": "^Lithophane · \\d+\\.\\d s · CPU$", "named": "the curve is made" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Text#ExportDimensions", "act": "read", "reads": "name", "matches": "^8\\d(\\.\\d+)? × 2\\d(\\.\\d+)? × 7\\d(\\.\\d+)? mm ", "named": "and it will be saved bent across 120 degrees, standing as tall as the photo" }
+      ]
+    },
+
+    {
       "name": "Light quality is offered on the CPU only where an INT8 encoder is there, and can be chosen",
       "catches": "a Light that is offered with nothing to run it, missing where the encoder is on disk, or that cannot be chosen",
       "filed": "MOD116",

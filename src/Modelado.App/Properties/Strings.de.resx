@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>Die Breite und die dünnste Stelle brauchen mehr als 0 mm, die dickste mehr als die dünnste.</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>Form</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>Flache Platte</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>Gebogen, steht von selbst</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>Zylinder, ein Schirm ringsum</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>Rahmen</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>Der Rahmen braucht 0 mm oder mehr und weniger als die Hälfte der kürzeren Seite der Platte.</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>In {0} öffnen</value>
   </data>

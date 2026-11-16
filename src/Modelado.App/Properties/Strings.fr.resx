@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>La largeur et le point le plus fin doivent dépasser 0 mm, et le plus épais dépasser le plus fin.</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>Forme</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>Panneau plat</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>Courbé, tient debout seul</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>Cylindre, un abat-jour complet</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>Cadre</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>Le cadre doit faire 0 mm ou plus, et moins de la moitié du plus petit côté du panneau.</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>Ouvrir dans {0}</value>
   </data>

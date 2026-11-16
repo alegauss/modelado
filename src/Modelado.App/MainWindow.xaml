@@ -542,6 +542,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <TextBlock Text="{x:Static p:Strings.LithophaneWidthMm}" VerticalAlignment="Center" />
               <TextBox x:Name="LithophaneWidthMm" Grid.Column="1" AutomationProperties.AutomationId="LithophaneWidthMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneWidthMm}"
@@ -555,7 +557,19 @@
               <TextBox x:Name="LithophaneMaxMm" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="LithophaneMaxMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneMaxMm}"
                        Margin="0,0,0,4" TextChanged="OnLithophaneTyped" />
               <TextBlock Grid.Row="2" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
-              <TextBlock x:Name="LithophaneSizeError" Grid.Row="3" Grid.ColumnSpan="3" AutomationProperties.AutomationId="LithophaneSizeError" Style="{StaticResource StatCaption}"
+              <!-- MOD145: a flat panel, a curve that stands on its own, or a shade all round; a rim keeps it from warping. -->
+              <TextBlock Grid.Row="3" Text="{x:Static p:Strings.LithophaneShape}" VerticalAlignment="Center" />
+              <ComboBox x:Name="LithophaneForm" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="LithophaneShape"
+                        AutomationProperties.Name="{x:Static p:Strings.LithophaneShape}" Margin="0,0,0,4" SelectedIndex="0" SelectionChanged="OnLithophaneShapeChanged">
+                <ComboBoxItem Content="{x:Static p:Strings.LithophaneShapeFlat}" Tag="Flat" />
+                <ComboBoxItem Content="{x:Static p:Strings.LithophaneShapeCurve}" Tag="Curve" />
+                <ComboBoxItem Content="{x:Static p:Strings.LithophaneShapeCylinder}" Tag="Cylinder" />
+              </ComboBox>
+              <TextBlock Grid.Row="4" Text="{x:Static p:Strings.LithophaneFrameMm}" VerticalAlignment="Center" />
+              <TextBox x:Name="LithophaneFrameMm" Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="LithophaneFrameMm" AutomationProperties.Name="{x:Static p:Strings.LithophaneFrameMm}"
+                       Margin="0,0,0,4" TextChanged="OnLithophaneTyped" />
+              <TextBlock Grid.Row="4" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="6,0,0,4" />
+              <TextBlock x:Name="LithophaneSizeError" Grid.Row="5" Grid.ColumnSpan="3" AutomationProperties.AutomationId="LithophaneSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.LithophaneSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
             <Button x:Name="LithophaneButton" AutomationProperties.AutomationId="LithophaneButton" Content="{x:Static p:Strings.LithophaneButton}" Margin="0,8,0,0" Padding="0,8"

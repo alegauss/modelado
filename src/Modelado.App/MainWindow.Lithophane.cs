@@ -19,12 +19,13 @@ public partial class MainWindow
         LithophaneWidthMm.Text = Millimetres(Lithophane.WidthDefault);
         LithophaneMinMm.Text = Millimetres(Lithophane.MinThicknessDefault);
         LithophaneMaxMm.Text = Millimetres(Lithophane.MaxThicknessDefault);
+        LithophaneFrameMm.Text = "0";
     }
 
     /// <summary>The width and thicknesses typed, or null when they are not a panel that can be printed.</summary>
     private LithophaneOptions? LithophaneSettings()
     {
-        if (LithophaneWidthMm is null || LithophaneMinMm is null || LithophaneMaxMm is null)
+        if (LithophaneWidthMm is null || LithophaneMinMm is null || LithophaneMaxMm is null || LithophaneFrameMm is null)
         {
             return null;
         }
@@ -32,18 +33,38 @@ public partial class MainWindow
         return Typed(LithophaneWidthMm.Text) is { } width && width > 0
             && Typed(LithophaneMinMm.Text) is { } thinnest && thinnest > 0
             && Typed(LithophaneMaxMm.Text) is { } thickest && thickest > thinnest
-            ? new LithophaneOptions(width, thinnest, thickest)
+            && LithophaneFrame(width) is { } frame
+            ? new LithophaneOptions(width, thinnest, thickest, Shape: LithophaneShapeChosen, Frame: frame)
             : null;
     }
 
+    // MOD145: the rim typed, or null when it is not a size or leaves no panel inside it.
+    private float? LithophaneFrame(float width)
+    {
+        float tall = photo is null ? width : width * photo.Height / photo.Width;
+        return Typed(LithophaneFrameMm.Text) is { } frame && frame >= 0 && frame * 2 < MathF.Min(width, tall) ? frame : null;
+    }
+
+    private LithophaneShape LithophaneShapeChosen =>
+        Enum.TryParse((LithophaneForm?.SelectedItem as ComboBoxItem)?.Tag as string, out LithophaneShape shape) ? shape : LithophaneShape.Flat;
+
     private void OnLithophaneTyped(object sender, TextChangedEventArgs e) => ShowLithophaneError();
+
+    private void OnLithophaneShapeChanged(object sender, SelectionChangedEventArgs e) => ShowLithophaneError();
 
     private void ShowLithophaneError()
     {
-        if (LithophaneSizeError is not null)
+        if (LithophaneSizeError is null || LithophaneFrameMm is null)
         {
-            LithophaneSizeError.Visibility = LithophaneSettings() is null ? Visibility.Visible : Visibility.Collapsed;
+            return;
         }
+
+        LithophaneSizeError.Visibility = LithophaneSettings() is null ? Visibility.Visible : Visibility.Collapsed;
+
+        // MOD145: the sizes may all be sizes and the rim still leave no panel inside it.
+        bool sizesFine = Typed(LithophaneWidthMm.Text) is > 0 && Typed(LithophaneMinMm.Text) is { } thinnest && thinnest > 0
+            && Typed(LithophaneMaxMm.Text) is { } thickest && thickest > thinnest;
+        LithophaneSizeError.Text = sizesFine ? Strings.LithophaneFrameInvalid : Strings.LithophaneSizeInvalid;
     }
 
     private async void OnMakeLithophane(object sender, RoutedEventArgs e)

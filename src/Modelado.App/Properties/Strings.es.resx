@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>El ancho y el punto más fino necesitan más de 0 mm, y el más grueso más que el más fino.</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>Panel plano</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>Curvo, se sostiene solo</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>Cilindro, una pantalla completa</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>Marco</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>El marco necesita 0 mm o más, y menos de la mitad del lado más corto del panel.</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>Abrir en {0}</value>
   </data>

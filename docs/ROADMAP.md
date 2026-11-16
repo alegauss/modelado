@@ -37,7 +37,6 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- 📋 **MOD145** (deps: MOD108 ✅) **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — Curved and cylinder lithophanes are what the other tools offer beside flat, and a thin unframed panel warps. → §MOD145
 - 📋 **MOD146** (deps: MOD112 ✅) **Nothing shows which parts of a model are too thin to print, so an ear or a tail breaks off or vanishes in the slicer** — MOD112 lays a model flat and MOD111 closes it, but neither measures wall thickness, the last check before a print fails. → §MOD146
 
 ## Block M — The CPU and integrated-GPU path

@@ -47,6 +47,9 @@ const string Usage = """
         --width-mm W         the panel's width; default 100, its height follows the photo
         --min-mm T           its thickness where the photo is brightest; default 0.8
         --max-mm T           where it is darkest; default 3. Light it from behind to see the photo
+        --shape flat|curve|cylinder  flat (default), bent to stand on its own, or a shade all round
+        --arc DEG            how far a curve bends; default 120
+        --frame-mm W         a rim W mm wide at the thickest, so a thin panel keeps its shape
     modelado-cli edit <model.glb|obj|ply|stl> -o <output> [edits, applied in this order]
         --rotate x:90        turns about x, y or z (degrees)
         --mirror             mirrors left to right
@@ -274,7 +277,16 @@ try
             Mesh lithophane = Lithophane.Build(ImageCodec.Load(photoFile), new LithophaneOptions(
                 Width: (float)Number("--width-mm", Lithophane.WidthDefault),
                 MinThickness: (float)Number("--min-mm", Lithophane.MinThicknessDefault),
-                MaxThickness: (float)Number("--max-mm", Lithophane.MaxThicknessDefault)));
+                MaxThickness: (float)Number("--max-mm", Lithophane.MaxThicknessDefault),
+                Shape: Get("--shape", "flat") switch // MOD145: bent to stand, or all round
+                {
+                    "flat" => LithophaneShape.Flat,
+                    "curve" => LithophaneShape.Curve,
+                    "cylinder" => LithophaneShape.Cylinder,
+                    var other => throw new ArgumentException($"--shape {other}: use flat, curve or cylinder."),
+                },
+                Arc: (float)Number("--arc", Lithophane.ArcDefault),
+                Frame: (float)Number("--frame-mm", 0)));
             Save(lithophane, panel, made);
             return Done(0);
         }

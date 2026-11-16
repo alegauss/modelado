@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>The width and the thinnest point need a size above 0 mm, and the thickest more than the thinnest.</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>Shape</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>Flat panel</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>Curved, stands on its own</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>Cylinder, a shade all round</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>Frame</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>The frame needs a width of 0 mm or more, and less than half the panel's shorter side.</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>Open in {0}</value>
   </data>

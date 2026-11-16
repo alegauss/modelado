@@ -363,6 +363,24 @@
   <data name="LithophaneSizeInvalid" xml:space="preserve">
     <value>A largura e a parte mais fina precisam ser maiores que 0 mm, e a mais grossa maior que a mais fina.</value>
   </data>
+  <data name="LithophaneShape" xml:space="preserve">
+    <value>Forma</value>
+  </data>
+  <data name="LithophaneShapeFlat" xml:space="preserve">
+    <value>Painel plano</value>
+  </data>
+  <data name="LithophaneShapeCurve" xml:space="preserve">
+    <value>Curvo, fica de pé sozinho</value>
+  </data>
+  <data name="LithophaneShapeCylinder" xml:space="preserve">
+    <value>Cilindro, uma cúpula inteira</value>
+  </data>
+  <data name="LithophaneFrameMm" xml:space="preserve">
+    <value>Moldura</value>
+  </data>
+  <data name="LithophaneFrameInvalid" xml:space="preserve">
+    <value>A moldura precisa de 0 mm ou mais, e menos que metade do lado menor do painel.</value>
+  </data>
   <data name="OpenInSlicer" xml:space="preserve">
     <value>Abrir no {0}</value>
   </data>

@@ -160,6 +160,7 @@
 - ✅ **MOD141** **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — A disc's or tag's hole is dragged into place on the photo, in its 0..1 coordinates and kept a wall inside; the keychain stays one closed solid.
 - ✅ **MOD142** **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — The Relief card lists the installed fonts and writes a lower-case name in one, naming any character the font lacks; the bundled font is MOD149.
 - ✅ **MOD143** **Text on a relief can only be raised, never engraved into the surface** — Relief text can be engraved: --text-engrave-mm and the card's Engraved choice cut the letters in, keeping 0.6 mm under them, and a cut too deep is refused in words.
+- ✅ **MOD145** **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — A lithophane can be curved to stand or a closed cylinder shade, with a frame at the thickest, from --shape, --arc and --frame-mm or the Relief card.
 
 ## Block M — The CPU and integrated-GPU path
 
