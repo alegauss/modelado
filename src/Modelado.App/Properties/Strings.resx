@@ -465,6 +465,9 @@
   <data name="ProviderNoDirectML" xml:space="preserve">
     <value>This build has no DirectML, so the CPU is used.</value>
   </data>
+  <data name="ProviderIntegratedSlower" xml:space="preserve">
+    <value>CPU: the integrated GPU is slower here than the CPU. Choose DirectML in About to use it anyway.</value>
+  </data>
   <data name="ProviderNoDirectMLChosen" xml:space="preserve">
     <value>DirectML was chosen, but this build has none, so the CPU is used.</value>
   </data>

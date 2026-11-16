@@ -239,7 +239,7 @@ public partial class MainWindow
         }
 
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), light: LightChosen);
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), deviceId, LightChosen);
         await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 }

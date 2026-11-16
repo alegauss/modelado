@@ -465,6 +465,9 @@
   <data name="ProviderNoDirectML" xml:space="preserve">
     <value>此版本没有 DirectML，因此使用 CPU。</value>
   </data>
+  <data name="ProviderIntegratedSlower" xml:space="preserve">
+    <value>CPU：此处集成 GPU 比 CPU 更慢。如仍要使用，请在“关于”中选择 DirectML。</value>
+  </data>
   <data name="ProviderNoDirectMLChosen" xml:space="preserve">
     <value>已选择 DirectML，但此版本没有，因此使用 CPU。</value>
   </data>

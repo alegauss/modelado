@@ -174,17 +174,27 @@ try
         "auto" => ProviderChoice.Auto,
         var other => throw new ArgumentException($"--provider {other}: use auto, dml or cpu."),
     };
-    (ExecutionProvider provider, string? reason) = ExecutionProviders.Resolve(choice);
-    // MOD121: --gpu N runs DirectML on another adapter than the default, an integrated GPU beside a discrete one.
-    int gpu = Int("--gpu", 0);
+    // MOD147: Automatic weighs the adapters: the discrete GPU on a hybrid PC, the CPU where the only GPU is integrated.
+    IReadOnlyList<GpuAdapter> adapters = GpuAdapter.All();
+    ProviderPick pick = ExecutionProviders.Pick(choice, adapters);
+    ExecutionProvider provider = pick.Provider;
+    string? reason = pick.Sentence;
+
+    // MOD121: --gpu N runs DirectML on that adapter, whatever Automatic would pick.
+    int gpu = Int("--gpu", pick.DeviceId);
     if (gpu < 0)
     {
         throw new ArgumentException("--gpu takes an adapter index, 0 or more.");
     }
 
+    if (options.ContainsKey("--gpu") && provider == ExecutionProvider.Cpu && pick.Reason == ProviderReason.IntegratedOnly)
+    {
+        (provider, reason) = (ExecutionProvider.DirectML, null); // asking for an adapter by number is asking for the GPU
+    }
+
     using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice), gpu, options.ContainsKey("--light"));
     // MOD52: the words the window's provider chip shows, the GPU named.
-    string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice(gpu) : null);
+    string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? adapters.FirstOrDefault(a => a.Index == gpu) : null);
     Console.WriteLine($"Running on {where}{(reason is null ? "" : $": {reason}")}");
 
     switch (args[0])

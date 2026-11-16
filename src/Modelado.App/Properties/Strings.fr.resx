@@ -465,6 +465,9 @@
   <data name="ProviderNoDirectML" xml:space="preserve">
     <value>Cette version n'a pas DirectML, le CPU est donc utilisé.</value>
   </data>
+  <data name="ProviderIntegratedSlower" xml:space="preserve">
+    <value>CPU : le GPU intégré est ici plus lent que le CPU. Choisissez DirectML dans À propos pour l’utiliser quand même.</value>
+  </data>
   <data name="ProviderNoDirectMLChosen" xml:space="preserve">
     <value>DirectML a été choisi, mais cette version ne l'a pas, le CPU est donc utilisé.</value>
   </data>

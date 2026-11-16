@@ -463,8 +463,10 @@ shared is system memory the GPU maps), on an Intel Core i7-14700 with an NVIDIA 
 
 On the same processor's integrated **Intel UHD Graphics 770** through DirectML (MOD121,
 `build\measure-memory.ps1 -Gpu 1`, which runs `modelado-cli --gpu 1`), every model runs, but
-3D Object is slower there than on the CPU, so on a PC with only integrated graphics choose the
-CPU in About:
+3D Object is slower there than on the CPU. So Automatic (MOD147) asks DXCore which GPUs are
+integrated. On a PC whose only GPU is integrated it runs on the CPU and says why on the provider
+chip; DirectML chosen in About, or `--provider dml`, still forces the GPU. On a hybrid PC it runs
+on the discrete GPU even when Windows lists the integrated one first:
 
 | Operation | Time | RAM | GPU dedicated | GPU shared |
 | --- | --: | --: | --: | --: |

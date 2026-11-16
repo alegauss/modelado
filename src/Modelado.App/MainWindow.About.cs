@@ -241,20 +241,26 @@ public partial class MainWindow
         providerChoice = choice;
         try
         {
-            // MOD134: Resolve's one reason is that this build has no DirectML; the window says so in its language.
-            (provider, string? reason) = ExecutionProviders.Resolve(choice);
-            providerReason = reason is null ? null : Strings.ProviderNoDirectML;
+            // MOD134, MOD147: the reasons come back as data; the window says them in its language.
+            ProviderPick pick = ExecutionProviders.Pick(choice, GpuAdapter.All());
+            (provider, deviceId, gpu) = (pick.Provider, pick.DeviceId, pick.Adapter);
+            providerReason = pick.Reason switch
+            {
+                ProviderReason.NoDirectML => Strings.ProviderNoDirectML,
+                ProviderReason.IntegratedOnly => Strings.ProviderIntegratedSlower,
+                _ => null,
+            };
         }
         catch (InvalidOperationException)
         {
-            (provider, providerReason) = (ExecutionProvider.Cpu, Strings.ProviderNoDirectMLChosen);
+            (provider, deviceId, gpu, providerReason) = (ExecutionProvider.Cpu, 0, null, Strings.ProviderNoDirectMLChosen);
         }
-
-        // MOD52: the GPU device 0 is, which is the one sessions are built on.
-        gpu = provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice() : null;
     }
 
+    // MOD52: the GPU sessions are built on; MOD147: its DXGI index, the discrete GPU on a hybrid PC.
     private GpuAdapter? gpu;
+
+    private int deviceId;
 
     private void ShowProvider()
     {
@@ -323,7 +329,7 @@ public partial class MainWindow
     private void ReleaseSessions()
     {
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), light: LightChosen);
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice), deviceId, LightChosen);
     }
 
     private async void OnAboutRemoveModel(object sender, RoutedEventArgs e)
