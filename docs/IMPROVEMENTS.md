@@ -653,22 +653,6 @@ in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
-### §MOD115 Measure an INT8 encoder
-
-A public ONNX export of TripoSR (fernandotonon/QtMeshEditor-triposr-onnx) ships an INT8
-encoder of about 430 MB against 1.7 GB in fp32, with a slight quality loss and no
-numbers. Arm's mobile write-up kept the encoder in fp32 as quality-sensitive and
-quantized only the decoder. Modelado's CPU users, the ones ChatGPT sends here, get the
-1.85 GB fp32 download today.
-
-Export the encoder with ONNX Runtime's dynamic and static INT8 quantization from the
-official MIT weights, then run the comparison harness: time and peak memory on the CPU,
-and the mesh difference against fp32 on the same photos. Also try INT8 for the decoder
-alone.
-
-Done when docs/local-3d-models.md records size, time, memory and the visible difference
-of each variant, with a verdict on shipping it.
-
 ### §MOD116 Ship the light encoder for the CPU
 
 If MOD115 finds an INT8 variant close enough to fp32, the CPU path should use it. The

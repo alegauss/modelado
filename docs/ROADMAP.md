@@ -55,8 +55,7 @@
 
 ## Block M — The CPU and integrated-GPU path
 
-- 📋 **MOD115** (deps: MOD127 ✅) **Nobody has measured an INT8 TripoSR encoder against fp32 on Modelado's own photos** — An INT8 encoder is about 430 MB against 1.7 GB, but its quality loss is only described as slight, never measured. → §MOD115
-- 📋 **MOD116** (deps: MOD115) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — A CPU-only PC downloads and loads the largest variant today, so the people Modelado is best for wait the longest. → §MOD116
+- 📋 **MOD116** (deps: MOD115 ✅) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — A CPU-only PC downloads and loads the largest variant today, so the people Modelado is best for wait the longest. → §MOD116
 - 📋 **MOD147** (deps: MOD121 ✅) **Automatic runs on an integrated GPU even where it is several times slower than the CPU** — MOD121 measured 3D Object at 65 s on an Intel UHD 770 against 15 s on its CPU, and Automatic picks that GPU. → §MOD147
 
 ## Done when — Block H

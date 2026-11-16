@@ -43,12 +43,16 @@ class Run:
     label: str
     args: tuple[str, ...]
     gpu: bool = False
+    models: str | None = None  # MOD115: a models folder of its own, such as a quantized variant's
 
 
 RUNS = [
     Run("object", "TripoSR fp32, CPU", ("--provider", "cpu")),
     Run("object", "TripoSR fp16, GPU", ("--provider", "dml"), gpu=True),
     Run("object", "TripoSR fp32, GPU", ("--provider", "dml", "--high"), gpu=True),
+    # MOD115: scripts/quantize_triposr.py's INT8 variants, skipped until it has made them.
+    Run("object", "TripoSR INT8 encoder, CPU", ("--provider", "cpu"), models=".cache/variants/triposr-int8-encoder"),
+    Run("object", "TripoSR INT8 decoder, CPU", ("--provider", "cpu"), models=".cache/variants/triposr-int8-decoder"),
     Run("relief", "Depth Anything V2 Small fp32, CPU", ("--provider", "cpu")),
     Run("relief", "Depth Anything V2 Small fp16, GPU", ("--provider", "dml"), gpu=True),
 ]
@@ -114,7 +118,8 @@ def run_cli(run: Run, photo: Path, out: Path) -> dict:
     stem = f"{photo.stem}-{run.label.lower().replace(' ', '-').replace(',', '')}"
     stl, preview = out / f"{stem}.stl", out / f"{stem}.png"
     done = subprocess.run(
-        [str(CLI), run.pipeline, str(photo), "-o", str(stl), "--preview", str(preview), "--json", *run.args],
+        [str(CLI), run.pipeline, str(photo), "-o", str(stl), "--preview", str(preview), "--json", *run.args,
+         *(("--models", str(REPO / run.models)) if run.models else ())],
         capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
     )
     if done.returncode != 0:
@@ -131,7 +136,7 @@ def measure(runs: list[Run], photos: dict[str, list[str]], out: Path, gpu: bool)
     out.mkdir(parents=True, exist_ok=True)
     rows = []
     for pipeline, names in photos.items():
-        mine = [r for r in runs if r.pipeline == pipeline and (gpu or not r.gpu)]
+        mine = [r for r in runs if r.pipeline == pipeline and (gpu or not r.gpu) and (r.models is None or (REPO / r.models).is_dir())]
         for name in names:
             photo = REPO / name
             reference = None
