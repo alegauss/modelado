@@ -134,6 +134,36 @@ public sealed record CloudBudget(double Monthly, double WarnAt = 0.8)
         Monthly <= 0 ? BudgetState.Exceeded : spent >= Monthly ? BudgetState.Exceeded : spent >= Monthly * WarnAt ? BudgetState.Warning : BudgetState.Ok;
 }
 
+/// <summary>MOD134: what a budget says about one action, before its words.</summary>
+public enum BudgetVerdict
+{
+    /// <summary>No budget is set for the service.</summary>
+    None,
+
+    /// <summary>It may run; the amount left is said.</summary>
+    Left,
+
+    /// <summary>The month's budget is spent; refused.</summary>
+    Spent,
+
+    /// <summary>What is left is less than the action's estimate; refused.</summary>
+    TooSmall,
+}
+
+/// <summary>MOD134: a budget's standing for one action, in the service's unit.</summary>
+/// <param name="Verdict">What it comes to.</param>
+/// <param name="Spent">Spent this month.</param>
+/// <param name="Monthly">The month's budget, 0 where none is set.</param>
+/// <param name="Estimate">The action's estimate, or null where it has none.</param>
+public sealed record BudgetStanding(BudgetVerdict Verdict, double Spent, double Monthly, double? Estimate)
+{
+    /// <summary>What is left this month.</summary>
+    public double Left => Monthly - Spent;
+
+    /// <summary>Whether the action is held until the budget is raised.</summary>
+    public bool Blocked => Verdict is BudgetVerdict.Spent or BudgetVerdict.TooSmall;
+}
+
 /// <summary>How close a service is to the user's limit.</summary>
 public enum BudgetState
 {
@@ -240,12 +270,32 @@ public sealed record CloudSpending(CloudLedger Ledger, IReadOnlyDictionary<strin
             return ($" {service.DisplayName}'s budget for this month is {why}; raise it in About to send this.", true);
         }
 
+        BudgetStanding standing = Standing(service, request);
+        return standing.Verdict == BudgetVerdict.None
+            ? ("", false)
+            : (string.Create(CultureInfo.InvariantCulture, $" {standing.Left:0.##} of {standing.Monthly:0.##} left this month."), false);
+    }
+
+    /// <summary>
+    /// MOD134: what <see cref="Note"/> says, as data, so the window words it in its own language
+    /// while modelado-cli keeps the English sentence.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The action.</param>
+    /// <returns>The verdict and the amounts behind it.</returns>
+    public BudgetStanding Standing(ICloudProvider service, CloudJobRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(service);
+        CloudCost? estimate = service.EstimateCost(request);
+        (BudgetState state, double spent) = StateOf(service.Id);
         if (!Budgets.TryGetValue(service.Id, out CloudBudget? budget))
         {
-            return ("", false);
+            return new BudgetStanding(BudgetVerdict.None, spent, 0, estimate?.Amount);
         }
 
-        double left = budget.Monthly - StateOf(service.Id).Spent;
-        return (string.Create(CultureInfo.InvariantCulture, $" {left:0.##} of {budget.Monthly:0.##} left this month."), false);
+        BudgetVerdict verdict = state == BudgetState.Exceeded ? BudgetVerdict.Spent
+            : estimate is not null && spent + estimate.Amount > budget.Monthly ? BudgetVerdict.TooSmall
+            : BudgetVerdict.Left;
+        return new BudgetStanding(verdict, spent, budget.Monthly, estimate?.Amount);
     }
 }

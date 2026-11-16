@@ -137,7 +137,7 @@
 - ✅ **MOD89 (translation written)** **The interface has no French (fr) translation** — The window reads in French from Strings.fr.resx, typeset with non-breaking spaces and held to the English keys and placeholders.
 - ✅ **MOD90 (translation written)** **The interface has no Spanish (es) translation** — The window reads in neutral Spanish from Strings.es.resx, which es-ES and es-MX both resolve to, held to the English keys and placeholders.
 - ✅ **MOD91 (translation written)** **The interface has no Simplified Chinese (zh-Hans) translation** — The window reads in Simplified Chinese from Strings.zh-Hans.resx, which zh-CN and zh-SG resolve to, every font falling back to Microsoft YaHei UI.
-- ✅ **MOD134 (Inference sentences)** **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — The provider's fallback reason and a model's GPU fallback reach the window as data and read in its language; the CLI keeps its English.
+- ✅ **MOD134** **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Budget notes, cloud job titles, key checks and the baked-texture notice reach the window as data and read in its language; the CLI's English is unchanged.
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 

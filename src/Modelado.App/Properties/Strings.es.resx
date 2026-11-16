@@ -405,6 +405,48 @@
   <data name="GpuFallbackLoad" xml:space="preserve">
     <value>{0} no se pudo cargar en la GPU ({1}) y se ejecuta en la CPU.</value>
   </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value> Quedan {0:0.##} de {1:0.##} este mes.</value>
+  </data>
+  <data name="BudgetNoteSpent" xml:space="preserve">
+    <value> El presupuesto de {0} para este mes se agotó ({1:0.##} de {2:0.##}); auméntalo en Acerca de para enviar esto.</value>
+  </data>
+  <data name="BudgetTooSmall" xml:space="preserve">
+    <value> El presupuesto de {0} para este mes no alcanza: ~{1:0.##} y quedan {2:0.##} de {3:0.##}; auméntalo en Acerca de para enviar esto.</value>
+  </data>
+  <data name="CloudJobLabel" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="CloudActionImageTo3D" xml:space="preserve">
+    <value>imagen a 3D</value>
+  </data>
+  <data name="CloudActionTextTo3D" xml:space="preserve">
+    <value>texto a 3D</value>
+  </data>
+  <data name="CloudActionRemesh" xml:space="preserve">
+    <value>rehacer la malla</value>
+  </data>
+  <data name="CloudActionRetexture" xml:space="preserve">
+    <value>nueva textura</value>
+  </data>
+  <data name="CloudActionTextToImage" xml:space="preserve">
+    <value>texto a imagen</value>
+  </data>
+  <data name="CloudActionTexture" xml:space="preserve">
+    <value>textura</value>
+  </data>
+  <data name="KeyWorks" xml:space="preserve">
+    <value>La clave funciona.</value>
+  </data>
+  <data name="KeyWorksCredits" xml:space="preserve">
+    <value>La clave funciona: {0} créditos.</value>
+  </data>
+  <data name="KeyRefused" xml:space="preserve">
+    <value>{0} rechazó la clave.</value>
+  </data>
+  <data name="TexturesBaked" xml:space="preserve">
+    <value>{0} tiene {1} texturas, más de las {2} que guarda un modelo, así que sus colores se pasaron a los vértices.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>

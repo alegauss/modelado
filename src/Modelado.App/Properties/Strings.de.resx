@@ -405,6 +405,48 @@
   <data name="GpuFallbackLoad" xml:space="preserve">
     <value>{0} konnte nicht auf die GPU geladen werden ({1}) und läuft auf der CPU.</value>
   </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value> {0:0.##} von {1:0.##} diesen Monat übrig.</value>
+  </data>
+  <data name="BudgetNoteSpent" xml:space="preserve">
+    <value> Das Budget von {0} für diesen Monat ist aufgebraucht ({1:0.##} von {2:0.##}); erhöhen Sie es unter Info, um dies zu senden.</value>
+  </data>
+  <data name="BudgetTooSmall" xml:space="preserve">
+    <value> Das Budget von {0} für diesen Monat reicht dafür nicht: ~{1:0.##} bei {2:0.##} von {3:0.##} übrig; erhöhen Sie es unter Info, um dies zu senden.</value>
+  </data>
+  <data name="CloudJobLabel" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="CloudActionImageTo3D" xml:space="preserve">
+    <value>Bild zu 3D</value>
+  </data>
+  <data name="CloudActionTextTo3D" xml:space="preserve">
+    <value>Text zu 3D</value>
+  </data>
+  <data name="CloudActionRemesh" xml:space="preserve">
+    <value>Neuvernetzen</value>
+  </data>
+  <data name="CloudActionRetexture" xml:space="preserve">
+    <value>Neu texturieren</value>
+  </data>
+  <data name="CloudActionTextToImage" xml:space="preserve">
+    <value>Text zu Bild</value>
+  </data>
+  <data name="CloudActionTexture" xml:space="preserve">
+    <value>Textur</value>
+  </data>
+  <data name="KeyWorks" xml:space="preserve">
+    <value>Der Schlüssel funktioniert.</value>
+  </data>
+  <data name="KeyWorksCredits" xml:space="preserve">
+    <value>Der Schlüssel funktioniert: {0} Credits.</value>
+  </data>
+  <data name="KeyRefused" xml:space="preserve">
+    <value>{0} hat den Schlüssel abgelehnt.</value>
+  </data>
+  <data name="TexturesBaked" xml:space="preserve">
+    <value>{0} hat {1} Texturen, mehr als die {2}, die ein Modell behält, daher wurden seine Farben in die Eckpunkte übernommen.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

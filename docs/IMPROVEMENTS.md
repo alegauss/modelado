@@ -487,25 +487,6 @@ review: ListAnd as " 和 " with spaces; clay view as 黏土模型 (or 白模); R
 for s and min; budget states 即将用完/已用完/未超出. The row-height check waits on winwright
 (WW624).
 
-### §MOD134 Library sentences in the window
-
-MOD85 moved every string Modelado.App writes into Properties/Strings.resx, but the
-window also shows sentences the libraries compose in English: CloudLedger's budget note
-on every consent line (CloudSpending.Note), CloudJobs.Label for a cloud job's title and
-the History step it leaves, ExecutionProviders.Label on the provider chip and the reason
-Resolve gives for falling back to the CPU, ModelRunner.Notice in the last-run tooltip,
-each provider's KeyCheck message, and MeshImport's notice about baked textures. Under a
-translation these read in English beside translated text.
-
-The libraries are shared with the CLI, which stays English, so they should not read the
-app's resources. Each one returns what happened as data (an enum or a record: the budget
-state and the amounts, the capability, the device name, the fallback cause), and the app
-turns it into a sentence from Strings.resx; the CLI keeps its own English wording. Where
-a service's own text arrives (a KeyCheck message from the API, an exception message), it
-is shown as the service wrote it, inside a translated frame. Done when
-StringResourceTests-style checks find no library sentence on the window's consent lines,
-chips, History or About, and the CLI's output is unchanged.
-
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 ### §MOD110 Open in slicer

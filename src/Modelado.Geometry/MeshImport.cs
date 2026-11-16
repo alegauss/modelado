@@ -22,7 +22,7 @@ public static class MeshImport
     /// <param name="path">The file.</param>
     /// <returns>The mesh.</returns>
     /// <exception cref="InvalidDataException">The file is not a model this build can read.</exception>
-    public static Mesh Load(string path) => Load(path, out _);
+    public static Mesh Load(string path) => Load(path, out BakedTextures? _);
 
     /// <summary>Reads a model by its extension, and says what of its materials could not be kept as they were.</summary>
     /// <param name="path">The file.</param>
@@ -31,10 +31,22 @@ public static class MeshImport
     /// <exception cref="InvalidDataException">The file is not a model this build can read.</exception>
     public static Mesh Load(string path, out string? notice)
     {
-        notice = null;
+        Mesh mesh = Load(path, out BakedTextures? baked);
+        notice = baked?.ToString();
+        return mesh;
+    }
+
+    /// <summary>Reads a model by its extension, and says as data what of its materials could not be kept (MOD134).</summary>
+    /// <param name="path">The file.</param>
+    /// <param name="baked">Its textures baked into colours (MOD59), or null.</param>
+    /// <returns>The mesh.</returns>
+    /// <exception cref="InvalidDataException">The file is not a model this build can read.</exception>
+    public static Mesh Load(string path, out BakedTextures? baked)
+    {
+        baked = null;
         try
         {
-            string? said = null;
+            BakedTextures? said = null;
             Mesh mesh = MeshExport.FormatOf(path) switch
             {
                 MeshFormat.Glb => ReadGlb(File.ReadAllBytes(path), Path.GetFileName(path), out said),
@@ -49,7 +61,7 @@ public static class MeshImport
                 throw new InvalidDataException($"{Path.GetFileName(path)} has no triangles.");
             }
 
-            notice = said;
+            baked = said;
             return mesh;
         }
         catch (Exception error) when (error is ArgumentException or IndexOutOfRangeException or FormatException or KeyNotFoundException or JsonException or OverflowException or InvalidOperationException)
@@ -240,7 +252,7 @@ public static class MeshImport
     /// <param name="path">The .obj file.</param>
     /// <param name="notice">Why its textures were baked into colours, or null.</param>
     /// <returns>The mesh.</returns>
-    public static Mesh ReadObj(string path, out string? notice)
+    public static Mesh ReadObj(string path, out BakedTextures? notice)
     {
         List<Vector3> v = [], vc = [];
         List<Vector2> vt = [];
@@ -351,7 +363,7 @@ public static class MeshImport
     /// <param name="name">What a notice calls the file.</param>
     /// <param name="notice">Why its textures were baked into colours, or null.</param>
     /// <returns>The meshes merged into one.</returns>
-    public static Mesh ReadGlb(byte[] data, string name, out string? notice)
+    public static Mesh ReadGlb(byte[] data, string name, out BakedTextures? notice)
     {
         ArgumentNullException.ThrowIfNull(data);
         if (data.Length < 20 || BinaryPrimitives.ReadUInt32LittleEndian(data) != 0x46546C67)

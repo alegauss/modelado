@@ -117,4 +117,31 @@ public sealed class CloudSpendingTests : IDisposable
 
         Assert.Equal(BudgetState.None, spending.StateOf("fake").State);
     }
+
+    [Fact]
+    public async Task The_standing_the_window_words_agrees_with_the_cli_note_for_each_verdict()
+    {
+        // MOD134: the window words BudgetStanding in its language; the CLI keeps Note's English.
+        TenCredits fake = new();
+        CloudJobRequest request = new(CloudCapability.TextTo3D, Prompt: "a chair");
+
+        CloudSpending none = new(new CloudLedger(path), new Dictionary<string, CloudBudget>(), () => Now);
+        Assert.Equal(BudgetVerdict.None, none.Standing(fake, request).Verdict);
+        Assert.Equal(("", false), none.Note(fake, request));
+
+        CloudSpending spending = Spending(25);
+        BudgetStanding left = spending.Standing(fake, request);
+        Assert.Equal((BudgetVerdict.Left, 25, 25, 10.0), (left.Verdict, left.Left, left.Monthly, left.Estimate));
+        Assert.Equal((" 25 of 25 left this month.", false), spending.Note(fake, request));
+
+        await Run(fake, spending);
+        await Run(fake, spending);
+        BudgetStanding small = spending.Standing(fake, request);
+        Assert.Equal((BudgetVerdict.TooSmall, 5, true), (small.Verdict, small.Left, small.Blocked));
+        Assert.True(spending.Note(fake, request).Blocked);
+
+        CloudSpending spent = Spending(20);
+        Assert.Equal((BudgetVerdict.Spent, true), (spent.Standing(fake, request).Verdict, spent.Standing(fake, request).Blocked));
+        Assert.True(spent.Note(fake, request).Blocked);
+    }
 }

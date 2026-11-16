@@ -3,6 +3,20 @@ using Modelado.Imaging;
 
 namespace Modelado.Geometry;
 
+/// <summary>
+/// MOD59: a model with more textures than one mesh keeps, its colours baked into its vertices. Data,
+/// so the window words it in its own language (MOD134); <see cref="ToString"/> is the CLI's English.
+/// </summary>
+/// <param name="Name">The file's name.</param>
+/// <param name="Textures">How many textures it had.</param>
+/// <param name="Kept">How many one model keeps.</param>
+public sealed record BakedTextures(string Name, int Textures, int Kept)
+{
+    /// <summary>The notice in English.</summary>
+    /// <returns>The sentence.</returns>
+    public override string ToString() => $"{Name} has {Textures} textures, more than the {Kept} one model can keep, so its colours were baked into its vertices.";
+}
+
 /// <summary>One material of an imported model: its texture, or none, and the colour it is tinted by.</summary>
 /// <param name="Texture">The base-colour texture, or null for a flat colour (already in the vertex colours).</param>
 /// <param name="Tint">The sRGB colour the texture is multiplied by (glTF's baseColorFactor); white for none.</param>
@@ -37,7 +51,7 @@ public static class MaterialAtlas
     /// <returns>The mesh.</returns>
     public static Mesh Assemble(
         IReadOnlyList<Vector3> positions, int[] triangles, IReadOnlyList<Vector3> colors, bool anyColor, IReadOnlyList<Vector2> uvs,
-        IReadOnlyList<int> partOf, IReadOnlyList<MaterialPart> parts, bool doubleSided, string name, out string? notice)
+        IReadOnlyList<int> partOf, IReadOnlyList<MaterialPart> parts, bool doubleSided, string name, out BakedTextures? notice)
     {
         ArgumentNullException.ThrowIfNull(positions);
         ArgumentNullException.ThrowIfNull(colors);
@@ -63,7 +77,7 @@ public static class MaterialAtlas
 
         if (tiles.Count > MostTextures)
         {
-            notice = $"{name} has {tiles.Count} textures, more than the {MostTextures} one model can keep, so its colours were baked into its vertices.";
+            notice = new BakedTextures(name, tiles.Count, MostTextures);
             Vector3[] baked = new Vector3[positions.Count];
             for (int v = 0; v < baked.Length; v++)
             {

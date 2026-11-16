@@ -93,7 +93,10 @@ public partial class MainWindow
                     key.Clear();
                 }
 
-                status.Text = check.Valid ? check.Message : Ui.Format(Strings.KeyNotSaved, check.Message);
+                // MOD134: the window's words, with the service's credit count where it gave one.
+                status.Text = check.Valid
+                    ? (check.Credits is { } credits ? Ui.Format(Strings.KeyWorksCredits, credits) : Strings.KeyWorks)
+                    : Ui.Format(Strings.KeyNotSaved, Ui.Format(Strings.KeyRefused, service.DisplayName));
             }
             catch (Exception error) when (error is HttpRequestException or TaskCanceledException or IOException or InvalidDataException or JsonException or InvalidOperationException)
             {
@@ -254,7 +257,7 @@ public partial class MainWindow
             return;
         }
 
-        string title = CloudJobs.Label(service, request.Action);
+        string title = JobLabel(service, request.Action);
         if (cloudKeys.Load(service.Id) is not { } key)
         {
             LastRunSaid(Ui.Format(Strings.KeyUnreadable, title, service.DisplayName));
@@ -375,7 +378,7 @@ public partial class MainWindow
             return;
         }
 
-        string title = Ui.Format(Strings.ResumedJob, CloudServices.FirstOrDefault(p => p.Id == id) is { } found ? CloudJobs.Label(found, action) : id);
+        string title = Ui.Format(Strings.ResumedJob, CloudServices.FirstOrDefault(p => p.Id == id) is { } found ? JobLabel(found, action) : id);
         if (CloudServices.FirstOrDefault(p => p.Id == id) is not { } service || cloudKeys.Load(id) is not { } key)
         {
             SettingsFile.Remove(SettingsFile.DefaultPath, KeptJob);

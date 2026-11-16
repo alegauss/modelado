@@ -247,7 +247,7 @@ public sealed class MeshyProviderTests
         FakeMeshy good = new FakeMeshy().Answer("GET /openapi/v1/balance", """{"balance": 1000, "monthly_credits": 600, "permanent_credits": 400, "monthly_resets_at": null}""");
         FakeMeshy bad = new FakeMeshy().Answer("GET /openapi/v1/balance", """{"message": "Invalid API key"}""", HttpStatusCode.Unauthorized);
 
-        Assert.Equal(new KeyCheck(true, "The key works: 1000 credits."), await Meshy(good).ValidateKeyAsync("k", TestContext.Current.CancellationToken));
+        Assert.Equal(new KeyCheck(true, "The key works: 1000 credits.", Credits: "1000"), await Meshy(good).ValidateKeyAsync("k", TestContext.Current.CancellationToken));
         Assert.Equal(new KeyCheck(false, "Meshy AI refused the key."), await Meshy(bad).ValidateKeyAsync("k", TestContext.Current.CancellationToken));
         Assert.Equal(new CloudUsage("1000 credits", 1000), await Meshy(good).UsageAsync("k", TestContext.Current.CancellationToken));
     }

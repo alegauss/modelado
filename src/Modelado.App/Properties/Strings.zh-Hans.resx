@@ -405,6 +405,48 @@
   <data name="GpuFallbackLoad" xml:space="preserve">
     <value>{0} 无法加载到 GPU（{1}），改在 CPU 上运行。</value>
   </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value> 本月剩余 {0:0.##}（共 {1:0.##}）。</value>
+  </data>
+  <data name="BudgetNoteSpent" xml:space="preserve">
+    <value> {0} 本月预算已用完（{1:0.##} / {2:0.##}）；请在“关于”中提高预算后再发送。</value>
+  </data>
+  <data name="BudgetTooSmall" xml:space="preserve">
+    <value> {0} 本月预算不足：约需 {1:0.##}，剩余 {2:0.##}（共 {3:0.##}）；请在“关于”中提高预算后再发送。</value>
+  </data>
+  <data name="CloudJobLabel" xml:space="preserve">
+    <value>{0}：{1}</value>
+  </data>
+  <data name="CloudActionImageTo3D" xml:space="preserve">
+    <value>图片转 3D</value>
+  </data>
+  <data name="CloudActionTextTo3D" xml:space="preserve">
+    <value>文字转 3D</value>
+  </data>
+  <data name="CloudActionRemesh" xml:space="preserve">
+    <value>重新网格化</value>
+  </data>
+  <data name="CloudActionRetexture" xml:space="preserve">
+    <value>重新贴图</value>
+  </data>
+  <data name="CloudActionTextToImage" xml:space="preserve">
+    <value>文字转图片</value>
+  </data>
+  <data name="CloudActionTexture" xml:space="preserve">
+    <value>纹理</value>
+  </data>
+  <data name="KeyWorks" xml:space="preserve">
+    <value>密钥可用。</value>
+  </data>
+  <data name="KeyWorksCredits" xml:space="preserve">
+    <value>密钥可用：{0} 点数。</value>
+  </data>
+  <data name="KeyRefused" xml:space="preserve">
+    <value>{0} 拒绝了该密钥。</value>
+  </data>
+  <data name="TexturesBaked" xml:space="preserve">
+    <value>{0} 有 {1} 张纹理，超过一个模型可保留的 {2} 张，因此其颜色已烘焙到顶点。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

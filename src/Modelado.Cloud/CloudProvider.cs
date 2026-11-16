@@ -85,8 +85,9 @@ public sealed record CloudResult(byte[] Bytes, string Extension, CloudCost? Actu
 
 /// <summary>What testing a key came to.</summary>
 /// <param name="Valid">The service accepted it.</param>
-/// <param name="Message">Why not, or what it says about the account.</param>
-public sealed record KeyCheck(bool Valid, string Message);
+/// <param name="Message">Why not, or what it says about the account, in English (the CLI's).</param>
+/// <param name="Credits">MOD134: the account's credits as the service counts them, where it says; the window words the rest.</param>
+public sealed record KeyCheck(bool Valid, string Message, string? Credits = null);
 
 /// <summary>An account's standing with a service, for MOD41's status.</summary>
 /// <param name="Summary">The service's own words, e.g. "1,240 credits".</param>

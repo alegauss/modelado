@@ -98,7 +98,8 @@ public sealed class MeshyProvider : ICloudProvider
 
         response.EnsureSuccessStatusCode();
         JsonNode? balance = await ReadAsync(response, cancellation).ConfigureAwait(false);
-        return new KeyCheck(true, $"The key works: {Credits(balance)} credits.");
+        string credits = $"{Credits(balance)}"; // as the message always wrote it
+        return new KeyCheck(true, $"The key works: {credits} credits.", credits);
     }
 
     /// <inheritdoc/>

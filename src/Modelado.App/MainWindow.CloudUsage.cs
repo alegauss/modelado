@@ -42,7 +42,31 @@ public partial class MainWindow
     private static CloudSpending Spending() => new(new CloudLedger(CloudLedger.DefaultPath), LoadBudgets());
 
     // What the budget leaves for an action, said on its consent line; null to send is held.
-    private static (string Note, bool Blocked) BudgetNote(ICloudProvider service, CloudJobRequest request) => Spending().Note(service, request);
+    // MOD134: worded here from the ledger's standing, so it reads in the window's language.
+    private static (string Note, bool Blocked) BudgetNote(ICloudProvider service, CloudJobRequest request)
+    {
+        BudgetStanding s = Spending().Standing(service, request);
+        string note = s.Verdict switch
+        {
+            BudgetVerdict.Left => Ui.Format(Strings.BudgetLeft, s.Left, s.Monthly),
+            BudgetVerdict.Spent => Ui.Format(Strings.BudgetNoteSpent, service.DisplayName, s.Spent, s.Monthly),
+            BudgetVerdict.TooSmall => Ui.Format(Strings.BudgetTooSmall, service.DisplayName, s.Estimate ?? 0, s.Left, s.Monthly),
+            _ => "",
+        };
+        return (note, s.Blocked);
+    }
+
+    // MOD134: a cloud job's title, "Meshy AI: remesh", in the window's language; CloudJobs.Label is the CLI's.
+    private static string JobLabel(ICloudProvider service, CloudCapability action) => Ui.Format(Strings.CloudJobLabel, service.DisplayName, action switch
+    {
+        CloudCapability.ImageTo3D => Strings.CloudActionImageTo3D,
+        CloudCapability.TextTo3D => Strings.CloudActionTextTo3D,
+        CloudCapability.Remesh => Strings.CloudActionRemesh,
+        CloudCapability.Retexture => Strings.CloudActionRetexture,
+        CloudCapability.TextToImage => Strings.CloudActionTextToImage,
+        CloudCapability.Texture => Strings.CloudActionTexture,
+        _ => action.ToString(),
+    });
 
     // The chip: the keyed service closest to its budget, or this month's spend where none is set.
     private void UpdateCloudChip()
@@ -163,7 +187,7 @@ public partial class MainWindow
 
         foreach ((CloudCapability action, int jobs, double estimated, double actual) in ledger.Drift(service.Id))
         {
-            lines.Add(Ui.Format(Strings.UsageDrift, CloudJobs.Label(service, action), jobs, estimated, actual));
+            lines.Add(Ui.Format(Strings.UsageDrift, JobLabel(service, action), jobs, estimated, actual));
         }
 
         if (service.Prices is { } prices)

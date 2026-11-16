@@ -222,7 +222,7 @@ public partial class MainWindow : Window, IDisposable
         }
 
         Mesh loaded;
-        string? notice = null;
+        Geometry.BakedTextures? notice = null;
         string? shown = SourceChip.Visibility == Visibility.Visible ? SourceText.Text : null;
         try
         {
@@ -249,7 +249,7 @@ public partial class MainWindow : Window, IDisposable
         // MOD59: a model with more textures than one mesh keeps opens with them baked into its colours.
         if (notice is not null)
         {
-            LastRunSaid(notice);
+            LastRunSaid(Ui.Format(Strings.TexturesBaked, notice.Name, notice.Textures, notice.Kept)); // MOD134
         }
     }
 
