@@ -117,7 +117,11 @@ public static class Relief
                 int i = (y * gw) + x;
                 float u = (float)x / (gw - 1), v = (float)y / (gh - 1);
                 float z = border is not null && border[i] >= 0 ? border[i] : grid[i] * zScale;
-                z = text is not null && text[i] >= 0 ? MathF.Max(z, text[i]) : z;
+                if (text is not null && text[i] >= 0)
+                {
+                    // MOD143: engraved letters are cut into the surface; raised ones stand on it.
+                    z = options.Text!.Engrave is not null ? options.Text.Engraved(z, options.BaseThickness) : MathF.Max(z, text[i]);
+                }
                 positions[i] = new Vector3(u - 0.5f, (0.5f - v) * aspect, z);
                 uvs[i] = new Vector2(u, v);
                 (float r, float g, float b) = photo.Sample(u, v);

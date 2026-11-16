@@ -25,14 +25,14 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
     };
 
     // MOD106: the relief's text and how it is sized and placed.
-    private static readonly string[] TextOptions = ["--text", "--text-mm", "--text-raise-mm", "--text-on", "--font"];
+    private static readonly string[] TextOptions = ["--text", "--text-mm", "--text-raise-mm", "--text-engrave-mm", "--text-on", "--font"];
 
     private static readonly string[] Common = ["--provider", "--gpu", "--high", "--light", "--models", "--manifest", "--source", "--size", "--preview", "--json", "--compact"];
 
     private static readonly Dictionary<string, HashSet<string>> Accepted = new(StringComparer.Ordinal)
     {
         ["object"] = Takes("--out", "--resolution", "--keep-background", "--threshold", "--step", "--smooth", "--enhance", "--no-project"),
-        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--text", "--text-mm", "--text-raise-mm", "--text-on", "--font", "--stand", "--stand-tilt", "--remove-background", "--depth-model"),
+        ["relief"] = Takes("--out", "--grid", "--depth", "--base", "--width-mm", "--depth-mm", "--base-mm", "--keychain", "--hole-mm", "--shape", "--border-mm", "--border-height-mm", "--text", "--text-mm", "--text-raise-mm", "--text-engrave-mm", "--text-on", "--font", "--stand", "--stand-tilt", "--remove-background", "--depth-model"),
         ["lithophane"] = Takes("--out", "--width-mm", "--min-mm", "--max-mm"),
         ["edit"] = Takes("--out", "--rotate", "--mirror", "--lay-flat", "--remove-pieces", "--fill-holes", "--make-printable", "--simplify", "--subdivide", "--smooth", "--flatten", "--texture", "--tiles", "--upscale-texture"),
         ["download"] = Takes("--dry-run", "--remove-background"),
@@ -120,6 +120,12 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
         if (!millimetres && TextOptions.Any(options.ContainsKey))
         {
             return "--text sizes its letters in millimetres: give the relief's width as --width-mm.";
+        }
+
+        // MOD143: letters are raised or engraved, not both.
+        if (options.ContainsKey("--text-raise-mm") && options.ContainsKey("--text-engrave-mm"))
+        {
+            return "--text-raise-mm raises the letters and --text-engrave-mm cuts them in: give one.";
         }
 
         // MOD107: the stand's slot is cut to the relief's thickness in millimetres, so the relief is

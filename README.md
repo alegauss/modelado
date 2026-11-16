@@ -250,8 +250,12 @@ or a medallion, closed the same way, and `--border-mm` with `--border-height-mm`
 along its outline; the back stays flat, for a magnet or glue. The Relief card has the same shapes,
 and the border with the other millimetres. `--text "ANA 2026"` raises a name or a date along the
 bottom, or with `--text-on arc` around a medallion (`--text-mm` sets the letters' height), in a
-built-in font of capitals and digits, or with `--font` any TrueType (.ttf) font's own outlines, in lower case and accents too; the Relief card takes the text, its height and where it runs
-with the other millimetres, and says before a run when the text will not fit. `--stand` also
+built-in font of capitals and digits, or with `--font` any TrueType (.ttf) font's own outlines, in
+lower case and accents too. `--text-engrave-mm 1` cuts the letters 1 mm into the surface instead of
+raising them, always leaving 0.6 mm under them. The Relief card takes the text, its height, where it
+runs, an installed font and raised or engraved letters with the other millimetres, and says before
+a run when the text will not fit, when the font lacks a character, or when the relief is too thin
+for the cut. `--stand` also
 writes `<output>-stand`, a block that prints flat with a slot cut to the relief's thickness, so
 the plaque stands on a shelf leaning back `--stand-tilt` degrees (15 by default); on the Relief
 card, **Also save a stand** makes Save as write it beside an STL or 3MF. `lithophane` needs no

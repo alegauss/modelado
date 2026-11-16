@@ -53,6 +53,34 @@ public sealed class ReliefTextTests
     }
 
     [Fact]
+    public void An_engraved_date_is_cut_below_the_surface_around_it_and_the_plaque_stays_closed()
+    {
+        Mesh plain = Relief(OutlineShape.Rounded, new ReliefText(" ", Height: 5));
+        Mesh engraved = Relief(OutlineShape.Rounded, new ReliefText("12/11/2026", Height: 5, Engrave: 1));
+
+        Assert.All(MarchingCubesTests.EdgeUses(engraved).Values, uses => Assert.Equal(2, uses));
+        Assert.Equal(2, Euler(engraved));
+        Assert.Equal(plain.VertexCount, engraved.VertexCount);
+        float[] cut = [.. Enumerable.Range(0, plain.VertexCount).Select(i => plain.Positions[i].Z - engraved.Positions[i].Z)];
+        Assert.All(cut, c => Assert.InRange(c, -1e-4f, 1 + 1e-4f));
+        Assert.True(cut.Count(c => MathF.Abs(c - 1) < 1e-4f) > 50, "letters cut 1 mm in");
+        Assert.True(engraved.Positions.Min(p => p.Z) >= -2 - 1e-4f, "never through the back");
+    }
+
+    [Fact]
+    public void An_engraving_deeper_than_the_relief_and_its_base_allow_is_refused_in_words()
+    {
+        // 3 mm of relief on a 2 mm base, 0.6 mm always left under the letters: 4.4 mm at most.
+        Assert.True(ReliefTextStamp.EngravingFits(new ReliefText("ANA", Engrave: 4.4f), 3, 2));
+        Assert.False(ReliefTextStamp.EngravingFits(new ReliefText("ANA", Engrave: 4.5f), 3, 2));
+        Assert.False(ReliefTextStamp.EngravingFits(new ReliefText("ANA", Engrave: 0), 3, 2));
+        Assert.True(ReliefTextStamp.EngravingFits(new ReliefText("ANA"), 0.1f, 0));
+        ArgumentException refused = Assert.Throws<ArgumentException>(() => Relief(OutlineShape.Rounded, new ReliefText("ANA", Height: 5, Engrave: 4.5f)));
+        Assert.Contains("must stay under them", refused.Message, StringComparison.Ordinal);
+        Assert.Equal(-1.4f, new ReliefText("ANA", Engrave: 3).Engraved(1, 2), 4);
+    }
+
+    [Fact]
     public void Accents_are_dropped_and_a_character_the_font_lacks_is_refused_in_words()
     {
         Assert.Equal("JOAO E ANA", ReliefTextStamp.Drawable("João e Ana"));

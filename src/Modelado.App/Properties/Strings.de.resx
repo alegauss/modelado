@@ -324,6 +324,18 @@
   <data name="ReliefTextFontLacks" xml:space="preserve">
     <value>„{0}“ fehlt in {1}: Wählen Sie eine andere Schrift oder lassen Sie es weg.</value>
   </data>
+  <data name="ReliefTextCut" xml:space="preserve">
+    <value>Buchstaben</value>
+  </data>
+  <data name="ReliefTextRaised" xml:space="preserve">
+    <value>Erhaben</value>
+  </data>
+  <data name="ReliefTextEngraved" xml:space="preserve">
+    <value>Graviert</value>
+  </data>
+  <data name="ReliefTextEngraveTooDeep" xml:space="preserve">
+    <value>{0} mm tief gravierte Buchstaben brauchen Relief und Sockel zusammen mindestens {1} mm dick.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Auch einen Ständer zum Einstecken speichern</value>
   </data>

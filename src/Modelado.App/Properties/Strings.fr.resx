@@ -324,6 +324,18 @@
   <data name="ReliefTextFontLacks" xml:space="preserve">
     <value>« {0} » n’est pas dans {1} : choisissez une autre police ou retirez-le.</value>
   </data>
+  <data name="ReliefTextCut" xml:space="preserve">
+    <value>Lettres</value>
+  </data>
+  <data name="ReliefTextRaised" xml:space="preserve">
+    <value>En relief</value>
+  </data>
+  <data name="ReliefTextEngraved" xml:space="preserve">
+    <value>Gravées</value>
+  </data>
+  <data name="ReliefTextEngraveTooDeep" xml:space="preserve">
+    <value>Des lettres gravées sur {0} mm demandent un relief et un socle d’au moins {1} mm ensemble.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Enregistrer aussi un support où l'insérer</value>
   </data>

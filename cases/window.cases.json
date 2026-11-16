@@ -835,6 +835,28 @@
     },
 
     {
+      "name": "the Relief card cuts a name into the relief, and says when the relief is too thin to take the cut",
+      "catches": "a card that can only raise letters, or an engraving through the base that only fails once the run has started",
+      "filed": "MOD143",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "ComboBox#ReliefTextCut", "act": "read", "reads": "picked", "expect": "Raised", "named": "letters raised to start with" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "ANA", "reads": "value", "expect": "ANA", "named": "a name is typed" },
+        { "locator": "ComboBox#ReliefTextCut", "act": "expand", "named": "the choices are opened" },
+        { "locator": "ComboBox#ReliefTextCut > ListItem[name=\"Engraved\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "engraved is chosen" },
+        { "locator": "ComboBox#ReliefTextCut", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and the relief takes the cut" },
+        { "locator": "Edit#ReliefDepthMm", "act": "set value", "with": "0.5", "reads": "value", "expect": "0.5", "named": "a relief 0.5 mm deep is typed" },
+        { "locator": "Edit#ReliefBaseMm", "act": "set value", "with": "0", "reads": "value", "expect": "0", "named": "with no base" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "Letters cut 1 mm deep need the relief and its base together at least 1.6 mm thick.", "named": "the card says the relief is too thin for the cut" }
+      ]
+    },
+
+    {
       "name": "the Relief card makes a lithophane without a model, sized in millimetres for an STL",
       "catches": "a lithophane that asks for a model download, a thickest point thinner than the thinnest taken as a size, or a panel the Export card rescales",
       "filed": "MOD108",

@@ -443,22 +443,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD143 Engraved text on reliefs
-
-`ReliefTextStamp` in `src/Modelado.Geometry/ReliefText.cs` (MOD106) only raises letters
-above the relief's highest point. A plaque with a smooth band, or a keychain's back,
-often wants the name cut in instead.
-
-Add an engraved mode to `ReliefText`: the covered vertices are set to the surface there
-minus a depth in mm, clamped so the cut never reaches the base (at least 0.6 mm of
-material left under it). Placing it is the same layout as raised text. The CLI takes it
-as `--text-engrave-mm D` in place of `--text-raise-mm`, the Relief card as a Raised /
-Engraved choice beside the letter height.
-
-Done when a plaque with an engraved date exports as one closed mesh whose letters sit
-below the surface around them, and a cut deeper than the relief allows is refused in
-words.
-
 ### §MOD145 Curved and framed lithophanes
 
 `Lithophane.Build` in `src/Modelado.Geometry/Lithophane.cs` (MOD108) makes a flat panel

@@ -34,12 +34,15 @@ public partial class MainWindow
 
     private const float ReliefTextHeightDefault = 6;
 
+    // MOD143: how deep the card cuts engraved letters, the same as raised ones stand.
+    private const float ReliefTextEngraveDefault = 1;
+
     /// <summary>
     /// MOD106: the text the card raises, or null for none. Letters the font lacks, a height that is not
     /// one, or text with no room on a relief this wide is refused here rather than by the run. The
     /// relief's printed height follows the outline the card crops to: a medallion is as tall as wide.
     /// </summary>
-    private (bool Valid, ReliefText? Text) TextSettings(float printWidth, float border)
+    private (bool Valid, ReliefText? Text) TextSettings(float printWidth, float border, float depth, float baseMm)
     {
         if (string.IsNullOrWhiteSpace(ReliefTextWords.Text))
         {
@@ -52,7 +55,13 @@ public partial class MainWindow
         }
 
         TextPlacement placement = (ReliefTextOn.SelectedItem as ComboBoxItem)?.Tag as string == "arc" ? TextPlacement.Arc : TextPlacement.Line;
-        ReliefText text = new(ReliefTextWords.Text, height, Placement: placement, Font: (ReliefTextFont?.SelectedItem as ComboBoxItem)?.Tag as string);
+        ReliefText text = new(ReliefTextWords.Text, height, Placement: placement, Font: (ReliefTextFont?.SelectedItem as ComboBoxItem)?.Tag as string,
+            Engrave: (ReliefTextCut?.SelectedItem as ComboBoxItem)?.Tag as string == "engraved" ? ReliefTextEngraveDefault : null);
+        if (!ReliefTextStamp.EngravingFits(text, depth, baseMm))
+        {
+            return (false, null);
+        }
+
         float aspect = photo is null ? 1 : (float)photo.Height / photo.Width;
         float tall = KeychainChosen is null && ShapeChosen == OutlineShape.Circle ? 1 : aspect / Outline.Width(ShapeChosen, aspect);
         try
@@ -99,6 +108,14 @@ public partial class MainWindow
             && ReliefTextStamp.Lacking(new ReliefText(ReliefTextWords.Text, Font: font)) is { } missing)
         {
             return Ui.Format(Strings.ReliefTextFontLacks, missing, name);
+        }
+
+        // MOD143: an engraving deeper than the relief and its base can take.
+        if ((ReliefTextCut?.SelectedItem as ComboBoxItem)?.Tag as string == "engraved"
+            && Typed(ReliefDepthMm.Text) is { } depth && Typed(ReliefBaseMm.Text) is { } baseMm
+            && !ReliefTextStamp.EngravingFits(new ReliefText(ReliefTextWords.Text, Engrave: ReliefTextEngraveDefault), depth, baseMm))
+        {
+            return Ui.Format(Strings.ReliefTextEngraveTooDeep, ReliefTextEngraveDefault, ReliefTextEngraveDefault + ReliefText.EngraveFloor);
         }
 
         return Strings.ReliefTextInvalid;
@@ -248,7 +265,7 @@ public partial class MainWindow
             && Typed(ReliefBaseMm.Text) is { } baseMm && baseMm >= 0
             && BorderSize() is not null
             && KeychainSettings(width).Valid
-            && TextSettings(width, BorderSize()!.Value.Width).Valid
+            && TextSettings(width, BorderSize()!.Value.Width, depth, baseMm).Valid
             ? (width, depth, baseMm)
             : null;
     }
@@ -269,7 +286,7 @@ public partial class MainWindow
 
         return PrintedSize() is { } size && BorderSize() is { } border
             ? new ReliefOptions(GridLongSide: grid, Depth: size.Depth, BaseThickness: size.Base, PrintWidth: size.Width, BorderWidth: border.Width, BorderHeight: border.Height,
-                Text: TextSettings(size.Width, border.Width).Text)
+                Text: TextSettings(size.Width, border.Width, size.Depth, size.Base).Text)
             : null;
     }
 

@@ -23,7 +23,26 @@ public enum TextPlacement
 /// MOD142: a TrueType font file to draw the text in, filled, in its own case and characters; null
 /// keeps the built-in stroke font of capitals and digits.
 /// </param>
-public sealed record ReliefText(string Text, float Height = 6, float Raise = 1, TextPlacement Placement = TextPlacement.Line, string? Font = null);
+/// <param name="Engrave">
+/// MOD143: cut the letters this many millimetres into the surface instead of raising them, or null
+/// to raise them by <paramref name="Raise"/>.
+/// </param>
+public sealed record ReliefText(string Text, float Height = 6, float Raise = 1, TextPlacement Placement = TextPlacement.Line, string? Font = null, float? Engrave = null)
+{
+    /// <summary>MOD143: the material an engraving always leaves above the relief's back, in millimetres.</summary>
+    public const float EngraveFloor = 0.6f;
+
+    /// <summary>
+    /// MOD143: where an engraved letter's floor sits on a relief whose surface is at <paramref name="surface"/>:
+    /// the cut's depth below it, but never closer than <see cref="EngraveFloor"/> to the back at
+    /// minus <paramref name="baseThickness"/>.
+    /// </summary>
+    /// <param name="surface">The relief's height there, in millimetres.</param>
+    /// <param name="baseThickness">The solid base under the relief, in millimetres.</param>
+    /// <returns>The floor's height.</returns>
+    public float Engraved(float surface, float baseThickness) =>
+        MathF.Max(surface - (Engrave ?? 0), EngraveFloor - baseThickness);
+}
 
 /// <summary>
 /// Text stamped into a relief's height grid (MOD106). The letters are a built-in stroke font, each
@@ -113,6 +132,13 @@ public static class ReliefTextStamp
             return null;
         }
 
+        if (!EngravingFits(text, options.Depth, options.BaseThickness))
+        {
+            throw new ArgumentException(
+                string.Create(CultureInfo.InvariantCulture, $"Letters cut {text.Engrave} mm deep do not fit a relief {options.Depth} mm deep on a {options.BaseThickness} mm base: {ReliefText.EngraveFloor} mm must stay under them."),
+                nameof(options));
+        }
+
         (int minColumn, int maxColumn, int minRow, int maxRow) = Kept(mask, gw, gh, options.MaskThreshold);
         float cellsPerMm = Math.Max(1, maxColumn - minColumn) / printWidth;
         float centreColumn = (minColumn + maxColumn) / 2f, centreRow = (minRow + maxRow) / 2f;
@@ -176,6 +202,21 @@ public static class ReliefTextStamp
         {
             _ = Layout(text, width, height, borderWidth);
         }
+    }
+
+    /// <summary>
+    /// MOD143: whether an engraving fits a relief this deep on a base this thick: deeper than 0 mm,
+    /// and no deeper than the relief and its base less the <see cref="ReliefText.EngraveFloor"/> it
+    /// always leaves, so even at the relief's highest point the cut is the depth asked.
+    /// </summary>
+    /// <param name="text">The text, engraved or raised.</param>
+    /// <param name="depth">The relief's depth in millimetres.</param>
+    /// <param name="baseThickness">Its base in millimetres.</param>
+    /// <returns>True for raised text or an engraving that fits.</returns>
+    public static bool EngravingFits(ReliefText text, float depth, float baseThickness)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        return text.Engrave is not { } cut || (cut > 0 && cut <= depth + baseThickness - ReliefText.EngraveFloor);
     }
 
     /// <summary>

@@ -114,6 +114,15 @@ public sealed class CliArgumentsTests
     }
 
     [Fact]
+    public void Letters_are_raised_or_engraved_never_both()
+    {
+        // MOD143: --text-engrave-mm cuts the letters in, in place of --text-raise-mm.
+        Assert.Null(CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--text", "ANA", "--text-engrave-mm", "1"]).Error);
+        Assert.Contains("give one", CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--width-mm", "60", "--text", "ANA", "--text-raise-mm", "1", "--text-engrave-mm", "1"]).Error, StringComparison.Ordinal);
+        Assert.Contains("--width-mm", CliArguments.Parse(["relief", "p.png", "-o", "r.stl", "--text-engrave-mm", "1"]).Error, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_keychain_shaped_like_the_object_needs_the_object_cut_out()
     {
         // MOD141: the cut-out is its outline.
