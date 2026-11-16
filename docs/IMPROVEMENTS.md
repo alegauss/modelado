@@ -183,6 +183,24 @@ and the README and the Store listing say which optional models carry conditions.
 Done when a result made with a Stability model shows the notice in the window and in its
 exported file metadata, and no notice appears for permissive models.
 
+### §MOD148 A rename add_model.py retries
+
+`scripts/add_model.py` builds a model folder as `.<name>.adding` and renames it into
+place (`staging.rename(folder)`, line 214). On 16/11/2026, during MOD127's gate on the
+host, `test_add_model.AddTests.test_the_folder_is_what_build_manifest_publishes` failed
+once with `PermissionError: [WinError 5]` on that rename under `%TEMP%`, and passed on
+three reruns right after. A folder whose files were just written is often held for a
+moment on Windows (Defender, the search indexer), and `os.rename` of a directory fails
+while any handle is open.
+
+Retry the rename a few times with a short pause (for example 5 tries, 0.2 s doubling) on
+`PermissionError` only, then raise with the folder named, as the downloader already
+retries a transient failure. A test can stand in a rename that fails twice and then
+succeeds.
+
+Done when the retry is in and tested, and a full Python run under the gate no longer
+fails on it.
+
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update
@@ -368,21 +386,6 @@ beside TripoSR's. TripoSG makes no colour; the photo projection colours the fron
 Done when the measurements and side-by-side are in `docs/local-3d-models.md` with a
 verdict: offer TripoSG as a "high quality" 3D Object (its own line), or record why not
 and try Step1X-3D's geometry stage.
-
-### §MOD127 A model comparison harness
-
-MOD71 judged models from their papers; nothing ran. The decisions ahead (an INT8
-encoder, Depth Anything 3, MoGe-2, SF3D, SPAR3D and TripoSG in MOD80) all need the same
-measurement.
-
-A script, using modelado-cli, runs a fixed set of test photos (objects with backs, thin
-parts, portraits and landscapes for relief, licensed for publication) through each model
-and variant, and records time, peak memory, provider, triangle count, closedness and,
-against a reference mesh or the fp32 result, Chamfer distance, plus turntable renders
-side by side. Results go to docs/local-3d-models.md.
-
-Done when one command produces the table and renders for TripoSR fp32 and fp16 and Depth
-Anything V2 Small, ready for each new candidate.
 
 ### §MOD128 Depth Anything 3 Mono Large for reliefs
 

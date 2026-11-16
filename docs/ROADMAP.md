@@ -19,6 +19,7 @@
 - 📋 **MOD123** (deps: MOD122) **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model with conditions needs informed consent and a guided login, which a Download button that just fetches files cannot give. → §MOD123
 - 📋 **MOD125** (deps: MOD122) **The licence gate accepts only permissive licences, so a model under the Stability licence cannot be published** — The SF3D and SPAR3D decision of 12/11/2026 needs a licence class with conditions, recorded per model, instead of a yes-or-no list. → §MOD125
 - 📋 **MOD126** (deps: MOD125) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
+- 📋 **MOD148** (deps: —) **add_model.py fails now and then when Windows briefly holds the staging folder it renames into place** — The gate went red once on it in MOD127 with WinError 5 and passed on three reruns, so it can redden any task's gate. → §MOD148
 
 ## Block E — Publishing custom models to Hugging Face
 
@@ -35,11 +36,10 @@
 
 ## Block J — Local model quality: past TripoSR
 
-- 📋 **MOD127** (deps: —) **There is no repeatable side-by-side of models on the same photos, so a new model or INT8 variant cannot be judged** — Every model decision ahead (INT8, Depth Anything 3, SF3D, SPAR3D, TripoSG) needs the same photos, numbers and pictures to compare. → §MOD127
-- 📋 **MOD128** (deps: MOD127) **The relief uses Depth Anything V2 Small, the only V2 size with a commercial licence, far below Large quality** — Depth Anything 3 Mono Large is Apache-2.0 with a community ONNX export, so a large-class relief model is now allowed. → §MOD128
-- 📋 **MOD129** (deps: MOD127) **MoGe-2 has not been compared as a relief depth model, though it has an official ONNX export and normals** — MoGe-2 is MIT with ONNX files from its authors, so it may beat Depth Anything for reliefs without any export work. → §MOD129
-- 📋 **MOD130** (deps: MOD123, MOD125, MOD126, MOD127) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
-- 📋 **MOD131** (deps: MOD123, MOD125, MOD126, MOD127) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
+- 📋 **MOD128** (deps: MOD127 ✅) **The relief uses Depth Anything V2 Small, the only V2 size with a commercial licence, far below Large quality** — Depth Anything 3 Mono Large is Apache-2.0 with a community ONNX export, so a large-class relief model is now allowed. → §MOD128
+- 📋 **MOD129** (deps: MOD127 ✅) **MoGe-2 has not been compared as a relief depth model, though it has an official ONNX export and normals** — MoGe-2 is MIT with ONNX files from its authors, so it may beat Depth Anything for reliefs without any export work. → §MOD129
+- 📋 **MOD130** (deps: MOD123, MOD125, MOD126, MOD127 ✅) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
+- 📋 **MOD131** (deps: MOD123, MOD125, MOD126, MOD127 ✅) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
 
 ## Block K — Translated interface
 
@@ -56,7 +56,7 @@
 
 ## Block M — The CPU and integrated-GPU path
 
-- 📋 **MOD115** (deps: MOD127) **Nobody has measured an INT8 TripoSR encoder against fp32 on Modelado's own photos** — An INT8 encoder is about 430 MB against 1.7 GB, but its quality loss is only described as slight, never measured. → §MOD115
+- 📋 **MOD115** (deps: MOD127 ✅) **Nobody has measured an INT8 TripoSR encoder against fp32 on Modelado's own photos** — An INT8 encoder is about 430 MB against 1.7 GB, but its quality loss is only described as slight, never measured. → §MOD115
 - 📋 **MOD116** (deps: MOD115) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — A CPU-only PC downloads and loads the largest variant today, so the people Modelado is best for wait the longest. → §MOD116
 - 📋 **MOD147** (deps: MOD121 ✅) **Automatic runs on an integrated GPU even where it is several times slower than the CPU** — MOD121 measured 3D Object at 65 s on an Intel UHD 770 against 15 s on its CPU, and Automatic picks that GPU. → §MOD147
 
