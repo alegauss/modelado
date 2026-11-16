@@ -133,8 +133,11 @@ public partial class MainWindow
             string steps = string.Join(Strings.ListSeparator, result.Timings.Select(t => Ui.Format(Strings.StageTook, Describe(t.Stage), t.Took.TotalSeconds)));
 
             // The provider it ran on: a model the GPU refused was run again on the CPU (Notice).
-            string where = runner.Notice is null ? ProviderLabel : "CPU";
-            LastRunSaid(Ui.Format(Strings.RunDone, title, total.TotalSeconds, where), runner.Notice is { } notice ? $"{steps}{Environment.NewLine}{notice}" : steps);
+            string where = runner.Fallback is null ? ProviderLabel : "CPU";
+
+            // MOD134: the fallback in the window's language, ONNX Runtime's own words inside it.
+            string? notice = runner.Fallback is { } fell ? Ui.Format(fell.AtLoad ? Strings.GpuFallbackLoad : Strings.GpuFallbackRun, fell.Model, fell.Cause) : null;
+            LastRunSaid(Ui.Format(Strings.RunDone, title, total.TotalSeconds, where), notice is null ? steps : $"{steps}{Environment.NewLine}{notice}");
         }
         catch (OperationCanceledException)
         {

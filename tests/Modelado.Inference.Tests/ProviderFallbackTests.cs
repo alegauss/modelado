@@ -51,5 +51,10 @@ public sealed class ProviderFallbackTests : IDisposable
         // The CPU cannot read it either, so its own failure is what comes back, after the notice.
         Assert.Throws<OnnxRuntimeException>(() => runner.Load("broken"));
         Assert.Contains("could not be loaded on the GPU", runner.Notice, StringComparison.Ordinal);
+
+        // MOD134: the same fallback as data, which the window words in its own language.
+        Assert.Equal("broken", runner.Fallback?.Model);
+        Assert.True(runner.Fallback?.AtLoad);
+        Assert.False(string.IsNullOrWhiteSpace(runner.Fallback?.Cause));
     }
 }

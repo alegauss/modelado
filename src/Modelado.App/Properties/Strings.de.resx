@@ -393,6 +393,18 @@
   <data name="QualityLightTip" xml:space="preserve">
     <value>Der INT8-Encoder: ein Viertel des Downloads und etwa 1 GB weniger Speicher, aber sichtbar gröbere Formen.</value>
   </data>
+  <data name="ProviderNoDirectML" xml:space="preserve">
+    <value>Dieser Build hat kein DirectML, daher wird die CPU verwendet.</value>
+  </data>
+  <data name="ProviderNoDirectMLChosen" xml:space="preserve">
+    <value>DirectML wurde gewählt, aber dieser Build hat keins, daher wird die CPU verwendet.</value>
+  </data>
+  <data name="GpuFallbackRun" xml:space="preserve">
+    <value>{0} ist auf der GPU fehlgeschlagen ({1}) und läuft jetzt auf der CPU.</value>
+  </data>
+  <data name="GpuFallbackLoad" xml:space="preserve">
+    <value>{0} konnte nicht auf die GPU geladen werden ({1}) und läuft auf der CPU.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Relief erzeugen</value>
   </data>

@@ -241,11 +241,13 @@ public partial class MainWindow
         providerChoice = choice;
         try
         {
-            (provider, providerReason) = ExecutionProviders.Resolve(choice);
+            // MOD134: Resolve's one reason is that this build has no DirectML; the window says so in its language.
+            (provider, string? reason) = ExecutionProviders.Resolve(choice);
+            providerReason = reason is null ? null : Strings.ProviderNoDirectML;
         }
-        catch (InvalidOperationException error)
+        catch (InvalidOperationException)
         {
-            (provider, providerReason) = (ExecutionProvider.Cpu, error.Message);
+            (provider, providerReason) = (ExecutionProvider.Cpu, Strings.ProviderNoDirectMLChosen);
         }
 
         // MOD52: the GPU device 0 is, which is the one sessions are built on.

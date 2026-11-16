@@ -3,6 +3,15 @@ using Microsoft.ML.OnnxRuntime;
 namespace Modelado.Inference;
 
 /// <summary>
+/// MOD134: a model that failed on the GPU and runs on the CPU instead, as data, so the window words
+/// it in its own language; <see cref="ModelRunner.Notice"/> is the CLI's English sentence for it.
+/// </summary>
+/// <param name="Model">The model's folder name.</param>
+/// <param name="AtLoad">True when it could not be loaded on the GPU, false when a run failed there.</param>
+/// <param name="Cause">ONNX Runtime's own first line, shown as it wrote it.</param>
+public sealed record GpuFallback(string Model, bool AtLoad, string Cause);
+
+/// <summary>
 /// The sessions the pipelines run, loaded the first time a model is used and kept until
 /// <see cref="Release"/>. A run that fails on the GPU (out of video memory, a driver fault) is
 /// retried once on the CPU, and that model stays on the CPU from then on, which
@@ -61,8 +70,11 @@ public sealed class ModelRunner : IDisposable
     /// <summary>Whether fp32 is used on the GPU too.</summary>
     public bool HighQuality { get; }
 
-    /// <summary>The last fallback to the CPU, for the status bar; null when there was none.</summary>
+    /// <summary>The last fallback to the CPU, in English for the CLI; null when there was none.</summary>
     public string? Notice { get; private set; }
+
+    /// <summary>MOD134: the last fallback to the CPU as data, for the window to word; null when there was none.</summary>
+    public GpuFallback? Fallback { get; private set; }
 
     /// <summary>The variant of a model this runner loads.</summary>
     /// <param name="model">The model's folder name.</param>
@@ -98,7 +110,8 @@ public sealed class ModelRunner : IDisposable
         }
         catch (OnnxRuntimeException failure) when (provider != ExecutionProvider.Cpu)
         {
-            Notice = $"{model} failed on the GPU ({failure.Message.Split('\n')[0]}) and now runs on the CPU.";
+            Fallback = new GpuFallback(model, AtLoad: false, failure.Message.Split('\n')[0]);
+            Notice = $"{model} failed on the GPU ({Fallback.Cause}) and now runs on the CPU.";
             lock (gate)
             {
                 sessions.Remove(model);
@@ -169,7 +182,8 @@ public sealed class ModelRunner : IDisposable
             }
             catch (OnnxRuntimeException failure) when (Provider != ExecutionProvider.Cpu)
             {
-                Notice = $"{model} could not be loaded on the GPU ({failure.Message.Split('\n')[0]}) and runs on the CPU.";
+                Fallback = new GpuFallback(model, AtLoad: true, failure.Message.Split('\n')[0]);
+                Notice = $"{model} could not be loaded on the GPU ({Fallback.Cause}) and runs on the CPU.";
                 loaded = (ExecutionProviders.Create(path, ExecutionProvider.Cpu), ExecutionProvider.Cpu);
             }
 

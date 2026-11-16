@@ -393,6 +393,18 @@
   <data name="QualityLightTip" xml:space="preserve">
     <value>The INT8 encoder: a quarter of the download and about 1 GB less memory, but shapes are visibly rougher (docs/local-3d-models.md).</value>
   </data>
+  <data name="ProviderNoDirectML" xml:space="preserve">
+    <value>This build has no DirectML, so the CPU is used.</value>
+  </data>
+  <data name="ProviderNoDirectMLChosen" xml:space="preserve">
+    <value>DirectML was chosen, but this build has none, so the CPU is used.</value>
+  </data>
+  <data name="GpuFallbackRun" xml:space="preserve">
+    <value>{0} failed on the GPU ({1}) and now runs on the CPU.</value>
+  </data>
+  <data name="GpuFallbackLoad" xml:space="preserve">
+    <value>{0} could not be loaded on the GPU ({1}) and runs on the CPU.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generate relief</value>
   </data>

@@ -393,6 +393,18 @@
   <data name="QualityLightTip" xml:space="preserve">
     <value>INT8 编码器：下载量为四分之一，内存约少 1 GB，但形状明显更粗糙。</value>
   </data>
+  <data name="ProviderNoDirectML" xml:space="preserve">
+    <value>此版本没有 DirectML，因此使用 CPU。</value>
+  </data>
+  <data name="ProviderNoDirectMLChosen" xml:space="preserve">
+    <value>已选择 DirectML，但此版本没有，因此使用 CPU。</value>
+  </data>
+  <data name="GpuFallbackRun" xml:space="preserve">
+    <value>{0} 在 GPU 上失败（{1}），现在改在 CPU 上运行。</value>
+  </data>
+  <data name="GpuFallbackLoad" xml:space="preserve">
+    <value>{0} 无法加载到 GPU（{1}），改在 CPU 上运行。</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>生成浮雕</value>
   </data>

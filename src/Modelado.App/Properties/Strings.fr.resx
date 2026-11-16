@@ -393,6 +393,18 @@
   <data name="QualityLightTip" xml:space="preserve">
     <value>L'encodeur INT8 : un quart du téléchargement et environ 1 Go de mémoire en moins, mais des formes visiblement plus grossières.</value>
   </data>
+  <data name="ProviderNoDirectML" xml:space="preserve">
+    <value>Cette version n'a pas DirectML, le CPU est donc utilisé.</value>
+  </data>
+  <data name="ProviderNoDirectMLChosen" xml:space="preserve">
+    <value>DirectML a été choisi, mais cette version ne l'a pas, le CPU est donc utilisé.</value>
+  </data>
+  <data name="GpuFallbackRun" xml:space="preserve">
+    <value>{0} a échoué sur le GPU ({1}) et tourne maintenant sur le CPU.</value>
+  </data>
+  <data name="GpuFallbackLoad" xml:space="preserve">
+    <value>{0} n'a pas pu être chargé sur le GPU ({1}) et tourne sur le CPU.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Générer le relief</value>
   </data>

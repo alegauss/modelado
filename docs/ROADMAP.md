@@ -37,7 +37,7 @@
 
 ## Block K — Translated interface
 
-- 📋 **MOD134** (deps: MOD85 ✅) **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Budget notes, cloud job titles, the provider chip and its fallback reason stay English beside translated text. → §MOD134
+- ⏳ **MOD134** (deps: MOD85 ✅) **The window shows sentences the libraries compose in English, which no translation of Strings.resx reaches** — Still to come: Cloud's budget note, job titles and key checks, and MeshImport's baked-texture notice, as data the window words. → §MOD134
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
@@ -146,5 +146,12 @@
   publishes triposr-encoder int8, the embedded manifest lists it, and Light on a
   CPU-only PC downloads 433 MB and runs it; the README and the site state its size and
   time.
+
+## Done when — MOD134
+
+- **No library sentence shows untranslated on consent lines, History or About** Cloud
+  budget notes, job titles, key checks and MeshImport's notice come from Strings.resx
+  under every language, a test finds none of the libraries' English there, and the CLI's
+  output is unchanged.
 
 ## Non-goals

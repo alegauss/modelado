@@ -393,6 +393,18 @@
   <data name="QualityLightTip" xml:space="preserve">
     <value>El codificador INT8: una cuarta parte de la descarga y cerca de 1 GB menos de memoria, pero formas visiblemente más toscas.</value>
   </data>
+  <data name="ProviderNoDirectML" xml:space="preserve">
+    <value>Esta versión no tiene DirectML, así que se usa la CPU.</value>
+  </data>
+  <data name="ProviderNoDirectMLChosen" xml:space="preserve">
+    <value>Se eligió DirectML, pero esta versión no lo tiene, así que se usa la CPU.</value>
+  </data>
+  <data name="GpuFallbackRun" xml:space="preserve">
+    <value>{0} falló en la GPU ({1}) y ahora se ejecuta en la CPU.</value>
+  </data>
+  <data name="GpuFallbackLoad" xml:space="preserve">
+    <value>{0} no se pudo cargar en la GPU ({1}) y se ejecuta en la CPU.</value>
+  </data>
   <data name="ReliefButton" xml:space="preserve">
     <value>Generar relieve</value>
   </data>
