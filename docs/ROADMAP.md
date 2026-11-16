@@ -19,7 +19,6 @@
 - 📋 **MOD123** (deps: MOD122) **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model with conditions needs informed consent and a guided login, which a Download button that just fetches files cannot give. → §MOD123
 - 📋 **MOD125** (deps: MOD122) **The licence gate accepts only permissive licences, so a model under the Stability licence cannot be published** — The SF3D and SPAR3D decision of 12/11/2026 needs a licence class with conditions, recorded per model, instead of a yes-or-no list. → §MOD125
 - 📋 **MOD126** (deps: MOD125) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
-- 📋 **MOD148** (deps: —) **add_model.py fails now and then when Windows briefly holds the staging folder it renames into place** — The gate went red once on it in MOD127 with WinError 5 and passed on three reruns, so it can redden any task's gate. → §MOD148
 
 ## Block E — Publishing custom models to Hugging Face
 

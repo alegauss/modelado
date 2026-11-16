@@ -55,6 +55,7 @@
 - ✅ **MOD20** **The embedded models-manifest.json lists no models, so the app cannot download any model and no operation can run** — Five models are on alegauss/modelado-models, pinned to their upload commit; a clean guest fetched all ten files by SHA-256 and ran 3D Object, Relief and upscale on the robot photo.
 - ✅ **MOD97** **About lists only the models already downloaded, so a missing or removed model vanishes instead of showing as missing** — About lists every model the operations and sources use, a missing one with what uses it and a Download, and Download everything names its count and size.
 - ✅ **MOD124** **A model over 2 GB cannot be published or downloaded: the manifest and downloader ignore ONNX external data** — A model's ONNX external data is listed with the graph, staged and verified by the publishing scripts, fetched and verified before it by the app, and runs.
+- ✅ **MOD148** **add_model.py fails now and then when Windows briefly holds the staging folder it renames into place** — add_model.py retries the staging rename on PermissionError with a growing pause and names both folders when it gives up, tested both ways.
 
 ## Block E — Publishing custom models to Hugging Face
 

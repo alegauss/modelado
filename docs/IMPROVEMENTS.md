@@ -183,24 +183,6 @@ and the README and the Store listing say which optional models carry conditions.
 Done when a result made with a Stability model shows the notice in the window and in its
 exported file metadata, and no notice appears for permissive models.
 
-### §MOD148 A rename add_model.py retries
-
-`scripts/add_model.py` builds a model folder as `.<name>.adding` and renames it into
-place (`staging.rename(folder)`, line 214). On 16/11/2026, during MOD127's gate on the
-host, `test_add_model.AddTests.test_the_folder_is_what_build_manifest_publishes` failed
-once with `PermissionError: [WinError 5]` on that rename under `%TEMP%`, and passed on
-three reruns right after. A folder whose files were just written is often held for a
-moment on Windows (Defender, the search indexer), and `os.rename` of a directory fails
-while any handle is open.
-
-Retry the rename a few times with a short pause (for example 5 tries, 0.2 s doubling) on
-`PermissionError` only, then raise with the folder named, as the downloader already
-retries a transient failure. A test can stand in a rename that fails twice and then
-succeeds.
-
-Done when the retry is in and tested, and a full Python run under the gate no longer
-fails on it.
-
 ## Block E — Publishing custom models to Hugging Face
 
 ## Block F — Installer, releases and auto update

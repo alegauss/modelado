@@ -9,6 +9,7 @@ import json
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -206,3 +207,35 @@ class OnnxTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RenameRetryTests(unittest.TestCase):
+    """MOD148: a folder Windows holds for a moment after it was written is renamed on a later try."""
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        (self.root / ".x.adding").mkdir()
+
+    def test_a_rename_refused_twice_then_allowed_succeeds_with_growing_pauses(self):
+        pauses, real = [], Path.rename
+        refusals = iter([True, True])
+
+        def flaky(path, target):
+            if next(refusals, False):
+                raise PermissionError("[WinError 5] Access is denied")
+            return real(path, target)
+
+        with unittest.mock.patch.object(Path, "rename", flaky):
+            am.rename_retrying(self.root / ".x.adding", self.root / "x", sleep=pauses.append)
+        self.assertTrue((self.root / "x").is_dir())
+        self.assertEqual([0.2, 0.4], pauses)
+
+    def test_a_rename_refused_every_time_names_both_folders(self):
+        def refused(path, target):
+            raise PermissionError("[WinError 5] Access is denied")
+
+        with unittest.mock.patch.object(Path, "rename", refused):
+            with self.assertRaisesRegex(PermissionError, r"\.x\.adding could not be renamed to .*x after 3 tries"):
+                am.rename_retrying(self.root / ".x.adding", self.root / "x", tries=3, sleep=lambda _: None)

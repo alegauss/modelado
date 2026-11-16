@@ -31,6 +31,7 @@ import json
 import re
 import shutil
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -211,8 +212,26 @@ def add(
     (staging / "meta.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8", newline="\n")
     if folder.exists():
         shutil.rmtree(folder)
-    staging.rename(folder)
+    rename_retrying(staging, folder)
     return meta
+
+
+def rename_retrying(source: Path, target: Path, tries: int = 5, pause: float = 0.2, sleep=time.sleep) -> None:
+    """MOD148: renames a folder whose files were just written, which Windows may hold for a moment.
+
+    Defender or the search indexer can keep a handle open on a fresh folder, and renaming a
+    directory fails while one is; so a PermissionError is tried again, the pause doubling, before
+    it is raised with both folders named.
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            source.rename(target)
+            return
+        except PermissionError as error:
+            if attempt == tries:
+                raise PermissionError(f"{source} could not be renamed to {target} after {tries} tries: {error}") from error
+            sleep(pause)
+            pause *= 2
 
 
 def main(argv: list[str] | None = None) -> int:
