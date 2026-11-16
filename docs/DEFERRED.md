@@ -32,6 +32,7 @@
 ## Block J — Local model quality: past TripoSR
 
 - ⏸ **MOD80** (deps: —) **TripoSG has no ONNX export and has never been measured against TripoSR on the test photos** — set aside (Needs a go-ahead for 7.5 GB and a GPU session): It is the one newer open model that passes the licence rule, and only a measured run says whether it fits 8 GB and beats TripoSR. → §MOD80
+- ⏸ **MOD128** (deps: MOD127 ✅) **The relief uses Depth Anything V2 Small, the only V2 size with a commercial licence, far below Large quality** — set aside (Needs a go-ahead for DA3 weights): Depth Anything 3 Mono Large is Apache-2.0 with a community ONNX export, so a large-class relief model is now allowed. → §MOD128
 
 ## Block K — Translated interface
 
