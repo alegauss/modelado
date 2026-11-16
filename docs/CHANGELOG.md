@@ -61,6 +61,7 @@
 - ✅ **MOD148** **add_model.py fails now and then when Windows briefly holds the staging folder it renames into place** — add_model.py retries the staging rename on PermissionError with a growing pause and names both folders when it gives up, tested both ways.
 - ✅ **MOD122** **Only freely downloadable models can be offered; one behind a licence click, login or registration cannot be fetched** — docs/model-downloads.md records how gated files answer (401, 403, 200), what the form asks, and that Modelado may publish the ONNX export, so users need no login.
 - ✅ **MOD123** **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model whose manifest entry has conditions shows them plainly and downloads only once agreed to; the agreement is kept per licence text, and a permissive model stays one click.
+- ✅ **MOD125** **The licence gate accepts only permissive licences, so a model under the Stability licence cannot be published** — The manifest carries a licence class; a Stability-licensed model passes with its conditions, and CC-BY-NC or region-excluding licences are refused with why, with tests.
 
 ## Block E — Publishing custom models to Hugging Face
 

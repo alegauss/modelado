@@ -61,23 +61,6 @@ MOD97 land inside these pages, whichever ships first.
 
 ## Block D — Model downloads
 
-### §MOD125 Licences with conditions
-
-build_manifest.py and publish_models.py accept only MIT, Apache-2.0, BSD-2-Clause,
-BSD-3-Clause and CC-BY-4.0. On 12/11/2026 the author accepted the Stability AI Community
-License for SF3D and SPAR3D: commercial use allowed under US$1M annual revenue,
-registration, a Powered by Stability AI notice, and no training of other foundation
-models on the outputs.
-
-The manifest gains a licence class (permissive, or with conditions) and the conditions a
-model carries (attribution text, registration URL, revenue cap, use restrictions), which
-the download wizard shows and the attribution in the window uses. The gate accepts
-listed conditional licences and still refuses non-commercial ones (CC-BY-NC) and
-regional exclusions (Hunyuan3D).
-
-Done when the manifest can carry a Stability-licensed model with its conditions and the
-gate refuses a CC-BY-NC one, with tests.
-
 ### §MOD126 Attribution for conditional models
 
 The Stability AI Community License requires a Powered by Stability AI notice. Modelado

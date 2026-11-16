@@ -31,6 +31,28 @@ MANIFEST_SCHEMA = 1
 # CC BY-NC 4.0, are what this refuses: model-sources.json says why only Small is used.
 REDISTRIBUTABLE = ("MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0")
 
+# MOD125: licenses with conditions the author accepted, each with what it asks in plain words,
+# which a model under it carries in the manifest (its meta.json's upstream.conditions, or these),
+# for the download's consent (MOD123) and the attribution in the window (MOD126). The Stability AI
+# Community License was accepted for SF3D and SPAR3D on 12/11/2026 (docs/model-downloads.md).
+CONDITIONAL = {
+    "LicenseRef-Stability-AI-Community": {
+        "summary": (
+            "Free for research, personal use and organisations under US $1M a year in revenue; above that it needs an "
+            "enterprise license. Its outputs may not be used to train another foundation model."
+        ),
+        "attribution": "Powered by Stability AI",
+        "register_url": "https://stability.ai/community-license",
+    },
+}
+
+# MOD125: licenses refused by name, with why, so the refusal says more than "not listed".
+REFUSED = {
+    "CC-BY-NC-4.0": "it forbids commercial use",
+    "CC-BY-NC-SA-4.0": "it forbids commercial use",
+    "LicenseRef-Tencent-Hunyuan-Community": "it excludes the European Union, the United Kingdom and South Korea",
+}
+
 
 class ManifestError(Exception):
     """A model folder is not ready to publish."""
@@ -63,11 +85,21 @@ def check_licenses(metas, allowed: set[str]) -> None:
     """Refuse the first model a public repository may not carry, naming it and its license."""
     for meta in metas:
         license_text = meta["upstream"]["license"]
-        if not redistributable(license_text, allowed):
+        if not redistributable(license_text, allowed | set(CONDITIONAL)):
+            why = next((reason for name, reason in REFUSED.items() if name in license_text), None)
             raise ManifestError(
-                f"{meta['name']}: its license, {license_text}, is not one a public repository may carry "
-                f"({', '.join(REDISTRIBUTABLE)}); if this one allows it, pass --allow-license \"{license_text}\" --reason \"<why>\""
+                f"{meta['name']}: its license, {license_text}, is not one a public repository may carry"
+                + (f": {why}" if why else f" ({', '.join(REDISTRIBUTABLE + tuple(CONDITIONAL))})")
+                + f"; if this one allows it, pass --allow-license \"{license_text}\" --reason \"<why>\""
             )
+
+
+def conditions_of(meta: dict) -> dict | None:
+    """MOD125: the conditions a model carries, its meta.json's own or its conditional license's; none when permissive."""
+    if "conditions" in meta["upstream"]:
+        return meta["upstream"]["conditions"]
+    license_text = meta["upstream"]["license"]
+    return next((terms for name, terms in CONDITIONAL.items() if name in license_text), None)
 
 
 def build(
@@ -137,9 +169,12 @@ def build(
                 "license_url": meta["upstream"]["license_url"],
             }
         )
-        # MOD123: a license's conditions in plain words, which the app asks the person to agree to.
-        if "conditions" in meta["upstream"]:
-            entries[-1]["conditions"] = meta["upstream"]["conditions"]
+        # MOD123, MOD125: a license's class, and its conditions in plain words, which the app asks the
+        # person to agree to.
+        conditions = conditions_of(meta)
+        entries[-1]["license_class"] = "permissive" if conditions is None else "conditions"
+        if conditions is not None:
+            entries[-1]["conditions"] = conditions
     manifest = {"schema": MANIFEST_SCHEMA, "version": version, "base_url": base, "models": entries}
     (stage / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return manifest

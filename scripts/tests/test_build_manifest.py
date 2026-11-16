@@ -128,6 +128,25 @@ class LicenseGateTests(unittest.TestCase):
         manifest = bm.build(self.models, self.stage, "https://host", "1", allow={"CC-BY-NC-4.0": "the author granted it in writing"})
         self.assertEqual(["depth-anything-v2-base", "tiny"], [m["name"] for m in manifest["models"]])
 
+    def test_a_stability_licensed_model_is_carried_with_its_conditions(self):
+        # MOD125: the license accepted for SF3D and SPAR3D on 12/11/2026, its terms filled in.
+        write_model(self.models, "sf3d", {"fp32": b"sf3d"}, license_id="LicenseRef-Stability-AI-Community")
+        models = {m["name"]: m for m in bm.build(self.models, self.stage, "https://host", "1", only=["tiny", "sf3d"])["models"]}
+
+        self.assertEqual("conditions", models["sf3d"]["license_class"])
+        self.assertEqual("Powered by Stability AI", models["sf3d"]["conditions"]["attribution"])
+        self.assertEqual("https://stability.ai/community-license", models["sf3d"]["conditions"]["register_url"])
+        self.assertIn("US $1M", models["sf3d"]["conditions"]["summary"])
+        self.assertEqual("permissive", models["tiny"]["license_class"])
+        self.assertNotIn("conditions", models["tiny"])
+
+    def test_non_commercial_and_regional_licenses_are_refused_with_why(self):
+        write_model(self.models, "hunyuan3d", {"fp32": b"h"}, license_id="LicenseRef-Tencent-Hunyuan-Community")
+        with self.assertRaisesRegex(bm.ManifestError, "CC-BY-NC-4.0, is not one a public repository may carry: it forbids commercial use"):
+            bm.build(self.models, self.stage, "https://host", "1", only=["depth-anything-v2-base"])
+        with self.assertRaisesRegex(bm.ManifestError, "hunyuan3d: .*excludes the European Union"):
+            bm.build(self.models, self.stage, "https://host", "1", only=["hunyuan3d"])
+
     def test_every_built_in_license_passes(self):
         manifest = json.loads((bm.REPO / "src" / "Modelado.Inference" / "models-manifest.json").read_text(encoding="utf-8"))
         for model in manifest["models"]:

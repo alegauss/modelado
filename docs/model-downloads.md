@@ -52,6 +52,20 @@ Someone who receives the model inside an integrated end-user product is outside 
 the commercial terms. A Modelado user therefore needs no Hugging Face account, no token and no
 Stability registration when the ONNX comes from Modelado's own models repository.
 
+## Licence classes
+
+`scripts/build_manifest.py` (MOD125) gives every manifest entry a `license_class`:
+
+- `permissive`: MIT, Apache-2.0, BSD or CC-BY-4.0, published as they are.
+- `conditions`: a licence the author accepted that sets terms, listed in `CONDITIONAL`.
+
+A model under a conditional licence carries `conditions` (a summary, the attribution it requires,
+where a commercial user registers): its meta.json's `upstream.conditions`, or the licence's own
+in `CONDITIONAL`. The Stability AI Community License is listed there, as
+`LicenseRef-Stability-AI-Community`. Any other licence is refused before anything is staged. A
+non-commercial one (CC-BY-NC) or one that excludes regions (Tencent's Hunyuan licence) is refused
+with the reason, unless `--allow-license` names it with a `--reason`.
+
 ## The flow this points to
 
 1. **Publishing.** Modelado's maintainer agrees to the form once, on the account that
