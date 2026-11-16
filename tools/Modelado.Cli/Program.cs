@@ -354,6 +354,11 @@ void Save(Mesh mesh, string output, Stopwatch total)
     report["vertices"] = mesh.VertexCount;
     report["triangles"] = mesh.TriangleCount;
     report["seconds"] = Math.Round(total.Elapsed.TotalSeconds, 3);
+
+    // MOD118: the most memory the run held at once, which the README's requirements are measured by.
+    long peak = Process.GetCurrentProcess().PeakWorkingSet64;
+    report["peakWorkingSetMb"] = peak / (1 << 20);
+    Console.WriteLine($"peak memory {peak / (1 << 20):N0} MB");
     if (Get("--preview", null) is { } preview)
     {
         // The function the window's Save view as image calls too (MOD19).

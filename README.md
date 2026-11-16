@@ -111,8 +111,9 @@ starts Blender with the model shown imported into an empty scene.
 - **A DirectX 12 GPU** to run on the graphics card through DirectML (NVIDIA, AMD or Intel).
   Without one everything runs on the CPU, more slowly; if a model fails on the GPU (out of video
   memory, for example) it is run again on the CPU and the status bar says so.
-- **Memory:** TripoSR's encoder is the heavy model: 0.8 GB in FP16 (the GPU default) or 1.7 GB
-  in FP32. Allow about 4 GB of free RAM or video memory for 3D Object.
+- **Memory:** 3D Object is the heavy one. Measured peaks (below): about 4.2 GB of RAM on the CPU
+  (4.5 GB at high quality); on a GPU, 1.8 GB of RAM and 2.5 GB of video memory at standard
+  quality, and 4.6 GB of RAM with 3.2 GB of video memory at high. Relief stays under 1 GB.
 - **Disk:** 3D Object downloads about 1.0 GB of models on a GPU at standard quality and 1.85 GB
   on the CPU or at high quality, since those always take the full-precision encoder. Relief takes
   50 MB on a GPU or 99 MB on the CPU (176 MB more for Object only), and Real-ESRGAN 34 or 67 MB,
@@ -431,6 +432,18 @@ Times measured on the CPU (4 cores, no GPU), with the FP32 models:
 | --- | --- | --: |
 | 3D Object, grid 256 | cut-out 2.4 s · encoder 30.6 s (including loading 1.7 GB) · density 4.4 s · surface 0.6 s | 38 s |
 | Relief, grid 256 | depth 1.3 s · mesh 0.2 s | 2.2 s |
+
+Peak memory, measured with `build\measure-memory.ps1` (MOD118) on the robot photo: the CLI's peak
+working set, and the GPU memory Windows' counters gave its process (dedicated is video memory,
+shared is system memory the GPU maps), on an Intel Core i7-14700 with an NVIDIA GeForce RTX 4060
+(8 GB):
+
+| Operation | CPU: RAM | DirectML: RAM | DirectML: video memory | DirectML: shared |
+| --- | --: | --: | --: | --: |
+| 3D Object, grid 256 | 4.2 GB | 1.8 GB | 2.5 GB | 1.0 GB |
+| 3D Object, High, grid 384 | 4.5 GB | 4.6 GB | 3.2 GB | 3.3 GB |
+| Relief, grid 256 | 0.3 GB | 0.4 GB | not sampled (under 1 s) | not sampled |
+| Relief, Object only, grid 512 | 0.8 GB | 0.6 GB | 0.6 GB | 0.3 GB |
 
 ## Model licences
 

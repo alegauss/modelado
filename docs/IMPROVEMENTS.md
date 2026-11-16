@@ -682,19 +682,6 @@ in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
-### §MOD118 Measure memory
-
-The README gives about 4 GB of free RAM or video memory, from the encoder sizes; no peak
-has been measured, for 3D Object, Relief, or the editing steps, on the CPU or through
-DirectML.
-
-Measure peak working set and dedicated and shared GPU memory for each pipeline at each
-grid and quality, on the CPU and on DirectML, and record them in the README and the
-speed table.
-
-Done when every pipeline at its default and highest setting has a measured peak on both
-paths, written beside its time.
-
 ### §MOD120 DirectML choice and the CPU fallback
 
 ExecutionProviders.cs line 11 says that choosing DirectML makes a GPU failure an error,

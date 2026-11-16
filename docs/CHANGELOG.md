@@ -152,3 +152,4 @@
 ## Block M — The CPU and integrated-GPU path
 
 - ✅ **MOD117** **The README promises a 1.1 GB download, which is wrong for a CPU-only PC, where it is about 1.85 GB** — The README and the site's model list state each download per path: 1.0 GB for 3D Object on a GPU, 1.85 GB on the CPU or at High, as the prompt already sized it.
+- ✅ **MOD118** **No run has ever measured peak RAM or video memory, so the about 4 GB requirement is a guess** — build\measure-memory.ps1 measured each pipeline's peak RAM and GPU memory on the CPU and DirectML, now in the README; the CLI reports its own peak.
