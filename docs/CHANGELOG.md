@@ -32,6 +32,7 @@
 - ✅ **MOD138** **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — Relief and Cloud 3D fold their depth model, resolution, cut-out, texture, PBR and quads into a closed Advanced; window and live cases open it first.
 - ✅ **MOD140** **Ticking Object only or Enhance through UI Automation leaves the card's download size and rail dot stale** — Object only and Enhance follow Checked and Unchecked, so a toggle through UI Automation updates the cards' download size and rail dot, as a case shows.
 - ✅ **MOD151** **The Linux workflow fails every push at the build: the WPF markup pass cannot find the generated Strings class** — The Linux workflow builds and passes again: the Strings class sits where both WPF builds look, and the numpy test skips on a bare runner.
+- ✅ **MOD152** **With nothing open, someone with no photo to hand cannot try what the site shows without finding one first** — The drop zone offers the site's six examples, each opening on the card the site shows for it and kept out of Recent (design recorded in `src/Modelado.App/MainWindow.Samples.cs`).
 
 ## Block C — Existing code wired into the window
 

@@ -1761,4 +1761,43 @@
   <data name="DownloadModelName" xml:space="preserve">
     <value>Download {0}</value>
   </data>
+  <data name="SamplesTitle" xml:space="preserve">
+    <value>Try an example</value>
+  </data>
+  <data name="SampleChair" xml:space="preserve">
+    <value>Chair</value>
+  </data>
+  <data name="SampleBurger" xml:space="preserve">
+    <value>Burger</value>
+  </data>
+  <data name="SampleBust" xml:space="preserve">
+    <value>Bust</value>
+  </data>
+  <data name="SampleCathedral" xml:space="preserve">
+    <value>Cathedral</value>
+  </data>
+  <data name="SampleCanyon" xml:space="preserve">
+    <value>Canyon</value>
+  </data>
+  <data name="SampleChairModel" xml:space="preserve">
+    <value>Chair model</value>
+  </data>
+  <data name="SampleTip" xml:space="preserve">
+    <value>Opens with {0}. {1}</value>
+  </data>
+  <data name="SampleCreditTripoSR" xml:space="preserve">
+    <value>Photo: TripoSR's examples, MIT licence.</value>
+  </data>
+  <data name="SampleCreditBust" xml:space="preserve">
+    <value>Marble bust of Herodotus, The Metropolitan Museum of Art, CC0.</value>
+  </data>
+  <data name="SampleCreditCathedral" xml:space="preserve">
+    <value>Syracuse Cathedral's façade, Julian Lupyan, CC0.</value>
+  </data>
+  <data name="SampleCreditCanyon" xml:space="preserve">
+    <value>Grand Canyon from the South Rim, Vulturesong, CC0.</value>
+  </data>
+  <data name="SampleCreditModel" xml:space="preserve">
+    <value>The 3D model Modelado made from the chair photo.</value>
+  </data>
 </root>

@@ -139,6 +139,11 @@
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0" />
             <Button x:Name="OpenButton" AutomationProperties.AutomationId="OpenButton" Content="{x:Static p:Strings.OpenButton}" Command="Open"
                     Style="{DynamicResource AccentButtonStyle}" HorizontalAlignment="Center" Padding="24,8" Margin="0,14,0,0" />
+            <!-- MOD152: the inputs the site demonstrates, shipped beside the exe; each opens like a drop. -->
+            <StackPanel x:Name="SamplesPanel" Margin="0,16,0,0" Visibility="Collapsed">
+              <TextBlock Text="{x:Static p:Strings.SamplesTitle}" Style="{StaticResource FieldLabel}" />
+              <WrapPanel x:Name="SamplesStrip" AutomationProperties.AutomationId="SamplesStrip" Margin="0,4,0,0" />
+            </StackPanel>
             <!-- MOD95: the latest photos a service drew, kept in Pictures\Modelado; each opens like a drop. -->
             <StackPanel x:Name="GeneratedPanel" Margin="0,16,0,0" Visibility="Collapsed">
               <DockPanel>

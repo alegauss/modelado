@@ -1761,4 +1761,43 @@ Modelos 3D: {1}</value>
   <data name="DownloadModelName" xml:space="preserve">
     <value>Descargar {0}</value>
   </data>
+  <data name="SamplesTitle" xml:space="preserve">
+    <value>Prueba un ejemplo</value>
+  </data>
+  <data name="SampleChair" xml:space="preserve">
+    <value>Silla</value>
+  </data>
+  <data name="SampleBurger" xml:space="preserve">
+    <value>Hamburguesa</value>
+  </data>
+  <data name="SampleBust" xml:space="preserve">
+    <value>Busto</value>
+  </data>
+  <data name="SampleCathedral" xml:space="preserve">
+    <value>Catedral</value>
+  </data>
+  <data name="SampleCanyon" xml:space="preserve">
+    <value>Cañón</value>
+  </data>
+  <data name="SampleChairModel" xml:space="preserve">
+    <value>Modelo de la silla</value>
+  </data>
+  <data name="SampleTip" xml:space="preserve">
+    <value>Se abre con {0}. {1}</value>
+  </data>
+  <data name="SampleCreditTripoSR" xml:space="preserve">
+    <value>Foto: ejemplos de TripoSR, licencia MIT.</value>
+  </data>
+  <data name="SampleCreditBust" xml:space="preserve">
+    <value>Busto de mármol de Heródoto, The Metropolitan Museum of Art, CC0.</value>
+  </data>
+  <data name="SampleCreditCathedral" xml:space="preserve">
+    <value>Fachada de la catedral de Siracusa, Julian Lupyan, CC0.</value>
+  </data>
+  <data name="SampleCreditCanyon" xml:space="preserve">
+    <value>El Gran Cañón desde el borde sur, Vulturesong, CC0.</value>
+  </data>
+  <data name="SampleCreditModel" xml:space="preserve">
+    <value>El modelo 3D que Modelado hizo con la foto de la silla.</value>
+  </data>
 </root>

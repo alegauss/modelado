@@ -1761,4 +1761,43 @@
   <data name="DownloadModelName" xml:space="preserve">
     <value>下载 {0}</value>
   </data>
+  <data name="SamplesTitle" xml:space="preserve">
+    <value>试试示例</value>
+  </data>
+  <data name="SampleChair" xml:space="preserve">
+    <value>椅子</value>
+  </data>
+  <data name="SampleBurger" xml:space="preserve">
+    <value>汉堡</value>
+  </data>
+  <data name="SampleBust" xml:space="preserve">
+    <value>半身像</value>
+  </data>
+  <data name="SampleCathedral" xml:space="preserve">
+    <value>大教堂</value>
+  </data>
+  <data name="SampleCanyon" xml:space="preserve">
+    <value>峡谷</value>
+  </data>
+  <data name="SampleChairModel" xml:space="preserve">
+    <value>椅子模型</value>
+  </data>
+  <data name="SampleTip" xml:space="preserve">
+    <value>用{0}打开。{1}</value>
+  </data>
+  <data name="SampleCreditTripoSR" xml:space="preserve">
+    <value>照片：TripoSR 的示例，MIT 许可证。</value>
+  </data>
+  <data name="SampleCreditBust" xml:space="preserve">
+    <value>希罗多德大理石半身像，大都会艺术博物馆，CC0。</value>
+  </data>
+  <data name="SampleCreditCathedral" xml:space="preserve">
+    <value>锡拉库萨大教堂的立面，Julian Lupyan，CC0。</value>
+  </data>
+  <data name="SampleCreditCanyon" xml:space="preserve">
+    <value>从南缘看大峡谷，Vulturesong，CC0。</value>
+  </data>
+  <data name="SampleCreditModel" xml:space="preserve">
+    <value>Modelado 用椅子照片制作的 3D 模型。</value>
+  </data>
 </root>

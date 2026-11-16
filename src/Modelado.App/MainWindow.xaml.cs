@@ -56,6 +56,7 @@ public partial class MainWindow : Window, IDisposable
         WrapCards();
         FillRecent();
         FillGenerated();
+        FillSamples();
 
         // The toolbar's glyphs on the Ghost template, which dims a command that cannot run (MOD5).
         foreach (Button button in EditorToolbar.Items.OfType<Button>().Append(ResetViewButton).Append(SaveViewButton))

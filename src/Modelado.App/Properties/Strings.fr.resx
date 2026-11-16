@@ -1761,4 +1761,43 @@ Modèles 3D : {1}</value>
   <data name="DownloadModelName" xml:space="preserve">
     <value>Télécharger {0}</value>
   </data>
+  <data name="SamplesTitle" xml:space="preserve">
+    <value>Essayer un exemple</value>
+  </data>
+  <data name="SampleChair" xml:space="preserve">
+    <value>Chaise</value>
+  </data>
+  <data name="SampleBurger" xml:space="preserve">
+    <value>Burger</value>
+  </data>
+  <data name="SampleBust" xml:space="preserve">
+    <value>Buste</value>
+  </data>
+  <data name="SampleCathedral" xml:space="preserve">
+    <value>Cathédrale</value>
+  </data>
+  <data name="SampleCanyon" xml:space="preserve">
+    <value>Canyon</value>
+  </data>
+  <data name="SampleChairModel" xml:space="preserve">
+    <value>Modèle de la chaise</value>
+  </data>
+  <data name="SampleTip" xml:space="preserve">
+    <value>S'ouvre avec {0}. {1}</value>
+  </data>
+  <data name="SampleCreditTripoSR" xml:space="preserve">
+    <value>Photo : exemples de TripoSR, licence MIT.</value>
+  </data>
+  <data name="SampleCreditBust" xml:space="preserve">
+    <value>Buste en marbre d'Hérodote, The Metropolitan Museum of Art, CC0.</value>
+  </data>
+  <data name="SampleCreditCathedral" xml:space="preserve">
+    <value>Façade de la cathédrale de Syracuse, Julian Lupyan, CC0.</value>
+  </data>
+  <data name="SampleCreditCanyon" xml:space="preserve">
+    <value>Le Grand Canyon depuis la rive sud, Vulturesong, CC0.</value>
+  </data>
+  <data name="SampleCreditModel" xml:space="preserve">
+    <value>Le modèle 3D que Modelado a fait à partir de la photo de la chaise.</value>
+  </data>
 </root>

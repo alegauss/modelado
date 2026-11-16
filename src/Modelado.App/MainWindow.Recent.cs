@@ -102,6 +102,11 @@ public partial class MainWindow
     // never the open or the save.
     private static void Remember(string file)
     {
+        if (IsSample(file))
+        {
+            return;
+        }
+
         try
         {
             RecentFiles.Add(SettingsFile.DefaultPath, file);

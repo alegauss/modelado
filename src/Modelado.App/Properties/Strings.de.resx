@@ -1761,4 +1761,43 @@
   <data name="DownloadModelName" xml:space="preserve">
     <value>{0} herunterladen</value>
   </data>
+  <data name="SamplesTitle" xml:space="preserve">
+    <value>Ein Beispiel ausprobieren</value>
+  </data>
+  <data name="SampleChair" xml:space="preserve">
+    <value>Stuhl</value>
+  </data>
+  <data name="SampleBurger" xml:space="preserve">
+    <value>Burger</value>
+  </data>
+  <data name="SampleBust" xml:space="preserve">
+    <value>Büste</value>
+  </data>
+  <data name="SampleCathedral" xml:space="preserve">
+    <value>Kathedrale</value>
+  </data>
+  <data name="SampleCanyon" xml:space="preserve">
+    <value>Canyon</value>
+  </data>
+  <data name="SampleChairModel" xml:space="preserve">
+    <value>Modell des Stuhls</value>
+  </data>
+  <data name="SampleTip" xml:space="preserve">
+    <value>Öffnet mit {0}. {1}</value>
+  </data>
+  <data name="SampleCreditTripoSR" xml:space="preserve">
+    <value>Foto: Beispiele von TripoSR, MIT-Lizenz.</value>
+  </data>
+  <data name="SampleCreditBust" xml:space="preserve">
+    <value>Marmorbüste des Herodot, The Metropolitan Museum of Art, CC0.</value>
+  </data>
+  <data name="SampleCreditCathedral" xml:space="preserve">
+    <value>Fassade der Kathedrale von Syrakus, Julian Lupyan, CC0.</value>
+  </data>
+  <data name="SampleCreditCanyon" xml:space="preserve">
+    <value>Der Grand Canyon vom Südrand, Vulturesong, CC0.</value>
+  </data>
+  <data name="SampleCreditModel" xml:space="preserve">
+    <value>Das 3D-Modell, das Modelado aus dem Foto des Stuhls gemacht hat.</value>
+  </data>
 </root>

@@ -1,0 +1,49 @@
+Modelado example files
+
+The examples on Modelado's start screen are the inputs its site demonstrates.
+
+chair.png, burger.png
+  From TripoSR's examples:
+  https://github.com/VAST-AI-Research/TripoSR/tree/107cefdc244c39106fa830359024f6a2f1c78871/examples
+  Licensed under the MIT licence below.
+
+chair.glb
+  The model Modelado made from chair.png (modelado-cli object --resolution 320, then
+  edit --simplify 0.35).
+
+bust.jpg
+  Marble bust of Herodotus, The Metropolitan Museum of Art, CC0.
+  https://commons.wikimedia.org/wiki/File:Marble_bust_of_Herodotos_MET_DT11742_(cropped).jpg
+
+cathedral.jpg
+  Syracuse Cathedral's facade, Julian Lupyan, CC0.
+  https://commons.wikimedia.org/wiki/File:Statue_of_Saint_Paul_by_Ignazio_Marabitti_and_Syracuse_Cathedral%27s_Baroque_Facade.jpg
+
+canyon.jpg
+  Grand Canyon from the South Rim, Vulturesong, CC0.
+  https://commons.wikimedia.org/wiki/File:Grand_Canyon_National_Park_-_HCP_-_September_29,_2022_-_052_-_Southern_Rim.jpg
+
+
+TripoSR's licence:
+
+MIT License
+
+Copyright (c) 2024 Tripo AI & Stability AI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

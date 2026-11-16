@@ -188,6 +188,14 @@
       "shareable": false
     },
     {
+      // MOD152: a first start with settings of its own, so an example opened is seen not to join Recent.
+      "name": "a first start, to try an example in",
+      "files": [{ "from": "cases/fixtures/settings-empty.json", "to": "Modelado/settings.json" }],
+      "arguments": ["--provider", "cpu", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       // MOD96: an Ideogram key set in the environment, as a user with IDEOGRAM_API_KEY has it.
       "name": "a window with an Ideogram key in the environment",
       "files": ["cases/fixtures/notes.txt"],
@@ -1960,6 +1968,27 @@
         { "locator": "MenuItem#RecentMenu-1", "act": "read", "reads": "name", "expect": "cube.obj", "named": "its menu lists the same files, newest first" },
         { "locator": "MenuItem#RecentMenu-2", "act": "invoke", "named": "the photo is chosen from it" },
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "and the photo is what is open" }
+      ]
+    },
+
+    {
+      "name": "the drop zone offers the site's examples, and the bust opens on the Relief card without joining Recent",
+      "catches": "examples missing from the build output, a strip that does not show them, an example that opens on the wrong card, or one added to the user's recent files",
+      "filed": "MOD152",
+      "tags": ["drop", "samples"],
+      "fixture": "a first start, to try an example in",
+      "steps": [
+        { "locator": "Button#Sample-chair", "act": "read", "reads": "name", "expect": "Chair", "named": "the chair photo is offered" },
+        { "locator": "Button#Sample-burger", "act": "read", "reads": "name", "expect": "Burger", "named": "the burger" },
+        { "locator": "Button#Sample-cathedral", "act": "read", "reads": "name", "expect": "Cathedral", "named": "the cathedral" },
+        { "locator": "Button#Sample-canyon", "act": "read", "reads": "name", "expect": "Canyon", "named": "the canyon" },
+        { "locator": "Button#Sample-chair-model", "act": "read", "reads": "name", "expect": "Chair model", "named": "and the chair's model, to edit" },
+        { "locator": "Button#Sample-bust", "act": "invoke", "named": "the bust is pressed" },
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^bust\\.jpg · ", "named": "it opens as a photo" },
+        { "locator": "ListItem#Rail-Relief", "act": "read", "reads": "selected", "expect": "selected", "named": "with the Relief card chosen, as the site shows it" },
+        { "locator": "Button#ReliefButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "ready to make the relief" },
+        { "locator": "Button#ToolbarRecent", "act": "invoke", "named": "the toolbar's Recent is opened" },
+        { "locator": "MenuItem#RecentMenu-None", "act": "read", "reads": "name", "expect": "Nothing opened yet", "named": "the example is not among the recent files" }
       ]
     },
 
