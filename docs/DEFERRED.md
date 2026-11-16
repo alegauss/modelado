@@ -34,6 +34,8 @@
 - ⏸ **MOD80** (deps: —) **TripoSG has no ONNX export and has never been measured against TripoSR on the test photos** — set aside (Needs a go-ahead for 7.5 GB and a GPU session): It is the one newer open model that passes the licence rule, and only a measured run says whether it fits 8 GB and beats TripoSR. → §MOD80
 - ⏸ **MOD128** (deps: MOD127 ✅) **The relief uses Depth Anything V2 Small, the only V2 size with a commercial licence, far below Large quality** — set aside (Needs a go-ahead for DA3 weights): Depth Anything 3 Mono Large is Apache-2.0 with a community ONNX export, so a large-class relief model is now allowed. → §MOD128
 - ⏸ **MOD129** (deps: MOD127 ✅) **MoGe-2 has not been compared as a relief depth model, though it has an official ONNX export and normals** — set aside (Needs a go-ahead for MoGe-2 files): MoGe-2 is MIT with ONNX files from its authors, so it may beat Depth Anything for reliefs without any export work. → §MOD129
+- ⏸ **MOD130** (deps: MOD123 ✅, MOD125 ✅, MOD126 ✅, MOD127 ✅) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — set aside (HF form.): SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
+- ⏸ **MOD131** (deps: MOD123 ✅, MOD125 ✅, MOD126 ✅, MOD127 ✅) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — set aside (HF form.): SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
 
 ## Block K — Translated interface
 
