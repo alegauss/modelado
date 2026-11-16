@@ -443,24 +443,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD142 Real fonts for relief text
-
-Text on a relief (MOD106) is drawn in a built-in stroke font in
-`src/Modelado.Geometry/ReliefText.cs`: capitals, digits and - . / ' on a 4 × 6 grid,
-stamped into the height grid as strokes. A name in lower case, a script face or a
-character outside that set cannot be written.
-
-Bundle one open font (OFL, its licence shipped beside it) and let the Relief card and
-the CLI's `--font` pick an installed one. Read glyph outlines from the TrueType file
-(quadratic curves flattened to polylines), fill them with an even-odd scan over the grid
-at the relief's cells per millimetre, and stamp the filled area exactly as the strokes
-are stamped today, so the relief stays one closed solid. The stroke font stays as the
-fallback and for text below about 3 mm, where filled outlines lose their counters.
-
-Done when a medallion with a lower-case name in the bundled font and one in an installed
-font both export as one closed mesh, and a character the chosen font lacks is refused in
-words before a run.
-
 ### §MOD143 Engraved text on reliefs
 
 `ReliefTextStamp` in `src/Modelado.Geometry/ReliefText.cs` (MOD106) only raises letters
@@ -523,6 +505,26 @@ output.
 
 Done when a test model with a 0.5 mm fin shows the fin red and nothing else at 1.2 mm,
 in the window and the CLI.
+
+### §MOD149 A bundled font for relief text
+
+Relief text can be drawn in an installed TrueType font (MOD142): `--font` on the CLI,
+and the Relief card's Font list, which reads the system and per-user font folders
+through `TrueTypeFont.FullName`. A machine whose fonts lack a script, or a print the
+user wants to reproduce on another machine, still has no font the app itself carries.
+
+Bundle one OFL font (a sans with Latin Extended, for example Noto Sans or Inter) under
+`src/Modelado.App/Fonts/` with its `OFL.txt` beside it, copied to the output and the
+MSIX. List it first on the Relief card's Font list, after the built-in capitals, and let
+the CLI take its name as well as a path for `--font`. Mention the licence in the About
+box's notices.
+
+This adds a third-party file the app redistributes, so it waits for the user's go-ahead,
+as the third-party model downloads (MOD128, MOD129) do.
+
+Done when the font and its licence ship in the build and the MSIX, the Relief card lists
+it first, and a case writes a lower-case name in it on a medallion with no font
+installed.
 
 ## Block M — The CPU and integrated-GPU path
 

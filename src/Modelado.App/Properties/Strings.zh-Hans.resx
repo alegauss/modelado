@@ -315,6 +315,15 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>文字只能包含字母、数字、空格或 - . / '，字母高度须大于 0 mm，且须放得下在边框以内的浮雕上。</value>
   </data>
+  <data name="ReliefTextFont" xml:space="preserve">
+    <value>字体</value>
+  </data>
+  <data name="ReliefTextFontBuiltIn" xml:space="preserve">
+    <value>内置大写字母</value>
+  </data>
+  <data name="ReliefTextFontLacks" xml:space="preserve">
+    <value>{1} 中没有“{0}”：请换一种字体或将其删去。</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>同时保存一个插槽支架</value>
   </data>

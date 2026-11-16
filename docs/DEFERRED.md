@@ -45,5 +45,7 @@
 
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
+- ⏸ **MOD149** (deps: MOD142 ✅) **Relief text has no font the app itself carries; only the fonts installed on the machine** — set aside (Awaits go-ahead to bundle a font.): A bundled OFL font with its licence would give every machine the same lettering, including one whose installed fonts lack a script. → §MOD149
+
 ## Block M — The CPU and integrated-GPU path
 

@@ -315,6 +315,15 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>O texto precisa de letras, dígitos, espaços ou - . / ', letras com mais de 0 mm e espaço no relevo dentro da moldura.</value>
   </data>
+  <data name="ReliefTextFont" xml:space="preserve">
+    <value>Fonte</value>
+  </data>
+  <data name="ReliefTextFontBuiltIn" xml:space="preserve">
+    <value>Maiúsculas embutidas</value>
+  </data>
+  <data name="ReliefTextFontLacks" xml:space="preserve">
+    <value>“{0}” não existe em {1}: escolha outra fonte ou tire-o do texto.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Salvar também um suporte de encaixe</value>
   </data>

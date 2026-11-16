@@ -54,6 +54,32 @@ public sealed class TrueTypeFontTests
     }
 
     [Fact]
+    public void A_font_list_reads_each_file_by_its_full_name_and_names_what_the_font_lacks()
+    {
+        Assert.SkipUnless(File.Exists(Arial), "no arial.ttf on this machine");
+
+        Assert.Equal("Arial", TrueTypeFont.FullName(Arial));
+        Assert.Equal('中', ReliefTextStamp.Lacking(new ReliefText("Ana 中", Font: Arial)));
+        Assert.Null(ReliefTextStamp.Lacking(new ReliefText("Ana é", Font: Arial)));
+        Assert.Null(ReliefTextStamp.Lacking(new ReliefText("中")));
+    }
+
+    [Fact]
+    public void A_file_that_is_not_a_font_has_no_name_for_the_list()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"not-a-font-{Guid.NewGuid():N}.ttf");
+        File.WriteAllBytes(path, [0, 1, 0, 0, 0, 0]);
+        try
+        {
+            Assert.Null(TrueTypeFont.FullName(path));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void A_file_that_is_not_a_font_is_refused()
     {
         string path = Path.Combine(Path.GetTempPath(), $"not-a-font-{Guid.NewGuid():N}.ttf");

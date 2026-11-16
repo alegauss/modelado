@@ -417,6 +417,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <TextBlock Text="{x:Static p:Strings.ReliefWidthMm}" VerticalAlignment="Center" />
               <TextBox x:Name="ReliefWidthMm" Grid.Column="1" AutomationProperties.AutomationId="ReliefWidthMm" AutomationProperties.Name="{x:Static p:Strings.ReliefWidthMm}"
@@ -470,10 +471,17 @@
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnLine}" Tag="line" />
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefTextOnArc}" Tag="arc" />
               </ComboBox>
+              <!-- MOD142: the text in the built-in capitals or an installed TrueType font, listed when opened. -->
+              <TextBlock Grid.Row="11" Text="{x:Static p:Strings.ReliefTextFont}" VerticalAlignment="Center" />
+              <ComboBox x:Name="ReliefTextFont" Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="2" AutomationProperties.AutomationId="ReliefTextFont"
+                        AutomationProperties.Name="{x:Static p:Strings.ReliefTextFont}" Margin="0,0,0,4" SelectedIndex="0"
+                        DropDownOpened="OnReliefTextFontOpened" SelectionChanged="OnReliefChoiceChanged">
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefTextFontBuiltIn}" />
+              </ComboBox>
               <!-- MOD107: a stand the relief slots into, saved beside it. -->
-              <CheckBox x:Name="ReliefStand" Grid.Row="11" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefStand" Content="{x:Static p:Strings.ReliefStand}"
+              <CheckBox x:Name="ReliefStand" Grid.Row="12" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefStand" Content="{x:Static p:Strings.ReliefStand}"
                         ToolTip="{x:Static p:Strings.ReliefStandTip}" Margin="0,2,0,4" />
-              <TextBlock x:Name="ReliefSizeError" Grid.Row="12" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
+              <TextBlock x:Name="ReliefSizeError" Grid.Row="13" Grid.ColumnSpan="3" AutomationProperties.AutomationId="ReliefSizeError" Style="{StaticResource StatCaption}"
                          Text="{x:Static p:Strings.ReliefSizeInvalid}" TextWrapping="Wrap" Visibility="Collapsed" />
             </Grid>
             <!-- MOD141: a disc's or a tag's hole, dragged into place on the photo. -->

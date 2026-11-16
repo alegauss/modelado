@@ -315,6 +315,15 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>Le texte doit contenir des lettres, des chiffres, des espaces ou - . / ', des lettres de plus de 0 mm, et tenir sur le relief à l'intérieur du cadre.</value>
   </data>
+  <data name="ReliefTextFont" xml:space="preserve">
+    <value>Police</value>
+  </data>
+  <data name="ReliefTextFontBuiltIn" xml:space="preserve">
+    <value>Capitales intégrées</value>
+  </data>
+  <data name="ReliefTextFontLacks" xml:space="preserve">
+    <value>« {0} » n’est pas dans {1} : choisissez une autre police ou retirez-le.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Enregistrer aussi un support où l'insérer</value>
   </data>

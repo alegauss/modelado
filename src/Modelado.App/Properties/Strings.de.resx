@@ -315,6 +315,15 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>Der Text braucht Buchstaben, Ziffern, Leerzeichen oder - . / ', eine Buchstabenhöhe über 0 mm und Platz im Relief innerhalb des Rahmens.</value>
   </data>
+  <data name="ReliefTextFont" xml:space="preserve">
+    <value>Schrift</value>
+  </data>
+  <data name="ReliefTextFontBuiltIn" xml:space="preserve">
+    <value>Eingebaute Großbuchstaben</value>
+  </data>
+  <data name="ReliefTextFontLacks" xml:space="preserve">
+    <value>„{0}“ fehlt in {1}: Wählen Sie eine andere Schrift oder lassen Sie es weg.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Auch einen Ständer zum Einstecken speichern</value>
   </data>

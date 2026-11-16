@@ -70,6 +70,86 @@ public sealed class TrueTypeFont
         }
     }
 
+    /// <summary>
+    /// A font file's full name (name ID 4), read from its table directory and name table alone, or
+    /// null when it is not a TrueType font with glyph outlines (a collection, a CFF font, not a font).
+    /// A font list is built from many files, so this reads only those two tables, not the glyphs.
+    /// </summary>
+    /// <param name="path">The font file.</param>
+    /// <returns>The name, such as "Arial Bold", or null.</returns>
+    public static string? FullName(string path)
+    {
+        try
+        {
+            using FileStream file = File.OpenRead(path);
+            byte[] head = Read(file, 0, 12);
+            uint version = BinaryPrimitives.ReadUInt32BigEndian(head);
+            if (version is not 0x00010000 and not 0x74727565)
+            {
+                return null; // 'OTTO' (CFF) or 'ttcf' (a collection)
+            }
+
+            int count = BinaryPrimitives.ReadUInt16BigEndian(head.AsSpan(4));
+            byte[] directory = Read(file, 12, 16 * count);
+            (int Offset, int Length)? name = null;
+            bool glyf = false;
+            for (int i = 0; i < count; i++)
+            {
+                string tag = System.Text.Encoding.ASCII.GetString(directory, 16 * i, 4);
+                glyf |= tag == "glyf";
+                if (tag == "name")
+                {
+                    name = ((int)BinaryPrimitives.ReadUInt32BigEndian(directory.AsSpan((16 * i) + 8)), (int)BinaryPrimitives.ReadUInt32BigEndian(directory.AsSpan((16 * i) + 12)));
+                }
+            }
+
+            if (!glyf || name is not { } table)
+            {
+                return null;
+            }
+
+            byte[] names = Read(file, table.Offset, table.Length);
+            int records = BinaryPrimitives.ReadUInt16BigEndian(names.AsSpan(2));
+            int strings = BinaryPrimitives.ReadUInt16BigEndian(names.AsSpan(4));
+            string? fallback = null;
+            for (int i = 0; i < records; i++)
+            {
+                ReadOnlySpan<byte> record = names.AsSpan(6 + (12 * i), 12);
+                int platform = BinaryPrimitives.ReadUInt16BigEndian(record);
+                int language = BinaryPrimitives.ReadUInt16BigEndian(record[4..]);
+                int id = BinaryPrimitives.ReadUInt16BigEndian(record[6..]);
+                int length = BinaryPrimitives.ReadUInt16BigEndian(record[8..]);
+                int offset = BinaryPrimitives.ReadUInt16BigEndian(record[10..]);
+                if (id != 4 || platform != 3)
+                {
+                    continue;
+                }
+
+                string text = System.Text.Encoding.BigEndianUnicode.GetString(names, strings + offset, length);
+                if (language == 0x409)
+                {
+                    return text;
+                }
+
+                fallback ??= text;
+            }
+
+            return fallback;
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException or ArgumentException or IndexOutOfRangeException)
+        {
+            return null;
+        }
+    }
+
+    private static byte[] Read(FileStream file, long at, int length)
+    {
+        byte[] buffer = new byte[length];
+        file.Position = at;
+        file.ReadExactly(buffer);
+        return buffer;
+    }
+
     /// <summary>Whether the font draws a character.</summary>
     /// <param name="c">The character.</param>
     /// <returns>True when it maps to a glyph.</returns>

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Modelado.Geometry;
@@ -51,7 +52,7 @@ public partial class MainWindow
         }
 
         TextPlacement placement = (ReliefTextOn.SelectedItem as ComboBoxItem)?.Tag as string == "arc" ? TextPlacement.Arc : TextPlacement.Line;
-        ReliefText text = new(ReliefTextWords.Text, height, Placement: placement);
+        ReliefText text = new(ReliefTextWords.Text, height, Placement: placement, Font: (ReliefTextFont?.SelectedItem as ComboBoxItem)?.Tag as string);
         float aspect = photo is null ? 1 : (float)photo.Height / photo.Width;
         float tall = KeychainChosen is null && ShapeChosen == OutlineShape.Circle ? 1 : aspect / Outline.Width(ShapeChosen, aspect);
         try
@@ -63,6 +64,44 @@ public partial class MainWindow
         {
             return (false, null);
         }
+    }
+
+    /// <summary>
+    /// MOD142: the installed TrueType fonts, listed the first time the font list opens: the system's
+    /// and the user's own font folders, each file by its full name, CFF fonts and collections left out
+    /// since <see cref="TrueTypeFont"/> reads glyph outlines only.
+    /// </summary>
+    private void OnReliefTextFontOpened(object? sender, EventArgs e)
+    {
+        if (ReliefTextFont.Items.Count > 1)
+        {
+            return;
+        }
+
+        string user = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "Windows", "Fonts");
+        IEnumerable<(string Name, string Path)> fonts = new[] { Environment.GetFolderPath(Environment.SpecialFolder.Fonts), user }
+            .Where(Directory.Exists)
+            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.ttf"))
+            .Select(path => (Name: TrueTypeFont.FullName(path) ?? "", Path: path))
+            .Where(font => font.Name.Length > 0)
+            .DistinctBy(font => font.Name, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(font => font.Name, StringComparer.CurrentCultureIgnoreCase);
+        foreach ((string name, string path) in fonts)
+        {
+            ReliefTextFont.Items.Add(new ComboBoxItem { Content = name, Tag = path });
+        }
+    }
+
+    // MOD142: the character the chosen font lacks, named in the card's language.
+    private string TextRefusal()
+    {
+        if (ReliefTextFont?.SelectedItem is ComboBoxItem { Tag: string font, Content: string name }
+            && ReliefTextStamp.Lacking(new ReliefText(ReliefTextWords.Text, Font: font)) is { } missing)
+        {
+            return Ui.Format(Strings.ReliefTextFontLacks, missing, name);
+        }
+
+        return Strings.ReliefTextInvalid;
     }
 
     // MOD105: the outline the card crops the relief to.
@@ -189,7 +228,7 @@ public partial class MainWindow
         bool sizesFine = Typed(ReliefWidthMm.Text) is > 0 && Typed(ReliefDepthMm.Text) is > 0 && Typed(ReliefBaseMm.Text) is >= 0 && BorderSize() is not null;
         ReliefSizeError.Text = !wrong || !sizesFine ? Strings.ReliefSizeInvalid
             : !KeychainSettings(Typed(ReliefWidthMm.Text)!.Value).Valid ? Strings.ReliefHoleInvalid
-            : Strings.ReliefTextInvalid;
+            : TextRefusal();
     }
 
     /// <summary>

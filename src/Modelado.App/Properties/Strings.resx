@@ -315,6 +315,15 @@
   <data name="ReliefTextInvalid" xml:space="preserve">
     <value>The text needs letters, digits, spaces or - . / ', a letter height above 0 mm, and room on the relief inside the border.</value>
   </data>
+  <data name="ReliefTextFont" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="ReliefTextFontBuiltIn" xml:space="preserve">
+    <value>Built-in capitals</value>
+  </data>
+  <data name="ReliefTextFontLacks" xml:space="preserve">
+    <value>“{0}” is not in {1}: choose another font or leave it out.</value>
+  </data>
   <data name="ReliefStand" xml:space="preserve">
     <value>Also save a stand it slots into</value>
   </data>

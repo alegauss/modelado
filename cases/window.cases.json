@@ -814,6 +814,27 @@
     },
 
     {
+      "name": "the Relief card writes a lower-case name in an installed font, and names a character the font lacks",
+      "catches": "a font list with no installed fonts, a chosen font the relief ignores, or a character the font cannot draw that only fails once the run has started",
+      "filed": "MOD142",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "ComboBox#ReliefTextFont", "act": "read", "reads": "picked", "expect": "Built-in capitals", "named": "the built-in capitals to start with" },
+        { "locator": "ComboBox#ReliefTextFont", "act": "expand", "named": "the fonts are opened, listing the installed ones" },
+        { "locator": "ComboBox#ReliefTextFont > ListItem[name=\"Arial\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "Arial is chosen" },
+        { "locator": "ComboBox#ReliefTextFont", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "Ana é", "reads": "value", "expect": "Ana é", "named": "a name in lower case with an accent is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and Arial draws it" },
+        { "locator": "Edit#ReliefTextWords", "act": "set value", "with": "Ana 中", "reads": "value", "expect": "Ana 中", "named": "a character Arial lacks is typed" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "reads": "name", "expect": "“中” is not in Arial: choose another font or leave it out.", "named": "the card names the character and the font" }
+      ]
+    },
+
+    {
       "name": "the Relief card makes a lithophane without a model, sized in millimetres for an STL",
       "catches": "a lithophane that asks for a model download, a thickest point thinner than the thinnest taken as a size, or a panel the Export card rescales",
       "filed": "MOD108",

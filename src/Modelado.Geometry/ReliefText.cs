@@ -178,6 +178,25 @@ public static class ReliefTextStamp
         }
     }
 
+    /// <summary>
+    /// MOD142: the first character of the text its font does not draw, or null when it draws them all
+    /// (or the text is in the built-in font). The Relief card names it in its own language.
+    /// </summary>
+    /// <param name="text">The text and its font.</param>
+    /// <returns>The character, or null.</returns>
+    public static char? Lacking(ReliefText text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        if (text.Font is not { } path)
+        {
+            return null;
+        }
+
+        TrueTypeFont font = FontAt(path);
+        char missing = text.Text.Normalize(NormalizationForm.FormC).FirstOrDefault(c => !char.IsWhiteSpace(c) && !font.Has(c));
+        return missing == default ? null : missing;
+    }
+
     // The characters drawn and where each glyph point lands, in millimetres around the relief's
     // centre with y up; refused when the text does not fit.
     private static (string Words, Func<float, float, Vector2> Place, float Scale, float Stroke) Layout(ReliefText text, float width, float height, float borderWidth)
@@ -194,7 +213,7 @@ public static class ReliefTextStamp
             // MOD142: the text as typed; a character the font lacks is refused in words.
             TrueTypeFont font = FontAt(path);
             words = text.Text.Normalize(NormalizationForm.FormC).Trim();
-            if (words.FirstOrDefault(c => !char.IsWhiteSpace(c) && !font.Has(c)) is var missing && missing != default)
+            if (Lacking(text) is { } missing)
             {
                 throw new ArgumentException($"\"{missing}\" is not in {Path.GetFileName(path)}: choose another font or leave it out.", nameof(text));
             }

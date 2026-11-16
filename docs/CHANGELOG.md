@@ -158,7 +158,7 @@
 - ✅ **MOD113** **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — A base under 0.5% of the width is no base in the label, the mesh and the CLI alike, through one threshold tested on each side.
 - ✅ **MOD114** **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — A relief cut to an irregular outline splits pinched corners before Solidify, so diagonal touches, threads, holes and speckle all come out closed and two-manifold.
 - ✅ **MOD141** **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — A disc's or tag's hole is dragged into place on the photo, in its 0..1 coordinates and kept a wall inside; the keychain stays one closed solid.
-- ✅ **MOD142 (installed TrueType fonts in CLI)** **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — relief --font draws the text in any TrueType font's own outlines, lower case and accents too, filled into the relief, which stays one closed solid.
+- ✅ **MOD142** **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — The Relief card lists the installed fonts and writes a lower-case name in one, naming any character the font lacks; the bundled font is MOD149.
 
 ## Block M — The CPU and integrated-GPU path
 
