@@ -16,7 +16,7 @@
 ## Block D — Model downloads
 
 - 📋 **MOD124** (deps: —) **A model over 2 GB cannot be published or downloaded: the manifest and downloader ignore ONNX external data** — TripoSG's transformer alone exceeds protobuf's 2 GB limit, so MOD80 cannot start until large models can be stored in parts. → §MOD124
-- 📋 **MOD122** (deps: —) **Only freely downloadable models can be offered; one behind a licence click, login or registration cannot be fetched** — The Stability models SF3D and SPAR3D, accepted on 12/11/2026, are gated on Hugging Face; a spike settles how a wizard can guide that. → §MOD122
+- 🛠 **MOD122** (deps: —) (requires: hf-token) **Only freely downloadable models can be offered; one behind a licence click, login or registration cannot be fetched** — The Stability models SF3D and SPAR3D, accepted on 12/11/2026, are gated on Hugging Face; a spike settles how a wizard can guide that. → §MOD122
 - 📋 **MOD123** (deps: MOD122) **There is no download wizard that shows a model's licence, asks for consent and walks through login or registration** — A model with conditions needs informed consent and a guided login, which a Download button that just fetches files cannot give. → §MOD123
 - 📋 **MOD125** (deps: MOD122) **The licence gate accepts only permissive licences, so a model under the Stability licence cannot be published** — The SF3D and SPAR3D decision of 12/11/2026 needs a licence class with conditions, recorded per model, instead of a yes-or-no list. → §MOD125
 - 📋 **MOD126** (deps: MOD125) **Nothing shows the attribution a licence requires, such as Powered by Stability AI, when its model is used** — The Stability licence requires that notice wherever its model runs, and the app has no place that says which model made a result. → §MOD126
