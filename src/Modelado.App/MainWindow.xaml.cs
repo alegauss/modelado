@@ -73,7 +73,7 @@ public partial class MainWindow : Window, IDisposable
         DropFormats.Text = Ui.Format(Strings.DropFormatsText, Formats(ImageCodec.Extensions), Formats(MeshImport.Extensions));
 
         QualityHigh.IsChecked = options.HighQuality;
-        runner = new ModelRunner(library, provider, options.HighQuality);
+        runner = new ModelRunner(library, provider, options.HighQuality, ModelRunner.FallsBack(providerChoice));
         ShowProvider();
 
         Drop += OnDrop;

@@ -682,16 +682,6 @@ in the window and the CLI.
 
 ## Block M — The CPU and integrated-GPU path
 
-### §MOD120 DirectML choice and the CPU fallback
-
-ExecutionProviders.cs line 11 says that choosing DirectML makes a GPU failure an error,
-not a fallback. ModelRunner sees only the provider, not the user's choice, and falls
-back to the CPU on load or run failure (lines 69 to 80 and 132 to 136). Auto should fall
-back; an explicit DirectML should fail and say why.
-
-Done when ModelRunner knows whether the provider was chosen or automatic, an explicit
-DirectML failure is reported as an error, and a test covers both.
-
 ### §MOD121 Measure Intel and integrated GPUs
 
 The site's speed table has two columns, a CPU (8 cores of an i7-14700 in a VM) and an

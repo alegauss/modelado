@@ -6,7 +6,9 @@ namespace Modelado.Inference;
 /// The sessions the pipelines run, loaded the first time a model is used and kept until
 /// <see cref="Release"/>. A run that fails on the GPU (out of video memory, a driver fault) is
 /// retried once on the CPU, and that model stays on the CPU from then on, which
-/// <see cref="Notice"/> says.
+/// <see cref="Notice"/> says. MOD120: only when the GPU came from Automatic; where the user chose
+/// DirectML (<see cref="ProviderChoice.DirectML"/>), a GPU failure is an error that says so, since
+/// someone forcing the GPU to compare times must not be measuring the CPU without knowing.
 /// </summary>
 public sealed class ModelRunner : IDisposable
 {
@@ -18,13 +20,23 @@ public sealed class ModelRunner : IDisposable
     /// <param name="library">Where the models are.</param>
     /// <param name="provider">Where sessions run.</param>
     /// <param name="highQuality">fp32 everywhere instead of fp16 on the GPU.</param>
-    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false)
+    /// <param name="fallBack">MOD120: whether a GPU failure is retried on the CPU (Automatic) or is an error (DirectML chosen).</param>
+    public ModelRunner(ModelLibrary library, ExecutionProvider provider, bool highQuality = false, bool fallBack = true)
     {
         ArgumentNullException.ThrowIfNull(library);
         Library = library;
         Provider = provider;
         HighQuality = highQuality;
+        FallBack = fallBack;
     }
+
+    /// <summary>MOD120: whether a model that fails on the GPU runs on the CPU instead; false where DirectML was chosen.</summary>
+    public bool FallBack { get; }
+
+    /// <summary>MOD120: whether a choice lets a GPU failure fall back to the CPU: only Automatic does.</summary>
+    /// <param name="choice">What the user chose.</param>
+    /// <returns>True for Automatic.</returns>
+    public static bool FallsBack(ProviderChoice choice) => choice == ProviderChoice.Auto;
 
     /// <summary>Where the models are.</summary>
     public ModelLibrary Library { get; }
@@ -65,6 +77,10 @@ public sealed class ModelRunner : IDisposable
         {
             using RunOptions options = new();
             return session.Run(options, inputs, outputs);
+        }
+        catch (OnnxRuntimeException failure) when (provider != ExecutionProvider.Cpu && !FallBack)
+        {
+            throw Chosen(model, "failed", failure);
         }
         catch (OnnxRuntimeException failure) when (provider != ExecutionProvider.Cpu)
         {
@@ -108,6 +124,10 @@ public sealed class ModelRunner : IDisposable
         }
     }
 
+    // MOD120: the GPU was chosen, so its failure is the answer, not a run on the CPU in its place.
+    private static InvalidOperationException Chosen(string model, string what, OnnxRuntimeException failure) =>
+        new($"{model} {what} on the GPU ({failure.Message.Split('\n')[0]}). DirectML was chosen, so it is not run on the CPU instead; choose Automatic or the CPU in About to let it.", failure);
+
     private (InferenceSession Session, ExecutionProvider Provider) Session(string model)
     {
         lock (gate)
@@ -128,6 +148,10 @@ public sealed class ModelRunner : IDisposable
             try
             {
                 loaded = (ExecutionProviders.Create(path, Provider), Provider);
+            }
+            catch (OnnxRuntimeException failure) when (Provider != ExecutionProvider.Cpu && !FallBack)
+            {
+                throw Chosen(model, "could not be loaded", failure);
             }
             catch (OnnxRuntimeException failure) when (Provider != ExecutionProvider.Cpu)
             {

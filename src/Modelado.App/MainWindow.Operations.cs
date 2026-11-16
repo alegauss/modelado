@@ -222,7 +222,7 @@ public partial class MainWindow
         }
 
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true);
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice));
         await RefreshModelStatusAsync().ConfigureAwait(true);
     }
 }

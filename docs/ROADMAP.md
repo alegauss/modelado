@@ -57,7 +57,6 @@
 
 ## Block M — The CPU and integrated-GPU path
 
-- 📋 **MOD120** (deps: —) **Choosing DirectML is documented as failing on a GPU error, yet ModelRunner silently falls back to the CPU** — The code and its own comment disagree, so a user who forces the GPU to compare times may be measuring the CPU. → §MOD120
 - 📋 **MOD121** (deps: —) **The speed table has no Intel or integrated-GPU timing, so the claim that Intel graphics work is untested** — Since October Modly runs on recent Radeons, so Intel and integrated GPUs are where Modelado alone runs, and that needs a measured row. → §MOD121
 - 📋 **MOD115** (deps: MOD127) **Nobody has measured an INT8 TripoSR encoder against fp32 on Modelado's own photos** — An INT8 encoder is about 430 MB against 1.7 GB, but its quality loss is only described as slight, never measured. → §MOD115
 - 📋 **MOD116** (deps: MOD115) **The CPU path cannot use a smaller, faster encoder, even where the quality would allow it** — A CPU-only PC downloads and loads the largest variant today, so the people Modelado is best for wait the longest. → §MOD116

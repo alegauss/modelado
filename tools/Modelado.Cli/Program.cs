@@ -164,7 +164,7 @@ try
         var other => throw new ArgumentException($"--provider {other}: use auto, dml or cpu."),
     };
     (ExecutionProvider provider, string? reason) = ExecutionProviders.Resolve(choice);
-    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"));
+    using ModelRunner runner = new(library, provider, options.ContainsKey("--high"), ModelRunner.FallsBack(choice));
     // MOD52: the words the window's provider chip shows, the GPU named.
     string where = ExecutionProviders.Label(provider, provider == ExecutionProvider.DirectML ? GpuAdapter.ForDevice() : null);
     Console.WriteLine($"Running on {where}{(reason is null ? "" : $": {reason}")}");

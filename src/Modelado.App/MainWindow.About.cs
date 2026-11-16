@@ -304,7 +304,7 @@ public partial class MainWindow
     private void ReleaseSessions()
     {
         runner.Dispose();
-        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true);
+        runner = new ModelRunner(library, provider, QualityHigh.IsChecked == true, ModelRunner.FallsBack(providerChoice));
     }
 
     private async void OnAboutRemoveModel(object sender, RoutedEventArgs e)
