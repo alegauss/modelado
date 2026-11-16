@@ -951,6 +951,7 @@
         { "locator": "Text#ExportNote", "act": "read", "reads": "name", "expect": "The model has no colours, so it is saved grey.", "named": "GLB is first, and the grey cube is said to stay grey" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
         { "locator": "RadioButton#ExportPlyAscii", "act": "read", "reads": "name", "expect": "ASCII, readable as text", "named": "PLY offers text or binary" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
@@ -979,6 +980,7 @@
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "with the cube's counts" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"PLY\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "PLY is chosen" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
         { "locator": "RadioButton#ExportPlyAscii", "act": "select", "reads": "selected", "expect": "selected", "named": "as ASCII" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed again" },
         { "locator": "Window[class=\"#32770\"]", "act": "choose file", "with": "{files}/text", "named": "the dialog is told to save text" },
@@ -1020,6 +1022,7 @@
         { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"GLB\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "GLB is chosen" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
         { "locator": "RadioButton#ExportGlbStandard", "act": "read", "reads": "selected", "expect": "selected", "named": "the standard geometry is the default" },
         { "locator": "RadioButton#ExportGlbCompact", "act": "select", "reads": "selected", "expect": "selected", "named": "Compact is chosen" },
         { "locator": "Button#ExportSaveAs", "act": "invoke", "named": "Save as is pressed" },
@@ -1040,6 +1043,7 @@
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
         { "locator": "Text#ExportSizeUnit", "act": "read", "reads": "name", "expect": "units", "named": "GLB is sized in its own units" },
         { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "one unit on the longest side" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
@@ -1067,6 +1071,7 @@
         { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
         { "locator": "Edit#ExportSize", "act": "set value", "with": "60", "expect": "60", "reads": "value", "named": "60 mm is typed" },
         { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened again" },
         { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"3MF\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "3MF is chosen" },
@@ -1160,6 +1165,29 @@
     },
 
     {
+      "name": "the Export and Edit cards keep their extras in an Advanced that starts closed and opens",
+      "catches": "an Advanced that starts open and buries the main action, or one that cannot be opened to reach what it holds",
+      "filed": "MOD138",
+      "tags": ["edit", "export", "advanced"],
+      "fixture": "a window on a staged cube, to save through the Export card",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Button#SimplifyButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Simplify is in view" },
+        { "locator": "Group#EditAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "the Edit card's Advanced starts closed" },
+        { "locator": "Button#SmoothButton", "act": "read", "absent": true, "named": "with Smooth folded away" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "it opens" },
+        { "locator": "Button#SmoothButton", "act": "read", "reads": "enabled", "expect": "enabled", "named": "and Smooth is there" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Button#ExportSaveAs", "act": "read", "reads": "enabled", "expect": "enabled", "named": "Save as is in view" },
+        { "locator": "Group#ExportAdvanced", "act": "read", "reads": "expanded", "expect": "Collapsed", "named": "the Export card's Advanced starts closed" },
+        { "locator": "Edit#ExportSize", "act": "read", "absent": true, "named": "with the longest side folded away" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "it opens" },
+        { "locator": "Edit#ExportSize", "act": "read", "reads": "value", "expect": "1", "named": "and the longest side is there" }
+      ]
+    },
+
+    {
       "name": "the Edit card makes the model printable on a voxel in millimetres, the mesh the CLI gives",
       "catches": "a voxel read in the model's units rather than in mm at the print size, a step the history does not keep, or a mesh other than modelado-cli edit --make-printable 2 --size 100 gives",
       "filed": "MOD111",
@@ -1168,6 +1196,7 @@
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first" },
         { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Edit card's Advanced is opened (MOD138)" },
         { "locator": "Edit#PrintableVoxelMm", "act": "read", "reads": "value", "expect": "0.4", "named": "a 0.4 mm voxel, a nozzle's line, to start with" },
         { "locator": "Edit#PrintableVoxelMm", "act": "set value", "with": "2", "reads": "value", "expect": "2", "named": "a 2 mm voxel is typed" },
         { "locator": "Button#MakePrintableButton", "act": "invoke", "named": "Make printable is pressed" },
@@ -1204,6 +1233,7 @@
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "cube.obj", "named": "the cube is open first (MOD56)" },
         { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Edit card's Advanced is opened (MOD138)" },
         { "locator": "Text#SmoothText", "act": "read", "reads": "name", "expect": "3 passes", "named": "Smooth starts at 3 passes" },
         { "locator": "Text#PiecesText", "act": "read", "reads": "name", "expect": "under 5%", "named": "loose pieces at under 5%" },
         { "locator": "Text#FlattenText", "act": "read", "reads": "name", "expect": "3%", "named": "and the flat base at 3%" },
@@ -1588,6 +1618,7 @@
         { "locator": "Text#CloudStatus-meshy", "act": "read", "reads": "name", "expect": "The key works: 470 credits.", "named": "once Meshy accepts it" },
         { "locator": "Button#AboutClose", "act": "invoke", "named": "About is closed" },
         { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Edit card's Advanced is opened (MOD138)" },
         { "locator": "Button#CloudRemesh", "act": "read", "reads": "name", "expect": "Remesh · ~5 credits", "named": "the Edit card offers Meshy's remesh, priced" },
         { "locator": "Button#CloudRemesh", "act": "invoke", "named": "Remesh is pressed" },
         { "locator": "Text#CloudEditConsentText", "act": "read", "reads": "name", "matches": "^This model, 12 triangles, .+ as a GLB, goes to Meshy AI for about 5 credits\\.$", "named": "it says what goes, before sending" },

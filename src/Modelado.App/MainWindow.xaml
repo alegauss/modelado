@@ -597,48 +597,6 @@
               <Button x:Name="LayFlatButton" AutomationProperties.AutomationId="LayFlatButton" Content="{x:Static p:Strings.LayFlatButton}" Margin="0,0,4,4" Click="OnLayFlat" IsEnabled="False"
                       ToolTip="{x:Static p:Strings.LayFlatButtonTip}" />
             </UniformGrid>
-            <!-- MOD16: the amounts the CLI's -\-smooth, -\-remove-pieces and -\-flatten take, each beside its
-                 button, in whole steps so the window passes the CLI's exact values. -->
-            <Grid Margin="0,2,0,0">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="EditAmountButton" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" MinWidth="64" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <Button x:Name="PiecesButton" AutomationProperties.AutomationId="PiecesButton" Content="{x:Static p:Strings.PiecesButton}" Margin="0,0,8,4" Click="OnRemovePieces" IsEnabled="False"
-                      ToolTip="{x:Static p:Strings.PiecesButtonTip}" />
-              <Slider x:Name="PiecesAmount" Grid.Column="1" AutomationProperties.AutomationId="PiecesAmount" AutomationProperties.Name="Loose pieces under"
-                      Minimum="1" Maximum="50" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
-                      VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
-              <TextBlock x:Name="PiecesText" Grid.Column="2" AutomationProperties.AutomationId="PiecesText" Text="{x:Static p:Strings.PiecesText}" VerticalAlignment="Center" Margin="8,0,0,0" />
-
-              <Button x:Name="SmoothButton" Grid.Row="1" AutomationProperties.AutomationId="SmoothButton" Content="{x:Static p:Strings.SmoothButton}" Margin="0,0,8,4" Click="OnSmooth" IsEnabled="False"
-                      ToolTip="{x:Static p:Strings.SmoothButtonTip}" />
-              <Slider x:Name="SmoothAmount" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SmoothAmount" AutomationProperties.Name="Smoothing passes"
-                      Minimum="1" Maximum="10" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="2"
-                      VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
-              <TextBlock x:Name="SmoothText" Grid.Row="1" Grid.Column="2" AutomationProperties.AutomationId="SmoothText" Text="{x:Static p:Strings.SmoothText}" VerticalAlignment="Center" Margin="8,0,0,0" />
-
-              <Button x:Name="FlattenButton" Grid.Row="2" AutomationProperties.AutomationId="FlattenButton" Content="{x:Static p:Strings.FlattenButton}" Margin="0,0,8,4" Click="OnFlatten" IsEnabled="False"
-                      ToolTip="{x:Static p:Strings.FlattenButtonTip}" />
-              <Slider x:Name="FlattenAmount" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="FlattenAmount" AutomationProperties.Name="Flat base height"
-                      Minimum="1" Maximum="20" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
-                      VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
-              <TextBlock x:Name="FlattenText" Grid.Row="2" Grid.Column="2" AutomationProperties.AutomationId="FlattenText" Text="3%" VerticalAlignment="Center" Margin="8,0,0,0" />
-
-              <!-- MOD111: the voxel remesh the CLI's -\-make-printable runs, in mm at the size Export prints at. -->
-              <Button x:Name="MakePrintableButton" Grid.Row="3" AutomationProperties.AutomationId="MakePrintableButton" Content="{x:Static p:Strings.MakePrintableButton}" Margin="0,0,8,4"
-                      Click="OnMakePrintable" IsEnabled="False" ToolTip="{x:Static p:Strings.MakePrintableButtonTip}" />
-              <TextBox x:Name="PrintableVoxelMm" Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="PrintableVoxelMm" AutomationProperties.Name="{x:Static p:Strings.PrintableVoxelMm}"
-                       Text="0.4" VerticalAlignment="Center" Margin="0,0,0,4" />
-              <TextBlock Grid.Row="3" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="8,0,0,4" />
-            </Grid>
             <TextBlock Text="{x:Static p:Strings.WithAI}" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
             <Button x:Name="UpscaleTextureButton" AutomationProperties.AutomationId="UpscaleTextureButton" Content="{x:Static p:Strings.UpscaleTextureButton}" Margin="0,0,0,4" Click="OnUpscaleTexture" IsEnabled="False"
                     ToolTip="{x:Static p:Strings.UpscaleTextureButtonTip}" />
@@ -681,35 +639,82 @@
             </Border>
             <Button x:Name="ReprojectButton" AutomationProperties.AutomationId="ReprojectButton" Content="{x:Static p:Strings.ReprojectButton}" Click="OnReproject" IsEnabled="False"
                     ToolTip="{x:Static p:Strings.ReprojectButtonTip}" />
-            <!-- MOD38: the open model remeshed or retextured by a cloud service holding a key, as a
-                 new version, so Undo returns to the local one. What goes, and for how much, is
-                 said first. -->
-            <StackPanel x:Name="CloudEditGroup" Visibility="Collapsed">
-              <TextBlock x:Name="CloudEditTitle" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
-              <DockPanel>
-                <TextBlock Text="{x:Static p:Strings.Triangles}" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0" />
-                <TextBox x:Name="CloudRemeshPolycount" AutomationProperties.AutomationId="CloudRemeshPolycount" AutomationProperties.Name="Remesh to"
-                         Text="30000" TextChanged="OnCloudEditChanged" ToolTip="{x:Static p:Strings.CloudRemeshPolycountTip}" />
-              </DockPanel>
-              <CheckBox x:Name="CloudRemeshQuads" AutomationProperties.AutomationId="CloudRemeshQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0" />
-              <Button x:Name="CloudRemesh" AutomationProperties.AutomationId="CloudRemesh" Margin="0,6,0,0" Click="OnCloudRemesh" />
-              <TextBox x:Name="CloudRetexturePrompt" AutomationProperties.AutomationId="CloudRetexturePrompt" AutomationProperties.Name="New texture"
-                       Margin="0,10,0,0" MaxLength="800" TextWrapping="Wrap" TextChanged="OnCloudEditChanged"
-                       ToolTip="{x:Static p:Strings.CloudRetexturePromptTip}" />
-              <CheckBox x:Name="CloudKeepUv" AutomationProperties.AutomationId="CloudKeepUv" Content="{x:Static p:Strings.CloudKeepUv}" Margin="0,4,0,0" />
-              <Button x:Name="CloudRetexture" AutomationProperties.AutomationId="CloudRetexture" Margin="0,6,0,0" Click="OnCloudRetexture" />
-              <Border x:Name="CloudEditConsent" AutomationProperties.AutomationId="CloudEditConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
-                      Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
-                <StackPanel>
-                  <TextBlock x:Name="CloudEditConsentText" AutomationProperties.AutomationId="CloudEditConsentText" TextWrapping="Wrap" />
-                  <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <Button x:Name="CloudEditSend" AutomationProperties.AutomationId="CloudEditSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnCloudEditSend" />
-                    <Button x:Name="CloudEditCancel" AutomationProperties.AutomationId="CloudEditCancel" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0"
-                            Click="OnCloudEditNotNow" />
-                  </StackPanel>
+            <!-- MOD138: the amounts and the cloud remesh and retexture, folded so the main actions stay in view. -->
+            <Expander x:Name="EditAdvanced" AutomationProperties.AutomationId="EditAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,10,0,0" IsExpanded="False">
+              <StackPanel Margin="0,4,0,0">
+                <!-- MOD16: the amounts the CLI's -\-smooth, -\-remove-pieces and -\-flatten take, each beside its
+                     button, in whole steps so the window passes the CLI's exact values. -->
+                <Grid Margin="0,2,0,0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="EditAmountButton" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" MinWidth="64" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Button x:Name="PiecesButton" AutomationProperties.AutomationId="PiecesButton" Content="{x:Static p:Strings.PiecesButton}" Margin="0,0,8,4" Click="OnRemovePieces" IsEnabled="False"
+                          ToolTip="{x:Static p:Strings.PiecesButtonTip}" />
+                  <Slider x:Name="PiecesAmount" Grid.Column="1" AutomationProperties.AutomationId="PiecesAmount" AutomationProperties.Name="Loose pieces under"
+                          Minimum="1" Maximum="50" Value="5" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
+                          VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
+                  <TextBlock x:Name="PiecesText" Grid.Column="2" AutomationProperties.AutomationId="PiecesText" Text="{x:Static p:Strings.PiecesText}" VerticalAlignment="Center" Margin="8,0,0,0" />
+
+                  <Button x:Name="SmoothButton" Grid.Row="1" AutomationProperties.AutomationId="SmoothButton" Content="{x:Static p:Strings.SmoothButton}" Margin="0,0,8,4" Click="OnSmooth" IsEnabled="False"
+                          ToolTip="{x:Static p:Strings.SmoothButtonTip}" />
+                  <Slider x:Name="SmoothAmount" Grid.Row="1" Grid.Column="1" AutomationProperties.AutomationId="SmoothAmount" AutomationProperties.Name="Smoothing passes"
+                          Minimum="1" Maximum="10" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="2"
+                          VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
+                  <TextBlock x:Name="SmoothText" Grid.Row="1" Grid.Column="2" AutomationProperties.AutomationId="SmoothText" Text="{x:Static p:Strings.SmoothText}" VerticalAlignment="Center" Margin="8,0,0,0" />
+
+                  <Button x:Name="FlattenButton" Grid.Row="2" AutomationProperties.AutomationId="FlattenButton" Content="{x:Static p:Strings.FlattenButton}" Margin="0,0,8,4" Click="OnFlatten" IsEnabled="False"
+                          ToolTip="{x:Static p:Strings.FlattenButtonTip}" />
+                  <Slider x:Name="FlattenAmount" Grid.Row="2" Grid.Column="1" AutomationProperties.AutomationId="FlattenAmount" AutomationProperties.Name="Flat base height"
+                          Minimum="1" Maximum="20" Value="3" IsSnapToTickEnabled="True" TickFrequency="1" SmallChange="1" LargeChange="5"
+                          VerticalAlignment="Center" ValueChanged="OnEditAmountChanged" />
+                  <TextBlock x:Name="FlattenText" Grid.Row="2" Grid.Column="2" AutomationProperties.AutomationId="FlattenText" Text="3%" VerticalAlignment="Center" Margin="8,0,0,0" />
+
+                  <!-- MOD111: the voxel remesh the CLI's -\-make-printable runs, in mm at the size Export prints at. -->
+                  <Button x:Name="MakePrintableButton" Grid.Row="3" AutomationProperties.AutomationId="MakePrintableButton" Content="{x:Static p:Strings.MakePrintableButton}" Margin="0,0,8,4"
+                          Click="OnMakePrintable" IsEnabled="False" ToolTip="{x:Static p:Strings.MakePrintableButtonTip}" />
+                  <TextBox x:Name="PrintableVoxelMm" Grid.Row="3" Grid.Column="1" AutomationProperties.AutomationId="PrintableVoxelMm" AutomationProperties.Name="{x:Static p:Strings.PrintableVoxelMm}"
+                           Text="0.4" VerticalAlignment="Center" Margin="0,0,0,4" />
+                  <TextBlock Grid.Row="3" Grid.Column="2" Text="{x:Static p:Strings.UnitMillimetres}" VerticalAlignment="Center" Margin="8,0,0,4" />
+                </Grid>
+                <!-- MOD38: the open model remeshed or retextured by a cloud service holding a key, as a
+                     new version, so Undo returns to the local one. What goes, and for how much, is
+                     said first. -->
+                <StackPanel x:Name="CloudEditGroup" Visibility="Collapsed">
+                  <TextBlock x:Name="CloudEditTitle" Style="{StaticResource FieldLabel}" Margin="0,10,0,4" />
+                  <DockPanel>
+                    <TextBlock Text="{x:Static p:Strings.Triangles}" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    <TextBox x:Name="CloudRemeshPolycount" AutomationProperties.AutomationId="CloudRemeshPolycount" AutomationProperties.Name="Remesh to"
+                             Text="30000" TextChanged="OnCloudEditChanged" ToolTip="{x:Static p:Strings.CloudRemeshPolycountTip}" />
+                  </DockPanel>
+                  <CheckBox x:Name="CloudRemeshQuads" AutomationProperties.AutomationId="CloudRemeshQuads" Content="{x:Static p:Strings.QuadTopology}" Margin="0,4,0,0" />
+                  <Button x:Name="CloudRemesh" AutomationProperties.AutomationId="CloudRemesh" Margin="0,6,0,0" Click="OnCloudRemesh" />
+                  <TextBox x:Name="CloudRetexturePrompt" AutomationProperties.AutomationId="CloudRetexturePrompt" AutomationProperties.Name="New texture"
+                           Margin="0,10,0,0" MaxLength="800" TextWrapping="Wrap" TextChanged="OnCloudEditChanged"
+                           ToolTip="{x:Static p:Strings.CloudRetexturePromptTip}" />
+                  <CheckBox x:Name="CloudKeepUv" AutomationProperties.AutomationId="CloudKeepUv" Content="{x:Static p:Strings.CloudKeepUv}" Margin="0,4,0,0" />
+                  <Button x:Name="CloudRetexture" AutomationProperties.AutomationId="CloudRetexture" Margin="0,6,0,0" Click="OnCloudRetexture" />
+                  <Border x:Name="CloudEditConsent" AutomationProperties.AutomationId="CloudEditConsent" Margin="0,10,0,0" Padding="10,8" CornerRadius="6"
+                          Background="{DynamicResource SubtleFillColorSecondaryBrush}" Visibility="Collapsed">
+                    <StackPanel>
+                      <TextBlock x:Name="CloudEditConsentText" AutomationProperties.AutomationId="CloudEditConsentText" TextWrapping="Wrap" />
+                      <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button x:Name="CloudEditSend" AutomationProperties.AutomationId="CloudEditSend" Content="{x:Static p:Strings.SendIt}" Padding="12,2" Click="OnCloudEditSend" />
+                        <Button x:Name="CloudEditCancel" AutomationProperties.AutomationId="CloudEditCancel" Content="{x:Static p:Strings.NotNow}" Padding="12,2" Margin="8,0,0,0"
+                                Click="OnCloudEditNotNow" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
                 </StackPanel>
-              </Border>
-            </StackPanel>
+              </StackPanel>
+            </Expander>
           </StackPanel>
         </Border>
 
@@ -728,33 +733,38 @@
               <!-- MOD103: millimetres recorded in the file, and the colours kept. -->
               <ComboBoxItem Content="{x:Static p:Strings.ExportFormat3mf}" Tag="3mf" />
             </ComboBox>
-            <StackPanel x:Name="ExportObjOptions" Visibility="Collapsed" Margin="0,8,0,0">
-              <RadioButton x:Name="ExportObjTexture" AutomationProperties.AutomationId="ExportObjTexture" GroupName="ObjColours"
-                           Content="{x:Static p:Strings.ExportObjTexture}" IsChecked="True" Checked="OnExportOptionChanged" />
-              <RadioButton x:Name="ExportObjVertexColours" AutomationProperties.AutomationId="ExportObjVertexColours" GroupName="ObjColours"
-                           Content="{x:Static p:Strings.ExportObjVertexColours}" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
-            </StackPanel>
-            <!-- MOD66: quantized geometry, about half the bytes, for viewers that read KHR_mesh_quantization. -->
-            <StackPanel x:Name="ExportGlbOptions" Visibility="Collapsed" Margin="0,8,0,0">
-              <RadioButton x:Name="ExportGlbStandard" AutomationProperties.AutomationId="ExportGlbStandard" GroupName="GlbGeometry"
-                           Content="{x:Static p:Strings.ExportGlbStandard}" IsChecked="True" />
-              <RadioButton x:Name="ExportGlbCompact" AutomationProperties.AutomationId="ExportGlbCompact" GroupName="GlbGeometry"
-                           Content="{x:Static p:Strings.ExportGlbCompact}" Margin="0,4,0,0" />
-            </StackPanel>
-            <StackPanel x:Name="ExportPlyOptions" Visibility="Collapsed" Margin="0,8,0,0">
-              <RadioButton x:Name="ExportPlyBinary" AutomationProperties.AutomationId="ExportPlyBinary" GroupName="PlyEncoding"
-                           Content="{x:Static p:Strings.ExportPlyBinary}" IsChecked="True" />
-              <RadioButton x:Name="ExportPlyAscii" AutomationProperties.AutomationId="ExportPlyAscii" GroupName="PlyEncoding"
-                           Content="{x:Static p:Strings.ExportPlyAscii}" Margin="0,4,0,0" />
-            </StackPanel>
-            <!-- MOD15: the size the CLI's -\-size takes, in the format's unit, and the box it gives. -->
-            <TextBlock Text="{x:Static p:Strings.LongestSide}" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
-            <DockPanel>
-              <TextBlock x:Name="ExportSizeUnit" AutomationProperties.AutomationId="ExportSizeUnit" DockPanel.Dock="Right"
-                         VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="36" />
-              <TextBox x:Name="ExportSize" AutomationProperties.AutomationId="ExportSize" AutomationProperties.Name="Longest side"
-                       Text="1" TextChanged="OnExportSizeChanged" />
-            </DockPanel>
+            <!-- MOD138: the format's options and the longest side, folded; the box below says what is saved. -->
+            <Expander x:Name="ExportAdvanced" AutomationProperties.AutomationId="ExportAdvanced" Header="{x:Static p:Strings.ObjectAdvancedHeader}" Margin="0,8,0,0" IsExpanded="False">
+              <StackPanel Margin="0,4,0,0">
+                <StackPanel x:Name="ExportObjOptions" Visibility="Collapsed" Margin="0,8,0,0">
+                  <RadioButton x:Name="ExportObjTexture" AutomationProperties.AutomationId="ExportObjTexture" GroupName="ObjColours"
+                               Content="{x:Static p:Strings.ExportObjTexture}" IsChecked="True" Checked="OnExportOptionChanged" />
+                  <RadioButton x:Name="ExportObjVertexColours" AutomationProperties.AutomationId="ExportObjVertexColours" GroupName="ObjColours"
+                               Content="{x:Static p:Strings.ExportObjVertexColours}" Margin="0,4,0,0" Checked="OnExportOptionChanged" />
+                </StackPanel>
+                <!-- MOD66: quantized geometry, about half the bytes, for viewers that read KHR_mesh_quantization. -->
+                <StackPanel x:Name="ExportGlbOptions" Visibility="Collapsed" Margin="0,8,0,0">
+                  <RadioButton x:Name="ExportGlbStandard" AutomationProperties.AutomationId="ExportGlbStandard" GroupName="GlbGeometry"
+                               Content="{x:Static p:Strings.ExportGlbStandard}" IsChecked="True" />
+                  <RadioButton x:Name="ExportGlbCompact" AutomationProperties.AutomationId="ExportGlbCompact" GroupName="GlbGeometry"
+                               Content="{x:Static p:Strings.ExportGlbCompact}" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel x:Name="ExportPlyOptions" Visibility="Collapsed" Margin="0,8,0,0">
+                  <RadioButton x:Name="ExportPlyBinary" AutomationProperties.AutomationId="ExportPlyBinary" GroupName="PlyEncoding"
+                               Content="{x:Static p:Strings.ExportPlyBinary}" IsChecked="True" />
+                  <RadioButton x:Name="ExportPlyAscii" AutomationProperties.AutomationId="ExportPlyAscii" GroupName="PlyEncoding"
+                               Content="{x:Static p:Strings.ExportPlyAscii}" Margin="0,4,0,0" />
+                </StackPanel>
+                <!-- MOD15: the size the CLI's -\-size takes, in the format's unit, and the box it gives. -->
+                <TextBlock Text="{x:Static p:Strings.LongestSide}" Style="{StaticResource FieldLabel}" Margin="0,8,0,2" />
+                <DockPanel>
+                  <TextBlock x:Name="ExportSizeUnit" AutomationProperties.AutomationId="ExportSizeUnit" DockPanel.Dock="Right"
+                             VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="36" />
+                  <TextBox x:Name="ExportSize" AutomationProperties.AutomationId="ExportSize" AutomationProperties.Name="Longest side"
+                           Text="1" TextChanged="OnExportSizeChanged" />
+                </DockPanel>
+              </StackPanel>
+            </Expander>
             <TextBlock x:Name="ExportDimensions" AutomationProperties.AutomationId="ExportDimensions" Style="{StaticResource StatCaption}" Margin="0,4,0,0" />
             <TextBlock x:Name="ExportNote" AutomationProperties.AutomationId="ExportNote" Style="{StaticResource StatCaption}"
                        Margin="0,8,0,0" Visibility="Collapsed" />
