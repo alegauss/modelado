@@ -7,7 +7,6 @@
 ## Block B — Windows interface built like PhotoBoost
 
 - 📋 **MOD100** (deps: MOD99 ⏸) **About and models is one long page of eleven text sections, mixing settings, accounts, downloads and licences** — Changing a key or freeing disk space means reading past licences and diagnostics; each job deserves its own simple, visual page. → §MOD100
-- 📋 **MOD136** (deps: —) **About's source and download rows, rebuilt equal by value, can drop out of the accessibility tree while still shown** — A Remove button a screen reader or a case found once can vanish from the tree when About is opened again. → §MOD136
 - 📋 **MOD138** (deps: —) **Relief, Cloud 3D, Edit and Export show every option at once, so their main control sits among rarely changed ones** — MOD98 shows one card at a time, but each card still lists all its settings; folding the extras leaves the main control and action in view. → §MOD138
 - 📋 **MOD140** (deps: —) **Ticking Object only or Enhance through UI Automation leaves the card's download size and rail dot stale** — Both boxes refresh the models they need on Click, which WPF never raises for a screen reader's or a case's toggle. → §MOD140
 

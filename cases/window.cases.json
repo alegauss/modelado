@@ -639,6 +639,23 @@
     },
 
     {
+      "name": "a source's Remove still answers after About is opened again over the same sources",
+      "catches": "rows rebuilt equal by value that take the old rows' accessibility peers and drop out of the tree while still shown",
+      "filed": "MOD136",
+      "tags": ["about", "sources"],
+      "fixture": "a window started with a model source already added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened" },
+        { "locator": "Button#RemoveSource-1", "act": "read", "reads": "name", "expect": "Remove http://127.0.0.1:47631/files/custom-manifest.json", "named": "the kept source has its Remove" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "Back is pressed" },
+        { "locator": "Button#AboutButton", "act": "invoke", "named": "About is opened again, its rows rebuilt equal to the ones before" },
+        { "locator": "Button#RemoveSource-1", "act": "invoke", "named": "the same Remove is found and pressed" },
+        { "locator": "Text#Source-1", "act": "read", "absent": true, "named": "and the source leaves the list" }
+      ]
+    },
+
+    {
       "name": "the Relief card sizes a relief in millimetres in place of shares of its width, and says when a size is not one",
       "catches": "a millimetre mode that keeps the share sliders beside it, starts empty, takes a zero width, or refuses a decimal comma",
       "filed": "MOD102",

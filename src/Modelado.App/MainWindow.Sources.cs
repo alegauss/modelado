@@ -58,7 +58,13 @@ public partial class MainWindow
         Sources.FirstOrDefault(s => url.StartsWith(s.ManifestUrl[..(s.ManifestUrl.LastIndexOf('/') + 1)], StringComparison.Ordinal))?.Given ?? SourceOf(url);
 
     /// <summary>One source as About lists it.</summary>
-    private sealed record SourceRow(int Index, string Label, string LabelId, string RemoveId, string RemoveName, Visibility RemoveVisibility);
+    private sealed record SourceRow(int Index, string Label, string LabelId, string RemoveId, string RemoveName, Visibility RemoveVisibility)
+    {
+        // MOD136: equal only to itself, so a list rebuilt equal by value keeps its rows in the accessibility tree.
+        public bool Equals(SourceRow? other) => ReferenceEquals(this, other);
+
+        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+    }
 
     private void FillSources()
     {
@@ -196,6 +202,11 @@ public partial class MainWindow
     /// <summary>A depth model the Relief card offers.</summary>
     private sealed record DepthChoice(string Name, string Label)
     {
+        // MOD136: equal only to itself, so a list rebuilt equal by value keeps its rows in the accessibility tree.
+        public bool Equals(DepthChoice? other) => ReferenceEquals(this, other);
+
+        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+
         // What the list item announces, which is what a case and a screen reader read.
         public override string ToString() => Label;
     }

@@ -18,6 +18,11 @@ public partial class MainWindow
     /// <summary>One entry of the list; null stands for Windows' own language.</summary>
     private sealed record LanguageChoice(string? Name, string Label)
     {
+        // MOD136: equal only to itself, so a list rebuilt equal by value keeps its rows in the accessibility tree.
+        public bool Equals(LanguageChoice? other) => ReferenceEquals(this, other);
+
+        public override int GetHashCode() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this);
+
         // What the list item announces, which is what a case and a screen reader read.
         public override string ToString() => Label;
     }
