@@ -56,6 +56,12 @@
       "shareable": false
     },
     {
+      // MOD146: a block with a 0.5 mm fin (cases/fixtures/make_fin.py), to check for walls too thin to print.
+      "name": "a window on a block with a thin fin, to check",
+      "arguments": ["--open", "cases/fixtures/fin.stl", "--provider", "cpu", "--releases", "off"],
+      "shareable": false
+    },
+    {
       // MOD63: a textured model in a folder of its own, to save as GLB.
       "name": "a window on a staged textured model, to save through the Export card",
       "files": ["cases/fixtures/two-textures.glb"],
@@ -1359,6 +1365,30 @@
         { "locator": "Text#MeshText", "act": "read", "reads": "name", "expect": "8 vertices · 12 triangles", "named": "the cube is turned, not rebuilt" },
         { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
         { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Lay flat on its largest face", "named": "the step is a version that can be undone" }
+      ]
+    },
+
+    {
+      "name": "the Edit card finds a fin too thin to print at the size Export prints at, and nothing else",
+      "catches": "a check the card does not offer, a minimum read in the model's units rather than in mm at the print size, or a check that is not a version Undo takes back",
+      "filed": "MOD146",
+      "tags": ["edit", "print"],
+      "fixture": "a window on a block with a thin fin, to check",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "fin.stl", "named": "the block with its fin is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "ComboBox#ExportFormat", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Edit#ExportSize", "act": "set value", "with": "20", "expect": "20", "reads": "value", "named": "20 mm, the block's own size, is typed" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Edit card's Advanced is opened (MOD138)" },
+        { "locator": "Edit#ThicknessMinimumMm", "act": "read", "reads": "value", "expect": "1.2", "named": "1.2 mm, three 0.4 mm lines, to start with" },
+        { "locator": "Button#CheckThicknessButton", "act": "invoke", "named": "Check thickness is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "8 of 16 vertices, 15.5% of the surface, are thinner than 1.2 mm: they are red.", "named": "it finds the fin's eight corners and nothing of the block" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "2. Thickness check at 1.2 mm", "named": "the colours are a version Undo takes back" }
       ]
     },
 

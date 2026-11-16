@@ -443,31 +443,6 @@ line. The choice is remembered.
 Done when Open in slicer opens the current model in each of the four slicers present on
 a test PC, and the button is absent when none is installed.
 
-### §MOD146 Thickness check
-
-After Make printable (MOD111) and Lay flat (MOD112, `src/Modelado.Geometry/LayFlat.cs`),
-the problem left is parts thinner than the nozzle can print: ears, tails, handles. They
-break off or vanish in the slicer, and nothing in Modelado says where they are. Modly's
-print epic lists a printability check for the same reason.
-
-A thickness check measures, at each vertex, how far a ray cast inward along the reversed
-vertex normal travels before it leaves the model again (the local wall thickness), in mm
-at the print size Export uses (the STL size, as Make printable reads its voxel).
-Vertices under a chosen minimum (default 1.2 mm, three 0.4 mm lines) are coloured red in
-the view, and the Edit card says how many and how much of the surface that is. A
-brute-force cast is vertices × triangles, far too slow for a 100k-triangle model, so the
-triangles go into a uniform grid or a small BVH first.
-
-An option to thicken them can follow: Make printable with a dilated inside field
-(MOD111's voxel votes, grown by half the missing thickness before marching cubes) is the
-cheapest way.
-
-CLI: `edit --check-thickness MM` prints the count and writes the colours into the
-output.
-
-Done when a test model with a 0.5 mm fin shows the fin red and nothing else at 1.2 mm,
-in the window and the CLI.
-
 ### §MOD149 A bundled font for relief text
 
 Relief text can be drawn in an installed TrueType font (MOD142): `--font` on the CLI,
@@ -487,6 +462,26 @@ as the third-party model downloads (MOD128, MOD129) do.
 Done when the font and its licence ship in the build and the MSIX, the Relief card lists
 it first, and a case writes a lower-case name in it on a medallion with no font
 installed.
+
+### §MOD150 Thicken thin walls
+
+The thickness check (MOD146, `src/Modelado.Geometry/WallThickness.cs`) colours red the
+walls thinner than a minimum at the print size, on the Edit card and with `edit
+--check-thickness`. It only shows them: the user still has to scale the model up or give
+up the ear or the tail.
+
+Thicken them with Make printable's voxel remesh (MOD111, `Printable.Make`): after the
+inside votes, grow the inside field by half the missing thickness (the minimum less the
+thinnest wall the check found, halved, in voxels) with a dilation of the occupancy grid,
+only around the voxels the thin vertices fall in, so the rest of the model keeps its
+shape; then march the cubes as now. Colours carry over as Make printable carries them.
+
+The Edit card offers it as **Thicken** beside Check thickness once a check found thin
+parts; the CLI takes `edit --thicken MM`, run after `--make-printable`.
+
+Done when the 0.5 mm fin fixture (`cases/fixtures/fin.stl`) at 20 mm, thickened to 1.2
+mm, passes the thickness check with nothing red, and the block keeps its size within a
+voxel.
 
 ## Block M — The CPU and integrated-GPU path
 

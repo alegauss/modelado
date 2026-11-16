@@ -91,7 +91,10 @@ modelado-cli cloud retexture model.glb --prompt "rusted iron" -o rust.glb --keep
 
 `--make-printable` rebuilds the model on a voxel grid that many millimetres wide at the `--size`
 it is saved at, so whatever holes or crossing pieces it had, it comes out closed and manifold
-for a slicer, its colours kept. `cloud` uses the Meshy AI key stored in the window's About, or one stored with
+for a slicer, its colours kept. `--check-thickness 1.2` colours red every part whose wall is
+thinner than 1.2 mm at that size (an ear or a tail a slicer would drop) and says how much of the
+surface that is; the Edit card's **Check thickness** does the same at the size Export prints at.
+`cloud` uses the Meshy AI key stored in the window's About, or one stored with
 `modelado-cli cloud key meshy`, which reads it from standard input. `--estimate` prints the
 window's consent line (what is sent, to whom, for how much, and what the month's budget leaves)
 and sends nothing. A job sent this way is checked against the same budgets and recorded in the

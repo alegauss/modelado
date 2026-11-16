@@ -65,6 +65,8 @@ const string Usage = """
         --texture IMAGE      puts a material image on the surface, made to tile first
         --tiles N            how many times it repeats across the longest side; default 2
         --upscale-texture    upscales the texture 4× with Real-ESRGAN
+        --check-thickness MM colours red where a wall is thinner than MM (1.2 is three 0.4 mm
+                             lines) and says how much; in mm at --size, else the model's units
     modelado-cli download [object|relief|upscale|all]   downloads the missing models
         --dry-run            says what would be downloaded, and fetches nothing
         --remove-background  relief: U-2-Net too, which a relief of the object alone needs
@@ -338,6 +340,22 @@ try
             // MOD40: before --upscale-texture, so a new texture can be sharpened in the same run.
             model = Edit(model, "--texture", value => MaterialTexture.Apply(model, MaterialTexture.Seamless(ImageCodec.Load(value)), (float)Number("--tiles", 2)));
             model = Edit(model, "--upscale-texture", _ => Upscaling.UpscaleTexture(runner, model));
+
+            // MOD146: last, so it measures what is saved; in mm at --size as --make-printable is.
+            model = Edit(model, "--check-thickness", value =>
+            {
+                float minimum = float.Parse(value, CultureInfo.InvariantCulture);
+                (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = model.Bounds();
+                System.Numerics.Vector3 span = high - low;
+                float longest = MathF.Max(span.X, MathF.Max(span.Y, span.Z));
+                float perMm = options.ContainsKey("--size") ? longest / (float)Number("--size", 1) : 1;
+                ThicknessReport checkedModel = WallThickness.Check(model, minimum * perMm);
+                Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                    $"  thickness: {checkedModel.ThinVertices:N0} of {checkedModel.Vertices:N0} vertices, {checkedModel.ThinShare:P1} of the surface, are thinner than {minimum} mm (red in the output)"));
+                report["thinVertices"] = checkedModel.ThinVertices;
+                report["thinShare"] = Math.Round(checkedModel.ThinShare, 4);
+                return checkedModel.Mesh;
+            });
             Save(model, edited, clock);
             return Done(0);
 

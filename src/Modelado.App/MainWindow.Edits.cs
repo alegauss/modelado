@@ -30,7 +30,7 @@ public partial class MainWindow
     private void UpdateEditButtons()
     {
         bool can = !busy && mesh is not null;
-        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton, LayFlatButton])
+        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton, LayFlatButton, CheckThicknessButton])
         {
             button.IsEnabled = can;
         }
@@ -132,6 +132,33 @@ public partial class MainWindow
         if (made is not null)
         {
             LastRunSaid(Ui.Format(Strings.MadePrintable, made.OpenEdgesBefore, made.TangledEdgesBefore));
+        }
+    }
+
+    // MOD146: the walls thinner than the minimum, in mm at the size Export prints at as Make printable
+    // reads its voxel, coloured red as a new version, so Undo takes the colours (and any texture) back.
+    private async void OnCheckThickness(object sender, RoutedEventArgs e)
+    {
+        if (Typed(ThicknessMinimumMm.Text) is not { } minimumMm || minimumMm <= 0 || Typed(stlSize) is not { } printSize || printSize <= 0)
+        {
+            LastRunSaid(Strings.ThicknessMinimumInvalid);
+            return;
+        }
+
+        ThicknessReport? found = null;
+        await EditAsync(Ui.Format(Strings.CheckThicknessStep, minimumMm), (m, _, _) =>
+        {
+            (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = m.Bounds();
+            System.Numerics.Vector3 span = high - low;
+            float longest = MathF.Max(span.X, MathF.Max(span.Y, span.Z));
+            found = WallThickness.Check(m, minimumMm * longest / printSize);
+            return found.Mesh;
+        }).ConfigureAwait(true);
+        if (found is not null)
+        {
+            LastRunSaid(found.ThinVertices == 0
+                ? Ui.Format(Strings.ThicknessNoneThin, minimumMm)
+                : Ui.Format(Strings.ThicknessSomeThin, found.ThinVertices, found.Vertices, found.ThinShare, minimumMm), Strings.UndoHint);
         }
     }
 

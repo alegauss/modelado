@@ -414,6 +414,27 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>Voxel und Druckgröße im Export brauchen mehr als 0 mm.</value>
   </data>
+  <data name="CheckThicknessButton" xml:space="preserve">
+    <value>Wandstärke prüfen</value>
+  </data>
+  <data name="CheckThicknessButtonTip" xml:space="preserve">
+    <value>Färbt jeden Teil des Modells rot, dessen Wand bei der Größe, in der Exportieren druckt, dünner als so viele Millimeter ist: ein Ohr oder ein Schwanz, den der Slicer weglässt oder der beim Druck abbricht. 1,2 mm sind drei 0,4-mm-Linien.</value>
+  </data>
+  <data name="ThicknessMinimumMm" xml:space="preserve">
+    <value>Dünnste Wand</value>
+  </data>
+  <data name="ThicknessMinimumInvalid" xml:space="preserve">
+    <value>Die dünnste Wand und die Druckgröße auf der Karte Exportieren brauchen eine Größe über 0 mm.</value>
+  </data>
+  <data name="CheckThicknessStep" xml:space="preserve">
+    <value>Wandstärke geprüft bei {0} mm</value>
+  </data>
+  <data name="ThicknessNoneThin" xml:space="preserve">
+    <value>Keine Wand ist dünner als {0} mm.</value>
+  </data>
+  <data name="ThicknessSomeThin" xml:space="preserve">
+    <value>{0:N0} von {1:N0} Eckpunkten, {2:P1} der Oberfläche, sind dünner als {3} mm: Sie sind rot.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Flach legen</value>
   </data>

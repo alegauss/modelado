@@ -414,6 +414,27 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>体素和“导出”中的打印尺寸须大于 0 mm。</value>
   </data>
+  <data name="CheckThicknessButton" xml:space="preserve">
+    <value>检查厚度</value>
+  </data>
+  <data name="CheckThicknessButtonTip" xml:space="preserve">
+    <value>在“导出”打印的尺寸下，将壁厚小于此毫米数的部分标为红色：切片软件会丢掉或打印时会折断的耳朵或尾巴。1.2 mm 是三条 0.4 mm 的线。</value>
+  </data>
+  <data name="ThicknessMinimumMm" xml:space="preserve">
+    <value>最薄壁厚</value>
+  </data>
+  <data name="ThicknessMinimumInvalid" xml:space="preserve">
+    <value>最薄壁厚和“导出”卡片上的打印尺寸必须大于 0 mm。</value>
+  </data>
+  <data name="CheckThicknessStep" xml:space="preserve">
+    <value>在 {0} mm 检查厚度</value>
+  </data>
+  <data name="ThicknessNoneThin" xml:space="preserve">
+    <value>没有比 {0} mm 更薄的壁。</value>
+  </data>
+  <data name="ThicknessSomeThin" xml:space="preserve">
+    <value>{1:N0} 个顶点中有 {0:N0} 个（表面的 {2:P1}）薄于 {3} mm：已标为红色。</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>平放</value>
   </data>

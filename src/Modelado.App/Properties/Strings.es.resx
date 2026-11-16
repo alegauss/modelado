@@ -414,6 +414,27 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>El vóxel y el tamaño de impresión de Exportar necesitan más de 0 mm.</value>
   </data>
+  <data name="CheckThicknessButton" xml:space="preserve">
+    <value>Comprobar grosor</value>
+  </data>
+  <data name="CheckThicknessButtonTip" xml:space="preserve">
+    <value>Colorea de rojo cada parte del modelo cuya pared es más fina que estos milímetros al tamaño al que Exportar imprime: una oreja o una cola que el laminador descartaría o que se rompería al imprimir. 1,2 mm son tres líneas de 0,4 mm.</value>
+  </data>
+  <data name="ThicknessMinimumMm" xml:space="preserve">
+    <value>Pared más fina</value>
+  </data>
+  <data name="ThicknessMinimumInvalid" xml:space="preserve">
+    <value>La pared más fina y el tamaño de impresión de la tarjeta Exportar necesitan un tamaño mayor que 0 mm.</value>
+  </data>
+  <data name="CheckThicknessStep" xml:space="preserve">
+    <value>Comprobación de grosor a {0} mm</value>
+  </data>
+  <data name="ThicknessNoneThin" xml:space="preserve">
+    <value>Ninguna pared es más fina que {0} mm.</value>
+  </data>
+  <data name="ThicknessSomeThin" xml:space="preserve">
+    <value>{0:N0} de {1:N0} vértices, {2:P1} de la superficie, son más finos que {3} mm: están en rojo.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Apoyar plano</value>
   </data>

@@ -414,6 +414,27 @@
   <data name="PrintableVoxelInvalid" xml:space="preserve">
     <value>The voxel and the print size on the Export card need a size above 0 mm.</value>
   </data>
+  <data name="CheckThicknessButton" xml:space="preserve">
+    <value>Check thickness</value>
+  </data>
+  <data name="CheckThicknessButtonTip" xml:space="preserve">
+    <value>Colours red every part of the model whose wall is thinner than this many millimetres at the size Export prints at: an ear or a tail a slicer would drop or a print would snap. 1.2 mm is three 0.4 mm lines.</value>
+  </data>
+  <data name="ThicknessMinimumMm" xml:space="preserve">
+    <value>Thinnest wall</value>
+  </data>
+  <data name="ThicknessMinimumInvalid" xml:space="preserve">
+    <value>The thinnest wall and the print size on the Export card need a size above 0 mm.</value>
+  </data>
+  <data name="CheckThicknessStep" xml:space="preserve">
+    <value>Thickness check at {0} mm</value>
+  </data>
+  <data name="ThicknessNoneThin" xml:space="preserve">
+    <value>No wall is thinner than {0} mm.</value>
+  </data>
+  <data name="ThicknessSomeThin" xml:space="preserve">
+    <value>{0:N0} of {1:N0} vertices, {2:P1} of the surface, are thinner than {3} mm: they are red.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Lay flat</value>
   </data>

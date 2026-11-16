@@ -37,7 +37,7 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- 📋 **MOD146** (deps: MOD112 ✅) **Nothing shows which parts of a model are too thin to print, so an ear or a tail breaks off or vanishes in the slicer** — MOD112 lays a model flat and MOD111 closes it, but neither measures wall thickness, the last check before a print fails. → §MOD146
+- 📋 **MOD150** (deps: MOD146 ✅) **Walls found too thin to print can only be shown red, never thickened** — The thickness check finds an ear or a fin under the minimum, but fixing it still means scaling the whole model or losing the part. → §MOD150
 
 ## Block M — The CPU and integrated-GPU path
 
