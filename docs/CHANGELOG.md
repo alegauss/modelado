@@ -162,6 +162,7 @@
 - ✅ **MOD143** **Text on a relief can only be raised, never engraved into the surface** — Relief text can be engraved: --text-engrave-mm and the card's Engraved choice cut the letters in, keeping 0.6 mm under them, and a cut too deep is refused in words.
 - ✅ **MOD145** **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — A lithophane can be curved to stand or a closed cylinder shade, with a frame at the thickest, from --shape, --arc and --frame-mm or the Relief card.
 - ✅ **MOD146** **Nothing shows which parts of a model are too thin to print, so an ear or a tail breaks off or vanishes in the slicer** — Check thickness on the Edit card and edit --check-thickness colour red the walls thinner than a minimum at the print size and say how much of the surface that is.
+- ✅ **MOD150** **Walls found too thin to print can only be shown red, never thickened** — Thicken on the Edit card and edit --thicken grow walls under the minimum to it on Make printable's voxel; the fin then passes the thickness check.
 
 ## Block M — The CPU and integrated-GPU path
 

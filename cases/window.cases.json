@@ -1393,6 +1393,31 @@
     },
 
     {
+      "name": "the Edit card thickens a fin too thin to print, and the thickness check then finds nothing",
+      "catches": "a Thicken the card does not offer, a minimum or a voxel read in the model's units rather than in mm at the print size, or walls left thinner than asked",
+      "filed": "MOD150",
+      "tags": ["edit", "print"],
+      "fixture": "a window on a block with a thin fin, to check",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "expect": "fin.stl", "named": "the block with its fin is open first" },
+        { "locator": "ListItem#Rail-Export", "act": "select", "reads": "selected", "expect": "selected", "named": "the Export card is chosen on the rail (MOD98)" },
+        { "locator": "Group#ExportAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Export card's Advanced is opened (MOD138)" },
+        { "locator": "ComboBox#ExportFormat", "act": "expand", "named": "the formats are opened" },
+        { "locator": "ComboBox#ExportFormat > ListItem[nameStarts=\"STL\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "STL is chosen" },
+        { "locator": "ComboBox#ExportFormat", "act": "collapse", "named": "the list is closed" },
+        { "locator": "Edit#ExportSize", "act": "set value", "with": "20", "expect": "20", "reads": "value", "named": "20 mm, the block's own size, is typed" },
+        { "locator": "ListItem#Rail-Edit", "act": "select", "reads": "selected", "expect": "selected", "named": "the Edit and improve card is chosen on the rail (MOD98)" },
+        { "locator": "Group#EditAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Edit card's Advanced is opened (MOD138)" },
+        { "locator": "Button#ThickenButton", "act": "invoke", "named": "Thicken is pressed, at 1.2 mm on a 0.4 mm voxel" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "8 vertices were thinner than 1.2 mm; those walls are grown to it now.", "named": "it says what it grew" },
+        { "locator": "Button#CheckThicknessButton", "act": "invoke", "named": "Check thickness is pressed" },
+        { "locator": "Text#LastRun", "act": "read", "reads": "name", "expect": "No wall is thinner than 1.2 mm.", "named": "and nothing is too thin now" },
+        { "locator": "ListItem#Rail-History", "act": "select", "reads": "selected", "expect": "selected", "named": "the History card is chosen on the rail (MOD98)" },
+        { "locator": "List#History > ListItem[order=bottom]", "act": "read", "reads": "name", "expect": "3. Thickness check at 1.2 mm", "named": "thickening was a version of its own before the check" }
+      ]
+    },
+
+    {
       "name": "the Edit card's amounts give the mesh the CLI gives for the same values",
       "catches": "a slider the edit ignores, a label that names another amount than the one applied, or a window that edits differently from modelado-cli",
       "filed": "MOD16",

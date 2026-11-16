@@ -435,6 +435,21 @@
   <data name="ThicknessSomeThin" xml:space="preserve">
     <value>{0:N0} of {1:N0} vertices, {2:P1} of the surface, are thinner than {3} mm: they are red.</value>
   </data>
+  <data name="ThickenButton" xml:space="preserve">
+    <value>Thicken</value>
+  </data>
+  <data name="ThickenButtonTip" xml:space="preserve">
+    <value>Grows every wall thinner than the thinnest above to it, rebuilding the model on Make printable's voxel at the size Export prints at; the rest keeps its shape.</value>
+  </data>
+  <data name="ThickenInvalid" xml:space="preserve">
+    <value>The thinnest wall, the voxel and the print size on the Export card need a size above 0 mm.</value>
+  </data>
+  <data name="ThickenStep" xml:space="preserve">
+    <value>Thickened to {0} mm</value>
+  </data>
+  <data name="Thickened" xml:space="preserve">
+    <value>{0:N0} vertices were thinner than {1} mm; those walls are grown to it now.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Lay flat</value>
   </data>

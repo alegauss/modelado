@@ -463,26 +463,6 @@ Done when the font and its licence ship in the build and the MSIX, the Relief ca
 it first, and a case writes a lower-case name in it on a medallion with no font
 installed.
 
-### §MOD150 Thicken thin walls
-
-The thickness check (MOD146, `src/Modelado.Geometry/WallThickness.cs`) colours red the
-walls thinner than a minimum at the print size, on the Edit card and with `edit
---check-thickness`. It only shows them: the user still has to scale the model up or give
-up the ear or the tail.
-
-Thicken them with Make printable's voxel remesh (MOD111, `Printable.Make`): after the
-inside votes, grow the inside field by half the missing thickness (the minimum less the
-thinnest wall the check found, halved, in voxels) with a dilation of the occupancy grid,
-only around the voxels the thin vertices fall in, so the rest of the model keeps its
-shape; then march the cubes as now. Colours carry over as Make printable carries them.
-
-The Edit card offers it as **Thicken** beside Check thickness once a check found thin
-parts; the CLI takes `edit --thicken MM`, run after `--make-printable`.
-
-Done when the 0.5 mm fin fixture (`cases/fixtures/fin.stl`) at 20 mm, thickened to 1.2
-mm, passes the thickness check with nothing red, and the block keeps its size within a
-voxel.
-
 ## Block M — The CPU and integrated-GPU path
 
 ### §MOD116 Ship the light encoder for the CPU

@@ -30,7 +30,7 @@ public partial class MainWindow
     private void UpdateEditButtons()
     {
         bool can = !busy && mesh is not null;
-        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton, LayFlatButton, CheckThicknessButton])
+        foreach (Button button in (Button[])[SimplifyButton, SubdivideButton, SmoothButton, FillHolesButton, PiecesButton, FlattenButton, MakePrintableButton, LayFlatButton, CheckThicknessButton, ThickenButton])
         {
             button.IsEnabled = can;
         }
@@ -159,6 +159,35 @@ public partial class MainWindow
             LastRunSaid(found.ThinVertices == 0
                 ? Ui.Format(Strings.ThicknessNoneThin, minimumMm)
                 : Ui.Format(Strings.ThicknessSomeThin, found.ThinVertices, found.Vertices, found.ThinShare, minimumMm), Strings.UndoHint);
+        }
+    }
+
+    // MOD150: the walls under the thinnest typed grown to it, on Make printable's voxel, both in mm
+    // at the size Export prints at; a model with none thin is left as it is, with no new version.
+    private async void OnThicken(object sender, RoutedEventArgs e)
+    {
+        if (Typed(ThicknessMinimumMm.Text) is not { } minimumMm || minimumMm <= 0
+            || Typed(PrintableVoxelMm.Text) is not { } voxelMm || voxelMm <= 0
+            || Typed(stlSize) is not { } printSize || printSize <= 0)
+        {
+            LastRunSaid(Strings.ThickenInvalid);
+            return;
+        }
+
+        ThickenResult? made = null;
+        await EditAsync(Ui.Format(Strings.ThickenStep, minimumMm), (m, _, _) =>
+        {
+            (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = m.Bounds();
+            System.Numerics.Vector3 span = high - low;
+            float perMm = MathF.Max(span.X, MathF.Max(span.Y, span.Z)) / printSize;
+            made = Printable.Thicken(m, minimumMm * perMm, voxelMm * perMm);
+            return made.Mesh;
+        }).ConfigureAwait(true);
+        if (made is not null)
+        {
+            LastRunSaid(made.ThinVerticesBefore == 0
+                ? Ui.Format(Strings.ThicknessNoneThin, minimumMm)
+                : Ui.Format(Strings.Thickened, made.ThinVerticesBefore, minimumMm), Strings.UndoHint);
         }
     }
 

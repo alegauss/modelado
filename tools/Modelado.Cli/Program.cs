@@ -58,6 +58,7 @@ const string Usage = """
         --fill-holes         fills the holes
         --make-printable MM  rebuilds it closed and manifold on a voxel grid MM wide (0.4 is a
                              nozzle's line), in mm at --size, else in the model's units
+        --thicken MM         grows the walls thinner than MM to it, on --make-printable's voxel
         --simplify N|F       N triangles, or the share F (e.g. 0.25)
         --subdivide          4× the triangles, rounded off
         --smooth N           smoothing passes (Taubin)
@@ -338,6 +339,22 @@ try
                 PrintableResult made = Printable.Make(model, voxel * perMm);
                 Console.WriteLine($"  made printable: {made.OpenEdgesBefore:N0} open and {made.TangledEdgesBefore:N0} tangled edges before, none now");
                 return made.Mesh;
+            });
+
+            // MOD150: the walls under MM grown to it, on --make-printable's voxel (0.4 mm unless given).
+            model = Edit(model, "--thicken", value =>
+            {
+                float minimum = float.Parse(value, CultureInfo.InvariantCulture);
+                (System.Numerics.Vector3 low, System.Numerics.Vector3 high) = model.Bounds();
+                System.Numerics.Vector3 span = high - low;
+                float longest = MathF.Max(span.X, MathF.Max(span.Y, span.Z));
+                float perMm = options.ContainsKey("--size") ? longest / (float)Number("--size", 1) : 1;
+                float voxel = (float)Number("--make-printable", Printable.VoxelDefault);
+                ThickenResult thick = Printable.Thicken(model, minimum * perMm, voxel * perMm);
+                Console.WriteLine(thick.ThinVerticesBefore == 0
+                    ? string.Create(CultureInfo.InvariantCulture, $"  thicken: no wall is thinner than {minimum} mm")
+                    : string.Create(CultureInfo.InvariantCulture, $"  thicken: {thick.ThinVerticesBefore:N0} vertices were thinner than {minimum} mm, grown to it"));
+                return thick.Mesh;
             });
             model = Edit(model, "--simplify", value =>
             {

@@ -50,6 +50,41 @@ public sealed class WallThicknessTests
     }
 
     [Fact]
+    public void A_thin_fin_thickened_to_the_minimum_passes_the_check_and_the_block_keeps_its_size()
+    {
+        // MOD150: the fin fixture at its own 20 mm, a 0.4 mm voxel, thickened to 1.2 mm.
+        Mesh model = BlockWithFin();
+        ThickenResult thick = Printable.Thicken(model, 1.2f, 0.4f);
+
+        Assert.Equal(8, thick.ThinVerticesBefore);
+        Assert.All(MarchingCubesTests.EdgeUses(thick.Mesh).Values, uses => Assert.Equal(2, uses));
+        Assert.Equal(0, WallThickness.Check(thick.Mesh, 1.2f).ThinVertices);
+
+        // The fin is a slab at least 1.2 mm thick now, around where it stood.
+        float[] finY = [.. thick.Mesh.Positions.Where(p => p.Z > 8 && p.Z < 12 && p.X > 8 && p.X < 12).Select(p => p.Y)];
+        Assert.InRange(finY.Max() - finY.Min(), 1.2f, 2.4f);
+        Assert.InRange((finY.Max() + finY.Min()) / 2, 9.8f, 10.2f);
+
+        // The block keeps its 20 × 20 × 5 within a voxel, as Make printable leaves it.
+        (Vector3 low, Vector3 high) = thick.Mesh.Positions.Where(p => p.Z < 4).Aggregate((Low: new Vector3(float.MaxValue), High: new Vector3(float.MinValue)), (box, p) => (Vector3.Min(box.Low, p), Vector3.Max(box.High, p)));
+        Assert.InRange(high.X - low.X, 19.6f, 20.4f);
+        Assert.InRange(high.Y - low.Y, 19.6f, 20.4f);
+    }
+
+    [Fact]
+    public void A_model_with_no_thin_wall_is_left_as_it_is()
+    {
+        (Vector3[] p, int[] t) = Box(Vector3.Zero, new Vector3(20, 20, 20));
+        Mesh block = new(p, t);
+
+        ThickenResult thick = Printable.Thicken(block, 1.2f, 0.4f);
+
+        Assert.Same(block, thick.Mesh);
+        Assert.Equal(0, thick.ThinVerticesBefore);
+        Assert.Throws<ArgumentException>(() => Printable.Thicken(block, 0, 0.4f));
+    }
+
+    [Fact]
     public void A_solid_block_has_nothing_too_thin_and_keeps_its_colour_but_not_its_texture()
     {
         (Vector3[] p, int[] t) = Box(Vector3.Zero, new Vector3(20, 20, 20));

@@ -94,6 +94,8 @@ it is saved at, so whatever holes or crossing pieces it had, it comes out closed
 for a slicer, its colours kept. `--check-thickness 1.2` colours red every part whose wall is
 thinner than 1.2 mm at that size (an ear or a tail a slicer would drop) and says how much of the
 surface that is; the Edit card's **Check thickness** does the same at the size Export prints at.
+`--thicken 1.2` grows those walls to 1.2 mm on `--make-printable`'s voxel and leaves the rest of
+the model's shape alone; the Edit card's **Thicken** does the same.
 `cloud` uses the Meshy AI key stored in the window's About, or one stored with
 `modelado-cli cloud key meshy`, which reads it from standard input. `--estimate` prints the
 window's consent line (what is sent, to whom, for how much, and what the month's budget leaves)

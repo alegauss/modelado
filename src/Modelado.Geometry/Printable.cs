@@ -8,6 +8,11 @@ namespace Modelado.Geometry;
 /// <param name="TangledEdgesBefore">Edges it had with three triangles or more, which no slicer can read as a surface.</param>
 public sealed record PrintableResult(Mesh Mesh, int OpenEdgesBefore, int TangledEdgesBefore);
 
+/// <summary>What Thicken found and made (MOD150).</summary>
+/// <param name="Mesh">The rebuilt mesh with its thin walls grown to the minimum, or the model itself when none was thin.</param>
+/// <param name="ThinVerticesBefore">How many vertices the thickness check found under the minimum.</param>
+public sealed record ThickenResult(Mesh Mesh, int ThinVerticesBefore);
+
 /// <summary>
 /// Make printable (MOD111): the model rebuilt on a voxel grid, so whatever it was (open, with holes,
 /// pieces crossing each other, edges shared by three faces) it comes out one closed two-manifold
@@ -34,7 +39,42 @@ public static class Printable
     /// <returns>The rebuilt mesh and what the model had wrong.</returns>
     /// <exception cref="ArgumentException">A voxel that is not above zero, or a model with no extent.</exception>
     /// <exception cref="InvalidOperationException">The model encloses nothing at this voxel.</exception>
-    public static PrintableResult Make(Mesh mesh, float voxel)
+    public static PrintableResult Make(Mesh mesh, float voxel) => Rebuild(mesh, voxel, null);
+
+    /// <summary>
+    /// MOD150: the walls the thickness check (<see cref="WallThickness"/>) finds under the minimum,
+    /// grown to it on Make printable's grid, the rest of the model left as Make printable leaves it.
+    /// Each triangle touching a thin vertex is sampled finer than a voxel, and around each sample's
+    /// point in the middle of the wall (half the measured thickness in, along the normal) a ball of
+    /// half the minimum, and half a voxel more for the grid's rounding, is made inside before the
+    /// blur; overlapping balls along a thin wall make it a slab the minimum thick.
+    /// </summary>
+    /// <param name="mesh">The model.</param>
+    /// <param name="minimum">The thinnest a wall may be, in the model's units.</param>
+    /// <param name="voxel">The grid's spacing, in the model's units.</param>
+    /// <returns>The thickened model, or the model itself when no wall was thin.</returns>
+    /// <exception cref="ArgumentException">A minimum or a voxel that is not above zero, or a model with no extent.</exception>
+    public static ThickenResult Thicken(Mesh mesh, float minimum, float voxel)
+    {
+        ArgumentNullException.ThrowIfNull(mesh);
+        if (!(minimum > 0))
+        {
+            throw new ArgumentException("The minimum thickness needs to be above 0.", nameof(minimum));
+        }
+
+        float[] thickness = WallThickness.Measure(mesh, minimum);
+        int thin = thickness.Count(t => t < minimum);
+        if (thin == 0)
+        {
+            return new ThickenResult(mesh, 0);
+        }
+
+        // The grid reaches far enough past the model for a wall at its edge to grow outward too.
+        PrintableResult made = Rebuild(mesh, voxel, (grid, inside) => Grow(mesh, thickness, minimum, grid, inside), minimum);
+        return new ThickenResult(made.Mesh, thin);
+    }
+
+    private static PrintableResult Rebuild(Mesh mesh, float voxel, Action<ScalarGrid, float[]>? grow, float margin = 0)
     {
         ArgumentNullException.ThrowIfNull(mesh);
         if (!(voxel > 0))
@@ -43,12 +83,14 @@ public static class Printable
         }
 
         (Vector3 min, Vector3 max) = mesh.Bounds();
-        Vector3 extent = max - min;
-        float longest = MathF.Max(extent.X, MathF.Max(extent.Y, extent.Z));
-        if (!(longest > 0) || mesh.TriangleCount == 0)
+        if (!(MathF.Max(max.X - min.X, MathF.Max(max.Y - min.Y, max.Z - min.Z)) > 0) || mesh.TriangleCount == 0)
         {
             throw new ArgumentException("The model has no extent to rebuild.", nameof(mesh));
         }
+
+        (min, max) = (min - new Vector3(margin), max + new Vector3(margin));
+        Vector3 extent = max - min;
+        float longest = MathF.Max(extent.X, MathF.Max(extent.Y, extent.Z));
 
         // Two cells of outside on every side; the voxel grows where the model would need more cells.
         float step = MathF.Max(voxel, longest / (MaxCells - 5));
@@ -72,6 +114,7 @@ public static class Printable
             inside[i] = votes[i] >= 2 ? 1 : 0;
         }
 
+        grow?.Invoke(grid, inside);
         Blur(inside, nx, ny, nz, grid.Values);
         Mesh rebuilt = MarchingCubes.Extract(grid, 0.5f);
         if (rebuilt.TriangleCount == 0)
@@ -164,6 +207,64 @@ public static class Printable
     }
 
     private static float Get(Vector3 point, int axis) => axis switch { 0 => point.X, 1 => point.Y, _ => point.Z };
+
+    // MOD150: balls made inside around the middle of every thin wall, sampled over each triangle a
+    // thin vertex is on; the two cells of outside around the grid are left alone, so it still closes.
+    private static void Grow(Mesh mesh, float[] thickness, float minimum, ScalarGrid grid, float[] inside)
+    {
+        float step = grid.Spacing.X;
+        float radius = (minimum / 2) + (step / 2);
+        int reach = (int)MathF.Ceiling(radius / step);
+        Vector3[] normals = mesh.ComputeNormals();
+        Vector3[] p = mesh.Positions;
+        int[] t = mesh.Triangles;
+        for (int k = 0; k < t.Length; k += 3)
+        {
+            int a = t[k], b = t[k + 1], c = t[k + 2];
+            float wall = MathF.Min(thickness[a], MathF.Min(thickness[b], thickness[c]));
+            if (!(wall < minimum))
+            {
+                continue;
+            }
+
+            Vector3 face = Vector3.Normalize(Vector3.Cross(p[b] - p[a], p[c] - p[a]));
+            float longest = MathF.Max(Vector3.Distance(p[a], p[b]), MathF.Max(Vector3.Distance(p[b], p[c]), Vector3.Distance(p[c], p[a])));
+            int parts = Math.Max(1, (int)MathF.Ceiling(longest / (step / 2)));
+            for (int i = 0; i <= parts; i++)
+            {
+                for (int j = 0; i + j <= parts; j++)
+                {
+                    float wa = (float)i / parts, wb = (float)j / parts, wc = 1 - wa - wb;
+                    Vector3 point = (wa * p[a]) + (wb * p[b]) + (wc * p[c]);
+                    Vector3 normal = (wa * normals[a]) + (wb * normals[b]) + (wc * normals[c]);
+                    normal = normal.Length() > 0.5f ? Vector3.Normalize(normal) : face;
+                    Fill(grid, inside, point - (normal * (wall / 2)), radius, reach);
+                }
+            }
+        }
+    }
+
+    private static void Fill(ScalarGrid grid, float[] inside, Vector3 centre, float radius, int reach)
+    {
+        float step = grid.Spacing.X;
+        Vector3 at = (centre - grid.Origin) / step;
+        int cx = (int)MathF.Round(at.X), cy = (int)MathF.Round(at.Y), cz = (int)MathF.Round(at.Z);
+        float r2 = radius * radius;
+        for (int x = Math.Max(2, cx - reach); x <= Math.Min(grid.Nx - 3, cx + reach); x++)
+        {
+            for (int y = Math.Max(2, cy - reach); y <= Math.Min(grid.Ny - 3, cy + reach); y++)
+            {
+                for (int z = Math.Max(2, cz - reach); z <= Math.Min(grid.Nz - 3, cz + reach); z++)
+                {
+                    Vector3 q = grid.Origin + (new Vector3(x, y, z) * step);
+                    if (Vector3.DistanceSquared(q, centre) <= r2)
+                    {
+                        inside[grid.Index(x, y, z)] = 1;
+                    }
+                }
+            }
+        }
+    }
 
     // One pass of a 3 × 3 × 3 box blur, as three passes of three along each axis; the outermost
     // layer stays outside, so the surface closes.

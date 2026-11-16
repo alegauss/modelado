@@ -435,6 +435,21 @@
   <data name="ThicknessSomeThin" xml:space="preserve">
     <value>{0:N0} de {1:N0} vértices, {2:P1} da superfície, são mais finos que {3} mm: estão em vermelho.</value>
   </data>
+  <data name="ThickenButton" xml:space="preserve">
+    <value>Engrossar</value>
+  </data>
+  <data name="ThickenButtonTip" xml:space="preserve">
+    <value>Engrossa toda parede mais fina que a parede mais fina acima até ela, refazendo o modelo no voxel de Tornar imprimível no tamanho em que Exportar imprime; o resto mantém a forma.</value>
+  </data>
+  <data name="ThickenInvalid" xml:space="preserve">
+    <value>A parede mais fina, o voxel e o tamanho de impressão no cartão Exportar precisam ser maiores que 0 mm.</value>
+  </data>
+  <data name="ThickenStep" xml:space="preserve">
+    <value>Engrossado até {0} mm</value>
+  </data>
+  <data name="Thickened" xml:space="preserve">
+    <value>{0:N0} vértices eram mais finos que {1} mm; essas paredes foram engrossadas até essa medida.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Deitar</value>
   </data>

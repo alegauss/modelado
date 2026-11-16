@@ -435,6 +435,21 @@
   <data name="ThicknessSomeThin" xml:space="preserve">
     <value>{0:N0} sommets sur {1:N0}, {2:P1} de la surface, sont plus fins que {3} mm : ils sont en rouge.</value>
   </data>
+  <data name="ThickenButton" xml:space="preserve">
+    <value>Épaissir</value>
+  </data>
+  <data name="ThickenButtonTip" xml:space="preserve">
+    <value>Épaissit jusqu’à la paroi la plus fine ci-dessus chaque paroi plus fine qu’elle, en refaisant le modèle sur le voxel de Rendre imprimable à la taille où Exporter imprime ; le reste garde sa forme.</value>
+  </data>
+  <data name="ThickenInvalid" xml:space="preserve">
+    <value>La paroi la plus fine, le voxel et la taille d’impression de la carte Exporter doivent dépasser 0 mm.</value>
+  </data>
+  <data name="ThickenStep" xml:space="preserve">
+    <value>Épaissi à {0} mm</value>
+  </data>
+  <data name="Thickened" xml:space="preserve">
+    <value>{0:N0} sommets étaient plus fins que {1} mm ; ces parois sont maintenant épaissies jusque-là.</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>Poser à plat</value>
   </data>

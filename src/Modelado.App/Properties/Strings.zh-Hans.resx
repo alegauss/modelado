@@ -435,6 +435,21 @@
   <data name="ThicknessSomeThin" xml:space="preserve">
     <value>{1:N0} 个顶点中有 {0:N0} 个（表面的 {2:P1}）薄于 {3} mm：已标为红色。</value>
   </data>
+  <data name="ThickenButton" xml:space="preserve">
+    <value>加厚</value>
+  </data>
+  <data name="ThickenButtonTip" xml:space="preserve">
+    <value>在“导出”打印的尺寸下，以“可打印化”的体素重建模型，把薄于上方最薄壁厚的壁加厚到该厚度；其余部分保持原形。</value>
+  </data>
+  <data name="ThickenInvalid" xml:space="preserve">
+    <value>最薄壁厚、体素和“导出”卡片上的打印尺寸必须大于 0 mm。</value>
+  </data>
+  <data name="ThickenStep" xml:space="preserve">
+    <value>加厚到 {0} mm</value>
+  </data>
+  <data name="Thickened" xml:space="preserve">
+    <value>有 {0:N0} 个顶点薄于 {1} mm；这些壁现已加厚到该厚度。</value>
+  </data>
   <data name="LayFlatButton" xml:space="preserve">
     <value>平放</value>
   </data>
