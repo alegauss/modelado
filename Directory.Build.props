@@ -24,7 +24,7 @@
     <!-- The WPF app builds on Linux too (compile check only; it runs on Windows). -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <!-- MOD85: the text every assembly carries is English, the language a satellite translates
          from; a neutral language other than the resources' own stops ResourceManager looking
