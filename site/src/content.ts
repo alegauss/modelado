@@ -285,15 +285,17 @@ export const words = {
     rows: [
       { what: "3D Object, default grid (256)", cpu: "about 20 s", gpu: "about 4 s", integrated: "about 65 s" },
       { what: "3D Object, finer grid (320)", cpu: "25 to 32 s", gpu: "about 4 s", integrated: "not measured" },
+      // MOD116: the INT8 encoder's runs from docs/local-3d-models.md (scripts/compare_models.py, MOD115).
+      { what: "3D Object, Light quality (INT8 encoder)", cpu: "12 to 16 s", gpu: "CPU only", integrated: "CPU only" },
       { what: "Relief, default grid (256)", cpu: "about 1 s", gpu: "about 1 s", integrated: "2 to 9 s" },
       { what: "Simplify 150,000 triangles to 45,000", cpu: "under 1 s", gpu: "runs on the CPU", integrated: "runs on the CPU" },
     ],
-    note: "Most of a GPU run is loading the model onto it. The first run on a new GPU takes several seconds longer while DirectML prepares the models. The status bar names the GPU in use. Intel's integrated graphics run every model, but a 3D Object there is slower than on the CPU, so choose the CPU in About on a PC with no other GPU.",
+    note: "Most of a GPU run is loading the model onto it. The first run on a new GPU takes several seconds longer while DirectML prepares the models. The status bar names the GPU in use. Intel's integrated graphics run every model, but a 3D Object there is slower than on the CPU, so on a PC with no other GPU, Automatic runs on the CPU and says why; DirectML in About still forces the GPU.",
   },
   models: {
     eyebrow: "The models",
     title: "Open models, each under its own licence",
-    lead: "What the app downloads, from the list this version carries. Each one is fetched the first time an operation needs it, in the size this PC needs: a GPU in Standard quality takes the lighter half-precision file, the CPU and High quality the full one. 3D Object is about 1.0 GB on a GPU and 1.85 GB on the CPU or at High.",
+    lead: "What the app downloads, from the list this version carries. Each one is fetched the first time an operation needs it, in the size this PC needs: a GPU in Standard quality takes the lighter half-precision file, the CPU and High quality the full one. 3D Object is about 1.0 GB on a GPU and 1.85 GB on the CPU or at High. On the CPU, Light quality takes a 433 MB INT8 encoder instead, about 0.6 GB in all and 1 GB less memory, at a visible cost in shape.",
     onGpu: "on a GPU",
     onCpu: "on the CPU or at High quality",
     tasks: {

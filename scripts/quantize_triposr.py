@@ -10,11 +10,18 @@ with --models and scripts/compare_models.py measures it against fp32 on the same
     .venv\\Scripts\\python scripts\\quantize_triposr.py
     .venv\\Scripts\\python scripts\\compare_models.py --no-gpu
 
+MOD116: --install then puts the INT8 encoder into .cache/models as triposr-encoder/int8.onnx,
+listed in its meta.json, for publish_models.py to carry as the Light quality variant:
+
+    .venv\\Scripts\\python scripts\\quantize_triposr.py --install
+
 Needs the fp32 models in .cache/models (prepare-models.cmd) and onnxruntime.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import shutil
 import sys
@@ -69,7 +76,38 @@ def build(models: Path = MODELS, variants: Path = VARIANTS, plan: dict[str, tupl
     return made
 
 
+def install(models: Path = MODELS, variants: Path = VARIANTS, model: str = "triposr-encoder", folder: str = "triposr-int8-encoder") -> dict:
+    """MOD116: the measured INT8 encoder into the models folder as int8.onnx, listed in its meta.json.
+
+    The models folder is what build_manifest.py and publish_models.py stage, so the next publish
+    carries the variant, and ModelLibrary finds it on disk as Light quality does. meta.json is
+    replaced, not written through, since build() hard-links it into the variant folders.
+    """
+    source = variants / folder / model / "fp32.onnx"
+    if not source.is_file():
+        raise FileNotFoundError(f"{source}: no INT8 {model} yet; run this script without --install first")
+    target = models / model / "int8.onnx"
+    link_or_copy(source, target)
+    digest = hashlib.sha256()
+    with target.open("rb") as stream:
+        for block in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(block)
+    meta_path = models / model / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    described = {"file": "int8.onnx", "bytes": target.stat().st_size, "sha256": digest.hexdigest()}
+    meta.setdefault("variants", {})["int8"] = described
+    staged = meta_path.with_name("meta.json.tmp")
+    staged.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    os.replace(staged, meta_path)
+    return described
+
+
 def main() -> int:
+    if "--install" in sys.argv[1:]:
+        described = install()
+        print(f"triposr-encoder int8.onnx: {described['bytes'] / 1e6:.0f} MB, listed in its meta.json")
+        return 0
+
     for folder in build():
         sizes = {m: (folder / m / "fp32.onnx").stat().st_size for m in OBJECT_MODELS}
         print(f"{folder.name}: " + ", ".join(f"{m} {s / 1e6:.0f} MB" for m, s in sizes.items()))

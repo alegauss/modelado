@@ -1,9 +1,9 @@
 {
   "repo": "alegauss/modelado-models",
   "version": "1",
-  "files_commit": "92e725905d8a58941f701a082af8775cfe05356a",
-  "manifest_commit": "4faae170814766b06b4d4b7eafa3cef466f7efad",
-  "manifest_url": "https://huggingface.co/alegauss/modelado-models/resolve/4faae170814766b06b4d4b7eafa3cef466f7efad/manifest.json",
+  "files_commit": "e2a71ca284483bcfd16426ae830cfbd1dfeb16c4",
+  "manifest_commit": "ccd238658dfac6c53c86b4e8cbd0ef3eebef013c",
+  "manifest_url": "https://huggingface.co/alegauss/modelado-models/resolve/ccd238658dfac6c53c86b4e8cbd0ef3eebef013c/manifest.json",
   "models": [
     "triposr-encoder",
     "triposr-decoder",

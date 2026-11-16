@@ -451,6 +451,12 @@ Times measured on the CPU (4 cores, no GPU), with the FP32 models:
 | 3D Object, grid 256 | cut-out 2.4 s · encoder 30.6 s (including loading 1.7 GB) · density 4.4 s · surface 0.6 s | 38 s |
 | Relief, grid 256 | depth 1.3 s · mesh 0.2 s | 2.2 s |
 
+On the CPU, **Light** quality (About, or `--light` on the command line; MOD116) runs a 433 MB
+INT8 encoder instead of the 1.6 GB FP32 one, so 3D Object downloads about 0.6 GB rather than
+1.85 GB and needs about 1 GB less memory. It is no faster: 11.5 to 15.7 s against about 15 s on
+an 8-core i7-14700 (docs/local-3d-models.md). Its shapes drift visibly from FP32's, so it stays a
+choice and Standard stays the default.
+
 Peak memory, measured with `build\measure-memory.ps1` (MOD118) on the robot photo: the CLI's peak
 working set, and the GPU memory Windows' counters gave its process (dedicated is video memory,
 shared is system memory the GPU maps), on an Intel Core i7-14700 with an NVIDIA GeForce RTX 4060

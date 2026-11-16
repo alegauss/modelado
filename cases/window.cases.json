@@ -353,6 +353,14 @@
     {
       // MOD27: no --manifest, so the built-in list is the embedded one and nothing of it is fetched;
       // LOCALAPPDATA staged empty for sources of this run's own, and a models folder of its own.
+      // MOD116: the same photo on DirectML, where Light quality's INT8 encoder does not run.
+      "name": "a window with a photo open, on DirectML",
+      "files": ["cases/fixtures/photo.png"],
+      "arguments": ["--open", "{files}/photo.png", "--models", "{files}/dml-models", "--provider", "dml", "--releases", "off"],
+      "variables": { "LOCALAPPDATA": "{files}" },
+      "shareable": false
+    },
+    {
       "name": "a window with a photo open and no model sources added",
       "files": ["cases/fixtures/photo.png"],
       "arguments": ["--open", "{files}/photo.png", "--models", "{files}/source-models", "--provider", "cpu", "--releases", "off"],
@@ -929,11 +937,25 @@
     },
 
     {
-      "name": "Light quality is not offered where no INT8 encoder is published or on disk",
-      "catches": "a Light quality offered that would run the fp32 encoder anyway",
+      "name": "Light quality is offered on the CPU once its INT8 encoder is published, with nothing on disk yet",
+      "catches": "a Light quality that needs the encoder downloaded by hand first, though the manifest the app carries lists it",
       "filed": "MOD116",
       "tags": ["quality", "light"],
       "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Quality", "act": "select", "reads": "selected", "expect": "selected", "named": "the Quality card is chosen on the rail (MOD98)" },
+        { "locator": "RadioButton#QualityStandard", "act": "read", "reads": "selected", "expect": "selected", "named": "Standard stays the default" },
+        { "locator": "RadioButton#QualityLight", "act": "read", "reads": "name", "expect": "Light (on the CPU)", "named": "and Light is offered beside it" }
+      ]
+    },
+
+    {
+      "name": "Light quality is not offered on DirectML, where the INT8 encoder does not run",
+      "catches": "a Light quality offered on the GPU that would run the fp16 encoder anyway",
+      "filed": "MOD116",
+      "tags": ["quality", "light"],
+      "fixture": "a window with a photo open, on DirectML",
       "steps": [
         { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
         { "locator": "ListItem#Rail-Quality", "act": "select", "reads": "selected", "expect": "selected", "named": "the Quality card is chosen on the rail (MOD98)" },

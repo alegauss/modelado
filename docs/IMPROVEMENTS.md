@@ -450,16 +450,3 @@ it first, and a case writes a lower-case name in it on a medallion with no font
 installed.
 
 ## Block M — The CPU and integrated-GPU path
-
-### §MOD116 Ship the light encoder for the CPU
-
-If MOD115 finds an INT8 variant close enough to fp32, the CPU path should use it. The
-manifest gains the variant, ModelLibrary picks it for the CPU in Standard quality and
-keeps fp32 for High, and About shows which one is installed and lets the user fetch the
-other.
-
-If the loss is visible, it ships as a Fast quality instead, and the CPU keeps fp32 as
-the default.
-
-Done when a CPU-only install downloads and runs the chosen variant, the README and the
-site state the new size and time, and the speed table shows both.
