@@ -258,6 +258,9 @@
   <data name="ReliefKeychainTag" xml:space="preserve">
     <value>Rounded tag</value>
   </data>
+  <data name="ReliefKeychainCutOut" xml:space="preserve">
+    <value>Shaped like the object</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Hole</value>
   </data>

@@ -70,6 +70,13 @@ public static class ReliefReconstruction
         if (options.Keychain is { } keychain)
         {
             float printWidth = options.Relief.PrintWidth ?? throw new ArgumentException("A keychain is sized in millimetres: give the relief a printed width.", nameof(options));
+
+            // MOD141: shaped like the object, its hole inside it; the cut-out is the outline.
+            if (keychain.Shape == KeychainShape.CutOut)
+            {
+                return Keychain.CutOutMask(mask ?? throw new ArgumentException("A keychain shaped like the object needs Object only, to cut it out.", nameof(options)), width, height, aspect, printWidth, keychain.HoleDiameter, options.Relief.MaskThreshold);
+            }
+
             tag = Keychain.Mask(width, height, aspect, printWidth, keychain);
         }
         else if (options.Shape != OutlineShape.Rectangle)

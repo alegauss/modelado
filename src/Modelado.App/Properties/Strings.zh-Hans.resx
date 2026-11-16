@@ -258,6 +258,9 @@
   <data name="ReliefKeychainTag" xml:space="preserve">
     <value>圆角挂牌</value>
   </data>
+  <data name="ReliefKeychainCutOut" xml:space="preserve">
+    <value>物体轮廓形状</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>孔</value>
   </data>

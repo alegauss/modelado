@@ -80,6 +80,7 @@ public partial class MainWindow
     {
         "circle" => KeychainShape.Circle,
         "tag" => KeychainShape.Tag,
+        "cutout" => KeychainShape.CutOut,
         _ => null,
     };
 
@@ -92,6 +93,12 @@ public partial class MainWindow
 
         Visibility hole = KeychainChosen is null ? Visibility.Collapsed : Visibility.Visible;
         ReliefHoleLabel.Visibility = ReliefHoleMm.Visibility = ReliefHoleUnit.Visibility = hole;
+
+        // MOD141: shaped like the object means cutting the object out.
+        if (KeychainChosen == KeychainShape.CutOut)
+        {
+            ReliefRemoveBackground.IsChecked = true;
+        }
 
         // Only a tag's hole slides along its top; a disc's sits at the top centre.
         Visibility across = KeychainChosen == KeychainShape.Tag ? Visibility.Visible : Visibility.Collapsed;
@@ -116,6 +123,13 @@ public partial class MainWindow
         }
 
         KeychainOptions options = new(shape, hole, (float)ReliefHoleAcross.Value);
+
+        // MOD141: where a cut-out has room for the hole is known only once the object is cut out.
+        if (shape == KeychainShape.CutOut)
+        {
+            return (true, options);
+        }
+
         float aspect = photo is null ? 1 : (float)photo.Height / photo.Width;
         try
         {

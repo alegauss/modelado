@@ -258,6 +258,9 @@
   <data name="ReliefKeychainTag" xml:space="preserve">
     <value>Placa redondeada</value>
   </data>
+  <data name="ReliefKeychainCutOut" xml:space="preserve">
+    <value>Con la forma del objeto</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Agujero</value>
   </data>

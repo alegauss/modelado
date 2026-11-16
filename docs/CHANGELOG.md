@@ -157,6 +157,7 @@
 - ✅ **MOD112** **Nothing checks a 3D Object for walls too thin to print, or lays it on its flattest face** — Lay flat on the Edit card and edit --lay-flat turn a model onto its largest face nothing crosses, so it rests on the slicer's plate (design superseded: thickness check: MOD146).
 - ✅ **MOD113** **A relief base below 0.5% reads as no base in the window but still solidifies the mesh** — A base under 0.5% of the width is no base in the label, the mesh and the CLI alike, through one threshold tested on each side.
 - ✅ **MOD114** **Watertightness is tested only for rectangular masks, not for a cut-out object's irregular outline** — A relief cut to an irregular outline splits pinched corners before Solidify, so diagonal touches, threads, holes and speckle all come out closed and two-manifold.
+- ✅ **MOD141 (cut-out keychain)** **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — A keychain can take the cut-out object's outline, card and --keychain cutout, its hole placed where the object has room near its top, one closed solid.
 
 ## Block M — The CPU and integrated-GPU path
 

@@ -258,6 +258,9 @@
   <data name="ReliefKeychainTag" xml:space="preserve">
     <value>Plaquinha arredondada</value>
   </data>
+  <data name="ReliefKeychainCutOut" xml:space="preserve">
+    <value>No formato do objeto</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Furo</value>
   </data>

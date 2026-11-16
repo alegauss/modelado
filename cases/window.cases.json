@@ -750,6 +750,27 @@
     },
 
     {
+      "name": "a keychain shaped like the object is offered on the Relief card and cuts the object out",
+      "catches": "a cut-out keychain the card does not offer, or one chosen without the object cut out, which would leave nothing to shape it",
+      "filed": "MOD141",
+      "tags": ["relief", "print"],
+      "fixture": "a window with a photo open and no model sources added",
+      "steps": [
+        { "locator": "Text#SourceText", "act": "read", "reads": "name", "matches": "^photo\\.png · ", "named": "the photo is open first" },
+        { "locator": "ListItem#Rail-Relief", "act": "select", "reads": "selected", "expect": "selected", "named": "the Relief card is chosen on the rail (MOD98)" },
+        { "locator": "CheckBox#ReliefMillimetres", "act": "toggle", "reads": "toggle", "expect": "On", "named": "Size it in millimetres is ticked (MOD102)" },
+        { "locator": "Group#ReliefAdvanced", "act": "expand", "reads": "expanded", "expect": "Expanded", "named": "the Relief card's Advanced is opened (MOD138)" },
+        { "locator": "CheckBox#ReliefRemoveBackground", "act": "read", "reads": "toggle", "expect": "Off", "named": "Object only starts unticked" },
+        { "locator": "ComboBox#ReliefKeychain", "act": "expand", "named": "the keychains are opened" },
+        { "locator": "ComboBox#ReliefKeychain > ListItem[name=\"Shaped like the object\"]", "act": "select", "reads": "selected", "expect": "selected", "named": "a keychain shaped like the object is chosen" },
+        { "locator": "CheckBox#ReliefRemoveBackground", "act": "read", "reads": "toggle", "expect": "On", "named": "and Object only is ticked with it" },
+        { "locator": "Edit#ReliefHoleMm", "act": "read", "reads": "value", "expect": "4", "named": "its hole is 4 mm" },
+        { "locator": "Slider#ReliefHoleAcross", "act": "read", "absent": true, "named": "placed inside the object, not slid along a top edge" },
+        { "locator": "Text#ReliefSizeError", "act": "read", "absent": true, "named": "and the sizes stand" }
+      ]
+    },
+
+    {
       "name": "the Relief card raises a name along the bottom or a medallion's arc, and says when it will not fit",
       "catches": "a card with no text field, a letter height that starts empty, or text too long for the relief that only fails once the run has started",
       "filed": "MOD106",

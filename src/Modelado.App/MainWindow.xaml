@@ -437,6 +437,8 @@
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainNone}" Tag="none" />
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainCircle}" Tag="circle" />
                 <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainTag}" Tag="tag" />
+                <!-- MOD141: the cut-out object's own outline, the hole placed inside it. -->
+                <ComboBoxItem Content="{x:Static p:Strings.ReliefKeychainCutOut}" Tag="cutout" />
               </ComboBox>
               <TextBlock x:Name="ReliefHoleLabel" Grid.Row="4" Text="{x:Static p:Strings.ReliefHoleMm}" VerticalAlignment="Center" Visibility="Collapsed" />
               <TextBox x:Name="ReliefHoleMm" Grid.Row="4" Grid.Column="1" AutomationProperties.AutomationId="ReliefHoleMm" AutomationProperties.Name="{x:Static p:Strings.ReliefHoleMm}"

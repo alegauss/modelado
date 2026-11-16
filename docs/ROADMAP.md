@@ -37,7 +37,7 @@
 ## Block L — Printable objects: relief keepsakes, 3MF and print-ready meshes
 
 - ⏳ **MOD110** (deps: MOD103 ✅, winwright WW628) **Nothing opens the exported model in the slicer installed on the PC; the user finds the file by hand** — Still to come: a case proving the pick is remembered (WW628), and a check against the four real slicers. → §MOD110
-- 📋 **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Pet keychains are shaped like the pet, and a slider along the top cannot put the hole where the object has room for it. → §MOD141
+- ⏳ **MOD141** (deps: MOD104 ✅) **A keychain cannot follow the cut-out object's outline, and its hole cannot be dragged into place** — Still to come: drag the hole into place on the viewport, over the photo or the made tag, instead of the slider along the top. → §MOD141
 - 📋 **MOD142** (deps: MOD106 ✅) **Relief text is limited to a built-in font of capitals and digits; no bundled OFL font or installed font** — MOD106 raises text in a stroke font only, so a lower-case name or a script face still needs another program. → §MOD142
 - 📋 **MOD143** (deps: MOD106 ✅) **Text on a relief can only be raised, never engraved into the surface** — MOD106 stamps letters above the relief, while a plaque band or a keychain back often wants the name cut in. → §MOD143
 - 📋 **MOD145** (deps: MOD108 ✅) **A lithophane can only be a flat panel with no frame: no curved one that stands, and no cylinder for a lamp** — Curved and cylinder lithophanes are what the other tools offer beside flat, and a thin unframed panel warps. → §MOD145
@@ -141,5 +141,11 @@
   publishes triposr-encoder int8, the embedded manifest lists it, and Light on a
   CPU-only PC downloads 433 MB and runs it; the README and the site state its size and
   time.
+
+## Done when — MOD141
+
+- **A keychain's hole is dragged into place on the viewport** A case drags the hole
+  across the shown photo or tag, KeychainOptions takes the position in the photo's 0..1
+  coordinates, and the made keychain has its hole there, still one closed solid.
 
 ## Non-goals

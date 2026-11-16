@@ -146,6 +146,12 @@ public sealed record CliArguments(string Command, IReadOnlyList<string> Position
             return "--hole-mm is the keychain's hole: give --keychain circle or tag too.";
         }
 
+        // MOD141: a keychain shaped like the object is the cut-out's own outline.
+        if (options.TryGetValue("--keychain", out string? keychain) && keychain == "cutout" && !options.ContainsKey("--remove-background"))
+        {
+            return "--keychain cutout is shaped like the object: give --remove-background too.";
+        }
+
         // MOD105: a keychain cuts its own outline, so a second one would be ignored.
         return options.ContainsKey("--shape") && options.ContainsKey("--keychain")
             ? "--keychain cuts its own outline: give --shape or --keychain, not both."

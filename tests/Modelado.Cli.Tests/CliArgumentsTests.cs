@@ -114,6 +114,14 @@ public sealed class CliArgumentsTests
     }
 
     [Fact]
+    public void A_keychain_shaped_like_the_object_needs_the_object_cut_out()
+    {
+        // MOD141: the cut-out is its outline.
+        Assert.Contains("--remove-background", CliArguments.Parse(["relief", "p.png", "-o", "k.stl", "--width-mm", "40", "--keychain", "cutout"]).Error, StringComparison.Ordinal);
+        Assert.Null(CliArguments.Parse(["relief", "p.png", "-o", "k.stl", "--width-mm", "40", "--keychain", "cutout", "--remove-background"]).Error);
+    }
+
+    [Fact]
     public void A_shape_beside_a_keychain_is_refused_since_the_keychain_cuts_its_own()
     {
         // MOD105: one of the two would be ignored.

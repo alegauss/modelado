@@ -27,8 +27,9 @@ const string Usage = """
                              --remove-background), saved at that size unless --size says otherwise
         --depth-mm D         with --width-mm, relief height in millimetres; default 3
         --base-mm B          with --width-mm, solid base in millimetres; default 2, 0 = open surface
-        --keychain circle|tag   with --width-mm, cut into a keychain: a disc or a rounded tag, one
-                             closed solid with a hole near the top to hang it by
+        --keychain circle|tag|cutout   with --width-mm, cut into a keychain: a disc, a rounded tag, or
+                             (with --remove-background) the object's own outline, one closed solid
+                             with a hole near the top to hang it by
         --hole-mm D          the keychain's hole; default 4
         --shape S            rectangle (default), rounded, circle or oval: a plaque or a medallion
         --border-mm W        with --width-mm, a raised frame W mm wide along the outline
@@ -436,7 +437,8 @@ KeychainOptions? KeychainOf() => Get("--keychain", null) switch
     null => null,
     "circle" => new KeychainOptions(KeychainShape.Circle, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
     "tag" => new KeychainOptions(KeychainShape.Tag, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)),
-    var other => throw new ArgumentException($"--keychain {other}: use circle or tag."),
+    "cutout" => new KeychainOptions(KeychainShape.CutOut, (float)Number("--hole-mm", Keychain.HoleDiameterDefault)), // MOD141
+    var other => throw new ArgumentException($"--keychain {other}: use circle, tag or cutout."),
 };
 
 // MOD105: the outline the relief is cropped to.

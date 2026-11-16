@@ -258,6 +258,9 @@
   <data name="ReliefKeychainTag" xml:space="preserve">
     <value>Abgerundete Marke</value>
   </data>
+  <data name="ReliefKeychainCutOut" xml:space="preserve">
+    <value>In Form des Objekts</value>
+  </data>
   <data name="ReliefHoleMm" xml:space="preserve">
     <value>Loch</value>
   </data>
