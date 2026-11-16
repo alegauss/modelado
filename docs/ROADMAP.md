@@ -35,7 +35,6 @@
 
 ## Block J — Local model quality: past TripoSR
 
-- 📋 **MOD129** (deps: MOD127 ✅) **MoGe-2 has not been compared as a relief depth model, though it has an official ONNX export and normals** — MoGe-2 is MIT with ONNX files from its authors, so it may beat Depth Anything for reliefs without any export work. → §MOD129
 - 📋 **MOD130** (deps: MOD123, MOD125, MOD126, MOD127 ✅) **3D Object has no textured option beyond TripoSR's blurred 64×64 vertex colours** — SF3D bakes a UV texture, beats TripoSR on Chamfer distance and already runs in ONNX on an iPhone; its licence was accepted on 12/11/2026. → §MOD130
 - 📋 **MOD131** (deps: MOD123, MOD125, MOD126, MOD127 ✅) **SPAR3D measures clearly better than TripoSR, but its point-diffusion stage has no known ONNX export** — SPAR3D is the only candidate with a measured large gain (Chamfer 0.120 against 0.145), so its export is worth a spike. → §MOD131
 
